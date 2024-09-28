@@ -1,0 +1,166 @@
+@import url('https://fonts.googleapis.com/css2?family=Berkshire+Swash&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,500;1,600;1,700;1,800;1,900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    * {
+        @apply box-border list-none p-0 m-0 scroll-smooth;
+    }
+    body {
+        @apply min-h-screen bg-slate-50;
+    }
+}
+
+@layer utilities {
+    /* Typography */
+      .h1-bold {
+        @apply text-[36px] font-bold leading-[140%] tracking-tighter;
+      }
+    
+      .h1-semibold {
+        @apply text-[36px] font-semibold leading-[140%] tracking-tighter;
+      }
+    
+      .h2-bold {
+        @apply text-[30px] font-bold leading-[140%] tracking-tighter;
+      }
+    
+      .h3-bold {
+        @apply text-[24px] font-bold leading-[140%] tracking-tighter;
+      }
+    
+      .base-semibold {
+        @apply text-[16px] font-semibold leading-[140%] tracking-tighter;
+      }
+    
+      .base-medium {
+        @apply text-[16px] font-medium leading-[140%];
+      }
+    
+      .base-regular {
+        @apply text-[16px] font-normal leading-[140%];
+      }
+    
+      .body-bold {
+        @apply text-[18px] font-bold leading-[140%];
+      }
+    
+      .body-medium {
+        @apply text-[18px] font-medium leading-[140%];
+      }
+    
+      .small-semibold {
+        @apply text-[14px] font-semibold leading-[140%] tracking-tighter;
+      }
+    
+      .small-medium {
+        @apply text-[14px] font-medium leading-[140%];
+      }
+    
+      .small-regular {
+        @apply text-[14px] font-normal leading-[140%];
+      }
+    
+      .subtle-semibold {
+        @apply text-[12px] font-semibold leading-[140%];
+      }
+    
+      .tiny-medium {
+        @apply text-[10px] font-medium leading-[140%];
+      }
+
+      /* Utilities */
+      .button-transition{
+        @apply hover:transition ease-out duration-200;
+      }
+      .invert-white {
+        @apply invert brightness-0 transition;
+      }
+    
+      .flex-center {
+        @apply flex justify-center items-center;
+      }
+    
+      .flex-between {
+        @apply flex justify-between items-center;
+      }
+    
+      .flex-start {
+        @apply flex justify-start items-center;
+      }
+    
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 3px;
+        height: 3px;
+        border-radius: 2px;
+      }
+    
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: #09090a;
+      }
+    
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #5c5c7b;
+        border-radius: 50px;
+      }
+    
+      .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #7878a3;
+      }
+    
+      .common-container {
+        @apply flex flex-col flex-1 items-center gap-10 overflow-scroll py-10 px-5 md:px-8 lg:p-14 custom-scrollbar;
+      }
+
+
+
+
+
+}
+
+@layer components{
+    
+    .nav-link{
+        @apply py-2 px-4 text-slate-600 hover:text-slate-950 focus:text-slate-950 hover:bg-slate-200  rounded-lg hover:ring-1 button-transition ring-blue-400 font-poppins text-sm cursor-pointer
+    }
+    .button-link{
+        @apply py-2 px-4 text-blue-700 ring-blue-700 ring-1  hover:bg-blue-700 hover:text-white hover:shadow-lg rounded-3xl button-transition;
+    }
+    .side-nav-link{
+      @apply  w-auto text-left text-slate-600 hover:text-slate-900 focus:text-slate-900 py-2 cursor-pointer rounded-lg hover:ring-1
+    }
+    .nav-link-selected{
+      @apply py-2 px-4 text-slate-600 hover:text-slate-950 focus:text-slate-950 hover:bg-slate-200  rounded-lg ring-1 button-transition ring-blue-400 font-poppins text-sm cursor-pointer
+    }
+    .shad-form_label {
+      @apply text-white !important;
+    }
+  
+    .shad-form_message {
+      @apply text-red !important;
+    }
+  
+    .shad-input {
+      @apply h-12 bg-dark-4 border-none placeholder:text-light-4 focus-visible:ring-1 focus-visible:ring-offset-1 ring-offset-light-3 !important;
+    }
+  
+    .shad-textarea {
+      @apply h-36 bg-dark-3 rounded-xl border-none focus-visible:ring-1 focus-visible:ring-offset-1 ring-offset-light-3 !important;
+    }
+  
+    /* Button */
+    .shad-button_primary {
+      @apply bg-primary-500 hover:bg-primary-500 text-light-1 flex gap-2 !important;
+    }
+  
+    .shad-button_dark_4 {
+      @apply h-12 bg-dark-4 px-5 text-light-1 flex gap-2 !important;
+    }
+  
+    .shad-button_ghost {
+      @apply flex gap-4 items-center justify-start hover:bg-transparent hover:text-white !important;
+    }
+    
+}
