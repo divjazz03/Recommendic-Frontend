@@ -4,14 +4,64 @@
 @tailwind components;
 @tailwind utilities;
 
+
 @layer base {
-    * {
-        @apply box-border list-none p-0 m-0 scroll-smooth;
-    }
-    body {
-        @apply min-h-screen bg-slate-50;
-    }
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 224 71.4% 4.1%;
+    --card: 0 0% 100%;
+    --card-foreground: 224 71.4% 4.1%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 71.4% 4.1%;
+    --primary: 220.9 39.3% 11%;
+    --primary-foreground: 210 20% 98%;
+    --secondary: 220 14.3% 95.9%;
+    --secondary-foreground: 220.9 39.3% 11%;
+    --muted: 220 14.3% 95.9%;
+    --muted-foreground: 220 8.9% 46.1%;
+    --accent: 220 14.3% 95.9%;
+    --accent-foreground: 220.9 39.3% 11%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 20% 98%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 224 71.4% 4.1%;
+    --radius: 0.5rem;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+  }
+
+  .dark {
+    --background: 224 71.4% 4.1%;
+    --foreground: 210 20% 98%;
+    --card: 224 71.4% 4.1%;
+    --card-foreground: 210 20% 98%;
+    --popover: 224 71.4% 4.1%;
+    --popover-foreground: 210 20% 98%;
+    --primary: 210 20% 98%;
+    --primary-foreground: 220.9 39.3% 11%;
+    --secondary: 215 27.9% 16.9%;
+    --secondary-foreground: 210 20% 98%;
+    --muted: 215 27.9% 16.9%;
+    --muted-foreground: 217.9 10.6% 64.9%;
+    --accent: 215 27.9% 16.9%;
+    --accent-foreground: 210 20% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 20% 98%;
+    --border: 215 27.9% 16.9%;
+    --input: 215 27.9% 16.9%;
+    --ring: 216 12.2% 83.9%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
 }
+
 
 @layer utilities {
     /* Typography */
@@ -133,34 +183,5 @@
     }
     .nav-link-selected{
       @apply py-2 px-4 text-slate-600 hover:text-slate-950 focus:text-slate-950 hover:bg-slate-200  rounded-lg ring-1 button-transition ring-blue-400 font-poppins text-sm cursor-pointer
-    }
-    .shad-form_label {
-      @apply text-white !important;
-    }
-  
-    .shad-form_message {
-      @apply text-red !important;
-    }
-  
-    .shad-input {
-      @apply h-12 bg-dark-4 border-none placeholder:text-light-4 focus-visible:ring-1 focus-visible:ring-offset-1 ring-offset-light-3 !important;
-    }
-  
-    .shad-textarea {
-      @apply h-36 bg-dark-3 rounded-xl border-none focus-visible:ring-1 focus-visible:ring-offset-1 ring-offset-light-3 !important;
-    }
-  
-    /* Button */
-    .shad-button_primary {
-      @apply bg-primary-500 hover:bg-primary-500 text-light-1 flex gap-2 !important;
-    }
-  
-    .shad-button_dark_4 {
-      @apply h-12 bg-dark-4 px-5 text-light-1 flex gap-2 !important;
-    }
-  
-    .shad-button_ghost {
-      @apply flex gap-4 items-center justify-start hover:bg-transparent hover:text-white !important;
-    }
-    
+    }  
 }

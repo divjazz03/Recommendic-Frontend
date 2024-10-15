@@ -6,7 +6,8 @@ import MedicalApp from '../../../assets/svg/MedicalApp.svg'
 import { FcSearch, FcViewDetails } from "react-icons/fc"
 import { FaBriefcaseMedical } from 'react-icons/fa6'
 import { GiMedicinePills } from "react-icons/gi"
-import { IoMdPerson } from 'react-icons/io'
+import { IoMdPerson, IoMdInformationCircleOutline } from 'react-icons/io'
+import { IoInformationCircle, IoSearch } from 'react-icons/io5'
 import { BsJournalMedical } from "react-icons/bs";
 
 import ServicesCard from '../../components/ServicesCard'
@@ -37,8 +38,8 @@ const Home = () => {
           <ul className='flex flex-col sm:grid sm:grid-cols-2 smmd:grid-cols-3 gap-14'>
             <li><ServicesCard name={"Search doctor"} description={"Choose your doctor from thousands of specialist, general and trusted hospitals"} icon={<FcSearch className=' size-20' />} /></li>
             <li><ServicesCard name={"Online pharmacy"} description={"Buy your medicines with our mobile application"} icon={<GiMedicinePills className=' size-20 fill-blue-500' />} /></li>
-            <li><ServicesCard name={"Consultation"} description={"Free consultation from our trusted doctors"} icon={<IoMdPerson className=' size-20 fill-blue-500' />} /></li>
-            <li><ServicesCard name={"Detailed info"} description={"Get detailed info about our specialists and services they provide"} icon={<FcViewDetails className=' size-20' />} /></li>
+            <li><ServicesCard name={"Consultation"} description={"Free consultation from our trusted doctors"} icon={<IoSearch className=' size-20 fill-blue-500' />} /></li>
+            <li><ServicesCard name={"Detailed info"} description={"Get detailed info about our specialists and services they provide"} icon={<IoInformationCircle className='fill-blue-500 size-20' />} /></li>
             <li><ServicesCard name={"Emergency care"} description={"You can get 24/7 urgent care for your family"} icon={<FaBriefcaseMedical className=' size-20 fill-blue-500' />} /></li>
             <li><ServicesCard name={"Tracking"} description={"Track and save your medical history and health data"} icon={<BsJournalMedical className=' size-20 fill-blue-500' />} /></li>
 
