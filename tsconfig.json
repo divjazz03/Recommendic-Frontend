@@ -1,0 +1,15 @@
+{
+  "files": [],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "esModuleInterop": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "jsx": "react-jsx"
+  },
+  "references": [
+    { "path": "./tsconfig.node.json" }
+  ],
+  "include": ["src"],
+}
