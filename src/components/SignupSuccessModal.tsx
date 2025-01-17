@@ -17,8 +17,8 @@ interface SignupSuccessModalProps {
 
 const SignupSuccessModal: React.FC<SignupSuccessModalProps> = ({
     isOpen,
-    redirectUrl = '/log-in',
-    redirectDelay = 3000,
+    redirectUrl = '/sign-in',
+    redirectDelay = 10000,
     onRedirect
 }) => {
 
@@ -53,6 +53,7 @@ const SignupSuccessModal: React.FC<SignupSuccessModalProps> = ({
                     <AlertDialogTitle className='text-center text-xl'>Signup Successful</AlertDialogTitle>
                     <AlertDialogDescription className='text-center'>
                         <p className='mt-2'>Your account has been created successfully.</p>
+                        <p className='mt-2'>You have been sent a confirmation email</p>
                         <p className='mt-4 text-sm text-dark-5'>
                             You will be redirected in {Math.ceil(redirectDelay/1000)} seconds...
                         </p>

@@ -45,6 +45,7 @@ export type AccountFormProps = {
     handleTypeOfUserSelectChange: (value: string) => void,
     medicalCategories: string[],
     handleSpecializationChangeEvent: (value: string) => void
+    handleCategoryOfInterestChange: (value: string[]) => void
 }
 
 

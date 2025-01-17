@@ -19,16 +19,15 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 import { Label } from "./label"
+import { Card } from "./card"
 
-interface MultiSelectProp {
-    label: string,
-    value: string
-}
+
 interface MultiSelectProps{
-    props: MultiSelectProp[] 
+    categories: string[],
+    handleCategoriesChangeFunction: (value: string[]) => void
 }
 
-export function MultiSelect({props}: MultiSelectProps) {
+export function MultiSelect({categories, handleCategoriesChangeFunction}: MultiSelectProps) {
     const [open, setOpen] = React.useState(false)
     const [value, setValue] = React.useState<string[]>([])
 
@@ -41,43 +40,46 @@ export function MultiSelect({props}: MultiSelectProps) {
         }
     }
 
+    React.useEffect(() => 
+        handleCategoriesChangeFunction(value), [value])
+
     return (
         <div className="flex flex-col gap-1 mt-1">
         <Label>Choose Area of Interest</Label>
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
-                <Button
-                    variant="outline"
+                <Card
                     role="combobox"
                     aria-expanded={open}
-                    className="w-auto justify-between">
-                    <div className="flex gap-2 justify-start">
+                    className="text-sm w-auto justify-between shadow-none">
+                    <div className="flex gap-2 justify-start p-1 capitalize max-w-[300px] flex-wrap">
                         {
                             value?.length ? value.map((val, i) => (
                                 <div key={i} className="px-2 py-1 rounded-xl border bg-slate-200 text-xs font-medium">
-                                    {props?.find((prop) => prop.value === val)?.label}
+                                    {categories?.find((prop) => prop === val).toLowerCase()}
                                 </div>
                             )) : "Select categories of interest"
                         }
                     </div>
 
-                </Button>
+                </Card>
             </PopoverTrigger>
-            <PopoverContent className="w-[200px] p-0">
+            <PopoverContent className="max-w-[300px] p-0">
                 <Command>
                     <CommandInput placeholder="Search category..." />
                     <CommandEmpty>No such Category</CommandEmpty>
                     <CommandList>
                         <CommandGroup>
                             {
-                                props?.map((prop, i) => (
+                                categories.map((prop,i) => (
                                     <CommandItem
                                         key={i}
-                                        value={prop.value}
-                                        onSelect={() => handleSetValue(prop.value)}>
+                                        value={prop}
+                                        onSelect={() => handleSetValue(prop)} 
+                                        className="capitalize">
                                         <Check className={cn("mr-2 h-4 w-4",
-                                            value.includes(prop.value) ? "opacity-100" : "opacity-0")} />
-                                        {prop.label}
+                                            value.includes(prop) ? "opacity-100" : "opacity-0")} />
+                                        {prop.toLowerCase()}
 
                                     </CommandItem>
                                 ))

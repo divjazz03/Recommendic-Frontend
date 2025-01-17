@@ -11,6 +11,8 @@ import { useToast } from '@/hooks/use-toast'
 import { useCreateUserMutation } from '@/lib/react-query/queriiesAndMutation'
 import { Link } from 'react-router-dom'
 import { getAllSupportedMedicalCategories } from '@/lib/backend_api'
+import { Value } from '@radix-ui/react-select'
+import { FormWrapper } from './FormWrapper'
 
 
 
@@ -20,16 +22,16 @@ const SignupForm: React.FC = () => {
   const [medicalCategories, setMedicalCategories] = useState<string[]>([])
 
   useEffect(() => {
-      const fetchCategoryData = async () => {
-        const result =  await getAllSupportedMedicalCategories();
-        setMedicalCategories(result);
-      }
-      
-     fetchCategoryData();
-  } ,[]);
+    const fetchCategoryData = async () => {
+      const result = await getAllSupportedMedicalCategories();
+      setMedicalCategories(result.data.categories);
+    }
+
+    fetchCategoryData();
+  }, []);
 
   const { toast } = useToast();
-  
+
   const { mutateAsync: createNewUser, isLoading: isCreatingUser } = useCreateUserMutation();
 
   const [formData, setFormData] = useState<SignUpFormData>({
@@ -44,8 +46,8 @@ const SignupForm: React.FC = () => {
     city: "",
     state: "",
     country: "",
-    medicalSpecialization: "DENTIST",
-    categoryOfInterest: ["DENTIST"]
+    medicalSpecialization: "",
+    categoryOfInterest: []
   });
   const [isSuccessfulSignUp, setSuccessfulSignup] = useState<boolean>(false);
 
@@ -56,6 +58,9 @@ const SignupForm: React.FC = () => {
 
   const handleSpecializationChangeEvent = (value: string) => {
     handleFormDataChange("medicalSpecialization", value)
+  }
+  const handleCategoryOfInterestChange = (value: string[]) => {
+    handleFormDataChange("categoryOfInterest", value)
   }
 
   async function onSubmitForConsultant(values: SignUpFormData) {
@@ -80,7 +85,7 @@ const SignupForm: React.FC = () => {
       setSuccessfulSignup(true)
       return toast({})
     }
-    return toast({title: 'Sign up failed. Please try again later', variant: 'destructive'})
+    return toast({ title: 'Sign up failed. Please try again later', variant: 'destructive' })
   }
   async function onSubmitForPatient(values: SignUpFormData) {
     const result = await createNewUser({
@@ -105,19 +110,20 @@ const SignupForm: React.FC = () => {
       setSuccessfulSignup(true);
       return null;
     }
-    return toast({ title: ' Sign up failed. PLease try again', variant:"destructive" })
+    return toast({ title: ' Sign up failed. PLease try again', variant: "destructive" })
 
   }
 
   const { steps, currentStepIndex, step, isFirstStep, isLastStep, next, back } = useMultistepForm([
     <UserForm formData={formData} handleFormDataChange={handleFormDataChange} />,
     <AddressForm formData={formData} handleFormDataChange={handleFormDataChange} />,
-    <AccountForm 
+    <AccountForm
       formData={formData}
       medicalCategories={medicalCategories}
       handleFormDataChange={handleFormDataChange}
       handleSpecializationChangeEvent={handleSpecializationChangeEvent}
-      handleTypeOfUserSelectChange={handleTypeOfUserSelectChange} />
+      handleTypeOfUserSelectChange={handleTypeOfUserSelectChange}
+      handleCategoryOfInterestChange={handleCategoryOfInterestChange} />
   ]);
 
   async function handleFormSubmit(event: FormEvent) {
@@ -148,21 +154,24 @@ const SignupForm: React.FC = () => {
   }
   return (
     <>
-        <div className='sm-w-[420px] flex-col flex-center'>
-          <form onSubmit={isLastStep ? handleFormSubmit : handleNextStep} >
-            <div className='absolute top-2 right-2'>
-              {currentStepIndex + 1}/ {steps.length}
-            </div>
-            <div className=' flex-center flex-col'>
-              {step}
-            </div>
-            <div className='flex justify-center flex-col mt-4 gap-2 mb-2'>
-              {!isFirstStep && <Button type='button' className='bg-secondary-600 hover:bg-secondary-500 text-dark-4' onClick={handleBackStep}>Back</Button>}
-              <Button type='submit'>{isLastStep ? "Finish" : "Next"}</Button>
-            </div>
-          </form>
-          <p className='tiny-medium text-center'>Already have an account? <span><Link to={'/sign-in'} className='subtle-semibold'>Sign Up</Link></span></p>
-        </div>
+      <div className='sm-w-[420px] flex-col flex-center'>
+        <FormWrapper title='Sign up'>
+        <form onSubmit={isLastStep ? handleFormSubmit : handleNextStep} >
+          <div className='absolute top-6 right-2'>
+            {currentStepIndex + 1} / {steps.length}
+          </div>
+          <div className=' flex-center flex-col'>
+            {step}
+          </div>
+          <div className='flex justify-center flex-col mt-4 gap-2 mb-2'>
+            {!isFirstStep && <Button type='button' className='bg-secondary-600 hover:bg-secondary-500 text-dark-4' onClick={handleBackStep}>Back</Button>}
+            <Button type='submit'>{isLastStep ? "Finish" : "Next"}</Button>
+          </div>
+        </form>
+        <p className='subtle-medium text-center'>Already have an account? <span className='mx-1'><Link to={'/sign-in'} className='tiny-medium'>Sign In</Link></span></p>
+
+        </FormWrapper>
+      </div>ubtle-semibold
       <SignupSuccessModal
         isOpen={isSuccessfulSignUp}
         redirectDelay={3000} />

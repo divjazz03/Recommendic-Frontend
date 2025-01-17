@@ -1,7 +1,6 @@
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { AccountFormProps } from "@/types";
-import { MedicalSpecialization } from "./Enums";
 import { FormWrapper } from "./FormWrapper";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { MultiSelect } from "@/components/ui/multiSelect";
@@ -12,18 +11,14 @@ export function AccountForm({
     handleFormDataChange,
     handleTypeOfUserSelectChange,
     medicalCategories,
-    handleSpecializationChangeEvent
+    handleSpecializationChangeEvent,
+    handleCategoryOfInterestChange
 }: AccountFormProps) {
 
 
-    const categories = medicalCategories.map(category => ({
-        label: category,
-        value: category
-    }))
-
+    const categories = medicalCategories;
     return (
         <>
-            <FormWrapper title="Sign Up">
 
                 <div className="flex flex-col justify-center">
 
@@ -42,7 +37,7 @@ export function AccountForm({
                                 <SelectItem value="Patient" >Patient</SelectItem>
                                 <SelectItem value="Consultant" >Consultant</SelectItem>
                             </SelectContent>
-                        </Select>
+                        </Select>className="text-md"
                     </div>
 
                     <div>
@@ -50,11 +45,11 @@ export function AccountForm({
                         <Input type='password' value={formData.password} onChange={e => handleFormDataChange("password", e.target.value)} />
                     </div>
 
-                {
+                    {
                         formData.typeOfUser === 'Patient' ? (
 
                             <div >
-                                <MultiSelect props={categories} />
+                                <MultiSelect categories={categories} handleCategoriesChangeFunction={handleCategoryOfInterestChange}/>
                             </div>
 
 
@@ -67,9 +62,11 @@ export function AccountForm({
                                         <SelectValue placeholder='Choose Your Specialization' />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {categories.map((category, i) => (
-                                            <SelectItem key={i} value={category.value}>{category.value}</SelectItem>
-                                        ))}
+                                        {
+                                            categories.map((category, i) => (
+                                                <SelectItem key={i} value={category}>{category}</SelectItem>
+                                            ))
+                                        }
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -79,8 +76,6 @@ export function AccountForm({
 
                     }
                 </div>
-            </FormWrapper>
-
         </>
     )
 }

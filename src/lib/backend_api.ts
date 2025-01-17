@@ -1,4 +1,4 @@
-import { AuthenticatedUserResponse, NewUser, SignInResponse, SigninUserData, SignUpResponse, TypeOfUser } from "@/types";
+import { AuthenticatedUserResponse, medicalCategoriesResponse, NewUser, SignInResponse, SigninUserData, SignUpResponse, TypeOfUser } from "@/types";
 import axios from "axios";
 
 const apiUrl = import.meta.env.VITE_BACKEND_BASE_URL;
@@ -75,9 +75,15 @@ export async function getCurrentUser(): Promise<AuthenticatedUserResponse | null
     return result;
 }
 
-export async function getAllSupportedMedicalCategories(): Promise<string[]> {
-    let result = axios.get(`${apiUrl}${medicalCategoriesPath}`)
-    .then(response => response.data)
-    .catch(error => [])
+export async function getAllSupportedMedicalCategories(): Promise<medicalCategoriesResponse> {
+    console.log('entered the function')
+    let result: Promise<medicalCategoriesResponse> = axios.get(`${apiUrl}${medicalCategoriesPath}`)
+    .then(response => {
+        console.log(response.data)
+        return response.data 
+    })
+    .catch(error =>  {
+        console.log(error)
+    })
     return result;
 }

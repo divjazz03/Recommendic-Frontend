@@ -5,7 +5,7 @@ export function FormWrapper({ title, children }: FormWrapperProps) {
     return (
         <>
 
-            <Card>
+            <Card className="relative">
                 <CardHeader>
                     <CardTitle>{title}</CardTitle>
                 </CardHeader>

@@ -15,7 +15,6 @@ export function UserForm({ formData, handleFormDataChange }: UserFormProps) {
 
     return (
         <>
-            <FormWrapper title="SignUp">
                 <div className="flex flex-col gap-1 justify-center">
 
                     <div>
@@ -55,7 +54,6 @@ export function UserForm({ formData, handleFormDataChange }: UserFormProps) {
                         </Select>
                     </div>
                 </div>
-            </FormWrapper>
         </>
     )
 }

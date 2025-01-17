@@ -9,8 +9,6 @@ export function AddressForm({ formData, handleFormDataChange }: AddressFormProps
 
     return (
         <>
-            <FormWrapper title="Sign Up">
-
                 <div>
                     <Label>Zip Code</Label>
                     <Input placeholder='20002' value={formData.zipCode} onChange={e => handleFormDataChange("zipCode", e.target.value)} />
@@ -33,8 +31,6 @@ export function AddressForm({ formData, handleFormDataChange }: AddressFormProps
                     <Label>Country</Label>
                     <Input placeholder='Nigeria' value={formData.country} onChange={e => handleFormDataChange("country", e.target.value)} />
                 </div>
-
-            </FormWrapper>
         </>
     )
 }
