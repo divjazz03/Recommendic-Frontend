@@ -1,7 +1,6 @@
 import { Button } from '@/components/ui/button'
-import React, { FormEvent, useState } from 'react'
-import { signUpValidation } from '../validations/SignupValidation'
-import { Gender, MedicalSpecialization } from './Enums'
+import React, { FormEvent, useEffect, useState } from 'react'
+import { Gender } from './Enums'
 import { useMultistepForm } from '@/hooks/useMultistepForm'
 import { SignUpFormData } from '@/types'
 import { UserForm } from './UserForm'
@@ -11,13 +10,28 @@ import SignupSuccessModal from '@/components/SignupSuccessModal'
 import { useToast } from '@/hooks/use-toast'
 import { useCreateUserMutation } from '@/lib/react-query/queriiesAndMutation'
 import { Link } from 'react-router-dom'
+import { getAllSupportedMedicalCategories } from '@/lib/backend_api'
 
 
 
 const SignupForm: React.FC = () => {
+
+  // Retrieves the supported medicalCategories
+  const [medicalCategories, setMedicalCategories] = useState<string[]>([])
+
+  useEffect(() => {
+      const fetchCategoryData = async () => {
+        const result =  await getAllSupportedMedicalCategories();
+        setMedicalCategories(result);
+      }
+      
+     fetchCategoryData();
+  } ,[]);
+
   const { toast } = useToast();
   
   const { mutateAsync: createNewUser, isLoading: isCreatingUser } = useCreateUserMutation();
+
   const [formData, setFormData] = useState<SignUpFormData>({
     firstName: "",
     lastName: "",
@@ -30,12 +44,10 @@ const SignupForm: React.FC = () => {
     city: "",
     state: "",
     country: "",
-    medicalSpecialization: MedicalSpecialization.DENTIST,
-    categoryOfInterest: [MedicalSpecialization.DENTIST]
+    medicalSpecialization: "DENTIST",
+    categoryOfInterest: ["DENTIST"]
   });
   const [isSuccessfulSignUp, setSuccessfulSignup] = useState<boolean>(false);
-
-  const medicalCategories = Object.keys(MedicalSpecialization).filter(item => isNaN(Number(item)));
 
   const handleFormDataChange = (key: keyof typeof formData, value: any) => {
     setFormData(prev => ({ ...prev, [key]: value, }));

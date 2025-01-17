@@ -1,6 +1,7 @@
 import { Gender } from "@/_auth/forms/Enums"
 import React, { ReactNode } from "react"
 import { UseFormReturn } from "react-hook-form"
+import { data } from "react-router-dom"
 
 
 
@@ -126,16 +127,27 @@ export interface SignInResponse extends Response {
         user: UserContext
     }
 }
-export interface AdminCredentialResponse extends Response {
-    email: string;
-    password: string;
+
+export interface medicalCategoriesResponse extends Response{
+    data: {
+        categories: string[];
+    }
 }
-export interface AuthenticatedUserResponse {
-    user_id: string;
-    first_name: string;
-    last_name: string;
-    role: string;
-    address: Address;
+
+export interface AdminCredentialResponse extends Response {
+    data: {
+        email: string;
+        password: string;
+    }
+}
+export interface AuthenticatedUserResponse extends Response{
+    data: {
+        user_id: string;
+        first_name: string;
+        last_name: string;
+        role: string;
+        address: Address;
+    }
 }
 interface Response {
     time: string;
