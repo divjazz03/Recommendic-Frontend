@@ -1,7 +1,8 @@
 import { Gender } from "@/_auth/forms/Enums"
+import { signUpValidation } from "@/_auth/validations/SignupValidation"
 import React, { ReactNode } from "react"
 import { UseFormReturn } from "react-hook-form"
-import { data } from "react-router-dom"
+import { z } from "zod"
 
 
 
@@ -18,24 +19,23 @@ export type SignUpFormData = {
     phoneNumber?: string,
     typeOfUser?: TypeOfUser,
     gender?: Gender,
-    zipCode?: string,
     city?: string,
     state?: string,
     country?: string,
-    medicalSpecialization?: string,
-    categoryOfInterest?: string[]
 }
 
 
 export type UserFormProps = {
     formData: any,
-    handleFormDataChange: (key: keyof SignUpFormData, value: any) => void
+    handleFormDataChange: (key: keyof SignUpFormData, value: any) => void,
+    form:  UseFormReturn<z.infer<typeof signUpValidation>>
 }
 
 
 export type AddressFormProps = {
     formData: any,
-    handleFormDataChange: (key: keyof SignUpFormData, value: any) => void
+    handleFormDataChange: (key: keyof SignUpFormData, value: any) => void,
+    form: UseFormReturn<z.infer<typeof signUpValidation>>
 }
 
 
@@ -44,13 +44,11 @@ export type AccountFormProps = {
     handleFormDataChange: (key: keyof SignUpFormData, value: any) => void,
     handleTypeOfUserSelectChange: (value: string) => void,
     medicalCategories: string[],
-    handleSpecializationChangeEvent: (value: string) => void
-    handleCategoryOfInterestChange: (value: string[]) => void
+    form: UseFormReturn<z.infer<typeof signUpValidation>>
 }
 
 
 export type FormWrapperProps = {
-    title: string,
     children: ReactNode
 }
 
@@ -62,13 +60,9 @@ export type NewUser = {
     password: string,
     phoneNumber: string,
     gender: Gender,
-    zipCode: string,
     city: string,
     state: string,
-    country: string,
-    categoryOfInterest: string[],
-    medicalSpecialization: string;
-
+    country: string
 }
 
 
@@ -82,7 +76,6 @@ export type SigninUserData = {
 
 
 export type Address = {
-    zip_code: string;
     city: string;
     state: string;
     country: string

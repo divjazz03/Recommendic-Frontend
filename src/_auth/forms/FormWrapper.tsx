@@ -1,14 +1,11 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { FormWrapperProps } from "@/types";
 
-export function FormWrapper({ title, children }: FormWrapperProps) {
+export function FormWrapper({children }: FormWrapperProps) {
     return (
         <>
 
-            <Card className="relative">
-                <CardHeader>
-                    <CardTitle>{title}</CardTitle>
-                </CardHeader>
+            <Card className="border-none bg-light-4 backdrop:blur-sm flex flex-col p-10">
                 <CardContent>{children}</CardContent>
             </Card>
         </>

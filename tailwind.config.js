@@ -35,15 +35,16 @@ export default {
 				},
 				'off-white': '#dodfff',
 				red: '#ff5a5a',
-				'dark-1': '#000000',
-				'dark-2': '#09090a',
+				'dark-5': '#000000',
+				'dark-4': '#09090a',
 				'dark-3': '#101012',
-				'dark-4': '#1f1f22',
-				'dark-5': '#262d3c',
-				'light-1': '#ffffff',
-				'light-2': '#efefef',
+				'dark-2': '#1f1f22',
+				'dark-1': '#262d3c',
+				'light-5': '#ffffff',
+				'light-4': '#efefef',
 				'light-3': '#7878a3',
-				'light-4': '#5c5c7b',
+				'light-2': '#5c5c7b',
+				'light-1': '#4c4c7b'
 			},
 			screens: {
 				xs: '480px'
@@ -52,6 +53,10 @@ export default {
 				berkshire: [
 					'Berkshire Swash',
 					'serif'
+				],
+				labelle: [
+					'La Belle Aurore',
+					'sans-serif'
 				]
 			},
 			keyframes: {

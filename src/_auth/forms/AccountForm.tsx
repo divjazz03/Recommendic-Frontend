@@ -1,18 +1,15 @@
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { AccountFormProps } from "@/types";
-import { FormWrapper } from "./FormWrapper";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { MultiSelect } from "@/components/ui/multiSelect";
 import { Label } from "@/components/ui/label";
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 
 export function AccountForm({
     formData,
     handleFormDataChange,
     handleTypeOfUserSelectChange,
-    medicalCategories,
-    handleSpecializationChangeEvent,
-    handleCategoryOfInterestChange
+    form,
+    medicalCategories
 }: AccountFormProps) {
 
 
@@ -20,62 +17,87 @@ export function AccountForm({
     return (
         <>
 
-                <div className="flex flex-col justify-center">
+            <div className="flex flex-col gap-3 justify-center">
+                <div>
+                    <header className="h3-bold text-center">Account Information</header>
+                </div>
 
-                    <div>
-                        <Label>Email</Label>
-                        <Input placeholder='johndoe@gmail.com' value={formData.email} type="email" onChange={e => handleFormDataChange("email", e.target.value)} />
-                    </div>
+                {/* <div>
+                    <Label>Email</Label>
+                    <Input placeholder='johndoe@gmail.com' value={formData.email} type="email" onChange={e => handleFormDataChange("email", e.target.value)} />
+                </div> */}
+                <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Email</FormLabel>
+                            <FormControl>
+                                <Input {...form.register("email")} placeholder='johndoe@gmail.com' value={formData.email} type="email" onChange={e => handleFormDataChange("email", e.target.value)} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}>
 
-                    <div>
-                        <Label>SignUp As</Label>
-                        <Select value={formData.typeOfUser} onValueChange={handleTypeOfUserSelectChange}  >
-                            <SelectTrigger>
-                                <SelectValue placeholder='Sign up as' />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="Patient" >Patient</SelectItem>
-                                <SelectItem value="Consultant" >Consultant</SelectItem>
-                            </SelectContent>
-                        </Select>className="text-md"
-                    </div>
-
-                    <div>
-                        <Label>Password</Label>
-                        <Input type='password' value={formData.password} onChange={e => handleFormDataChange("password", e.target.value)} />
-                    </div>
-
-                    {
-                        formData.typeOfUser === 'Patient' ? (
-
-                            <div >
-                                <MultiSelect categories={categories} handleCategoriesChangeFunction={handleCategoryOfInterestChange}/>
-                            </div>
+                </FormField>
 
 
-                        ) : (
+                {/* <div>
+                    <Label>SignUp As</Label>
+                    <Select value={formData.typeOfUser} onValueChange={handleTypeOfUserSelectChange}  >
+                        <SelectTrigger>
+                            <SelectValue placeholder='Sign up as' />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="Patient" >Patient</SelectItem>
+                            <SelectItem value="Consultant" >Consultant</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div> */}
 
-                            <div>
-                                <Label>Choose Specialty</Label>
-                                <Select value={formData.medicalSpecialization} onValueChange={handleSpecializationChangeEvent}  >
+                <FormField
+                    control={form.control}
+                    name="typeOfUser"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Signup As</FormLabel>
+                            <FormControl>
+                                <Select {...form.register("typeOfUser")} value={formData.typeOfUser} onValueChange={handleTypeOfUserSelectChange}  >
                                     <SelectTrigger>
-                                        <SelectValue placeholder='Choose Your Specialization' />
+                                        <SelectValue placeholder='Sign up as' />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {
-                                            categories.map((category, i) => (
-                                                <SelectItem key={i} value={category}>{category}</SelectItem>
-                                            ))
-                                        }
+                                        <SelectItem value="Patient" >Patient</SelectItem>
+                                        <SelectItem value="Consultant" >Consultant</SelectItem>
                                     </SelectContent>
                                 </Select>
-                            </div>
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}>
 
+                </FormField>
 
-                        )
+                {/* <div>
+                    <Label>Password</Label>
+                    <Input type='password' value={formData.password} onChange={e => handleFormDataChange("password", e.target.value)} />
+                </div> */}
 
-                    }
-                </div>
+                <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Password</FormLabel>
+                            <FormControl>
+                            <Input {...form.register("password")} type='password' value={formData.password} onChange={e => handleFormDataChange("password", e.target.value)} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}>
+
+                </FormField>
+            </div>
         </>
     )
 }

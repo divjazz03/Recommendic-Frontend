@@ -1,6 +1,7 @@
 import { getCurrentUser } from '@/lib/backend_api'
+import { useGetCurrentUserMutation } from '@/lib/react-query/queriiesAndMutation'
 import { AuthContextState, UserContext } from '@/types'
-import React, { ReactNode } from 'react'
+import React from 'react'
 import { createContext, useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -35,21 +36,22 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const navigate = useNavigate();
+    const {mutateAsync:getCurrentUser, isPending:isGettingUser} = useGetCurrentUserMutation();
 
     const checkUserIsAuthenticated = async () => {
         try {
             const currentAccount = await getCurrentUser();
             if (currentAccount) {
                 setUserInContext({
-                    user_id: currentAccount.user_id,
-                    first_name: currentAccount.first_name,
-                    last_name: currentAccount.last_name,
-                    role: currentAccount.role,
+                    user_id: currentAccount.data.user_id,
+                    first_name: currentAccount.data.first_name,
+                    last_name: currentAccount.data.last_name,
+                    role: currentAccount.data.role,
                     address: {
-                        zip_code: currentAccount.address.zip_code,
-                        city: currentAccount.address.city,
-                        state: currentAccount.address.state,
-                        country: currentAccount.address.country
+                        zip_code: currentAccount.data.address.zip_code,
+                        city: currentAccount.data.address.city,
+                        state: currentAccount.data.address.state,
+                        country: currentAccount.data.address.country
                     }
                 })
                 setIsAuthenticated(true);

@@ -12,6 +12,7 @@ import { useSignInUserMutation } from '@/lib/react-query/queriiesAndMutation'
 import { useUserContext } from '@/context/AuthContext'
 import { useToast } from '@/hooks/use-toast'
 import { Label } from '@/components/ui/label'
+import Loader from '@/components/shared/Loader'
 
 
 const SigninForm = () => {
@@ -24,14 +25,14 @@ const SigninForm = () => {
   })
   const { checkUserIsAuthenticated, isLoading: isUserLoading } = useUserContext();
 
-  const { mutateAsync: signinUser, isLoading: isSigningIn } = useSignInUserMutation();
+  const { mutateAsync: signinUser, isPending: isSigningIn } = useSignInUserMutation();
 
   const handleFormDataChange = (key: keyof typeof formData, value: any) => {
     setFormData(prev => ({ ...prev, [key]: value, }))
   };
 
   const onSubmit = async (value: FormEvent) => {
-    event.preventDefault();
+    value.preventDefault();
     const result = await signinUser({
       email: formData.email,
       password: formData.password
@@ -39,7 +40,7 @@ const SigninForm = () => {
     if (result && checkUserIsAuthenticated) {
       navigate('/')
     } else {
-      return toast({ title: 'Sign in failed try again' })
+      return toast({ title: 'Sign in failed try again', variant: 'destructive' })
     }
   };
 
@@ -47,10 +48,13 @@ const SigninForm = () => {
 
     <div className='flex flex-col gap-2'>
 
-        <FormWrapper title='Sign In'>
-      <form onSubmit={onSubmit} className='flex flex-col items-center gap-4'>
-          <div className='flex flex-col justify-center gap-4'>
-
+      <FormWrapper >
+        <form onSubmit={onSubmit} className='flex flex-col items-center gap-4'>
+          <div className='flex flex-col justify-center gap-5'>
+            <header className='mb-5'>
+              <p className='h3-bold text-dark-3'>Welcome to Recommendic</p>
+              <p className='text-center text-dark-5 pt-2'>Lets get you logged in</p>
+            </header>
             <div>
               <Label>Email</Label>
               <Input placeholder="johndoe@gmail.com" value={formData.email} type='email' onChange={event => handleFormDataChange("email", event.target.value)} />
@@ -59,10 +63,15 @@ const SigninForm = () => {
               <Label>Password</Label>
               <Input type='password' value={formData.password} onChange={event => handleFormDataChange('password', event.target.value)} />
             </div>
+            <Button type='submit' className='w-full'>
+              {
+                isSigningIn ? (<div className='flex justify-center gap-2'><Loader/></div>): "Sign In"
+              }
+              
+              </Button>
           </div>
-        <Button type='submit' className='shad-button_primary max-w-14'>Sign In</Button>
-        <p className='tiny-medium'>New to Recommendic? <span><Link to={'/sign-up'} className='tiny-medium'>Create new account</Link></span></p>
-      </form>
+          <p className='subtle-semibold mt-4'>New to Recommendic? <span><Link to={'/sign-up'} className='subtle-semibold hover:text-light-3 text-light-1'>Create new account</Link></span></p>
+        </form>
       </FormWrapper>
     </div>
 

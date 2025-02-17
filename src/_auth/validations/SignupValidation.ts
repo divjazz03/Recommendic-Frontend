@@ -9,10 +9,7 @@ export const signUpValidation = z.object({
     phoneNumber: z.string().min(10, 'invalid phone number'),
     typeOfUser: z.enum(['Patient', 'Consultant']),
     gender: z.nativeEnum(Gender),
-    zipCode: z.string(),
     city: z.string(),
     state: z.string(),
-    country: z.string(),
-    medicalSpecialization: z.string(),
-    categoryOfInterest: z.array(z.string())
+    country: z.string()
   })

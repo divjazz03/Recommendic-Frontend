@@ -1,9 +1,12 @@
 import { Button } from '@/components/ui/button'
-import React from 'react'
+import { useUserContext } from '@/context/AuthContext'
+import React, { useContext } from 'react'
 
 const Home = () => {
+  const usercontext = useUserContext();
   return (
     <>
+
     </>
   )
 }

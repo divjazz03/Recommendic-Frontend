@@ -5,7 +5,7 @@ import {
     useQueryClient,
     useInfiniteQuery
  } from "@tanstack/react-query";
-import { createNewUser, signinUser } from "../backend_api";
+import { createNewUser, signinUser, getCurrentUser } from "../backend_api";
 
  type MutationFnProps = {
     typeOfUser: TypeOfUser,
@@ -16,6 +16,12 @@ import { createNewUser, signinUser } from "../backend_api";
     return useMutation({
         mutationFn: (mutationFnProp: MutationFnProps) => createNewUser(mutationFnProp.typeOfUser, mutationFnProp.userData)
     });
+ }
+
+ export const useGetCurrentUserMutation = () => {
+   return useMutation({
+      mutationFn: () => getCurrentUser()
+   })
  }
 
  export const useSignInUserMutation = () => {

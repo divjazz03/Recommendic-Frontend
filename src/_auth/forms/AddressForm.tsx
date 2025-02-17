@@ -1,36 +1,76 @@
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { AddressFormProps } from "@/types";
-import { FormWrapper } from "./FormWrapper";
-import { useFormContext } from "react-hook-form";
 import { Label } from "@/components/ui/label";
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 
-export function AddressForm({ formData, handleFormDataChange }: AddressFormProps) {
+export function AddressForm({ formData, handleFormDataChange, form }: AddressFormProps) {
 
     return (
         <>
+            <div className="flex gap-3 flex-col">
                 <div>
-                    <Label>Zip Code</Label>
-                    <Input placeholder='20002' value={formData.zipCode} onChange={e => handleFormDataChange("zipCode", e.target.value)} />
+                    <header className="h3-bold text-center"> Address Information</header>
                 </div>
 
-
-                <div>
+                {/* <div>
                     <Label>City</Label>
                     <Input placeholder='Ibadan' value={formData.city} onChange={e => handleFormDataChange("city", e.target.value)} />
-                </div>
+                </div> */}
+                <FormField
+                    control={form.control}
+                    name="city"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>City</FormLabel>
+                            <FormControl>
+                                <Input {...form.register("city")} placeholder='Ibadan' value={formData.city} onChange={e => handleFormDataChange("city", e.target.value)} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}>
+
+                </FormField>
 
 
-                <div>
+                {/* <div>
                     <Label>State</Label>
                     <Input placeholder='Oyo' value={formData.state} onChange={e => handleFormDataChange("state", e.target.value)} />
-                </div>
+                </div> */}
+                <FormField
+                    control={form.control}
+                    name="state"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>State</FormLabel>
+                            <FormControl>
+                                <Input {...form.register("state")} placeholder='Oyo' value={formData.state} onChange={e => handleFormDataChange("state", e.target.value)} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}>
+
+                </FormField>
 
 
-                <div>
+                {/* <div>
                     <Label>Country</Label>
                     <Input placeholder='Nigeria' value={formData.country} onChange={e => handleFormDataChange("country", e.target.value)} />
-                </div>
+                </div> */}
+                <FormField
+                    control={form.control}
+                    name="country"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Country</FormLabel>
+                            <FormControl>
+                            <Input {...form.register("country")} placeholder='Nigeria' value={formData.country} onChange={e => handleFormDataChange("country", e.target.value)} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}>
+                </FormField>
+
+            </div>
         </>
     )
 }
