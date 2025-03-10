@@ -7,6 +7,7 @@ interface ImportMetaEnv {
     readonly VITE_APP_USER_LOGIN_PATH: string;
     readonly VITE_GET_USER_PATH: string;
     readonly VITE_GET_MEDICAL_CATEGORIES: string;
+    readonly VITE_RETRY_EMAIL:string
 
 }
 

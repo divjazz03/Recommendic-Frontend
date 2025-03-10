@@ -12,11 +12,12 @@ export const INITIAL_USER: UserContext = {
     last_name: '',
     role: '',
     address: {
-        zip_code: '',
         city: '',
         state: '',
         country: ''
-    }
+    },
+    userStage: 'ONBOARDING',
+    userType:'PATIENT',
 }
 
 const INITIAL_STATE: AuthContextState = {
@@ -39,20 +40,22 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const {mutateAsync:getCurrentUser, isPending:isGettingUser} = useGetCurrentUserMutation();
 
     const checkUserIsAuthenticated = async () => {
+        setIsLoading(true);
         try {
             const currentAccount = await getCurrentUser();
             if (currentAccount) {
                 setUserInContext({
-                    user_id: currentAccount.data.user_id,
-                    first_name: currentAccount.data.first_name,
-                    last_name: currentAccount.data.last_name,
+                    user_id: currentAccount.data.userId,
+                    first_name: currentAccount.data.firstName,
+                    last_name: currentAccount.data.lastName,
                     role: currentAccount.data.role,
                     address: {
-                        zip_code: currentAccount.data.address.zip_code,
                         city: currentAccount.data.address.city,
                         state: currentAccount.data.address.state,
                         country: currentAccount.data.address.country
-                    }
+                    },
+                    userStage: currentAccount.data.userStage,
+                    userType: currentAccount.data.userType
                 })
                 setIsAuthenticated(true);
 
@@ -67,11 +70,11 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
     };
 
-    useEffect(() => {
-        if (!checkUserIsAuthenticated) {
-            navigate('/sign-in');
-        }
-    }, [])
+    // useEffect(() => {
+    //     if (checkUserIsAuthenticated()) {
+    //         navigate('/sign-in');
+    //     }
+    // }, [])
 
     const value = {
         userContext,

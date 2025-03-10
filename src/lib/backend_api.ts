@@ -1,4 +1,4 @@
-import { AuthenticatedUserResponse, medicalCategoriesResponse, NewUser, SignInResponse, SigninUserData, SignUpResponse, TypeOfUser } from "@/types";
+import { AuthenticatedUserResponse, MedicalCategoriesResponse, NewUser, SignInResponse, SigninUserData, SignUpResponse, TypeOfUser } from "@/types";
 import axios from "axios";
 
 const apiUrl = import.meta.env.VITE_BACKEND_BASE_URL;
@@ -6,11 +6,12 @@ const createConsultantPath = import.meta.env.VITE_CONSULTANT_SIGN_UP_PATH;
 const createPatientPath = import.meta.env.VITE_PATIENT_SIGN_UP_PATH;
 const userLoginPath = import.meta.env.VITE_APP_USER_LOGIN_PATH;
 const userGetPath = import.meta.env.VITE_GET_USER_PATH;
-const medicalCategoriesPath = import.meta.env.VITE_GET_MEDICAL_CATEGORIES
+const medicalCategoriesPath = import.meta.env.VITE_GET_MEDICAL_CATEGORIES;
+const retryEmail = import.meta.env.VITE_RETRY_EMAIL;
 
 export async function createNewUser(typeOfUser: TypeOfUser,
     userData: NewUser) {
-    let result = Promise.resolve<SignUpResponse|null>(null);
+    let result = Promise.resolve<SignUpResponse | null>(null);
     switch (typeOfUser) {
         case 'Patient':
             const patientData = {
@@ -20,11 +21,9 @@ export async function createNewUser(typeOfUser: TypeOfUser,
                 password: userData.password,
                 phoneNumber: userData.phoneNumber,
                 gender: userData.gender,
-                zipCode: userData.zipCode,
                 city: userData.city,
                 state: userData.state,
-                country: userData.country,
-                categoriesOfInterest: userData.categoryOfInterest
+                country: userData.country
             }
             result = axios.post(`${apiUrl}${createPatientPath}`, patientData, {
                 headers: {
@@ -42,11 +41,9 @@ export async function createNewUser(typeOfUser: TypeOfUser,
                 password: userData.password,
                 phoneNumber: userData.phoneNumber,
                 gender: userData.gender,
-                zipCode: userData.zipCode,
                 city: userData.city,
                 state: userData.state,
                 country: userData.country,
-                medicalSpecialization: userData.medicalSpecialization
             }
             result = axios.post(`${apiUrl}${createConsultantPath}`, consultantData)
                 .then((response) => response.data)
@@ -75,15 +72,27 @@ export async function getCurrentUser(): Promise<AuthenticatedUserResponse | null
     return result;
 }
 
-export async function getAllSupportedMedicalCategories(): Promise<medicalCategoriesResponse> {
-    console.log('entered the function')
-    let result: Promise<medicalCategoriesResponse> = axios.get(`${apiUrl}${medicalCategoriesPath}`)
-    .then(response => {
-        console.log(response.data)
-        return response.data 
-    })
-    .catch(error =>  {
-        console.log(error)
-    })
+export async function getAllSupportedMedicalCategories(): Promise<MedicalCategoriesResponse> {
+    let result: Promise<MedicalCategoriesResponse> = axios.get(`${apiUrl}${medicalCategoriesPath}`)
+        .then(response => {
+            console.log(response.data)
+            return response.data
+        })
+        .catch(error => {
+            console.log(error)
+        })
+    return result;
+}
+export async function resendConfirmationEmail(userEmail: string) {
+    let result = axios.post(`${apiUrl}${retryEmail}`, { email: userEmail })
+        .then(response => response.data)
+        .catch(error => console.log(error))
+    return result;
+}
+
+export async function verifyEmail(token: string) {
+    let result = axios.post(`${apiUrl}${retryEmail}`, { token: token })
+        .then(response => response.data)
+        .catch(error => console.log(error))
     return result;
 }

@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Circular clock face -->
+  <circle cx="100" cy="100" r="90" fill="none" stroke="#333" stroke-width="4"/>
+  
+  <!-- Clock tick marks -->
+  <g stroke="#333" stroke-width="2">
+    <!-- 12 hour markers -->
+    <line x1="100" y1="20" x2="100" y2="30" />
+    <line x1="150" y1="50" x2="143" y2="58" />
+    <line x1="180" y1="100" x2="170" y2="100" />
+    <line x1="150" y1="150" x2="143" y2="142" />
+    <line x1="100" y1="180" x2="100" y2="170" />
+    <line x1="50" y1="150" x2="57" y2="142" />
+    <line x1="20" y1="100" x2="30" y2="100" />
+    <line x1="50" y1="50" x2="57" y2="58" />
+  </g>
+  
+  <!-- Clock hands -->
+  <line x1="100" y1="100" x2="60" y2="120" stroke="#333" stroke-width="4" stroke-linecap="round"/>
+  <line x1="100" y1="100" x2="120" y2="60" stroke="#333" stroke-width="4" stroke-linecap="round"/>
+  
+  <!-- Center dot -->
+  <circle cx="100" cy="100" r="6" fill="#333"/>
+  
+  <!-- Checkmark indicating completed tasks -->
+  <path d="M140 140 L150 150 L170 120" stroke="#333" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Task lines (representing a schedule) -->
+  <g stroke="#333" stroke-width="4" stroke-linecap="round">
+    <line x1="40" y1="170" x2="80" y2="170" />
+    <line x1="40" y1="155" x2="70" y2="155" />
+    <line x1="40" y1="140" x2="75" y2="140" />
+  </g>
+</svg>

@@ -8,19 +8,19 @@ const Welcome = () => {
   const navigate = useNavigate();
 
   const handleSignUpRedirect = () => navigate('/sign-up');
-  const handleLoginRedirect = () => navigate('/log-in') 
+  const handleLoginRedirect = () => navigate('/sign-in') 
 
   return (
     <>
-      <div className='flex sm:bg-light-2 flex-col flex-1 h-screen w-screen justify-center xs:justify-center sm:items-center'>
-        <section className='flex h-screen sm:h-fit sm:py-24 sm:w-[640px] gap-24 bg-light-1 flex-col items-center justify-center rounded-3xl drop-shadow-lg shadow-slate-400'>
+      <div className='flex sm:bg-light-4 flex-col flex-1 h-full w-full justify-center xs:justify-center sm:items-center'>
+        <section className='flex h-screen sm:h-fit sm:py-24 sm:w-[640px] gap-24 bg-light-5 flex-col items-center justify-center rounded-3xl drop-shadow-lg shadow-slate-400'>
           <div className='flex flex-col justify-center gap-3 items-center'>
             <img src='/assets/svg/logo-no-background.svg' className='object-cover min-h-52' />
-            <p className='h3-bold'>Recommendic</p>
-            <p className='text-dark-5 small-medium '>Bridging the Gap</p>
+            <header className='h1-bold font-berkshire'>Recommendic</header>
+            <p className=' tracking-wider'>Bridging the Gap</p>
           </div>
           <div className='flex flex-col px-4 gap-2 justify-center items-center'>
-            <p className='text-dark-4 tiny-thin text-pretty text-center mb-5' >
+            <p className='tiny-thin tracking-wide text-pretty text-center mb-5' >
               This app bridges the gap between medical Practitioners and Patients
               making interaction a walk in the park
             </p>

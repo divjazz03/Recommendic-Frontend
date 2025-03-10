@@ -8,12 +8,9 @@ export function AccountForm({
     formData,
     handleFormDataChange,
     handleTypeOfUserSelectChange,
-    form,
-    medicalCategories
+    form
 }: AccountFormProps) {
 
-
-    const categories = medicalCategories;
     return (
         <>
 
@@ -22,10 +19,6 @@ export function AccountForm({
                     <header className="h3-bold text-center">Account Information</header>
                 </div>
 
-                {/* <div>
-                    <Label>Email</Label>
-                    <Input placeholder='johndoe@gmail.com' value={formData.email} type="email" onChange={e => handleFormDataChange("email", e.target.value)} />
-                </div> */}
                 <FormField
                     control={form.control}
                     name="email"
@@ -40,20 +33,6 @@ export function AccountForm({
                     )}>
 
                 </FormField>
-
-
-                {/* <div>
-                    <Label>SignUp As</Label>
-                    <Select value={formData.typeOfUser} onValueChange={handleTypeOfUserSelectChange}  >
-                        <SelectTrigger>
-                            <SelectValue placeholder='Sign up as' />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="Patient" >Patient</SelectItem>
-                            <SelectItem value="Consultant" >Consultant</SelectItem>
-                        </SelectContent>
-                    </Select>
-                </div> */}
 
                 <FormField
                     control={form.control}
@@ -77,12 +56,6 @@ export function AccountForm({
                     )}>
 
                 </FormField>
-
-                {/* <div>
-                    <Label>Password</Label>
-                    <Input type='password' value={formData.password} onChange={e => handleFormDataChange("password", e.target.value)} />
-                </div> */}
-
                 <FormField
                     control={form.control}
                     name="password"

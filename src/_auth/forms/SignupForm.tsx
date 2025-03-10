@@ -9,7 +9,7 @@ import { AccountForm } from './AccountForm'
 import SignupSuccessModal from '@/components/SignupSuccessModal'
 import { useToast } from '@/hooks/use-toast'
 import { useCreateUserMutation } from '@/lib/react-query/queriiesAndMutation'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { getAllSupportedMedicalCategories } from '@/lib/backend_api'
 import { FormWrapper } from './FormWrapper'
 import Loader from '@/components/shared/Loader'
@@ -23,8 +23,7 @@ import { Form } from '@/components/ui/form'
 
 const SignupForm: React.FC = () => {
 
-  // Retrieves the supported medicalCategories
-  const [medicalCategories, setMedicalCategories] = useState<string[]>([])
+  const navigate = useNavigate();
   const { toast } = useToast();
   const { mutateAsync: createNewUser, isPending: isCreatingUser } = useCreateUserMutation();
   const [formData, setFormData] = useState<SignUpFormData>({
@@ -55,22 +54,7 @@ const SignupForm: React.FC = () => {
     }, 
     mode: "onChange"
   })
-  const [isSuccessfulSignUp, setSuccessfulSignup] = useState<boolean>(false);
-
-
-
-
-  useEffect(() => {
-    const fetchCategoryData = async () => {
-      const result = await getAllSupportedMedicalCategories();
-      setMedicalCategories(result.data.categories);
-    }
-    
-    fetchCategoryData();
-  }, []);
-  
-  
-  
+  const [isSuccessfulSignUp, setSuccessfulSignup] = useState<boolean>(false);  
   
   const handleFormDataChange = (key: keyof typeof formData, value: any) => {
     setFormData(prev => ({ ...prev, [key]: value, }));
@@ -82,7 +66,6 @@ const SignupForm: React.FC = () => {
     <AccountForm
       formData={formData}
       form={form}
-      medicalCategories={medicalCategories}
       handleFormDataChange={handleFormDataChange}
       handleTypeOfUserSelectChange={handleTypeOfUserSelectChange} />
   ]);
@@ -162,7 +145,7 @@ const SignupForm: React.FC = () => {
   }
   return (
     <>
-      <div className='flex-col flex-center '>
+      <div className='flex-col flex-center'>
         <header className='mb-5'>
           <p className='h3-bold text-center'>Create your account</p>
           <p className='pt-2 text-dark-5'>Lets get you started with recommendic</p>
@@ -191,7 +174,8 @@ const SignupForm: React.FC = () => {
       </div>
       <SignupSuccessModal
         isOpen={isSuccessfulSignUp}
-        redirectDelay={3000} />
+        redirectDelay={3000}
+        onRedirect={()=> navigate("/confirm-email", {state: {formData}})} />
     </>
   )
 }

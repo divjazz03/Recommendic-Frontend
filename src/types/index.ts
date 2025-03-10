@@ -43,7 +43,6 @@ export type AccountFormProps = {
     formData: any,
     handleFormDataChange: (key: keyof SignUpFormData, value: any) => void,
     handleTypeOfUserSelectChange: (value: string) => void,
-    medicalCategories: string[],
     form: UseFormReturn<z.infer<typeof signUpValidation>>
 }
 
@@ -104,6 +103,8 @@ export interface UserContext {
     last_name: string;
     role: string;
     address: Address;
+    userStage: 'ONBOARDING'|'ACTIVE_USER',
+    userType: 'PATIENT' | 'CONSULTANT'|'ADMIN'
 }
 
 export interface AuthContextState {
@@ -121,12 +122,17 @@ export interface SignInResponse extends Response {
         user: UserContext
     }
 }
+export interface MedicalCategory {
+    name: string,
+    description: string
+}
 
-export interface medicalCategoriesResponse extends Response{
+export interface MedicalCategoriesResponse extends Response{
     data: {
-        categories: string[];
+        categories: MedicalCategory[];
     }
 }
+
 
 export interface AdminCredentialResponse extends Response {
     data: {
@@ -136,11 +142,13 @@ export interface AdminCredentialResponse extends Response {
 }
 export interface AuthenticatedUserResponse extends Response{
     data: {
-        user_id: string;
-        first_name: string;
-        last_name: string;
+        userId: string;
+        firstName: string;
+        lastName: string;
         role: string;
         address: Address;
+        userType: 'PATIENT'|'ADMIN'|'CONSULTANT';
+        userStage: 'ONBOARDING'|'ACTIVE_USER';
     }
 }
 interface Response {
