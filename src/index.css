@@ -14,7 +14,7 @@
   }
 
   body {
-    @apply bg-light-5 text-[#091627] dark:bg-dark-5 dark:text-light-4 min-h-screen font-poppins;
+    @apply bg-light-5 text-dark-3 dark:bg-dark-1 dark:text-light-4 min-h-screen font-poppins;
   }
 
   :root {
@@ -103,11 +103,11 @@
   }
 
   .side-bar-li {
-    @apply text-lg hover:bg-stone-200 mb-3 px-2 ml-3 rounded-md py-3;
+    @apply text-lg hover:bg-stone-200 focus:outline mb-3 px-2 ml-3 rounded-md py-3;
   }
 
   .side-bar-icons {
-    @apply text-dark-1 hover:text-dark-5 focus:text-dark-5 !important;
+    @apply text-dark-1 hover:text-dark-5 focus-visible:ring-1 focus-visible:ring-offset-1 ring-offset-light-3 !important;
   }
 }
 

@@ -34,7 +34,6 @@ export default {
 					300: '#7f1d1d',
 				},
 				'off-white': '#dodfff',
-				red: '#ff5a5a',
 				'dark-5': '#000000',
 				'dark-4': '#09090a',
 				'dark-3': '#121214',

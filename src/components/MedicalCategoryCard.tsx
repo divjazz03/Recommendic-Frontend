@@ -11,6 +11,7 @@ type MedicalCategoryCardProps = {
 
 const MedicalCategoryCard = (props: MedicalCategoryCardProps) => {
     const [selected, setSelected] = useState(false);
+    const descTruncLength = 100;
     const handleCardClick = (event: React.MouseEvent) => {
         event.preventDefault();
         const newSelectedState = !selected;
@@ -20,14 +21,16 @@ const MedicalCategoryCard = (props: MedicalCategoryCardProps) => {
     }
     return (
         <div
-        className={`flex flex-col w-fit min-w-[180px] max-w-[240px] py-3 px-2 gap-4 rounded-sm ${selected ? "bg-dark-2 text-white" : "bg-light-5 text-dark-2"} ${props.disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-        id={props.categoryName}
-        onClick={props.disabled?()=>{}: handleCardClick}>
-            <div className='text-center'> 
-                <header className={'h3-bold font-poppins text-xl'}>{props.categoryName}</header>
+            className={`flex flex-col w-fit min-w-[180px] max-w-[240px] py-3 px-2 gap-4 rounded-sm shadow-md hover:shadow-xl hover:duration-400 hover:transition-all ${selected ? "bg-dark-2": "bg-light-5"} ${props.disabled ? 'outline-none opacity-50 cursor-not-allowed' : ''}`}
+            id={props.categoryName}
+            onClick={props.disabled ? () => { } : handleCardClick}>
+            <div className='text-center'>
+                <header className={`h3-bold font-poppins text-xl ${selected? 'text-light-5':'text-dark-5'}`}>{props.categoryName}</header>
             </div>
             <div className='text-start'>
-                <p className='base-regular tracking-tight font-thin text-wrap'>{props.categoryDescription}</p>
+                <p className={`small-regular tracking-tighter font-thin text-wrap ${selected? 'text-light-1':'text-dark-1'}`}>
+                    {`${props.categoryDescription.slice(0, descTruncLength)} ${props.categoryDescription.length > descTruncLength ? '...' : ''}`}
+                </p>
             </div>
         </div>
     )

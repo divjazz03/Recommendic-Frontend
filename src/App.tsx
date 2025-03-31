@@ -18,11 +18,12 @@ import { Schedule } from './_root/pages/Schedule';
 import Chat from './_root/pages/Chat';
 import Medication from './_root/pages/Medication';
 import Notification from './_root/pages/Notification';
+import Settings from './_root/pages/Settings';
 
 
 const App = () => {
   return (
-    <main className=' h-screen w-full'>
+    <main className=' h-screen w-screen'>
       <Routes>
         {/* Public Routes*/}
         <Route path='/landing' element={<Landing />} />
@@ -45,7 +46,8 @@ const App = () => {
           <Route path='/schedule' element={<Schedule />} />
           <Route path='/chat' element={<Chat />} />
           <Route path='/medication' element={<Medication/>} />
-          <Route path='/notificatiion' element={<Notification />} />
+          <Route path='/notification' element={<Notification />} />
+          <Route path='/settings' element={<Settings />} />
         </Route>
       </Routes>
 

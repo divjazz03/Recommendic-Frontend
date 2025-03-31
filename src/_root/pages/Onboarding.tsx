@@ -5,6 +5,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useGetSupportedMedicalCategories } from '@/lib/react-query/queriiesAndMutation';
 import { MedicalCategory } from '@/types';
 import React, { FormEvent, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 
 export enum SelectAction {
     UNSELECT = "UNSELECT",
@@ -21,6 +22,7 @@ const Onboarding = () => {
     const [selectedSpecialty, setSelectedSpecialty] = useState('');
     const [selectedInterests, setSelectedInterests] = useState([]);
     const {toast} = useToast();
+    const navigate = useNavigate();
 
     useEffect(() => {
         setUserType('CONSULTANT' /*userContext.userType*/);
@@ -58,6 +60,7 @@ const Onboarding = () => {
 
         if (selectedInterests.length > 0 || selectedSpecialty.length > 0) {
             // submit the data
+            navigate('/overview');
             return toast({title: 'Thanks for helping us serve you better'})
         } else {
             return toast({title: 'Please choose one', variant: 'destructive'});
@@ -71,13 +74,13 @@ const Onboarding = () => {
                     <header className='text-center'>Onboarding</header>
                     <p>{userContext.userType == 'CONSULTANT' ? '' : ''}</p>
                     <section className=' px-10 py-10 '>
-                        <div className={'flex flex-row flex-wrap justify-center gap-4'}>
+                        <div className={'flex flex-row flex-wrap justify-left gap-4'}>
                             {
-                                ['Dentist','Gynecologist', 'Psychiatry'].map((categoryName, index) => (
+                                ['Dentist','Gynecologist', 'Psychiatry','Opthalmology','Surgery'].map((categoryName, index) => (
                                 <MedicalCategoryCard
                                 key={categoryName}
                                 categoryName={categoryName}
-                                categoryDescription='A very important person fidof df dofidfoi i fdofidofi'
+                                categoryDescription='A very important person fidof df dofidfoi i fdofidofiekjflsk ekf lkaej afeldkslkdnsk '
                                 selectActionHandler={userType ==='CONSULTANT'? handleSelectedSpecialtyChange: handleSelectedInterestsChange}
                                 disabled={userIsConsultant && selectedSpecialty && selectedSpecialty !== categoryName}
                                 />
@@ -88,6 +91,7 @@ const Onboarding = () => {
                     <Button className='tracking-normal shad-button_primary' onClick={handleNext}>
                         Next 
                     </Button>
+                    <hr></hr>
                     <Button className='shad-button_primary' onClick={getStateInfo}>GetInfo</Button>
                 </div>
             </main>
