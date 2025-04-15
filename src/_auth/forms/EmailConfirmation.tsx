@@ -17,8 +17,8 @@ const EmailConfirmation = () => {
   }
   return (
     <>
-      <main>
-        <header className="text-primary-600 h3-bold text-center py-2">Confirm Your Email</header>
+      <main className="shadow p-10 rounded-sm">
+        <header className="text-dark-5 h3-bold text-center py-2">Confirm Your Email</header>
         <p className="text-dark-1 text-center py-2">Tap the button below to confirm your email address</p>
         <div className="flex flex-col items-center py-2 px-4">
           <Button className="shad-button_primary w-full" onClick={onVerifyEmailHandler}>{isConfirmingEmail ? <Loader /> : "Confirm Email"}</Button>
@@ -28,8 +28,7 @@ const EmailConfirmation = () => {
         </footer>
       </main>
       <EmailConfirmSuccessModal
-        isOpen={isSuccessfulConfirmation}
-      />
+        isOpen={isSuccessfulConfirmation} redirectUrl="/overview"/>
     </>
   )
 }

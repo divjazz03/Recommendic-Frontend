@@ -18,9 +18,6 @@ export function UserForm({ formData, handleFormDataChange, form }: UserFormProps
                     <header className="h3-bold text-center">Personal Information</header>
                 </div>
 
-                {/* <div>
-                        <Label>First Name</Label>
-                        <Input placeholder='john' value={formData.firstName} onChange={e => handleFormDataChange("firstName", e.target.value)} />                    </div> */}
                 <FormField
                     control={form.control}
                     name="firstName"
@@ -35,12 +32,6 @@ export function UserForm({ formData, handleFormDataChange, form }: UserFormProps
                     )}>
 
                 </FormField>
-
-
-                {/* <div>
-                    <Label>Last Name</Label>
-                    <Input placeholder='Doe' value={formData.lastName} onChange={e => handleFormDataChange("lastName", e.target.value)} />
-                </div> */}
 
                 <FormField
                     control={form.control}
@@ -57,26 +48,6 @@ export function UserForm({ formData, handleFormDataChange, form }: UserFormProps
 
                 </FormField>
 
-
-
-                {/* <div>
-                    <Label>Phone Number</Label>
-                    <PhoneInput
-                        defaultCountry={'us'}
-                        value={formData.phoneNumber}
-                        onChange={e => handleFormDataChange("phoneNumber", e)}
-                        className="flex flex-row h-9 border border-slate-200 rounded-sm p-0"
-                        inputClassName="border w-full border-transparent"
-                        countrySelectorStyleProps={{
-                            className: "bg-white",
-                            dropdownStyleProps: {
-                                className: "rounded-md"
-                            }
-
-                        }}
-                    />
-                </div> */}
-
                 <FormField
                     control={form.control}
                     name="phoneNumber"
@@ -86,11 +57,11 @@ export function UserForm({ formData, handleFormDataChange, form }: UserFormProps
                             <FormControl>
                                 <PhoneInput
                                     {...form.register("phoneNumber")}
-                                    defaultCountry={'us'}
+                                    defaultCountry={'ng'}
                                     value={formData.phoneNumber}
                                     onChange={e => handleFormDataChange("phoneNumber", e)}
-                                    className="flex flex-row h-9 border border-slate-200 rounded-sm p-0"
-                                    inputClassName="border w-full border-transparent"
+                                    className="flex flex-row h-10 border border-slate-200 rounded-md p-0"
+                                    inputClassName="border w-full "
                                     countrySelectorStyleProps={{
                                         className: "bg-white",
                                         dropdownStyleProps: {

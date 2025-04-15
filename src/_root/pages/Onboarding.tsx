@@ -78,7 +78,7 @@ const Onboarding = () => {
                             {
                                 ['Dentist','Gynecologist', 'Psychiatry','Opthalmology','Surgery'].map((categoryName, index) => (
                                 <MedicalCategoryCard
-                                key={categoryName}
+                                key={index}
                                 categoryName={categoryName}
                                 categoryDescription='A very important person fidof df dofidfoi i fdofidofiekjflsk ekf lkaej afeldkslkdnsk '
                                 selectActionHandler={userType ==='CONSULTANT'? handleSelectedSpecialtyChange: handleSelectedInterestsChange}

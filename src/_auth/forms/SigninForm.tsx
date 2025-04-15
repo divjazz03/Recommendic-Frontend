@@ -63,10 +63,10 @@ const SigninForm = () => {
     <div className='flex flex-col gap-2'>
       <FormWrapper >
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className='flex flex-col items-center gap-4'>
+          <form onSubmit={form.handleSubmit(onSubmit)} className='flex flex-col items-center gap-4 w-full'>
             <div className='flex flex-col justify-center gap-5'>
               <header className='mb-5'>
-                <p className='h3-bold text-dark-3'>Welcome to Recommendic</p>
+                <p className='h3-bold text-dark-3 text-center'>Welcome to Recommendic</p>
                 <p className='text-center text-dark-1 pt-2'>Lets get you logged in</p>
               </header>
               <FormField
@@ -96,11 +96,11 @@ const SigninForm = () => {
                   </FormItem>
                 )}>
               </FormField>
-              <Button type='submit'>
+              <Button type='submit' className='shad-button_primary'>
                 Sign In
               </Button>
             </div>
-            <p className='subtle-semibold mt-4'>New to Recommendic? <span><Link to={'/sign-up'} className='subtle-semibold hover:text-light-1 text-dark-1 transition-all'>Create new account</Link></span></p>
+            <p className='subtle-semibold mt-4'>New to Recommendic? <span><Link to={'/sign-up'} className='subtle-semibold text-dark-1 underline hover:no-underline transition-all'>Create new account</Link></span></p>
           </form>
 
         </Form>

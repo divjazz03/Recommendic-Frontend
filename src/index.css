@@ -133,15 +133,11 @@
 
   /* Button */
   .shad-button_primary {
-    @apply text-lg text-light-5 bg-primary-600 hover:bg-primary-500 dark:text-dark-3 dark:bg-light-4 flex gap-2 min-w-44 rounded-xl !important;
+    @apply text-sm text-light-5 bg-primary-600 hover:bg-primary-500 focus-visible:bg-primary-600 focus-visible:ring-1 focus-visible:ring-light-4 dark:focus-visible:ring-dark-3  dark:text-dark-3 dark:bg-light-4 flex gap-2 min-w-44 !important;
   }
 
   .shad-button_secondary {
-    @apply bg-secondary-600 dark:bg-dark-2 dark:text-light-3 hover:bg-secondary-500 text-lg text-dark-3 flex gap-2 min-w-44 rounded-xl !important;
-  }
-
-  .shad-button_dark_4 {
-    @apply h-12 bg-dark-4 px-5 text-light-1 flex gap-2 !important;
+    @apply text-sm bg-secondary-600 border border-primary-600 dark:bg-dark-2 dark:text-light-3 hover:bg-secondary-500 text-dark-3 flex gap-2 min-w-44 !important;
   }
 
   .shad-button_ghost {

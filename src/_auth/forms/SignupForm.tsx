@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button'
 import React, { FormEvent, useEffect, useState } from 'react'
 import { Gender } from './Enums'
 import { useMultistepForm } from '@/hooks/useMultistepForm'
-import {  SignUpFormData } from '@/types'
+import { SignUpFormData } from '@/types'
 import { UserForm } from './UserForm'
 import { AddressForm } from './AddressForm'
 import { AccountForm } from './AccountForm'
@@ -38,7 +38,7 @@ const SignupForm: React.FC = () => {
     state: "",
     country: "",
   });
-  const form = useForm<z.infer<typeof signUpValidation>> ({
+  const form = useForm<z.infer<typeof signUpValidation>>({
     resolver: zodResolver(signUpValidation),
     defaultValues: {
       firstName: "",
@@ -46,30 +46,30 @@ const SignupForm: React.FC = () => {
       email: "",
       password: "",
       phoneNumber: "",
-      typeOfUser: "Patient", 
+      typeOfUser: "Patient",
       gender: Gender.MALE,
       city: "",
       state: "",
       country: ""
-    }, 
+    },
     mode: "onChange"
   })
-  const [isSuccessfulSignUp, setSuccessfulSignup] = useState<boolean>(false);  
-  
+  const [isSuccessfulSignUp, setSuccessfulSignup] = useState<boolean>(false);
+
   const handleFormDataChange = (key: keyof typeof formData, value: any) => {
     setFormData(prev => ({ ...prev, [key]: value, }));
   };
   const handleTypeOfUserSelectChange = (value: string) => handleFormDataChange("typeOfUser", value);
   const { steps, currentStepIndex, step, isFirstStep, isLastStep, next, back } = useMultistepForm([
-    <UserForm formData={formData} form={form} handleFormDataChange={handleFormDataChange}/>,
-    <AddressForm formData={formData} form={form} handleFormDataChange={handleFormDataChange}/>,
+    <UserForm formData={formData} form={form} handleFormDataChange={handleFormDataChange} />,
+    <AddressForm formData={formData} form={form} handleFormDataChange={handleFormDataChange} />,
     <AccountForm
       formData={formData}
       form={form}
       handleFormDataChange={handleFormDataChange}
       handleTypeOfUserSelectChange={handleTypeOfUserSelectChange} />
   ]);
-  
+
 
   async function onSubmitForConsultant(values: SignUpFormData) {
     const result = await createNewUser({
@@ -147,35 +147,35 @@ const SignupForm: React.FC = () => {
     <>
       <div className='flex-col flex-center'>
         <header className='mb-5'>
-          <p className='h3-bold text-center'>Create your account</p>
-          <p className='pt-2 text-dark-5'>Lets get you started with recommendic</p>
+          <p className='h3-bold text-dark-1 text-center'>Create your account</p>
+          <p className='pt-2 text-dark-1'>Lets get you started with recommendic</p>
         </header>
-        <FormWrapper > 
+        <FormWrapper >
           <Form {...form}>
-          <form className='flex gap-7 flex-col' onSubmit={isLastStep ? form.handleSubmit(handleFormSubmit) : handleNextStep}>
-            <div className='flex flex-row justify-between'>
-              <div className={(currentStepIndex + 1) >= 1 ? 'bg-dark-5' + ' rounded-md min-w-16 min-h-1 max-h-1' : 'bg-slate-500' + ' rounded-md min-w-16 min-h-1 max-h-1'} ></div>
-              <div className={(currentStepIndex + 1) >= 2 ? 'bg-dark-5' + ' rounded-md min-w-16 min-h-1 max-h-1' : 'bg-slate-500' + ' rounded-md min-w-16 min-h-1 max-h-1'}></div>
-              <div className={(currentStepIndex + 1) >= 3 ? 'bg-dark-5' + ' rounded-md min-w-16 min-h-1 max-h-1' : 'bg-slate-500' + ' rounded-md min-w-16 min-h-1 max-h-1'}></div>
-            </div>
-            <div className=' flex-center flex-col'>
-              {step}
-            </div>
-            <div className='flex justify-center flex-col mt-4 gap-2 mb-2'>
-              {!isFirstStep && <Button type='button' className='bg-secondary-600 hover:bg-secondary-500 text-dark-4' onClick={handleBackStep}>Back</Button>}
-              <Button type='submit'>
-                {!isLastStep ? "Next" : isCreatingUser? (<Loader/>) : "Finish"}
+            <form className='flex gap-7 flex-col w-full' onSubmit={isLastStep ? form.handleSubmit(handleFormSubmit) : handleNextStep}>
+              <div className='flex flex-row justify-between w-full'>
+                <div className={(currentStepIndex + 1) >= 1 ? 'bg-dark-5' + ' rounded-md min-w-16 min-h-1 max-h-1' : 'bg-slate-500' + ' rounded-md min-w-16 min-h-1 max-h-1'} ></div>
+                <div className={(currentStepIndex + 1) >= 2 ? 'bg-dark-5' + ' rounded-md min-w-16 min-h-1 max-h-1' : 'bg-slate-500' + ' rounded-md min-w-16 min-h-1 max-h-1'}></div>
+                <div className={(currentStepIndex + 1) >= 3 ? 'bg-dark-5' + ' rounded-md min-w-16 min-h-1 max-h-1' : 'bg-slate-500' + ' rounded-md min-w-16 min-h-1 max-h-1'}></div>
+              </div>
+              <div className=' flex-center flex-col'>
+                {step}
+              </div>
+              <div className='flex justify-center flex-col mt-4 gap-2 mb-2 w-full'>
+                {!isFirstStep && <Button type='button' className='shad-button_secondary text-dark-4' onClick={handleBackStep}>Back</Button>}
+                <Button type='submit'>
+                  {!isLastStep ? "Next" : isCreatingUser ? (<Loader />) : "Finish"}
                 </Button>
-            </div>
-          </form>
+              </div>
+            </form>
           </Form>
-          <p className='subtle-semibold text-center mt-4'>Already have an account? <span className='mx-1'><Link to={'/sign-in'} className='subtle-semibold hover:text-light-3 text-light-1'>Sign In</Link></span></p>
+          <p className='subtle-semibold text-center mt-4'>Already have an account? <span className='mx-1'><Link to='/sign-in' className='subtle-semibold hover:no-underline text-dark-4 underline'>Sign In</Link></span></p>
         </FormWrapper>
       </div>
       <SignupSuccessModal
         isOpen={isSuccessfulSignUp}
         redirectDelay={3000}
-        onRedirect={()=> navigate("/confirm-email", {state: {formData}})} />
+        onRedirect={() => navigate("/confirm-email", { state: { formData } })} />
     </>
   )
 }

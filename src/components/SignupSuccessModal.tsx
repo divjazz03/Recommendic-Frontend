@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
     AlertDialog,
     AlertDialogContent,
@@ -15,32 +15,29 @@ interface SignupSuccessModalProps {
     onRedirect?: () => void;
 };
 
-const SignupSuccessModal: React.FC<SignupSuccessModalProps> = ({
+const SignupSuccessModal = ({
     isOpen,
     redirectUrl = '/sign-in',
     redirectDelay = 10000,
     onRedirect
-}) => {
+}: SignupSuccessModalProps) => {
+    const [redirectCount, setRedirectCount] = useState(Math.ceil(redirectDelay/1000));
 
     useEffect(() => {
-        let timeoutId: NodeJS.Timeout;
-
         if (isOpen) {
-            timeoutId = setTimeout(() => {
+            if(redirectCount > 0){
+                const timeout = setTimeout(() => setRedirectCount(count => count - 1), 1000);
+                return () => clearTimeout(timeout);
+            } else {
                 if (onRedirect) {
                     onRedirect();
                 } else {
                     window.location.href = redirectUrl;
                 }
-            }, redirectDelay);
+            }
         }
 
-        return () => {
-            if (timeoutId){
-                clearTimeout(timeoutId);
-            }
-        };
-    }, [isOpen, redirectUrl, redirectDelay, onRedirect])
+    }, [isOpen,redirectCount])
 
 
     return (

@@ -1,7 +1,5 @@
 import Loader from "@/components/shared/Loader";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Toast } from "@/components/ui/toast";
 import { useToast } from "@/hooks/use-toast";
 import { useResendEmailMutation } from "@/lib/react-query/queriiesAndMutation";
 import { useEffect, useState } from "react";
@@ -35,13 +33,13 @@ const ConfirmEmail = () => {
 
     return (
         <>
-            <main className="bg-light-4 p-8 min-w-96 max-w-[480px] shadow-lg rounded-md">
+            <main className=" p-8 min-w-96 max-w-[480px] shadow-md rounded-md">
                 <header className="text-dark-5 font-bold text-xl text-center py-2">Check your Email</header>
-                <p className="text-slate-600 text-center py-2">To verify your identity, you'll receive an email shortly at {email} to activate your account.</p>
+                <p className="text-dark-1 text-center py-2">To verify your identity, you'll receive an email shortly at {email} to activate your account.</p>
                 <div className="flex flex-col items-center py-2 px-4">
                     <Button className="w-full shad-button_primary" disabled={!canResend} onClick={onResendEmailHandler}>{isResending ? <Loader /> : canResend ? "Resend Email" : `Resend in ${countDown}`}</Button>
                 </div>
-                <footer className=" flex flex-col gap-2 items-center text-sm text-slate-600 text-center py-2">
+                <footer className=" flex flex-col gap-2 items-center text-sm text-dark-1 text-center py-2">
                     <p>Nothing in Sight? Check your spam folder or contact support</p>
                     <Link to={"/sign-in"}><Button className="shad-button_secondary">Sign In</Button></Link>
                 </footer>
