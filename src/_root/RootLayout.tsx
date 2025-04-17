@@ -1,3 +1,4 @@
+import GlobalSearch from '@/components/shared/GlobalSearch';
 import { Input } from '@/components/ui/input';
 import { useUserContext } from '@/context/AuthContext';
 import React, { useEffect, useRef, useState } from 'react'
@@ -19,6 +20,7 @@ const RootLayout = () => {
 		"/consultant": useRef(null),
 		"/settings": useRef(null)
 	}
+	const asideRef = useRef(null);
 
 	useEffect(() => {
 		const currentRef = menuRefs[location.pathname];
@@ -26,22 +28,32 @@ const RootLayout = () => {
 			currentRef.current.focus();
 		}
 	}, [location.pathname]);
+	
+	useEffect(() => {
+		function handleClickOutside(event) {
+			if (asideRef.current && !asideRef.current.contains(event.target)){
+				setAsideHidden(true);
+			}
+		}
+
+		document.addEventListener('mousedown', handleClickOutside);
+		return () => document.removeEventListener('mousedown', handleClickOutside);
+	}, [])
 
 	const handleMenuClick = () => {
-		console.log("Menu")
-		setAsideHidden(!asideHidden)
+		setAsideHidden(aside => !aside);
 	};
 	return (
 		<main className='relative bg-white min-w-[320px] max-w-full h-screen overflow-hidden'>
-			<div className='border-2 '>
-				<header className='lg:hidden sticky top-0 bg-stone-50'>
+			<div className='border-2'>
+				<header className='lg:hidden sticky top-0 bg-white'>
 					<div className='flex flex-row justify-start w-full border gap-2 pt-4 pl-3'>
 						<img src='/assets/svg/logo-no-background.svg' className='max-w-[32px]' />
 						<p className='font-berkshire text-dark-1 h1-bold'>Recommendic</p>
 					</div>
 					<div className='flex flex-row justify-between items-center'>
 						<div className=' flex flex-row gap-2 px-1 py-2 lg:hidden'>
-							<div className='hover:bg-stone-50 p-2 flex flex-row justify-center items-center rounded-sm' onClick={handleMenuClick}>
+							<div className='hover:bg-white p-2 flex flex-row justify-center items-center rounded-sm'onClick={handleMenuClick}>
 								<img src='/assets/svg/bars-solid.svg' className='min-w-[24px]' />
 							</div>
 							<div className='flex flex-col justify-center items-center'>
@@ -53,14 +65,11 @@ const RootLayout = () => {
 								</p>
 							</div>
 						</div>
-						<div className='max-w-[320px] max-h-10 p-2 bg-light-5 rounded-md border-stone-600 flex flex-row gap-2'>
-							<img src='/assets/svg/search-alt-1-svgrepo-com.svg' className='min-w-6' />
-							<input className='focus:outline-none max-w-[280px] bg-light-5 small-regular' type='text' placeholder='Search' />
-						</div>
+						<GlobalSearch />
 					</div>
 				</header>
-				<aside className={`${asideHidden ? ' -left-[380px] ' : 'left-0'} absolute z-50 lg:hidden h-full min-w-[320px] top-0 transition-all ease-linear duration-300`}>
-					<div className='min-w-fit w-full flex flex-col pr-3 h-full bg-stone-50'>
+				<aside ref={asideRef} className={`${asideHidden ? ' -left-[380px] ' : 'left-0'} absolute z-50 lg:hidden h-full min-w-[320px] top-0 transition-all ease-linear duration-300`}>
+					<div className='min-w-fit w-full flex flex-col pr-3 h-full bg-white'>
 						<header className='py-4 flex flex-row justify-between pl-3 gap-3'>
 							<div className='flex justify-start gap-2'>
 								<img src='/assets/svg/logo-no-background.svg' className='max-w-[32px]' />
@@ -171,7 +180,7 @@ const RootLayout = () => {
 
 				<div className='lg:flex lg:flex-row lg:gap-5 w-full h-screen'>
 					<aside className='hidden lg:flex lg:h-full lg:min-w-[320px] lg:flex-col lg:gap-24 transition-all'>
-						<div className='w-auto flex flex-col pr-3 max-w-[320px] h-full bg-stone-50'>
+						<div className='w-auto flex flex-col pr-3 max-w-[320px] h-full bg-white'>
 							<header className='py-4 flex flex-row justify-between pl-3 gap-3'>
 								<div className='flex justify-start gap-2'>
 									<img src='/assets/svg/logo-no-background.svg' className='max-w-[32px]' />
@@ -279,11 +288,8 @@ const RootLayout = () => {
 						</div>
 					</aside>
 					<section className='w-full h-full min-h-fit px-3 py-3'>
-						<div className='hidden w-full min-h-10 lg:flex flex-row justify-end'>
-							<div className='max-w-[320px] p-2 bg-stone-50 rounded-md border-stone-600 flex flex-row gap-2'>
-								<img src='/assets/svg/search-alt-1-svgrepo-com.svg' className='min-w-6' />
-								<input className='focus:outline-none max-w-[280px] bg-stone-50 small-regular' type='text' placeholder='Search' />
-							</div>
+						<div className='hidden w-full min-h-10 lg:flex flex-row justify-end mb-10'>
+							<GlobalSearch />
 						</div>
 						<Outlet />
 					</section>

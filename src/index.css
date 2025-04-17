@@ -123,21 +123,13 @@
     @apply text-red !important;
   }
 
-  .shad-input {
-    @apply h-12 bg-dark-4 border-none placeholder:text-light-4 focus-visible:ring-1 focus-visible:ring-offset-1 ring-offset-light-3 !important;
-  }
-
-  .shad-textarea {
-    @apply h-36 bg-dark-3 rounded-xl border-none focus-visible:ring-1 focus-visible:ring-offset-1 ring-offset-light-3 !important;
-  }
-
   /* Button */
   .shad-button_primary {
-    @apply text-sm text-light-5 bg-primary-600 hover:bg-primary-500 focus-visible:bg-primary-600 focus-visible:ring-1 focus-visible:ring-light-4 dark:focus-visible:ring-dark-3  dark:text-dark-3 dark:bg-light-4 flex gap-2 min-w-44 !important;
+    @apply text-light-5 flex gap-2 min-w-44 !important;
   }
 
   .shad-button_secondary {
-    @apply text-sm bg-secondary-600 border border-primary-600 dark:bg-dark-2 dark:text-light-3 hover:bg-secondary-500 text-dark-3 flex gap-2 min-w-44 !important;
+    @apply hover:border-2 flex gap-2 min-w-44 !important;
   }
 
   .shad-button_ghost {

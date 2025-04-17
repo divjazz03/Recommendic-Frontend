@@ -162,7 +162,7 @@ const SignupForm: React.FC = () => {
                 {step}
               </div>
               <div className='flex justify-center flex-col mt-4 gap-2 mb-2 w-full'>
-                {!isFirstStep && <Button type='button' className='shad-button_secondary text-dark-4' onClick={handleBackStep}>Back</Button>}
+                {!isFirstStep && <Button type='button' variant='secondary' className='shad-button_secondary text-dark-4' onClick={handleBackStep}>Back</Button>}
                 <Button type='submit'>
                   {!isLastStep ? "Next" : isCreatingUser ? (<Loader />) : "Finish"}
                 </Button>

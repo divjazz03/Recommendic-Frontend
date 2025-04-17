@@ -25,7 +25,7 @@ const Welcome = () => {
               making interaction a walk in the park
             </p>
             <Button className='shad-button_primary' onClick={handleSignUpRedirect} type='button'>Sign Up</Button>
-            <Button className='shad-button_secondary' onClick={handleLoginRedirect} type='button'>Log In</Button>
+            <Button className='shad-button_secondary' variant='secondary' onClick={handleLoginRedirect} type='button'>Log In</Button>
           </div>
         </section>
       </div>

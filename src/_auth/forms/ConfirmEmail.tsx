@@ -37,7 +37,7 @@ const ConfirmEmail = () => {
                 <header className="text-dark-5 font-bold text-xl text-center py-2">Check your Email</header>
                 <p className="text-dark-1 text-center py-2">To verify your identity, you'll receive an email shortly at {email} to activate your account.</p>
                 <div className="flex flex-col items-center py-2 px-4">
-                    <Button className="w-full shad-button_primary" disabled={!canResend} onClick={onResendEmailHandler}>{isResending ? <Loader /> : canResend ? "Resend Email" : `Resend in ${countDown}`}</Button>
+                    <Button className="shad-button_primary" disabled={!canResend} onClick={onResendEmailHandler}>{isResending ? <Loader /> : canResend ? "Resend Email" : `Resend in ${countDown}`}</Button>
                 </div>
                 <footer className=" flex flex-col gap-2 items-center text-sm text-dark-1 text-center py-2">
                     <p>Nothing in Sight? Check your spam folder or contact support</p>
