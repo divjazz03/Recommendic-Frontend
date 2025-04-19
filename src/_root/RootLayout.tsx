@@ -83,7 +83,7 @@ const RootLayout = () => {
 									<li >
 										<Link to={"/overview"}>
 											<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/overview"]}>
-												<img src='/assets/svg/overview-icon.svg' className='max-w-[24px]' />
+												<img src='/assets/svg/overview-svgrepo-com.svg' className='max-w-[24px]' />
 												<p>Overview</p>
 											</div>
 										</Link>
@@ -91,7 +91,7 @@ const RootLayout = () => {
 									<li >
 										<Link to={"/appointment"}>
 											<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/appointment"]}>
-												<img src='/assets/svg/calendar-icon.svg' className='max-w-[24px]' />
+												<img src='/assets/svg/calendar-svgrepo-com.svg' className='max-w-[24px]' />
 												<p>Appointment</p>
 											</div>
 										</Link>
@@ -99,7 +99,7 @@ const RootLayout = () => {
 									<li className={`${userContext.userType === 'CONSULTANT' ? '' : 'hidden'}`} >
 										<Link to={"/patient"}>
 											<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/patient"]}>
-												<img src='/assets/svg/people-icon.svg' className='max-w-[24px]' />
+												<img src='/assets/svg/people-svgrepo-com.svg' className='max-w-[24px]' />
 												<p>Patients</p>
 											</div>
 										</Link>
@@ -107,7 +107,7 @@ const RootLayout = () => {
 									<li className={`${userContext.userType === 'PATIENT' ? '' : 'hidden'}`} >
 										<Link to={"/consultant"}>
 											<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/consultant"]}>
-												<img src='/assets/svg/people-icon.svg' className='max-w-[24px]' />
+												<img src='/assets/svg/people-svgrepo-com.svg' className='max-w-[24px]' />
 												<p>Consultant</p>
 											</div>
 										</Link>
@@ -193,7 +193,7 @@ const RootLayout = () => {
 										<li >
 											<Link to={"/overview"}>
 												<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/overview"]}>
-													<img src='/assets/svg/overview-icon.svg' className='max-w-[24px]' />
+													<img src='/assets/svg/overview-svgrepo-com.svg' className='max-w-[24px]' />
 													<p>Overview</p>
 												</div>
 											</Link>
@@ -201,7 +201,7 @@ const RootLayout = () => {
 										<li >
 											<Link to={"/appointment"}>
 												<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/appointment"]}>
-													<img src='/assets/svg/calendar-icon.svg' className='max-w-[24px]' />
+													<img src='/assets/svg/calendar-svgrepo-com.svg' className='max-w-[24px]' />
 													<p>Appointment</p>
 												</div>
 											</Link>
@@ -209,7 +209,7 @@ const RootLayout = () => {
 										<li className={`${userContext.userType !== 'CONSULTANT' ? '' : 'hidden'}`} >
 											<Link to={"/patient"}>
 												<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/patient"]}>
-													<img src='/assets/svg/people-icon.svg' className='max-w-[24px]' />
+													<img src='/assets/svg/people-svgrepo-com.svg' className='max-w-[24px]' />
 													<p>Patients</p>
 												</div>
 											</Link>
@@ -217,7 +217,7 @@ const RootLayout = () => {
 										<li className={`${userContext.userType === 'CONSULTANT' ? '' : 'hidden'}`} >
 											<Link to={"/consultant"}>
 												<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/consultant"]}>
-													<img src='/assets/svg/people-icon.svg' className='max-w-[24px]' />
+													<img src='/assets/svg/people-svgrepo-com.svg' className='max-w-[24px]' />
 													<p>Consultant</p>
 												</div>
 											</Link>

@@ -46,7 +46,8 @@ export default {
 				'light-1': '#cccccc'
 			},
 			screens: {
-				xs: '480px'
+				xs: '480px',
+				large: '1560px'
 			},
 			fontFamily: {
 				berkshire: [
