@@ -19,7 +19,7 @@ const LocalSearch = ({ placeholder}: LocalSearchProps) => {
     }
     return (
         <>
-            <div  className= { `${'max-w-[320px] max-h-10 px-2 flex flex-row justify-center items-center gap-2'}`}>
+            <div  className= { `${'w-full max-h-10 px-2 flex flex-row justify-center items-center gap-2'}`}>
                 <Input size={32}
                     placeholder={placeholder}
                     onChange={(event) => setSearchValue(event.target.value)}

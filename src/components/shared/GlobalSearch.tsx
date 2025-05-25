@@ -1,33 +1,90 @@
 
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Input } from '../ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
-import { Command, CommandGroup, CommandList } from '../ui/command';
+import { Command, CommandGroup, CommandItem, CommandList } from '../ui/command';
 
 const GlobalSearch = () => {
 
     const [searchText, setSearchText] = useState('');
+    const [debouncedText, setDouncedText] = useState('');
+    const [results, setResults] = useState<string[]>([]);
     const [popoverOpen, setPopOverOpen] = useState(false);
+
+    const triggerRef = useRef(null);
+
+    const mockItems = [
+        'Apple',
+        'Banana',
+        'Orange',
+        'Pineapple',
+        'Grape',
+        'Watermelon',
+        'Mango',
+        'Blueberry'
+    ];
+
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDouncedText(searchText);
+        }, 300); // 300ms delay
+    }, [searchText])
+
+    useEffect(() => {
+        if (debouncedText.trim() === '') {
+            setResults([]);
+        } else {
+            const filtered = mockItems.filter(Item => Item.toLowerCase().includes(debouncedText.toLowerCase()));
+            setResults(filtered);
+        }
+    }, [debouncedText])
 
     return (
         <>
-            <Popover open={popoverOpen} onOpenChange={setPopOverOpen} >
+            <Popover open={popoverOpen} onOpenChange={setPopOverOpen}>
                 <PopoverTrigger asChild>
-                    <div 
-                        tabIndex={0} 
-                        className='flex flex-row justify-between gap-2 h-10 w-80 p-1 rounded-md border border-slate-200 bg-white text-base ring-offset-white placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 dark:border-slate-800 dark:bg-slate-950 dark:ring-offset-slate-950 dark:file:text-slate-50 dark:placeholder:text-slate-400 dark:focus-visible:ring-slate-300'>
-                        <Input type='search'
-                            onChange={(event) => setSearchText(event.target.value)}
-                            className='border-none ring-offset-0 h-full focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:ring-white w-72' 
-                            placeholder='Global Search' />
-                        <img tabIndex={0} src='/assets/svg/search-alt-1-svgrepo-com.svg' className='min-w-7 max-w-7 px-1 hover:bg-light-4 rounded-sm' />
+                    <div className='flex flex-row items-center gap-2 pr-1'>
+                        <p className='base-regular'>Global&nbsp;Search</p>
+                        <div className='h-full min-w-8 max-w-10'>
+                            <img
+                                src='/assets/svg/search-alt-1-svgrepo-com.svg'
+                                className='w-full h-full px-1 py-1 hover:bg-light-4 rounded-sm' />
+                        </div>
                     </div>
                 </PopoverTrigger>
-                <PopoverContent className='w-80'>
+                <PopoverContent
+                    className='w-96 py-1 px-1 flex flex-col' sideOffset={8}
+                    onInteractOutside={(e) => {
+                        if (triggerRef.current && triggerRef.current.contains(e.target as Node)) {
+                            e.preventDefault();
+                        } else {
+                            setPopOverOpen(false)
+                        }
+                    }}
+                >
+                    <Input type='search'
+                        value={searchText}
+                        onChange={e => setSearchText(e.target.value)}
+                        className='border-none h-full w-full  focus-visible:ring-offset-0 focus-visible:ring-transparent '
+                        placeholder='Global Search' />
                     <Command>
                         <CommandList>
-                            <CommandGroup>
-                                
+                            <CommandGroup heading="Results">
+                                {results.length > 0 ? (
+                                    results.map((item, index) => (
+                                        <CommandItem
+                                            key={index}
+                                            onSelect={() => {
+                                                setSearchText(item);
+                                                setPopOverOpen(false);
+                                            }}
+                                        >
+                                            {item}
+                                        </CommandItem>
+                                    ))
+                                ) : (
+                                    <div className="p-4 text-sm">Wow such empty</div>
+                                )}
                             </CommandGroup>
                         </CommandList>
                     </Command>

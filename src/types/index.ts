@@ -1,4 +1,4 @@
-import { Gender } from "@/_auth/forms/Enums"
+
 import { signUpValidation } from "@/_auth/validations/SignupValidation"
 import React, { ReactNode } from "react"
 import { UseFormReturn } from "react-hook-form"
@@ -18,7 +18,7 @@ export type SignUpFormData = {
     password?: string,
     phoneNumber?: string,
     typeOfUser?: TypeOfUser,
-    gender?: Gender,
+    gender?: 'Male'|'Female',
     city?: string,
     state?: string,
     country?: string,
@@ -58,7 +58,7 @@ export type NewUser = {
     email: string,
     password: string,
     phoneNumber: string,
-    gender: Gender,
+    gender: 'Male' | 'Female',
     city: string,
     state: string,
     country: string

@@ -1,3 +1,4 @@
+import InitialsOrAvartar from '@/components/InitialsOrAvartar';
 import GlobalSearch from '@/components/shared/GlobalSearch';
 import { Input } from '@/components/ui/input';
 import { useUserContext } from '@/context/AuthContext';
@@ -49,12 +50,12 @@ const RootLayout = () => {
 				<header className='lg:hidden sticky top-0 bg-white'>
 					<div className='flex flex-row justify-start w-full border gap-2 pt-4 pl-3'>
 						<img src='/assets/svg/logo-no-background.svg' className='max-w-[32px]' />
-						<p className='font-berkshire text-dark-1 h1-bold'>Recommendic</p>
+						<p className='font-berkshire text-main h1-bold'>Recommendic</p>
 					</div>
 					<div className='flex flex-row justify-between items-center'>
 						<div className=' flex flex-row gap-2 px-1 py-2 lg:hidden'>
-							<div className='hover:bg-white p-2 flex flex-row justify-center items-center rounded-sm'onClick={handleMenuClick}>
-								<img src='/assets/svg/bars-solid.svg' className='min-w-[24px]' />
+							<div className='p-2 flex flex-row justify-center hover:bg-light-4 items-center rounded-sm'onClick={handleMenuClick}>
+								<img src='/assets/svg/bars-solid.svg' className='min-w-[24px] ' />
 							</div>
 							<div className='flex flex-col justify-center items-center'>
 								<p className='items-center'>
@@ -73,9 +74,9 @@ const RootLayout = () => {
 						<header className='py-4 flex flex-row justify-between pl-3 gap-3'>
 							<div className='flex justify-start gap-2'>
 								<img src='/assets/svg/logo-no-background.svg' className='max-w-[32px]' />
-								<p className='font-berkshire text-dark-1 h1-bold'>Recommendic</p>
+								<p className='font-berkshire text-main h1-bold'>Recommendic</p>
 							</div>
-							<img src='/assets/svg/bars-solid.svg' className='max-w-[24px] mr-2' onClick={handleMenuClick} />
+							<img src='/assets/svg/cross-svgrepo-com.svg' className='max-w-[24px] mr-2 hover:bg-light-4' onClick={handleMenuClick} />
 						</header>
 						<div className='flex flex-col h-full py-4 justify-between'>
 							<div>
@@ -166,7 +167,7 @@ const RootLayout = () => {
 								</ul>
 								<hr className='pb-2' />
 								<div className=' flex flex-row gap-2 min-h-10 pl-5'>
-									<div className='bg-dark-2 max-w-fit max-h-fit p-2 rounded-full'><p className='text-white'>DM</p></div>
+									<InitialsOrAvartar name='Divine Maduks'/>
 									<div className='flex flex-col gap-1'>
 										<p className='base-bold'>Dr. Maduks</p>
 										<p className='tiny-thin'>Vetinary</p>
@@ -183,8 +184,8 @@ const RootLayout = () => {
 						<div className='w-auto flex flex-col pr-3 max-w-[320px] h-full bg-white'>
 							<header className='py-4 flex flex-row justify-between pl-3 gap-3'>
 								<div className='flex justify-start gap-2'>
-									<img src='/assets/svg/logo-no-background.svg' className='max-w-[32px]' />
-									<p className='font-berkshire text-dark-1 h1-bold'>Recommendic</p>
+									<img src='logo-no-background.svg' className='max-w-[32px]' />
+									<p className='font-berkshire text-main h1-bold'>Recommendic</p>
 								</div>
 							</header>
 							<div className='flex flex-col h-full py-4 justify-between'>

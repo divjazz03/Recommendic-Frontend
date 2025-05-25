@@ -35,10 +35,9 @@ const App = () => {
           <Route path='/email-confirmation/:token' element={<EmailConfirmation />} />
         </Route>
 
-        {/* Private Routes*/}
         <Route element={<RootLayout />}>
+        {/* Private Routes*/}
           <Route path='/onboarding' element={<Onboarding />} />
-
           <Route path='/overview' element={<Overview />} />
           <Route path='/appointment' element={<Appointment />}/>
           <Route path='/patient' element={<Patient/>}/>

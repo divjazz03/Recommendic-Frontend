@@ -28,6 +28,7 @@ export default {
 				'primary-600': '#091627',
 				'secondary-500': '#ccd8ff',
 				'secondary-600': '#b3c3ff',
+				'main': '#091627',
 				caution: {
 					100: '#ef4444',
 					200: '#b91c1c',

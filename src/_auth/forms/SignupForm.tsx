@@ -1,6 +1,5 @@
 import { Button } from '@/components/ui/button'
-import React, { FormEvent, useEffect, useState } from 'react'
-import { Gender } from './Enums'
+import React, { FormEvent,useState } from 'react'
 import { useMultistepForm } from '@/hooks/useMultistepForm'
 import { SignUpFormData } from '@/types'
 import { UserForm } from './UserForm'
@@ -33,7 +32,7 @@ const SignupForm: React.FC = () => {
     password: "",
     phoneNumber: "",
     typeOfUser: "Patient",
-    gender: Gender.MALE,
+    gender: 'Male',
     city: "",
     state: "",
     country: "",
@@ -47,7 +46,7 @@ const SignupForm: React.FC = () => {
       password: "",
       phoneNumber: "",
       typeOfUser: "Patient",
-      gender: Gender.MALE,
+      gender: 'Male',
       city: "",
       state: "",
       country: ""

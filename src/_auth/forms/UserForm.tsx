@@ -1,6 +1,5 @@
 import { Input } from "@/components/ui/input";
 import { UserFormProps } from "@/types";
-import { Gender } from "./Enums";
 import { CountrySelectorDropdown, PhoneInput } from "react-international-phone";
 import 'react-international-phone/style.css'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -77,18 +76,6 @@ export function UserForm({ formData, handleFormDataChange, form }: UserFormProps
 
                 </FormField>
 
-                {/* <div>
-                    <Label>Gender</Label>
-                    <Select onValueChange={value => value === 'Male' ? handleFormDataChange('gender', Gender.MALE) : handleFormDataChange('gender', Gender.FEMALE)}>
-                        <SelectTrigger>
-                            <SelectValue placeholder='Select Your gender' />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="Male" >Male</SelectItem>
-                            <SelectItem value="Female" >Female</SelectItem>
-                        </SelectContent>
-                    </Select>
-                </div> */}
                 <FormField
                     control={form.control}
                     name="gender"
@@ -96,7 +83,7 @@ export function UserForm({ formData, handleFormDataChange, form }: UserFormProps
                         <FormItem>
                             <FormLabel>Gender</FormLabel>
                             <FormControl>
-                            <Select defaultValue="Male" onValueChange={value => value === 'Male' ? handleFormDataChange('gender', Gender.MALE) : handleFormDataChange('gender', Gender.FEMALE)}>
+                            <Select defaultValue="Male" onValueChange={value => value === 'Male' ? handleFormDataChange('gender', 'Male') : handleFormDataChange('gender', "Female")}>
                         <SelectTrigger>
                             <SelectValue placeholder='Select Your gender' />
                         </SelectTrigger>
