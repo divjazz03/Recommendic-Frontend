@@ -3,41 +3,27 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Input } from '../ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Command, CommandGroup, CommandItem, CommandList } from '../ui/command';
+import { useGlobalSearch } from '@/context/GlobalSearchContext';
+import { useDebouncedValue } from '@/hooks/useDebouncedValue';
+import SearchResults from '../SearchResult';
 
 const GlobalSearch = () => {
-
+    const {query, setQuery} = useGlobalSearch();
     const [searchText, setSearchText] = useState('');
-    const [debouncedText, setDouncedText] = useState('');
+    const debouncedValue = useDebouncedValue(searchText)
     const [results, setResults] = useState<string[]>([]);
     const [popoverOpen, setPopOverOpen] = useState(false);
 
+
     const triggerRef = useRef(null);
 
-    const mockItems = [
-        'Apple',
-        'Banana',
-        'Orange',
-        'Pineapple',
-        'Grape',
-        'Watermelon',
-        'Mango',
-        'Blueberry'
-    ];
-
     useEffect(() => {
-        const handler = setTimeout(() => {
-            setDouncedText(searchText);
-        }, 300); // 300ms delay
-    }, [searchText])
-
-    useEffect(() => {
-        if (debouncedText.trim() === '') {
+        if (debouncedValue.trim() === '') {
             setResults([]);
         } else {
-            const filtered = mockItems.filter(Item => Item.toLowerCase().includes(debouncedText.toLowerCase()));
-            setResults(filtered);
+            setQuery(debouncedValue.trim());
         }
-    }, [debouncedText])
+    }, [debouncedValue])
 
     return (
         <>
@@ -70,21 +56,7 @@ const GlobalSearch = () => {
                     <Command>
                         <CommandList>
                             <CommandGroup heading="Results">
-                                {results.length > 0 ? (
-                                    results.map((item, index) => (
-                                        <CommandItem
-                                            key={index}
-                                            onSelect={() => {
-                                                setSearchText(item);
-                                                setPopOverOpen(false);
-                                            }}
-                                        >
-                                            {item}
-                                        </CommandItem>
-                                    ))
-                                ) : (
-                                    <div className="p-4 text-sm">Wow such empty</div>
-                                )}
+                                <SearchResults />
                             </CommandGroup>
                         </CommandList>
                     </Command>

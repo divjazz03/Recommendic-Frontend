@@ -79,20 +79,27 @@ export async function getAllSupportedMedicalCategories(): Promise<MedicalCategor
             return response.data
         })
         .catch(error => {
-            console.log(error)
+            console.error(error)
         })
     return result;
 }
 export async function resendConfirmationEmail(userEmail: string) {
     let result = axios.post(`${apiUrl}${retryEmail}`, { email: userEmail })
         .then(response => response.data)
-        .catch(error => console.log(error))
+        .catch(error => console.error(error))
     return result;
 }
 
 export async function verifyEmail(token: string) {
     let result = axios.post(`${apiUrl}${retryEmail}`, { token: token })
         .then(response => response.data)
-        .catch(error => console.log(error))
+        .catch(error => console.error(error))
     return result;
+}
+
+export async function doGlobalSearch(query: string) {
+    let result = axios.get(`${apiUrl}/search`)
+    .then(response => response.data)
+    .catch(error => console.error(error))
+    
 }

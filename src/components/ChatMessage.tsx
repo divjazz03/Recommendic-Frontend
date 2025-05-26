@@ -34,8 +34,8 @@ const ChatMessage:React.FC<ChatMessageProps> = ({
                                 <p>{nameOfCurrentUser}</p>
                                 <p>{handleDateTimeFormatting(date)}</p>
                             </div>
-                            <div tabIndex={0} className={`${messageType === 'currentUser'? 'rounded-se-none bg-main ' : 'rounded-ss-none bg-light-4'} flex flex-row rounded-lg min-w-52 max-w-52 shadow-sm p-3 h-fit'`}>
-                                <p className={`${messageType === 'currentUser'? 'text-light-4':'text-dark-3'} text-wrap small-regular`}>{message} aidhhoaihd oaidhoaid hoaihdo aidhaoidha oidhaodoihaoidh</p>
+                            <div tabIndex={0} className={`${messageType === 'currentUser'? 'rounded-se-none bg-main ' : 'rounded-ss-none bg-light-4'} flex flex-row rounded-xl min-w-52 max-w-52 shadow-sm p-3 h-fit'`}>
+                                <p className={`${messageType === 'currentUser'? 'text-light-4':'text-dark-3'} text-wrap small-regular`}>{message}</p>
                             </div>
                         </div>
                     </div>
