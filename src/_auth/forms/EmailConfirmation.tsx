@@ -1,7 +1,7 @@
 import EmailConfirmSuccessModal from "@/components/EmailConfirmSuccessModal";
 import Loader from "@/components/shared/Loader";
 import { Button } from "@/components/ui/button";
-import { useverifyEmailMutation } from "@/lib/react-query/queriiesAndMutation";
+import { useVerifyTokenMutation } from "@/lib/react-query/queriiesAndMutation";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
@@ -9,11 +9,14 @@ import { Link, useParams } from "react-router-dom";
 const EmailConfirmation = () => {
   const [isSuccessfulConfirmation, setSuccessfulConfirmation] = useState<boolean>(false);
   const { token } = useParams()
-  const { isPending: isConfirmingEmail, mutateAsync: verifyEmail, } = useverifyEmailMutation();
-  const onVerifyEmailHandler = () => {
-    //const result = verifyEmail(token);
-    setSuccessfulConfirmation(true)
-
+  const {error, isPending: isConfirmingEmail, mutateAsync:confirmEmail} = useVerifyTokenMutation();
+  const onVerifyEmailHandler = async () => {
+    const result = await confirmEmail(token);
+    if (result) {
+      setSuccessfulConfirmation(true);
+    } else if (error) {
+      console.log(error);
+    }
   }
   return (
     <>

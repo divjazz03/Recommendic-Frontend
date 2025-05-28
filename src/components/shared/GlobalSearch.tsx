@@ -3,15 +3,14 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Input } from '../ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Command, CommandGroup, CommandItem, CommandList } from '../ui/command';
-import { useGlobalSearch } from '@/context/GlobalSearchContext';
+import { useGlobalSearchContext } from '@/context/GlobalSearchContext';
 import { useDebouncedValue } from '@/hooks/useDebouncedValue';
 import SearchResults from '../SearchResult';
 
 const GlobalSearch = () => {
-    const {query, setQuery} = useGlobalSearch();
+    const {query, setQuery} = useGlobalSearchContext();
     const [searchText, setSearchText] = useState('');
     const debouncedValue = useDebouncedValue(searchText)
-    const [results, setResults] = useState<string[]>([]);
     const [popoverOpen, setPopOverOpen] = useState(false);
 
 
@@ -19,7 +18,7 @@ const GlobalSearch = () => {
 
     useEffect(() => {
         if (debouncedValue.trim() === '') {
-            setResults([]);
+            return;
         } else {
             setQuery(debouncedValue.trim());
         }

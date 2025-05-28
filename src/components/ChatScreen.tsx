@@ -6,7 +6,6 @@ import { ScrollArea } from './ui/scroll-area';
 import ChatMessage from './ChatMessage';
 import AutoResizeTextArea from './AutoResizeTextArea';
 import { Button } from './ui/button';
-import { randomUUID } from 'crypto';
 import { DateTime } from 'luxon';
 
 interface ChatScreenProps{
@@ -36,7 +35,7 @@ const ChatScreen: React.FC<ChatScreenProps> = ({
 		const message: Message = {
 			id: "randomUUID()",
 			message: text.trim(),
-			type: 'currentUser',
+			type: 'me',
 			date: DateTime.now().toISO(),
 			read: false,
 			sent: false
@@ -84,7 +83,7 @@ const ChatScreen: React.FC<ChatScreenProps> = ({
 													selectedChat?.messages?.map((message, key) => (
 														<ChatMessage key={key}
 															messageType={message.type}
-															nameOfCurrentUser={message.type === 'currentUser' ? selectedChat.nameOfCurrentUser : selectedChat.nameOfOtherUser}
+															nameOfCurrentUser={message.type === 'me' ? selectedChat.nameOfCurrentUser : selectedChat.nameOfOtherUser}
 															message={message.message}
 															date={message.date}
 														/>

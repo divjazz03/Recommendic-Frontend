@@ -17,7 +17,7 @@ export const GlobalSearchProvider: React.FC<{children: React.ReactNode}> = ({chi
     );
 };
 
-export const useGlobalSearch = () => {
+export const useGlobalSearchContext = () => {
     const context = useContext(SearchContext);
     if (!context) {
         throw new Error('usesearch must be withing a searchProvider');

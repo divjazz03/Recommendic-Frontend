@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const Schedule = () => {
+export const ConsultantSchedule = () => {
   return (
     <div>Schedule</div>
   )

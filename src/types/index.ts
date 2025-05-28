@@ -88,12 +88,29 @@ export interface SignUpResponseData {
     phonenumber: string;
     address: Address;
 }
+export interface UserName {
+    fullname: string,
+    firstname: string,
+    lastname: string
+}
+export interface PatientInfo {
+    username: UserName;
+    email: string,
+    phoneNumber: string,
+    gender: string,
+    address: Address
+}
+export interface ConsultantInfo {
+    username: UserName;
+    email: string,
+    phoneNumber: string,
+    gender: string,
+    address: Address
+}
 
 
 export interface SignUpResponse extends Response {
-    data: {
-        data: SignUpResponseData;
-    };
+    data: SignUpResponseData;
 }
 
 
@@ -118,9 +135,7 @@ export interface AuthContextState {
 
 
 export interface SignInResponse extends Response {
-    data: {
-        user: UserContext
-    }
+    data: UserContext
 }
 export interface MedicalCategory {
     name: string,
@@ -128,9 +143,7 @@ export interface MedicalCategory {
 }
 
 export interface MedicalCategoriesResponse extends Response{
-    data: {
-        categories: MedicalCategory[];
-    }
+    data: MedicalCategory[];
 }
 
 
@@ -154,7 +167,6 @@ export interface AuthenticatedUserResponse extends Response{
 interface Response {
     time: string;
     code: number;
-    path: string;
     status: string;
     message?: string;
     exception?: string;

@@ -1,5 +1,5 @@
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { signInValidation } from '../validations/SignInValidation'
@@ -18,13 +18,13 @@ const SigninForm = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { checkUserIsAuthenticated, setUserInContext, isLoading: isUserLoading, userContext } = useUserContext();
+  const { isPending: isSigningIn, mutateAsync:signInUser } = useSignInUserMutation();
 
   useEffect(() => {
     if (false/*checkUserIsAuthenticated()*/) {
       userContext.userStage === 'ONBOARDING' ? navigate("/onboarding") : navigate("/")
     }
   }, [])
-  const { mutateAsync: signinUser, isPending: isSigningIn } = useSignInUserMutation();
 
   const form = useForm<z.infer<typeof signInValidation>>({
     resolver: zodResolver(signInValidation),
@@ -36,21 +36,18 @@ const SigninForm = () => {
 
   const onSubmit = async (formData: z.infer<typeof signInValidation>) => {
     console.log("entered")
-    const result = await signinUser({
-      email: formData.email,
-      password: formData.password
-    });
-    if (result) {
+    const data = await signInUser({email: formData.email, password: formData.password});
+    if (data) {
       setUserInContext({
-        user_id: result.data.user.user_id,
-        first_name: result.data.user.first_name,
-        last_name: result.data.user.last_name,
-        role: result.data.user.role,
-        address: result.data.user.address,
-        userStage: result.data.user.userStage,
-        userType: result.data.user.userType
+        user_id: data.data.user_id,
+        first_name: data.data.first_name,
+        last_name: data.data.last_name,
+        role: data.data.role,
+        address: data.data.address,
+        userStage: data.data.userStage,
+        userType: data.data.userType
       });
-      result.data.user.userStage === 'ONBOARDING' ? navigate('/onboarding') : navigate('/');
+      data.data.userStage === 'ONBOARDING' ? navigate('/onboarding') : navigate('/');
     } else {
       form.reset()
       return toast({ title: 'Sign in failed try again', variant: 'destructive' })

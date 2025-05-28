@@ -1,4 +1,4 @@
-import { SelectAction } from '@/_root/pages/Onboarding';
+import { SelectAction } from '@/_root/pages/consultant/ConsultantOnboarding';
 import React, { useRef, useState } from 'react'
 
 
@@ -21,7 +21,7 @@ const MedicalCategoryCard = (props: MedicalCategoryCardProps) => {
     }
     return (
         <div
-            className={`flex flex-col w-fit min-w-[180px] max-w-[240px] py-3 px-2 gap-4 rounded-sm shadow-md hover:shadow-xl hover:duration-400 hover:transition-all ${selected ? "bg-dark-2": "bg-light-5"} ${props.disabled ? 'outline-none opacity-50 cursor-not-allowed' : ''}`}
+            className={`flex flex-col w-fit min-w-[180px] max-w-[240px] py-3 px-2 gap-4 rounded-sm shadow-md hover:shadow-xl hover:duration-400 hover:transition-all cursor-pointer ${selected ? "bg-dark-2": "bg-light-5"} ${props.disabled ? 'outline-none opacity-50 cursor-not-allowed' : ''}`}
             id={props.categoryName}
             onClick={props.disabled ? () => { } : handleCardClick}>
             <div className='text-center'>

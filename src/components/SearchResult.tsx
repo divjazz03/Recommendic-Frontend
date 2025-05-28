@@ -1,7 +1,3 @@
-import { useGlobalSearch } from '@/context/GlobalSearchContext';
-import { CommandGroup, CommandItem } from 'cmdk';
-import React, { useEffect, useState } from 'react'
-import { Command, CommandList } from './ui/command';
 import { useSearchResults } from '@/hooks/useSearchResults';
 import Loader from './shared/Loader';
 

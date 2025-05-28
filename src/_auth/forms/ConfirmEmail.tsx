@@ -12,7 +12,7 @@ const ConfirmEmail = () => {
     const [countDown, setCountDown] = useState(60);
     const [canResend, setCanResend] = useState(false);
     const email = location.state?.email
-    const { isPending: isResending, mutateAsync: resendEmail, } = useResendEmailMutation();
+    const { isPending: isResending, mutateAsync:resendConfirmationEmail} = useResendEmailMutation();
     useEffect(() => {
         if (countDown > 0) {
             const timer = setTimeout(() => setCountDown(countDown - 1), 1000);
@@ -21,11 +21,10 @@ const ConfirmEmail = () => {
             setCanResend(true);
         }
     }, [countDown])
-    const onResendEmailHandler = () => {
+    const onResendEmailHandler = async () => {
         setCanResend(false)
         setCountDown(60);
-
-        const result = resendEmail(email);
+        const result = await resendConfirmationEmail(email);
         if (!result) {
             return toast({ title: "Failed to resend email, try again", variant: "destructive" })
         }

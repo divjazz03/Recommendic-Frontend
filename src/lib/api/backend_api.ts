@@ -1,13 +1,22 @@
-import { AuthenticatedUserResponse, MedicalCategoriesResponse, NewUser, SignInResponse, SigninUserData, SignUpResponse, TypeOfUser } from "@/types";
+import { AuthenticatedUserResponse, ConsultantInfo, MedicalCategoriesResponse, NewUser, PatientInfo, SignInResponse, SigninUserData, SignUpResponse, TypeOfUser } from "@/types";
 import axios from "axios";
+import { error } from "console";
 
 const apiUrl = import.meta.env.VITE_BACKEND_BASE_URL;
-const createConsultantPath = import.meta.env.VITE_CONSULTANT_SIGN_UP_PATH;
-const createPatientPath = import.meta.env.VITE_PATIENT_SIGN_UP_PATH;
-const userLoginPath = import.meta.env.VITE_APP_USER_LOGIN_PATH;
-const userGetPath = import.meta.env.VITE_GET_USER_PATH;
+const userLoginPath = import.meta.env.VITE_APP_USER_LOGIN;
+const userGetPath = import.meta.env.VITE_GET_USER;
 const medicalCategoriesPath = import.meta.env.VITE_GET_MEDICAL_CATEGORIES;
 const retryEmail = import.meta.env.VITE_RETRY_EMAIL;
+
+const createPatientPath = import.meta.env.VITE_PATIENT_SIGN_UP;
+const getAllPatientsPath = import.meta.env.VITE_PATIENT_GET_ALL;
+const deletePatientPath = import.meta.env.VITE_PATIENT_DELETE;
+const patientOnboardingPath = import.meta.env.VITE_PATIENT_ONBOARDING;
+
+const createConsultantPath = import.meta.env.VITE_CONSULTANT_SIGN_UP;
+const getAllConsultantsPath = import.meta.env.VITE_CONSULTANT_GET_ALL;
+const deleteConsultantPath = import.meta.env.VITE_CONSULTANT_DELETE;
+const consultantOnboardingPath = import.meta.env.VITE_CONSULTANT_ONBOARDING;
 
 export async function createNewUser(typeOfUser: TypeOfUser,
     userData: NewUser) {
@@ -47,7 +56,6 @@ export async function createNewUser(typeOfUser: TypeOfUser,
             }
             result = axios.post(`${apiUrl}${createConsultantPath}`, consultantData)
                 .then((response) => response.data)
-                .catch((error) => null);
             return result;
         default:
             break;
@@ -57,10 +65,9 @@ export async function createNewUser(typeOfUser: TypeOfUser,
     return result;
 }
 
-export async function signinUser(userData: SigninUserData): Promise<SignInResponse | null> {
-    let result: Promise<SignInResponse | null> = axios.post(`${apiUrl}${userLoginPath}`, userData)
+export async function signinUser(userData: SigninUserData): Promise<SignInResponse> {
+    let result: Promise<SignInResponse> = axios.post(`${apiUrl}${userLoginPath}`, userData)
         .then((response) => response.data)
-        .catch((error) => null)
     return result;
 }
 
@@ -68,7 +75,6 @@ export async function getCurrentUser(): Promise<AuthenticatedUserResponse | null
 
     let result: Promise<AuthenticatedUserResponse> = axios.get(`${apiUrl}${userGetPath}`)
         .then(response => response.data)
-        .catch(error => null)
     return result;
 }
 
@@ -78,28 +84,59 @@ export async function getAllSupportedMedicalCategories(): Promise<MedicalCategor
             console.log(response.data)
             return response.data
         })
-        .catch(error => {
-            console.error(error)
-        })
     return result;
 }
-export async function resendConfirmationEmail(userEmail: string) {
+export async function resendConfirmationEmail(userEmail: string): Promise<string> {
     let result = axios.post(`${apiUrl}${retryEmail}`, { email: userEmail })
         .then(response => response.data)
-        .catch(error => console.error(error))
     return result;
 }
 
-export async function verifyEmail(token: string) {
+export async function verifyEmail(token: string): Promise<string> {
     let result = axios.post(`${apiUrl}${retryEmail}`, { token: token })
         .then(response => response.data)
-        .catch(error => console.error(error))
     return result;
 }
 
 export async function doGlobalSearch(query: string) {
-    let result = axios.get(`${apiUrl}/search`)
+    let result = axios.get(`${apiUrl}/search/${query}`)
     .then(response => response.data)
-    .catch(error => console.error(error))
     
+}
+
+export async function getAllPatients(params:{page?: number, size?: number, sort?: boolean}): Promise<PatientInfo[]> {
+    let result = await axios.get(`${apiUrl}${getAllPatientsPath}`, {params: params})
+    .then(response => response.data)
+
+    return result;
+}
+export async function getAllConsultants(params:{page?: number, size?: number, sort?: boolean}): Promise<ConsultantInfo[]> {
+    let result = await axios.get(`${apiUrl}${getAllConsultantsPath}`, {params: params})
+    .then(response => response.data)
+
+    return result;
+}
+
+export async function deletePatient(patientId: string): Promise<Response> {
+    let result = await axios.delete(`${apiUrl}${deletePatientPath}`,{params: {patient_Id: patientId}})
+    .then(response => response.data)
+    return result;
+}
+export async function deleteConsultant(consultantId: string): Promise<Response> {
+    let result = await axios.delete(`${apiUrl}${deleteConsultantPath}`,{params: {consultant_id: consultantId}})
+    .then(response => response.data)
+    return result;
+}
+
+export async function sendPatientOnboardingData(medicalCategories: string[], userId: string) {
+    let result = await axios.put(`${apiUrl}${patientOnboardingPath}`, {medicalCategories: medicalCategories})
+    .then(response => response.data)
+    return result;
+
+}
+export async function sendConsultantOnboardingData(medicalSpecialization: string[], userId: string) {
+    let result = await axios.put(`${apiUrl}${consultantOnboardingPath}`, {medicalSpecialization: medicalSpecialization})
+    .then(response => response.data)
+    return result;
+
 }

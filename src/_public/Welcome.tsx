@@ -1,7 +1,5 @@
 import { Button } from '@/components/ui/button'
-import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import SignupForm from '../_auth/forms/SignupForm';
 
 const Welcome = () => {
 

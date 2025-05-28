@@ -1,6 +1,6 @@
 import React, { ReactNode, useRef } from 'react'
 import { DateTime } from 'luxon'
-import { extractInitialsFromName, handleDateTimeFormatting } from '@/lib/utils';
+import { extractInitialsFromName, handleDateTimeFormatting } from '@/lib/utils/utils';
 import InitialsOrAvartar from './InitialsOrAvartar';
 
 export interface ChatThumbnailProps {
@@ -14,11 +14,11 @@ export interface ChatThumbnailProps {
 
 
 const ChatThumbnail = ({ name, mostRecentChatPreview,imgLink, numberOfUnreadChats = 9, dateOfLastChat = DateTime.fromJSDate(new Date(2025, 4, 23, 11, 20, 43)).toISO() }: ChatThumbnailProps) => {
-    const divRef = useRef(null);
+    const divRef = useRef<HTMLDivElement>(null);
 
     return (
         <>
-            <main ref={divRef} tabIndex={0} onClick={() => { divRef.current?.focus() }} className='px-2 py-2 w-full max-h-fit cursor-pointer bg-light-5 hover:bg-light-4 ring-offset-white focus:ring-1 focus:bg-light-4'>
+            <main ref={divRef} tabIndex={0} className='px-2 py-2 w-full max-h-fit cursor-pointer bg-light-5 hover:bg-light-4 ring-offset-white focus:ring-1 focus:bg-light-4'>
                 <div className='flex flex-row gap-3'>
                     <div>
                         <InitialsOrAvartar name={name} avatarUrl={imgLink}/>

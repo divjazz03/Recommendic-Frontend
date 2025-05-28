@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button'
 import { useUserContext } from '@/context/AuthContext'
 import React, { useContext } from 'react'
 
-const Overview = () => {
+const ConsultantOverview = () => {
   const usercontext = useUserContext();
   return (
     <>
@@ -11,4 +11,4 @@ const Overview = () => {
   )
 }
 
-export default Overview
+export default ConsultantOverview

@@ -2,37 +2,35 @@ import InitialsOrAvartar from '@/components/InitialsOrAvartar';
 import GlobalSearch from '@/components/shared/GlobalSearch';
 import { Input } from '@/components/ui/input';
 import { useUserContext } from '@/context/AuthContext';
-import React, { useEffect, useRef, useState } from 'react'
+import React, { MutableRefObject, useEffect, useRef, useState } from 'react'
 import { Link, Outlet, useLocation } from 'react-router-dom'
 
-const RootLayout = () => {
+const PatientRootLayout = () => {
 
 	const [asideHidden, setAsideHidden] = useState(true);
 	const { userContext } = useUserContext();
 	const location = useLocation();
 	const menuRefs = {
-		"/overview": useRef(null),
-		"/appointment": useRef(null),
-		"/patient": useRef(null),
-		"/schedule": useRef(null),
-		"/chat": useRef(null),
-		"/medication": useRef(null),
-		"/notification": useRef(null),
-		"/consultant": useRef(null),
-		"/settings": useRef(null)
+		"/overview": useRef<HTMLDivElement>(null),
+		"/schedule": useRef<HTMLDivElement>(null),
+		"/chat": useRef<HTMLDivElement>(null),
+		"/medication": useRef<HTMLDivElement>(null),
+		"/notification": useRef<HTMLDivElement>(null),
+		"/consultant": useRef<HTMLDivElement>(null),
+		"/settings": useRef<HTMLDivElement>(null)
 	}
-	const asideRef = useRef(null);
+	const asideRef: MutableRefObject<HTMLElement> = useRef(null);
 
 	useEffect(() => {
-		const currentRef = menuRefs[location.pathname];
+		const currentRef: MutableRefObject<HTMLDivElement> = menuRefs[location.pathname];
 		if (currentRef && currentRef.current) {
 			currentRef.current.focus();
 		}
 	}, [location.pathname]);
-	
+
 	useEffect(() => {
 		function handleClickOutside(event) {
-			if (asideRef.current && !asideRef.current.contains(event.target)){
+			if (asideRef.current && !asideRef.current.contains(event.target)) {
 				setAsideHidden(true);
 			}
 		}
@@ -54,14 +52,18 @@ const RootLayout = () => {
 					</div>
 					<div className='flex flex-row justify-between items-center'>
 						<div className=' flex flex-row gap-2 px-1 py-2 lg:hidden'>
-							<div className='p-2 flex flex-row justify-center hover:bg-light-4 items-center rounded-sm'onClick={handleMenuClick}>
+							<div className='p-2 flex flex-row justify-center hover:bg-light-4 items-center rounded-sm' onClick={handleMenuClick}>
 								<img src='/assets/svg/bars-solid.svg' className='min-w-[24px] ' />
 							</div>
 							<div className='flex flex-col justify-center items-center'>
-								<p className='items-center'>
+								<p className='items-center body-medium'>
 									{
 										location.pathname.substring(1)
-											.replace(location.pathname.charAt(1), location.pathname.charAt(1).toUpperCase())
+										.split('/')[1]
+										.charAt(0)
+										.concat(location.pathname.substring(1)
+										.split('/')[1]
+										.slice(1))
 									}
 								</p>
 							</div>
@@ -69,7 +71,7 @@ const RootLayout = () => {
 						<GlobalSearch />
 					</div>
 				</header>
-				<aside ref={asideRef} className={`${asideHidden ? ' -left-[380px] ' : 'left-0'} absolute z-50 lg:hidden h-full min-w-[320px] top-0 transition-all ease-linear duration-300`}>
+				<aside ref={asideRef} className={`${asideHidden ? ' -left-[380px]' : 'left-0'} absolute z-50 lg:hidden h-full min-w-[320px] top-0 transition-all ease-linear duration-300`}>
 					<div className='min-w-fit w-full flex flex-col pr-3 h-full bg-white'>
 						<header className='py-4 flex flex-row justify-between pl-3 gap-3'>
 							<div className='flex justify-start gap-2'>
@@ -81,32 +83,16 @@ const RootLayout = () => {
 						<div className='flex flex-col h-full py-4 justify-between'>
 							<div>
 								<ul>
-									<li >
-										<Link to={"/overview"}>
+									<li>
+										<Link to={"/patient/overview"}>
 											<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/overview"]}>
 												<img src='/assets/svg/overview-svgrepo-com.svg' className='max-w-[24px]' />
 												<p>Overview</p>
 											</div>
 										</Link>
 									</li>
-									<li >
-										<Link to={"/appointment"}>
-											<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/appointment"]}>
-												<img src='/assets/svg/calendar-svgrepo-com.svg' className='max-w-[24px]' />
-												<p>Appointment</p>
-											</div>
-										</Link>
-									</li>
-									<li className={`${userContext.userType === 'CONSULTANT' ? '' : 'hidden'}`} >
-										<Link to={"/patient"}>
-											<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/patient"]}>
-												<img src='/assets/svg/people-svgrepo-com.svg' className='max-w-[24px]' />
-												<p>Patients</p>
-											</div>
-										</Link>
-									</li>
-									<li className={`${userContext.userType === 'PATIENT' ? '' : 'hidden'}`} >
-										<Link to={"/consultant"}>
+									<li>
+										<Link to={"/patient/consultant"}>
 											<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/consultant"]}>
 												<img src='/assets/svg/people-svgrepo-com.svg' className='max-w-[24px]' />
 												<p>Consultant</p>
@@ -114,7 +100,7 @@ const RootLayout = () => {
 										</Link>
 									</li>
 									<li>
-										<Link to={"/schedule"}>
+										<Link to={"/patient/schedule"}>
 											<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/schedule"]}>
 												<img src='/assets/svg/schedule-svgrepo-com.svg' className='max-w-[24px]' />
 												<p>Schedule</p>
@@ -122,7 +108,7 @@ const RootLayout = () => {
 										</Link>
 									</li>
 									<li >
-										<Link to={"/chat"}>
+										<Link to={"/patient/chat"}>
 											<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/chat"]}>
 												<div className='relative block max-w-fit max-h-fit'>
 													<img src='/assets/svg/chats-svgrepo-com.svg' className='min-w-6 max-w-6' />
@@ -133,7 +119,7 @@ const RootLayout = () => {
 										</Link>
 									</li>
 									<li >
-										<Link to={"/medication"}>
+										<Link to={"/patient/medication"}>
 											<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/medication"]}>
 												<img src='/assets/svg/medication-bottle-svgrepo-com.svg' className='max-w-[24px]' />
 												<p>Medication</p>
@@ -146,10 +132,10 @@ const RootLayout = () => {
 							<div>
 								<ul>
 									<li >
-										<Link to={"/notification"}>
+										<Link to={"/patient/notification"}>
 											<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/notification"]}>
 												<div className='relative block max-w-fit max-h-fit'>
-													<img src='/assets/svg/overview-icon.svg' className='min-w-[24px]' />
+													<img src='/assets/svg/notification-12-svgrepo-com.svg' className='min-w-[24px]' />
 													<div className='absolute min-h-2 min-w-2 rounded-full bg-red-600 top-0 right-0'></div>
 												</div>
 												<p className=''>Notification</p>
@@ -157,7 +143,7 @@ const RootLayout = () => {
 										</Link>
 									</li>
 									<li>
-										<Link to={"/settings"}>
+										<Link to={"/patient/settings"}>
 											<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/settings"]}>
 												<img src='/assets/svg/settings-2-svgrepo-com.svg' className='max-w-[24px]' />
 												<p className=''>Settings</p>
@@ -167,7 +153,7 @@ const RootLayout = () => {
 								</ul>
 								<hr className='pb-2' />
 								<div className=' flex flex-row gap-2 min-h-10 pl-5'>
-									<InitialsOrAvartar name='Divine Maduks'/>
+									<InitialsOrAvartar name='Divine Maduks' />
 									<div className='flex flex-col gap-1'>
 										<p className='base-bold'>Dr. Maduks</p>
 										<p className='tiny-thin'>Vetinary</p>
@@ -179,12 +165,12 @@ const RootLayout = () => {
 					</div>
 				</aside>
 
-				<div className='lg:flex lg:flex-row lg:gap-5 w-full h-screen'>
+				<div className='lg:flex lg:flex-row w-full h-screen'>
 					<aside className='hidden lg:flex lg:h-full lg:min-w-[320px] lg:flex-col lg:gap-24 transition-all'>
 						<div className='w-auto flex flex-col pr-3 max-w-[320px] h-full bg-white'>
 							<header className='py-4 flex flex-row justify-between pl-3 gap-3'>
 								<div className='flex justify-start gap-2'>
-									<img src='logo-no-background.svg' className='max-w-[32px]' />
+									<img src='/assets/svg/logo-no-background.svg' className='max-w-[32px]' />
 									<p className='font-berkshire text-main h1-bold'>Recommendic</p>
 								</div>
 							</header>
@@ -192,31 +178,23 @@ const RootLayout = () => {
 								<div>
 									<ul>
 										<li >
-											<Link to={"/overview"}>
+											<Link to={"/patient/overview"}>
 												<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/overview"]}>
 													<img src='/assets/svg/overview-svgrepo-com.svg' className='max-w-[24px]' />
 													<p>Overview</p>
 												</div>
 											</Link>
 										</li>
-										<li >
-											<Link to={"/appointment"}>
-												<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/appointment"]}>
-													<img src='/assets/svg/calendar-svgrepo-com.svg' className='max-w-[24px]' />
-													<p>Appointment</p>
-												</div>
-											</Link>
-										</li>
-										<li className={`${userContext.userType !== 'CONSULTANT' ? '' : 'hidden'}`} >
-											<Link to={"/patient"}>
+										<li>
+											<Link to={"/patient/patient"}>
 												<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/patient"]}>
 													<img src='/assets/svg/people-svgrepo-com.svg' className='max-w-[24px]' />
 													<p>Patients</p>
 												</div>
 											</Link>
 										</li>
-										<li className={`${userContext.userType === 'CONSULTANT' ? '' : 'hidden'}`} >
-											<Link to={"/consultant"}>
+										<li>
+											<Link to={"/patient/consultant"}>
 												<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/consultant"]}>
 													<img src='/assets/svg/people-svgrepo-com.svg' className='max-w-[24px]' />
 													<p>Consultant</p>
@@ -224,7 +202,7 @@ const RootLayout = () => {
 											</Link>
 										</li>
 										<li>
-											<Link to={"/schedule"}>
+											<Link to={"/patient/schedule"}>
 												<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/schedule"]}>
 													<img src='/assets/svg/schedule-svgrepo-com.svg' className='max-w-[24px]' />
 													<p>Schedule</p>
@@ -232,7 +210,7 @@ const RootLayout = () => {
 											</Link>
 										</li>
 										<li >
-											<Link to={"/chat"}>
+											<Link to={"/patient/chat"}>
 												<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/chat"]}>
 													<div className='relative block max-w-fit max-h-fit'>
 														<img src='/assets/svg/chats-svgrepo-com.svg' className='min-w-6 max-w-6' />
@@ -243,7 +221,7 @@ const RootLayout = () => {
 											</Link>
 										</li>
 										<li >
-											<Link to={"/medication"}>
+											<Link to={"/patient/medication"}>
 												<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/medication"]}>
 													<img src='/assets/svg/medication-bottle-svgrepo-com.svg' className='max-w-[24px]' />
 													<p>Medication</p>
@@ -256,10 +234,10 @@ const RootLayout = () => {
 								<div>
 									<ul>
 										<li >
-											<Link to={"/notification"}>
+											<Link to={"/patient/notification"}>
 												<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/notification"]}>
 													<div className='relative block max-w-fit max-h-fit'>
-														<img src='/assets/svg/overview-icon.svg' className='min-w-[24px]' />
+														<img src='/assets/svg/notification-12-svgrepo-com.svg' className='min-w-[24px]' />
 														<div className='absolute min-h-2 min-w-2 rounded-full bg-red-600 top-0 right-0'></div>
 													</div>
 													<p className=''>Notification</p>
@@ -267,7 +245,7 @@ const RootLayout = () => {
 											</Link>
 										</li>
 										<li>
-											<Link to={"/settings"}>
+											<Link to={"/patient/settings"}>
 												<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/settings"]}>
 													<img src='/assets/svg/settings-2-svgrepo-com.svg' className='max-w-[24px]' />
 													<p className=''>Settings</p>
@@ -301,4 +279,4 @@ const RootLayout = () => {
 	)
 }
 
-export default RootLayout
+export default PatientRootLayout

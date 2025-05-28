@@ -1,5 +1,5 @@
-import { getCurrentUser } from '@/lib/backend_api'
-import { useGetCurrentUserMutation } from '@/lib/react-query/queriiesAndMutation'
+import { getCurrentUser } from '@/lib/api/backend_api'
+import { useGetCurrentUser } from '@/lib/react-query/queriiesAndMutation'
 import { AuthContextState, UserContext } from '@/types'
 import React from 'react'
 import { createContext, useContext, useEffect, useState } from 'react'
@@ -37,7 +37,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const navigate = useNavigate();
-    const {mutateAsync:getCurrentUser, isPending:isGettingUser} = useGetCurrentUserMutation();
+    const {data, isPending:isGettingUser} = useGetCurrentUser();
 
     const checkUserIsAuthenticated = async () => {
         setIsLoading(true);

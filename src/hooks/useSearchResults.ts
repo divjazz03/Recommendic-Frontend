@@ -1,7 +1,6 @@
-import { useGlobalSearch } from "@/context/GlobalSearchContext"
-import { doGlobalSearch } from "@/lib/backend_api";
+import { useGlobalSearchContext } from "@/context/GlobalSearchContext"
+import { doGlobalSearch } from "@/lib/api/backend_api";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 
 export interface SearchResult {
     id: string,
@@ -9,7 +8,7 @@ export interface SearchResult {
 }
 
 export const useSearchResults = () => {
-    const {query} = useGlobalSearch();
+    const {query} = useGlobalSearchContext();
 
     return useQuery<SearchResult[]>({
         queryKey: ['search', query],
