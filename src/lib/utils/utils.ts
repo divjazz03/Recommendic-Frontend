@@ -28,3 +28,10 @@ export const handleDateTimeFormatting = (date: string): string => {
         return dateOfChat.monthLong;
     }
 }
+export const getJwtFromAuthorization = (authorizationString: string): string => {
+    if (authorizationString && authorizationString.startsWith('Bearer ')){
+        const token = authorizationString.split(' ')[1];
+        return token;
+    }
+    return null;
+}

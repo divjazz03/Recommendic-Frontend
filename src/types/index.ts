@@ -18,7 +18,7 @@ export type SignUpFormData = {
     password?: string,
     phoneNumber?: string,
     typeOfUser?: TypeOfUser,
-    gender?: 'Male'|'Female',
+    gender?: 'Male' | 'Female',
     city?: string,
     state?: string,
     country?: string,
@@ -28,7 +28,7 @@ export type SignUpFormData = {
 export type UserFormProps = {
     formData: any,
     handleFormDataChange: (key: keyof SignUpFormData, value: any) => void,
-    form:  UseFormReturn<z.infer<typeof signUpValidation>>
+    form: UseFormReturn<z.infer<typeof signUpValidation>>
 }
 
 
@@ -120,17 +120,14 @@ export interface UserContext {
     last_name: string;
     role: string;
     address: Address;
-    userStage: 'ONBOARDING'|'ACTIVE_USER',
-    userType: 'PATIENT' | 'CONSULTANT'|'ADMIN'
+    userStage: 'ONBOARDING' | 'ACTIVE_USER',
+    userType: 'PATIENT' | 'CONSULTANT' | 'ADMIN'
 }
 
 export interface AuthContextState {
     userContext: UserContext;
-    isLoading: boolean;
     isAuthenticated: boolean;
     setUserInContext: React.Dispatch<React.SetStateAction<UserContext>>;
-    setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
-    checkUserIsAuthenticated: () => Promise<boolean>
 }
 
 
@@ -142,7 +139,7 @@ export interface MedicalCategory {
     description: string
 }
 
-export interface MedicalCategoriesResponse extends Response{
+export interface MedicalCategoriesResponse extends Response {
     data: MedicalCategory[];
 }
 
@@ -153,16 +150,14 @@ export interface AdminCredentialResponse extends Response {
         password: string;
     }
 }
-export interface AuthenticatedUserResponse extends Response{
-    data: {
-        userId: string;
-        firstName: string;
-        lastName: string;
-        role: string;
-        address: Address;
-        userType: 'PATIENT'|'ADMIN'|'CONSULTANT';
-        userStage: 'ONBOARDING'|'ACTIVE_USER';
-    }
+export interface AuthenticatedUserResponse {
+    userId: string;
+    first_name: string;
+    last_name: string;
+    role: string;
+    address: Address;
+    user_type: 'PATIENT' | 'ADMIN' | 'CONSULTANT';
+    user_stage: 'ONBOARDING' | 'ACTIVE_USER';
 }
 interface Response {
     time: string;

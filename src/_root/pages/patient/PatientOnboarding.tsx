@@ -1,13 +1,14 @@
 import MedicalCategoryCard from '@/components/MedicalCategoryCard';
+import Loader from '@/components/shared/Loader';
 import { Button } from '@/components/ui/button';
 import { useUserContext } from '@/context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { useGetSupportedMedicalCategories } from '@/lib/react-query/queriiesAndMutation';
+import { useGetSupportedMedicalCategories, useUpdatePatientOnboardingInfo } from '@/lib/react-query/queriiesAndMutation';
 import { MedicalCategory } from '@/types';
 import React, { FormEvent, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 
-export enum SelectAction {
+enum SelectAction {
     UNSELECT = "UNSELECT",
     SELECT = "SELECT"
 }
@@ -15,71 +16,77 @@ export enum SelectAction {
 
 const PatientOnboarding = () => {
 
-    const { data, isPending: isLoadingMedicalCategories } = useGetSupportedMedicalCategories();
+    const { error: errorGettingSupportedCategories, data: supportedCategories, isPending: isLoadingMedicalCategories } = useGetSupportedMedicalCategories();
     const { userContext } = useUserContext();
     const [specialties, setSpecialties] = useState<MedicalCategory[]>([])
     const [selectedInterests, setSelectedInterests] = useState([]);
-    const {toast} = useToast();
+    const { mutateAsync: updatePatientOnboardingInfo, isPending:isUpdating } = useUpdatePatientOnboardingInfo()
+    const { toast } = useToast();
     const navigate = useNavigate();
 
     useEffect(() => {
-        // const fetchCategoryData = async () => {
-        //   const result = await getMedicalCategories();
-        //   setSpecialties(result.data.categories);
-        // }
-        // fetchCategoryData();
-      }, []);
+        if (supportedCategories) {
+            setSpecialties(supportedCategories.data)
+        }
+    }, [supportedCategories]);
     const handleSelectedInterestsChange = (interest: string, action: SelectAction) => {
-        console.log(action)
         if (action === SelectAction.SELECT) {
             if (!selectedInterests.includes(interest)) {
                 setSelectedInterests(prev => [...prev, interest]);
-                console.log(selectedInterests);
             }
         } else {
             setSelectedInterests(prev => prev.filter(item => item !== interest));
         }
     }
-    const getStateInfo = () => {
-        console.log(`interests ${selectedInterests}`);
-    }
-    const handleNext = () => {
+    const handleNext = async () => {
 
         if (selectedInterests.length > 0) {
-            // submit the data
-            navigate('/patient/overview');
-            return toast({title: 'Thanks for helping us serve you better'})
+            console.log(selectedInterests)
+            try {
+                const { } = await updatePatientOnboardingInfo({
+                    interests: selectedInterests.filter(interest => interest != " "),
+                    userId: userContext.user_id
+                })
+                navigate('/patient/overview');
+                return toast({ title: 'Thanks for helping us serve you better' })
+            } catch (error) {
+                return toast({ title: `Onboarding Failed: ${error.message}`, variant: 'destructive' })
+            }
+
         } else {
-            return toast({title: 'Please choose at least one', variant: 'destructive'});
+            return toast({ title: 'Please choose at least one', variant: 'destructive' });
         }
     }
     return (
         <>
             <main className=''>
-                <div className='h1-bold'>
-                    <header className='text-center'>Patient&nbsp;Onboarding</header>
-                    
-                    <section className=' px-10 py-10 '>
-                        <div className={'flex flex-row flex-wrap justify-left gap-4'}>
-                            {
-                                ['Dentist','Gynecologist', 'Psychiatry','Opthalmology','Surgery'].map((categoryName, index) => (
-                                <MedicalCategoryCard
-                                key={index}
-                                categoryName={categoryName}
-                                categoryDescription='A very important person fidof df dofidfoi i fdofidofiekjflsk ekf lkaej afeldkslkdnsk '
-                                selectActionHandler={handleSelectedInterestsChange}
-                                disabled={false}
-                                />
-                            ))
-                            }
-                        </div>
-                    </section>
-                    <Button className='tracking-normal shad-button_primary' onClick={handleNext}>
-                        Next 
-                    </Button>
-                    <hr></hr>
-                    <Button className='shad-button_primary' onClick={getStateInfo}>GetInfo</Button>
-                </div>
+                {
+                    isLoadingMedicalCategories ? <Loader /> :
+                        errorGettingSupportedCategories ? <p className='h1-bold'>Couldn't retrieve at this moment</p> :
+                            <div className='h1-bold'>
+                                <header className='text-center'>Patient&nbsp;Onboarding</header>
+
+                                <section className=' px-10 py-10 '>
+                                    <div className={'flex flex-row flex-wrap justify-left gap-4'}>
+                                        {
+                                            specialties.map((categoryName, index) => (
+                                                <MedicalCategoryCard
+                                                    key={index}
+                                                    categoryName={categoryName.name}
+                                                    categoryDescription={categoryName.description}
+                                                    selectActionHandler={handleSelectedInterestsChange}
+                                                    disabled={false}
+                                                />
+                                            ))
+                                        }
+                                    </div>
+                                </section>
+                                <Button className='tracking-normal shad-button_primary' onClick={handleNext}>
+                                    {isUpdating? <Loader/>: 'Next'}
+                                </Button>
+                            </div>
+                }
+
             </main>
         </>
     )

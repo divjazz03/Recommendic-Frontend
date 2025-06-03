@@ -11,20 +11,16 @@ import { useSignInUserMutation } from '@/lib/react-query/queriiesAndMutation'
 import { useUserContext } from '@/context/AuthContext'
 import { useToast } from '@/hooks/use-toast'
 import { z } from 'zod'
+import { Loader } from 'lucide-react'
+import axios, { AxiosError } from 'axios'
 
 
 const SigninForm = () => {
 
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { checkUserIsAuthenticated, setUserInContext, isLoading: isUserLoading, userContext } = useUserContext();
-  const { isPending: isSigningIn, mutateAsync:signInUser } = useSignInUserMutation();
-
-  useEffect(() => {
-    if (false/*checkUserIsAuthenticated()*/) {
-      userContext.userStage === 'ONBOARDING' ? navigate("/onboarding") : navigate("/")
-    }
-  }, [])
+  const { setUserInContext, userContext } = useUserContext();
+  const { isPending: isSigningIn, mutateAsync: signInUser } = useSignInUserMutation();
 
   const form = useForm<z.infer<typeof signInValidation>>({
     resolver: zodResolver(signInValidation),
@@ -36,22 +32,38 @@ const SigninForm = () => {
 
   const onSubmit = async (formData: z.infer<typeof signInValidation>) => {
     console.log("entered")
-    const data = await signInUser({email: formData.email, password: formData.password});
-    if (data) {
-      setUserInContext({
-        user_id: data.data.user_id,
-        first_name: data.data.first_name,
-        last_name: data.data.last_name,
-        role: data.data.role,
-        address: data.data.address,
-        userStage: data.data.userStage,
-        userType: data.data.userType
-      });
-      data.data.userStage === 'ONBOARDING' ? navigate('/onboarding') : navigate('/');
-    } else {
-      form.reset()
-      return toast({ title: 'Sign in failed try again', variant: 'destructive' })
+    try {
+      const data = await signInUser({ email: formData.email, password: formData.password });
+      if (data) {
+        setUserInContext({
+          user_id: data.data.user_id,
+          first_name: data.data.first_name,
+          last_name: data.data.last_name,
+          role: data.data.role,
+          address: data.data.address,
+          userStage: data.data.userStage,
+          userType: data.data.userType
+        });
+        console.log(userContext)
+
+        data.data.userStage === 'ONBOARDING' ?
+          navigate(userContext.userType === 'CONSULTANT' ? '/consultant/onboarding' : '/patient/onboarding') :
+          navigate(userContext.userType === 'CONSULTANT' ? '/consultant/overview' : '/patient/overview');
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        error as AxiosError;
+        form.reset()
+        if (error.status === 404) {
+          return toast({ title: `Sign in failed: You don't have an account please sign up`, variant: 'destructive' });
+        }
+        return toast({ title: `Sign in failed: ${error.message}`, variant: 'destructive' });
+      }
+      
+      console.error(error)
+      return toast({ title: `Sign in failed: Something went wrong`, variant: 'destructive' });
     }
+
   };
 
 
@@ -94,7 +106,7 @@ const SigninForm = () => {
                 )}>
               </FormField>
               <Button type='submit' className='shad-button_primary'>
-                Sign In
+                {isSigningIn ? <Loader /> : 'Sign In'}
               </Button>
             </div>
             <p className='subtle-semibold mt-4'>New to Recommendic? <span><Link to={'/sign-up'} className='subtle-semibold text-dark-1 underline hover:no-underline transition-all'>Create new account</Link></span></p>

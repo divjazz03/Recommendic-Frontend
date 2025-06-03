@@ -3,23 +3,32 @@ import {
     useQuery,
     useMutation
  } from "@tanstack/react-query";
-import { createNewUser, signinUser, getCurrentUser, resendConfirmationEmail, verifyEmail, getAllSupportedMedicalCategories } from "../api/backend_api";
+import { createNewUser, signinUser, getCurrentUser, resendConfirmationEmail, verifyEmail, getAllSupportedMedicalCategories, sendPatientOnboardingData, sendConsultantOnboardingData } from "../api/backend_api";
 
- type MutationFnProps = {
+ type UserCreateMutionProps = {
     typeOfUser: TypeOfUser,
     userData: NewUser
+ }
+ type PatientOnboardingMutionProps = {
+    interests: string[],
+    userId: string
+ }
+ type ConsultantOnboardingMutionProps = {
+    specialty: string,
+    userId: string
  }
  export const useCreateUserMutation = () => {
     
     return useMutation({
-        mutationFn: (mutationFnProp: MutationFnProps) => createNewUser(mutationFnProp.typeOfUser, mutationFnProp.userData)
+        mutationFn: (mutationFnProp: UserCreateMutionProps) => createNewUser(mutationFnProp.typeOfUser, mutationFnProp.userData)
     });
  }
 
- export const useGetCurrentUser = () => {
+ export const useGetCurrentUser = (enabled: boolean) => {
    return useQuery({
       queryKey: ['getCurrentUser'],
       queryFn: getCurrentUser,
+      enabled: enabled,
       staleTime: 1000 * 3600 //1 hour
    })
  }
@@ -42,6 +51,16 @@ import { createNewUser, signinUser, getCurrentUser, resendConfirmationEmail, ver
  export const useResendEmailMutation= () => {
    return useMutation({
       mutationFn: (email: string) => resendConfirmationEmail(email),
+   })
+ }
+ export const useUpdatePatientOnboardingInfo = () => {
+   return useMutation({
+      mutationFn: (props: PatientOnboardingMutionProps) => sendPatientOnboardingData(props.interests, props.userId),
+   })
+ }
+ export const useUpdateConsultantOnboardingInfo = () => {
+   return useMutation({
+      mutationFn: (props: ConsultantOnboardingMutionProps) => sendConsultantOnboardingData(props.specialty, props.userId),
    })
  }
  export const useVerifyTokenMutation = () => {

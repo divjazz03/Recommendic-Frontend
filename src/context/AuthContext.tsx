@@ -1,5 +1,6 @@
 import { getCurrentUser } from '@/lib/api/backend_api'
 import { useGetCurrentUser } from '@/lib/react-query/queriiesAndMutation'
+import { getJwtFromAuthorization } from '@/lib/utils/utils'
 import { AuthContextState, UserContext } from '@/types'
 import React from 'react'
 import { createContext, useContext, useEffect, useState } from 'react'
@@ -22,11 +23,8 @@ export const INITIAL_USER: UserContext = {
 
 const INITIAL_STATE: AuthContextState = {
     userContext: INITIAL_USER,
-    isLoading: false,
     isAuthenticated: false,
-    setUserInContext: () => { },
-    setIsAuthenticated: () => { },
-    checkUserIsAuthenticated: async () => false as boolean,
+    setUserInContext: () => { }
 }
 
 const AuthContext = createContext<AuthContextState>(INITIAL_STATE);
@@ -34,55 +32,35 @@ const AuthContext = createContext<AuthContextState>(INITIAL_STATE);
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const [userContext, setUserInContext] = useState<UserContext>(INITIAL_USER);
-    const [isLoading, setIsLoading] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const navigate = useNavigate();
-    const {data, isPending:isGettingUser} = useGetCurrentUser();
+    const {data, error, isPending:isGettingUser} = useGetCurrentUser(!location.pathname.includes('/sign-in'));
 
-    const checkUserIsAuthenticated = async () => {
-        setIsLoading(true);
-        try {
-            const currentAccount = await getCurrentUser();
-            if (currentAccount) {
-                setUserInContext({
-                    user_id: currentAccount.data.userId,
-                    first_name: currentAccount.data.firstName,
-                    last_name: currentAccount.data.lastName,
-                    role: currentAccount.data.role,
-                    address: {
-                        city: currentAccount.data.address.city,
-                        state: currentAccount.data.address.state,
-                        country: currentAccount.data.address.country
-                    },
-                    userStage: currentAccount.data.userStage,
-                    userType: currentAccount.data.userType
-                })
+    useEffect(() => {
+            if (error) {
+                console.error(error)
+                navigate('/sign-in');
+            } else if(data) {
+                console.log(data)
+                setUserInContext((prev) => {
+                    return {
+                        user_id: data.userId,
+                        first_name: data.first_name,
+                        last_name: data.last_name,
+                        address: data.address,
+                        role: data.role,
+                        userStage: data.user_stage,
+                        userType: data.user_type
+                    } as UserContext
+                });
                 setIsAuthenticated(true);
-
-                return true;
-            } 
-            return false
-        } catch (error) {
-            console.log(error);
-            return false;
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    // useEffect(() => {
-    //     if (checkUserIsAuthenticated()) {
-    //         navigate('/sign-in');
-    //     }
-    // }, [])
+            }
+    }, [data,error])
 
     const value = {
         userContext,
-        isLoading,
         isAuthenticated,
-        setUserInContext,
-        setIsAuthenticated,
-        checkUserIsAuthenticated
+        setUserInContext
     }
     return (
         <AuthContext.Provider value={value}>

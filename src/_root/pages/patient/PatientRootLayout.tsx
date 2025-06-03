@@ -135,7 +135,7 @@ const PatientRootLayout = () => {
 										<Link to={"/patient/notification"}>
 											<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/notification"]}>
 												<div className='relative block max-w-fit max-h-fit'>
-													<img src='/assets/svg/notification-12-svgrepo-com.svg' className='min-w-[24px]' />
+													<img src='/assets/svg/notification-12-svgrepo-com.svg' className='max-w-[24px]' />
 													<div className='absolute min-h-2 min-w-2 rounded-full bg-red-600 top-0 right-0'></div>
 												</div>
 												<p className=''>Notification</p>
@@ -237,7 +237,7 @@ const PatientRootLayout = () => {
 											<Link to={"/patient/notification"}>
 												<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/notification"]}>
 													<div className='relative block max-w-fit max-h-fit'>
-														<img src='/assets/svg/notification-12-svgrepo-com.svg' className='min-w-[24px]' />
+														<img src='/assets/svg/notification-12-svgrepo-com.svg' className='max-w-[24px]' />
 														<div className='absolute min-h-2 min-w-2 rounded-full bg-red-600 top-0 right-0'></div>
 													</div>
 													<p className=''>Notification</p>

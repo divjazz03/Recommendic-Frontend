@@ -1,7 +1,9 @@
 import EmailConfirmSuccessModal from "@/components/EmailConfirmSuccessModal";
 import Loader from "@/components/shared/Loader";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/hooks/use-toast";
 import { useVerifyTokenMutation } from "@/lib/react-query/queriiesAndMutation";
+import axios, { AxiosError } from "axios";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
@@ -9,13 +11,18 @@ import { Link, useParams } from "react-router-dom";
 const EmailConfirmation = () => {
   const [isSuccessfulConfirmation, setSuccessfulConfirmation] = useState<boolean>(false);
   const { token } = useParams()
-  const {error, isPending: isConfirmingEmail, mutateAsync:confirmEmail} = useVerifyTokenMutation();
+  const {isPending: isConfirmingEmail, mutateAsync:confirmEmail} = useVerifyTokenMutation();
   const onVerifyEmailHandler = async () => {
-    const result = await confirmEmail(token);
-    if (result) {
-      setSuccessfulConfirmation(true);
-    } else if (error) {
-      console.log(error);
+    try {
+        const result = await confirmEmail(token);
+        if (result) {
+        setSuccessfulConfirmation(true);
+    }
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+          error as AxiosError;
+          return toast({title: `Couldn't confirm email: ${error.message}`});
+        }
     }
   }
   return (
@@ -31,7 +38,7 @@ const EmailConfirmation = () => {
         </footer>
       </main>
       <EmailConfirmSuccessModal
-        isOpen={isSuccessfulConfirmation} redirectUrl="/overview"/>
+        isOpen={isSuccessfulConfirmation} redirectUrl="/sign-in"/>
     </>
   )
 }
