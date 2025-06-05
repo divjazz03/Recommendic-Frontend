@@ -1,29 +1,25 @@
 import React, { KeyboardEventHandler, useState } from 'react'
 import { Input } from './ui/input'
+import { relative } from 'path';
+import { Search } from 'lucide-react';
 
 interface LocalSearchProps {
-    placeholder: string
+    placeholder: string,
+    setSearchValue: (value: React.SetStateAction<string>)=>void
+    handleEnterKeyPress?: (event: React.KeyboardEvent<HTMLInputElement>) => void
 }
 
-const LocalSearch = ({ placeholder}: LocalSearchProps) => {
-
-    const [searchValue, setSearchValue] = useState('');
-
-    const handleEnterKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
-        
-        if (event.key === 'Enter') {
-            event.preventDefault()
-            console.log(`submit search query ${searchValue}`)
-        }
-
-    }
+const LocalSearch: React.FC<LocalSearchProps> = ({ placeholder, setSearchValue, handleEnterKeyPress}) => {
     return (
         <>
-            <div  className= { `${'w-full max-h-10 px-2 flex flex-row justify-center items-center gap-2'}`}>
-                <Input size={32}
+            <div  className= { `${'relative w-full max-h-10 px-2 flex flex-row justify-center items-center gap-2'}`}>
+                <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-dark-1 w-5 h-5'/>
+                <Input
                     placeholder={placeholder}
                     onChange={(event) => setSearchValue(event.target.value)}
-                    onKeyDown={handleEnterKeyPress} />
+                    onKeyDown={handleEnterKeyPress} 
+                    className='w-full pl-10 pr-4 border border-light-3 rounded-lg  focus:border-transparent'
+                    />
             </div>
         </>
     )

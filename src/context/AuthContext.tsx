@@ -1,6 +1,4 @@
-import { getCurrentUser } from '@/lib/api/backend_api'
 import { useGetCurrentUser } from '@/lib/react-query/queriiesAndMutation'
-import { getJwtFromAuthorization } from '@/lib/utils/utils'
 import { AuthContextState, UserContext } from '@/types'
 import React from 'react'
 import { createContext, useContext, useEffect, useState } from 'react'
@@ -38,8 +36,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     useEffect(() => {
             if (error) {
-                console.error(error)
-                navigate('/sign-in');
+                // console.error(error)
+                // navigate('/sign-in');
             } else if(data) {
                 console.log(data)
                 setUserInContext((prev) => {

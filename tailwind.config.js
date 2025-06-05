@@ -41,10 +41,10 @@ export default {
 				'dark-2': '#1c1c1f',
 				'dark-1': '#222226',
 				'light-5': '#ffffff',
-				'light-4': '#f2f2f2',
-				'light-3': '#e6e6e6',
+				'light-4': '#f9f9f9',
+				'light-3': '#e9e9e9',
 				'light-2': '#d9d9d9',
-				'light-1': '#cccccc'
+				'light-1': '#c9c9c9'
 			},
 			screens: {
 				xs: '480px',

@@ -93,20 +93,6 @@ export interface UserName {
     firstname: string,
     lastname: string
 }
-export interface PatientInfo {
-    username: UserName;
-    email: string,
-    phoneNumber: string,
-    gender: string,
-    address: Address
-}
-export interface ConsultantInfo {
-    username: UserName;
-    email: string,
-    phoneNumber: string,
-    gender: string,
-    address: Address
-}
 
 
 export interface SignUpResponse extends Response {
@@ -165,4 +151,38 @@ interface Response {
     status: string;
     message?: string;
     exception?: string;
+}
+interface ConsultantEducation {
+    degree: string;
+    institution: string;
+    year: number;
+}
+interface ConsultantStats {
+    patientsHelped: number;
+    successRate: number;
+    responseTime: string;
+    followUpRate: number;
+}
+export interface ConsultantType {
+    name: string;
+    title: string;
+    rating: number;
+    verified: boolean;
+    experience: number;
+    totalReviews: 347;
+    bio: string;
+    location: string;
+    image: string;
+    specialization: string;
+    languages: string;
+    consultationFee: number;
+    nextAvailaible: Date;
+    education: ConsultantEducation[],
+    stats: ConsultantStats
+}
+interface Review {
+    name: string;
+    rating: number;
+    comment: string;
+    date: string;
 }

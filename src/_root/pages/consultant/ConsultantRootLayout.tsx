@@ -17,7 +17,8 @@ const ConsultantRootLayout = () => {
 		"/chat": useRef<HTMLDivElement>(null),
 		"/medication": useRef<HTMLDivElement>(null),
 		"/notification": useRef<HTMLDivElement>(null),
-		"/settings": useRef<HTMLDivElement>(null)
+		"/settings": useRef<HTMLDivElement>(null),
+		"/appointment": useRef<HTMLDivElement>(null)
 	}
 	const asideRef: MutableRefObject<HTMLElement> = useRef(null);
 
@@ -43,10 +44,10 @@ const ConsultantRootLayout = () => {
 		setAsideHidden(aside => !aside);
 	};
 	return (
-		<main className='relative bg-white min-w-[320px] max-w-full h-screen overflow-hidden'>
+		<main className='relative bg-light-4 min-w-[320px] max-w-full h-screen overflow-hidden'>
 			<div className='border-2'>
 				<header className='lg:hidden sticky top-0 bg-white'>
-					<div className='flex flex-row justify-start w-full border gap-2 pt-4 pl-3'>
+					<div className='flex flex-row h-20 items-center justify-start w-full border gap-2 pt-4 pl-3'>
 						<img src='/assets/svg/logo-no-background.svg' className='max-w-[32px]' />
 						<p className='font-berkshire text-main h1-bold'>Recommendic</p>
 					</div>
@@ -72,9 +73,9 @@ const ConsultantRootLayout = () => {
 						<GlobalSearch />
 					</div>
 				</header>
-				<aside ref={asideRef} className={`${asideHidden ? ' -left-[380px]' : 'left-0'} absolute z-50 lg:hidden h-full min-w-[320px] top-0 transition-all ease-linear duration-300`}>
+				<nav ref={asideRef} className={`${asideHidden ? ' -left-[380px]' : 'left-0'} absolute z-50 lg:hidden h-full min-w-[320px] top-0 transition-all ease-linear duration-300`}>
 					<div className='min-w-fit w-full flex flex-col pr-3 h-full bg-white'>
-						<header className='py-4 flex flex-row justify-between pl-3 gap-3'>
+						<header className='py-4 flex flex-row items-center justify-between pl-3 gap-3'>
 							<div className='flex justify-start gap-2'>
 								<img src='/assets/svg/logo-no-background.svg' className='max-w-[32px]' />
 								<p className='font-berkshire text-main h1-bold'>Recommendic</p>
@@ -89,6 +90,14 @@ const ConsultantRootLayout = () => {
 											<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/overview"]}>
 												<img src='/assets/svg/overview-svgrepo-com.svg' className='max-w-[24px]' />
 												<p>Overview</p>
+											</div>
+										</Link>
+									</li>
+									<li>
+										<Link to={"/consultant/appointment"}>
+											<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/appointment"]}>
+												<img src='/assets/svg/appointment-svgrepo-com.svg' className='max-w-[24px]'/>
+												<p>Appointment</p>
 											</div>
 										</Link>
 									</li>
@@ -164,12 +173,12 @@ const ConsultantRootLayout = () => {
 
 						</div>
 					</div>
-				</aside>
+				</nav>
 
 				<div className='lg:flex lg:flex-row w-full h-screen'>
-					<aside className='hidden lg:flex lg:h-full lg:min-w-[320px] lg:flex-col lg:gap-24 transition-all'>
+					<nav className='hidden lg:flex lg:h-full lg:min-w-[320px] lg:flex-col lg:gap-24 transition-all'>
 						<div className='w-auto flex flex-col pr-3 max-w-[320px] h-full bg-white'>
-							<header className='py-4 flex flex-row justify-between pl-3 gap-3'>
+							<header className='py-4 flex flex-row items-center justify-between pl-3 gap-3'>
 								<div className='flex justify-start gap-2'>
 									<img src='/assets/svg/logo-no-background.svg' className='max-w-[32px]' />
 									<p className='font-berkshire text-main h1-bold'>Recommendic</p>
@@ -186,6 +195,14 @@ const ConsultantRootLayout = () => {
 												</div>
 											</Link>
 										</li>
+										<li>
+										<Link to={"/consultant/appointment"}>
+											<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/appointment"]}>
+												<img src='/assets/svg/appointment-svgrepo-com.svg' className='max-w-[24px]'/>
+												<p>Appointment</p>
+											</div>
+										</Link>
+									</li>
 										<li>
 											<Link to={"/consultant/patient"}>
 												<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/patient"]}>
@@ -230,7 +247,7 @@ const ConsultantRootLayout = () => {
 											<Link to={"/consultant/notification"}>
 												<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/notification"]}>
 													<div className='relative block max-w-fit max-h-fit'>
-														<img src='/assets/svg/notification-12-svgrepo-com.svg' className='min-w-[24px]' />
+														<img src='/assets/svg/notification-12-svgrepo-com.svg' className='max-w-[24px]' />
 														<div className='absolute min-h-2 min-w-2 rounded-full bg-red-600 top-0 right-0'></div>
 													</div>
 													<p className=''>Notification</p>
@@ -258,7 +275,7 @@ const ConsultantRootLayout = () => {
 
 							</div>
 						</div>
-					</aside>
+					</nav>
 					<section className='w-full h-full min-h-fit px-3 py-3'>
 						<div className='hidden w-full min-h-10 lg:flex flex-row justify-end mb-10'>
 							<GlobalSearch />

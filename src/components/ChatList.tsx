@@ -86,7 +86,7 @@ const ChatList: React.FC<ChatListProps> = ({
                 </div>
                 <div ref={searchRef}
                     style={{ height: `${searchBarHeight}px` }}
-                    className={`${!searchBarVisible ? ' opacity-0' : 'opacity-100'} transition-all ease-in-out overflow-hidden duration-300`}>
+                    className={`${!searchBarVisible ? ' opacity-0' : 'opacity-100'} py-1 transition-all ease-in-out overflow-hidden duration-300`}>
                     <LocalSearch placeholder='Search Message' />
                 </div>
                 {/* Below is the filter section*/}

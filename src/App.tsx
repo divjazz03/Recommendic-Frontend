@@ -23,6 +23,7 @@ import PatientOverview from './_root/pages/patient/PatientOverview';
 import Consultant from './_root/pages/patient/Consultant';
 import { PatientSchedule } from './_root/pages/patient/PatientSchedule';
 import PatientSettings from './_root/pages/patient/PatientSettings';
+import Appointment from './_root/pages/consultant/Appointment';
 
 
 const App = () => {
@@ -43,6 +44,7 @@ const App = () => {
         {/*Consultant routes*/}
         <Route  element={<ConsultantRootLayout />}>
           <Route path='/consultant/onboarding' element={<ConsultantOnboarding />} />
+          <Route path='/consultant/appointment' element={<Appointment />} />
           <Route path='/consultant/overview' element={<ConsultantOverview />} />
           <Route path='/consultant/patient' element={<Patient/>}/>
           <Route path='/consultant/schedule' element={<ConsultantSchedule />} />

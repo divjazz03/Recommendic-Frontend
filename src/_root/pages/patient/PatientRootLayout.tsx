@@ -43,10 +43,10 @@ const PatientRootLayout = () => {
 		setAsideHidden(aside => !aside);
 	};
 	return (
-		<main className='relative bg-white min-w-[320px] max-w-full h-screen overflow-hidden'>
+		<main className='relative bg-light-4 min-w-[320px] max-w-full h-screen overflow-hidden'>
 			<div className='border-2'>
 				<header className='lg:hidden sticky top-0 bg-white'>
-					<div className='flex flex-row justify-start w-full border gap-2 pt-4 pl-3'>
+					<div className='flex flex-row h-20 items-center justify-start w-full border gap-2 pl-3'>
 						<img src='/assets/svg/logo-no-background.svg' className='max-w-[32px]' />
 						<p className='font-berkshire text-main h1-bold'>Recommendic</p>
 					</div>
@@ -73,7 +73,7 @@ const PatientRootLayout = () => {
 				</header>
 				<aside ref={asideRef} className={`${asideHidden ? ' -left-[380px]' : 'left-0'} absolute z-50 lg:hidden h-full min-w-[320px] top-0 transition-all ease-linear duration-300`}>
 					<div className='min-w-fit w-full flex flex-col pr-3 h-full bg-white'>
-						<header className='py-4 flex flex-row justify-between pl-3 gap-3'>
+						<header className='py-4 flex flex-row items-center justify-between pl-3 gap-3'>
 							<div className='flex justify-start gap-2'>
 								<img src='/assets/svg/logo-no-background.svg' className='max-w-[32px]' />
 								<p className='font-berkshire text-main h1-bold'>Recommendic</p>
@@ -168,7 +168,7 @@ const PatientRootLayout = () => {
 				<div className='lg:flex lg:flex-row w-full h-screen'>
 					<aside className='hidden lg:flex lg:h-full lg:min-w-[320px] lg:flex-col lg:gap-24 transition-all'>
 						<div className='w-auto flex flex-col pr-3 max-w-[320px] h-full bg-white'>
-							<header className='py-4 flex flex-row justify-between pl-3 gap-3'>
+							<header className='py-4 flex flex-row items-center justify-between pl-3 gap-3'>
 								<div className='flex justify-start gap-2'>
 									<img src='/assets/svg/logo-no-background.svg' className='max-w-[32px]' />
 									<p className='font-berkshire text-main h1-bold'>Recommendic</p>
@@ -182,14 +182,6 @@ const PatientRootLayout = () => {
 												<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/overview"]}>
 													<img src='/assets/svg/overview-svgrepo-com.svg' className='max-w-[24px]' />
 													<p>Overview</p>
-												</div>
-											</Link>
-										</li>
-										<li>
-											<Link to={"/patient/patient"}>
-												<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/patient"]}>
-													<img src='/assets/svg/people-svgrepo-com.svg' className='max-w-[24px]' />
-													<p>Patients</p>
 												</div>
 											</Link>
 										</li>
@@ -266,8 +258,8 @@ const PatientRootLayout = () => {
 							</div>
 						</div>
 					</aside>
-					<section className='w-full h-full min-h-fit px-3 py-3'>
-						<div className='hidden w-full min-h-10 lg:flex flex-row justify-end mb-10'>
+					<section className='w-full h-full min-h-fit px-1 py-1'>
+						<div className='hidden w-full min-h-10 lg:flex flex-row justify-end mx-2 mb-1 '>
 							<GlobalSearch />
 						</div>
 						<Outlet />

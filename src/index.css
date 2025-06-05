@@ -6,7 +6,6 @@
 @tailwind utilities;
 
 
-
 @layer base {
 
   * {
@@ -26,7 +25,7 @@
 
   /* TYPOGRAPHY */
   .h1-bold {
-    @apply text-[36px] font-bold leading-[140%] tracking-tighter;
+    @apply text-[36px] font-bold leading-[140%] tracking-tight;
   }
 
   .h1-semibold {
@@ -34,7 +33,10 @@
   }
 
   .h2-bold {
-    @apply text-[30px] font-bold leading-[140%] tracking-tighter;
+    @apply text-[30px] font-bold leading-[140%] tracking-tight;
+  }
+  .h2-semibold {
+    @apply text-[30px] font-semibold leading-[140%] tracking-tight;
   }
 
   .h3-bold {

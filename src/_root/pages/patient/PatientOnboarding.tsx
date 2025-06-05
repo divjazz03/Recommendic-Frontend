@@ -43,7 +43,7 @@ const PatientOnboarding = () => {
         if (selectedInterests.length > 0) {
             console.log(selectedInterests)
             try {
-                const { } = await updatePatientOnboardingInfo({
+                await updatePatientOnboardingInfo({
                     interests: selectedInterests.filter(interest => interest != " "),
                     userId: userContext.user_id
                 })

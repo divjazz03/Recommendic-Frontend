@@ -38,12 +38,12 @@ const ConsultantOnboarding = () => {
             setSelectedSpecialty('');
         }
     }
-    const handleNext = () => {
+    const handleNext = async () => {
 
         if (selectedSpecialty.length > 0) {
             console.log(selectedSpecialty)
             try {
-                const {} = updateConsultantOnboardingInfo({
+                await updateConsultantOnboardingInfo({
                     specialty: selectedSpecialty,
                     userId: userContext.user_id
                 })
