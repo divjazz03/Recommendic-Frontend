@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button'
-import React, { FormEvent,useState } from 'react'
+import React, { FormEvent,useEffect,useState } from 'react'
 import { useMultistepForm } from '@/hooks/useMultistepForm'
 import { SignUpFormData } from '@/types'
 import { UserForm } from './UserForm'
@@ -17,10 +17,16 @@ import { signUpValidation } from '../validations/SignupValidation'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Form } from '@/components/ui/form'
+import { Progress } from '@/components/ui/progress'
 
 
 
 const SignupForm: React.FC = () => {
+
+  const handleFormDataChange = (key: keyof typeof formData, value: any) => {
+    setFormData(prev => ({ ...prev, [key]: value, }));
+  };
+  const handleTypeOfUserSelectChange = (value: string) => handleFormDataChange("typeOfUser", value);
 
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -37,6 +43,7 @@ const SignupForm: React.FC = () => {
     state: "",
     country: "",
   });
+  const [progress, setProgress] = useState(100);
   const form = useForm<z.infer<typeof signUpValidation>>({
     resolver: zodResolver(signUpValidation),
     defaultValues: {
@@ -54,11 +61,6 @@ const SignupForm: React.FC = () => {
     mode: "onChange"
   })
   const [isSuccessfulSignUp, setSuccessfulSignup] = useState<boolean>(false);
-
-  const handleFormDataChange = (key: keyof typeof formData, value: any) => {
-    setFormData(prev => ({ ...prev, [key]: value, }));
-  };
-  const handleTypeOfUserSelectChange = (value: string) => handleFormDataChange("typeOfUser", value);
   const { steps, currentStepIndex, step, isFirstStep, isLastStep, next, back } = useMultistepForm([
     <UserForm formData={formData} form={form} handleFormDataChange={handleFormDataChange} />,
     <AddressForm formData={formData} form={form} handleFormDataChange={handleFormDataChange} />,
@@ -68,6 +70,14 @@ const SignupForm: React.FC = () => {
       handleFormDataChange={handleFormDataChange}
       handleTypeOfUserSelectChange={handleTypeOfUserSelectChange} />
   ]);
+
+
+  useEffect(() => {
+      setProgress((currentStepIndex+1)/3 * 100)
+  }, [currentStepIndex])
+
+  
+
 
 
   async function onSubmitForConsultant(values: SignUpFormData) {
@@ -146,16 +156,14 @@ const SignupForm: React.FC = () => {
     <>
       <div className='flex-col flex-center'>
         <header className='mb-5'>
-          <p className='h3-bold text-dark-1 text-center'>Create your account</p>
-          <p className='pt-2 text-dark-1'>Lets get you started with recommendic</p>
+          <p className='text-2xl font-bold text-dark-1 text-center'>Create your account</p>
+          <p className='pt-2 text-gray-800 text-center'>Lets get you started with recommendic</p>
         </header>
         <FormWrapper >
           <Form {...form}>
             <form className='flex gap-7 flex-col w-full' onSubmit={isLastStep ? form.handleSubmit(handleFormSubmit) : handleNextStep}>
               <div className='flex flex-row justify-between w-full'>
-                <div className={(currentStepIndex + 1) >= 1 ? 'bg-dark-5' + ' rounded-md min-w-16 min-h-1 max-h-1' : 'bg-slate-500' + ' rounded-md min-w-16 min-h-1 max-h-1'} ></div>
-                <div className={(currentStepIndex + 1) >= 2 ? 'bg-dark-5' + ' rounded-md min-w-16 min-h-1 max-h-1' : 'bg-slate-500' + ' rounded-md min-w-16 min-h-1 max-h-1'}></div>
-                <div className={(currentStepIndex + 1) >= 3 ? 'bg-dark-5' + ' rounded-md min-w-16 min-h-1 max-h-1' : 'bg-slate-500' + ' rounded-md min-w-16 min-h-1 max-h-1'}></div>
+                <Progress className='h-2' value={progress}/>
               </div>
               <div className=' flex-center flex-col'>
                 {step}
@@ -168,7 +176,7 @@ const SignupForm: React.FC = () => {
               </div>
             </form>
           </Form>
-          <p className='subtle-semibold text-center mt-4'>Already have an account? <span className='mx-1'><Link to='/sign-in' className='subtle-semibold hover:no-underline text-dark-4 underline'>Sign In</Link></span></p>
+          <p className='text-sm text-center mt-4'>Already have an account? <span className='mx-1 text-gray-500 hover:text-dark-1'><Link to='/sign-in' className='subtle-semibold hover:no-underline underline'>Sign In</Link></span></p>
         </FormWrapper>
       </div>
       <SignupSuccessModal

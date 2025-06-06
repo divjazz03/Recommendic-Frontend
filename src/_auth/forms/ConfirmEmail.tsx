@@ -33,7 +33,7 @@ const ConfirmEmail = () => {
     return (
         <>
             <main className=" p-8 min-w-96 max-w-[480px] shadow-md rounded-md">
-                <header className="text-dark-5 font-bold text-xl text-center py-2">Check your Email</header>
+                <header className="text-dark-5 font-bold text-2xl text-center py-2">Check your Email</header>
                 <p className="text-dark-1 text-center py-2">To verify your identity, you'll receive an email shortly at {email} to activate your account.</p>
                 <div className="flex flex-col items-center py-2 px-4">
                     <Button className="shad-button_primary" disabled={!canResend} onClick={onResendEmailHandler}>{isResending ? <Loader /> : canResend ? "Resend Email" : `Resend in ${countDown}`}</Button>

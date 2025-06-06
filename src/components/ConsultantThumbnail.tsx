@@ -13,9 +13,7 @@ interface ConsultantThumbnailProps {
     location: string;
     qualifications: string[];
     availability: string;
-    verificationScore: number;
     avatarUrl?: string;
-    languages?: string[];
     nextSlot?: string;
     handleViewProfile: (consultantId: number) => void;
     handleScheduleConsultant: (consultantId: number) => void;
@@ -44,7 +42,6 @@ const ConsultantThumbnail: React.FC<ConsultantThumbnailProps> = ({
     name,
     specialty,
     avatarUrl,
-    verificationScore = 0,
     rating = 0,
     id,
     availability,
@@ -53,7 +50,6 @@ const ConsultantThumbnail: React.FC<ConsultantThumbnailProps> = ({
     location,
     qualifications,
     reviewCount,
-    languages,
     nextSlot,
     handleViewProfile,
     handleScheduleConsultant
@@ -118,7 +114,7 @@ const ConsultantThumbnail: React.FC<ConsultantThumbnailProps> = ({
                             <button onClick={() => handleViewProfile(id)} className="px-4 py-2 text-main border border-main rounded-lg hover:bg-light-1 transition-colors">
                                 View Profile
                             </button>
-                            <button onClick={() => handleScheduleConsultant} className="px-4 py-2 bg-main text-white rounded-lg hover:bg-main transition-colors flex items-center gap-2">
+                            <button onClick={() => handleScheduleConsultant(id)} className="px-4 py-2 bg-main text-white rounded-lg hover:bg-main transition-colors flex items-center gap-2">
                                 <Calendar className="w-4 h-4" />
                                 Schedule
                             </button>

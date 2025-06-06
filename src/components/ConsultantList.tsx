@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import LocalSearch from './LocalSearch'
 import { ChevronDown, Filter, Star, Stethoscope } from 'lucide-react'
 import { Label } from './ui/label'
@@ -24,11 +24,12 @@ interface ConsultantListProps {
         nextSlot: string
     }[],
     handleViewProfile?: (consultantId: number) => void,
-    handleScheduleConsultant: (consultantId: number) => void
+    handleScheduleConsultant: (consultantId: number) => void,
+    isVisible: boolean;
 }
 
 
-const ConsultantList = (consultants: ConsultantListProps) => {
+const ConsultantList = (consultantProps: ConsultantListProps) => {
     const specialties = ['all', 'Cardiology', 'Neurology', 'Pediatrics', 'Orthopedics', 'Dermatology', 'Psychiatry'];
     const [showFilters, setShowFilter] = useState(false);
     const [selectedAvailability, setSelectedAvailability] = useState('all');
@@ -36,8 +37,16 @@ const ConsultantList = (consultants: ConsultantListProps) => {
     const [selectedSpecialty, setSelectedSpecialty] = useState('all');
     const [searchValue, setSearchValue] = useState('')
 
+    const thisRef: React.MutableRefObject<HTMLDivElement> = useRef(null);
+
+    useEffect(() => {
+        if(consultantProps.isVisible) {
+            thisRef.current.hidden=true
+        }
+    }, [consultantProps.isVisible])
+
     const filteredConsultants = useMemo(() => {
-        return consultants.consultants.filter(consultant => {
+        return consultantProps.consultants.filter(consultant => {
             const matchedSearch = consultant.name.toLowerCase().includes(searchValue.toLowerCase()) ||
                 consultant.specialty.toLowerCase().includes(searchValue.toLowerCase());
             const matchesSpecialty = selectedSpecialty === 'all' || consultant.specialty === selectedSpecialty;
@@ -52,9 +61,9 @@ const ConsultantList = (consultants: ConsultantListProps) => {
         , [searchValue, selectedSpecialty, selectedRating, selectedAvailability]);
 
     return (
-        <div hidden className='max-w-4xl mx-auto p-6 bg-light-4'>
+        <div ref={thisRef} className='max-w-4x mx-auto p-6 bg-light-4'>
             <header className='mb-4 px-2'>
-                <h1 className='h3-bold text-dark-4'>Find Medical Consultants</h1>
+                <h1 className='font-bold text-3xl text-dark-4'>Find Medical Consultants</h1>
                 <p className='text-dark-1'>Connect with qualified healthcare professionals</p>
             </header>
             <LocalSearch placeholder='Search by name or specialty' setSearchValue={setSearchValue} />
@@ -138,7 +147,7 @@ const ConsultantList = (consultants: ConsultantListProps) => {
                 <p className='text-dark-2'>{filteredConsultants.length} results</p>
             </div>
 
-            <section className='space-y-4 overflow-y-auto max-h-[600px] px-2'>
+            <section className='space-y-4 overflow-y-auto max-h-[540px] px-2'>
                 {filteredConsultants.map(consultant => (
                     <ConsultantThumbnail
                         experience={consultant.experience}
@@ -151,13 +160,11 @@ const ConsultantList = (consultants: ConsultantListProps) => {
                         rating={consultant.rating}
                         reviewCount={consultant.reviews}
                         specialty={consultant.specialty}
-                        verificationScore={2}
                         avatarUrl={consultant.image}
                         key={consultant.id}
-                        languages={consultant.languages}
                         nextSlot={consultant.nextSlot}
-                        handleViewProfile={consultants.handleViewProfile}
-                        handleScheduleConsultant={consultants.handleScheduleConsultant}
+                        handleViewProfile={consultantProps.handleViewProfile}
+                        handleScheduleConsultant={consultantProps.handleScheduleConsultant}
                     />
                 ))
 

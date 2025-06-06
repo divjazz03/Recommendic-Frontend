@@ -21,7 +21,6 @@ const ChatScreen: React.FC<ChatScreenProps> = ({
     selectedChat,
     setShowChatScreen,
 	setSelectedChat
-    
 }) => {
 
     const [text, setText] = useState<string>('');
@@ -68,10 +67,10 @@ const ChatScreen: React.FC<ChatScreenProps> = ({
 													<img src="/assets/svg/arrow-left-svgrepo-com.svg" alt="" />
 												</div>
 												<div>
-													<InitialsOrAvartar name={selectedChat.nameOfOtherUser} />
+													<InitialsOrAvartar name={selectedChat.nameOfOtherUser} avatarUrl={selectedChat.avatarUrlOfOtherUser}/>
 												</div>
 												<div>
-													<p className='text-md font-semibold'>{selectedChat.nameOfOtherUser}</p>
+													<p className='text-lg font-semibold'>{selectedChat.nameOfOtherUser}</p>
 													<p>{selectedChatId}</p>
 												</div>
 											</div>
@@ -86,6 +85,7 @@ const ChatScreen: React.FC<ChatScreenProps> = ({
 															nameOfCurrentUser={message.type === 'me' ? selectedChat.nameOfCurrentUser : selectedChat.nameOfOtherUser}
 															message={message.message}
 															date={message.date}
+															avatarForThisMessage={message.type === 'me' ? selectedChat.avatarUrlOfCurrentUser: selectedChat.avatarUrlOfOtherUser}
 														/>
 													))
 

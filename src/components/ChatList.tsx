@@ -22,14 +22,15 @@ const ChatList: React.FC<ChatListProps> = ({
     const [selectedFilter, setSelectedFilter] = useState('All');
     const [searchBarVisible, setSearchBarVisible] = useState(false);
     const [searchBarHeight, setSearchBarHeight] = useState(0);
+    const [searchTerm, setSearchTerm] = useState('');
     const [filterSectionVisible, setFilterSectionVisible] = useState(false);
     const [filterSectionHeight, setFilterSectionHeight] = useState(0);
     const [localChats, setLocalChats] = useState(chats);
 
     const filterOptions = ['All', 'Unread']
 
-    const searchRef = useRef(null);
-    const filterSectionRef = useRef(null);
+    const searchRef: React.MutableRefObject<HTMLDivElement> = useRef(null);
+    const filterSectionRef: React.MutableRefObject<HTMLDivElement> = useRef(null);
 
     const handleThumbnailClick = () => {
         setSelectedChat((chat) => {
@@ -38,7 +39,6 @@ const ChatList: React.FC<ChatListProps> = ({
         })
     };
     const handleFilterClick = (event: MouseEvent) => {
-            //event.preventDefault()
             const value = event.currentTarget.innerHTML;
             console.log(value)
             setSelectedFilter(value);
@@ -59,14 +59,14 @@ const ChatList: React.FC<ChatListProps> = ({
 
     useEffect(() => {
         if (searchBarVisible && searchRef.current) {
-            setSearchBarHeight(searchRef.current.scrollHeight);
+            setSearchBarHeight(50);
         } else {
             setSearchBarHeight(0);
         }
     }, [searchBarVisible])
     useEffect(() => {
         if (filterSectionVisible && filterSectionRef.current) {
-            setFilterSectionHeight(filterSectionRef.current.scrollHeight);
+            setFilterSectionHeight(25);
         } else {
             setFilterSectionHeight(0);
         }
@@ -76,7 +76,7 @@ const ChatList: React.FC<ChatListProps> = ({
         <section className={`w-full min-h-full flex flex-col  min-w-80 md:max-w-96 shadow-sm rounded-md py-1 bg-white`}>
             <header className={`${(!filterSectionVisible && !searchBarVisible) ? '' : 'space-y-2'} flex py-4 flex-col justify-center min-h-12`}>
                 <div className='flex flex-row justify-between px-4'>
-                    <p className='body-bold'>Chats</p>
+                    <p className='font-bold text-xl tracking-wider'>Chats</p>
                     <div>
                         <div className='flex flex-row space-x-1'>
                             <div className={`max-w-7 ${searchBarVisible ? 'bg-light-4' : ''} hover:bg-light-4 p-1 rounded-sm`} onClick={() => setSearchBarVisible(!searchBarVisible)}><img src='/assets/svg/search-alt-1-svgrepo-com.svg' className='w-full' /></div>
@@ -87,7 +87,7 @@ const ChatList: React.FC<ChatListProps> = ({
                 <div ref={searchRef}
                     style={{ height: `${searchBarHeight}px` }}
                     className={`${!searchBarVisible ? ' opacity-0' : 'opacity-100'} py-1 transition-all ease-in-out overflow-hidden duration-300`}>
-                    <LocalSearch placeholder='Search Message' />
+                    <LocalSearch setSearchValue={setSearchTerm} placeholder='Search Message' />
                 </div>
                 {/* Below is the filter section*/}
                 <div ref={filterSectionRef}
@@ -96,7 +96,7 @@ const ChatList: React.FC<ChatListProps> = ({
                     {filterOptions.map((value, index) =>
                     (<div key={index}
                         onClick={handleFilterClick}
-                        className={`${selectedFilter.includes(value) ? 'bg-light-1' : 'bg-light-4 hover:bg-light-3'} cursor-pointer px-2 rounded-xl`}>
+                        className={`${selectedFilter.includes(value) ? 'bg-light-1' : 'bg-light-4 hover:bg-light-3'} cursor-pointer px-2 py-1 rounded-xl h-fit`}>
                         <p className='cursor-pointer'>{value}</p>
                     </div>)
                     )}
@@ -116,6 +116,7 @@ const ChatList: React.FC<ChatListProps> = ({
                                     name={chat.nameOfOtherUser}
                                     mostRecentChatPreview={chat.messages[chat.messages.length - 1].message}
                                     numberOfUnreadChats={chat.messages.filter((message) => !message.read).length}
+                                    imgLink={chat.avatarUrlOfOtherUser}
                                 />
                             </div>
                         ))}

@@ -75,8 +75,8 @@ const SigninForm = () => {
           <form onSubmit={form.handleSubmit(onSubmit)} className='flex flex-col items-center gap-4 w-full'>
             <div className='flex flex-col justify-center gap-5'>
               <header className='mb-5'>
-                <p className='h3-bold text-dark-3 text-center'>Welcome to Recommendic</p>
-                <p className='text-center text-dark-1 pt-2'>Lets get you logged in</p>
+                <p className='font-bold text-2xl text-dark-2 text-center'>Welcome to Recommendic</p>
+                <p className='text-sm text-center text-dark-1 pt-2'>Lets get you logged in</p>
               </header>
               <FormField
                 control={form.control}
@@ -109,7 +109,7 @@ const SigninForm = () => {
                 {isSigningIn ? <Loader /> : 'Sign In'}
               </Button>
             </div>
-            <p className='subtle-semibold mt-4'>New to Recommendic? <span><Link to={'/sign-up'} className='subtle-semibold text-dark-1 underline hover:no-underline transition-all'>Create new account</Link></span></p>
+            <p className='text-sm font-semibold mt-4'>New to Recommendic? <span className='font-normal'><Link to={'/sign-up'} className='subtle-semibold text-dark-1 underline hover:no-underline transition-all'>Create new account</Link></span></p>
           </form>
 
         </Form>

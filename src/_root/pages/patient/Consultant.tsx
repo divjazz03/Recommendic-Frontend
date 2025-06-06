@@ -2,18 +2,9 @@ import ConsultantList from '@/components/ConsultantList'
 import ConsultantScreen from '@/components/ConsultantScreen'
 import LocalSearch from '@/components/LocalSearch'
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 
-
-
-const Consultant = () => {
-
-  const handleViewProfile = (consultantId: number) => {
-
-  }
-  const handleScheduleConsultant = (consultantId: number) => {
-
-  }
-  const consultants = [
+const consultantPreview = [
       {
           id: 1,
           name: "Dr. Sarah Johnson",
@@ -105,11 +96,83 @@ const Consultant = () => {
           nextSlot: "11:00 AM"
       }
   ];
+
+  const consultant = {
+          name: "Dr. Sarah Mitchell",
+          title: "Cardiologist & Internal Medicine Specialist",
+          rating: 4.9,
+          totalReviews: 347,
+          bio: `Dr. Sarah Mitchell is a board-certified cardiologist with over 12 years of experience in treating 
+                      cardiovascular diseases and internal medicine conditions. She specializes in preventive cardiology, 
+                      hypertension management, and heart disease prevention. Dr. Mitchell is known for her patient-centered 
+                      approach and commitment to providing comprehensive care.`,
+          experience: 12,
+          location: "Lagos University Teaching Hospital",
+          image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=300&h=300&fit=crop&crop=face",
+          specializations: ["Cardiology", "Internal Medicine", "Preventive Care", "Hypertension Management"],
+          languages: ["English", "Yoruba", "French"],
+          consultationFee: "₦15,000",
+          nextAvailable: "Today, 2:30 PM",
+          education: [
+              { degree: "MD", institution: "University of Lagos", year: "2012" },
+              { degree: "Fellowship in Cardiology", institution: "Johns Hopkins", year: "2015" }
+          ],
+          stats: {
+              patientsHelped: 2847,
+              successRate: 96,
+              responseTime: "< 30 min",
+              followUpRate: 94
+          },
+          recentReviews: [
+          { name: "Adunni O.", rating: 5, comment: "Excellent care and very thorough explanation of my condition.", date: "2 days ago" },
+          { name: "Michael K.", rating: 5, comment: "Dr. Mitchell helped me manage my hypertension effectively.", date: "1 week ago" },
+          { name: "Fatima A.", rating: 4, comment: "Professional and caring. Highly recommend for heart issues.", date: "2 weeks ago" }
+      ],
+      availableSlots: [
+          { time: "2:30 PM", type: "Video Call" },
+          { time: "4:00 PM", type: "Phone Call" },
+          { time: "5:30 PM", type: "Video Call" }
+      ]
+      }
+      
+  
+      
+
+const Consultant = () => {
+
+  const [profileIsVisible, setProfileIsVisible] = useState(false);
+  const navigate = useNavigate();
+
+  const handleViewProfile = (consultantId: number) => {
+      setProfileIsVisible(true);
+  }
+  const handleScheduleConsultant = (consultantId: number) => {
+    navigate('/patient/schedule',{preventScrollReset:true})
+  }
+  
   return (
     <div className='flex flex-col space-y-2 bg-light-4 w-full max-h-screen min-h-[760px] p-2 rounded-md'>
       <section>
-        <ConsultantList consultants={consultants} handleViewProfile={handleViewProfile} handleScheduleConsultant={handleScheduleConsultant}/>
-        <ConsultantScreen />
+        <ConsultantList isVisible={profileIsVisible} consultants={consultantPreview} handleViewProfile={handleViewProfile} handleScheduleConsultant={handleScheduleConsultant}/>
+        <ConsultantScreen
+          availableSlots={consultant.availableSlots}
+          bio={consultant.bio}
+          consultationFee={consultant.consultationFee}
+          education={consultant.education}
+          experience={consultant.experience}
+          image={consultant.image}
+          languages={consultant.languages}
+          location={consultant.location}
+          name={consultant.name}
+          nextAvailable={consultant.nextAvailable}
+          rating={consultant.rating}
+          reviews={consultant.recentReviews}
+          specializations={consultant.specializations}
+          stats={consultant.stats}
+          title={consultant.title}
+          totalReviews={consultant.totalReviews}
+          isVisible={profileIsVisible}
+        />
       </section>
     </div>
   )

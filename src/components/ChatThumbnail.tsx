@@ -25,8 +25,8 @@ const ChatThumbnail = ({ name, mostRecentChatPreview,imgLink, numberOfUnreadChat
                     </div>
                     <div className='flex flex-row  w-full justify-between'>
                         <div className='flex flex-col gap-4'>
-                            <p className='body-bold'>{name}</p>
-                            <p>{mostRecentChatPreview.slice(0, 15) + ' ...'}</p>
+                            <p className='font-semibold text-lg'>{name}</p>
+                            <p className='text-sm'>{mostRecentChatPreview.slice(0, 15) + (mostRecentChatPreview.length > 15? '...':'')}</p>
                         </div>
                         <div className='flex flex-col min-w-[48px] gap-4 items-center'>
                             <p>{handleDateTimeFormatting(dateOfLastChat)}</p>

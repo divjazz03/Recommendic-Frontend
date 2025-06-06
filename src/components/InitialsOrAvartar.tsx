@@ -9,21 +9,26 @@ interface InitialsOrAvartarProps {
     height?: string
 }
 
-const InitialsOrAvartar = (prop: InitialsOrAvartarProps) => {
+const InitialsOrAvartar: React.FC<InitialsOrAvartarProps> = ({
+    name,
+    avatarUrl,
+    width,
+    height
+}) => {
 
 
     return (
-        <div className={` ${prop.avatarUrl ? 'bg-white' : 'bg-main'} flex flex-shrink flex-row justify-center items-center p-2 rounded-full`}
+        <div className={` ${avatarUrl ? 'bg-white' : 'bg-main'} flex flex-shrink flex-row justify-center items-center p-2 rounded-full`}
             style={{
-                minHeight: prop.height ? `${prop.height}px` : '60px',
-                maxHeight: prop.height ? `${prop.height}px` : '60px',
-                minWidth: prop.width ? `${prop.width}px` : '60px',
-                maxWidth: prop.width ? `${prop.width}px` : '60px',
+                minHeight: height ? `${height}px` : '60px',
+                maxHeight: height ? `${height}px` : '60px',
+                minWidth: width ? `${width}px` : '60px',
+                maxWidth: width ? `${width}px` : '60px',
             }}
         >
-            {prop.avatarUrl && <img src={prop.avatarUrl} className='rounded-full object-cover' alt="" />
+            {avatarUrl && <img src={avatarUrl} className='rounded-full object-cover' alt="" />
             }
-            {!prop.avatarUrl && <p className='text-white'>{extractInitialsFromName(prop.name)}</p>}
+            {!avatarUrl && <p className='text-white text-xl'>{extractInitialsFromName(name)}</p>}
         </div>
     )
 }

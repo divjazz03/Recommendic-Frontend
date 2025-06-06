@@ -8,6 +8,8 @@ export interface ChatType {
 	id: string,
 	nameOfCurrentUser: string,
 	nameOfOtherUser: string,
+	avatarUrlOfOtherUser?: string,
+	avatarUrlOfCurrentUser?: string,
 	messages: Message[],
 }
 export interface Message {
@@ -26,6 +28,8 @@ const Chat = () => {
 		id: 'fffdfd',
 		nameOfCurrentUser: 'Maduka Divine',
 		nameOfOtherUser: 'Benson Idahosa',
+		avatarUrlOfCurrentUser: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=150&h=150&fit=crop&crop=face',
+		avatarUrlOfOtherUser: 'https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=150&h=150&fit=crop&crop=face',
 		messages: [{
 			type: "me",
 			message: "Hello Nigga",
@@ -73,7 +77,7 @@ const [showChatScreen, setShowChatScreen] = useState<boolean>(false);
 return (
 	<>
 		<main className='flex flex-row h-[800px] bg-light-4 rounded-xl p-2'>
-			<section className={`${showChatScreen ? 'opacity-0 w-0 overflow-hidden sm:min-w-[360px] sm:max-w-360px sm:flex-1 sm:opacity-100 sm:block sm:mr-2' : 'block mr-2 min-w-[360px]'} duration-300 ease-in-out transition-all h-full`}>
+			<section className={`${showChatScreen ? 'opacity-0 w-0 overflow-hidden sm:min-w-[360px] sm:max-w-360px sm:opacity-100 sm:block sm:mr-2' : 'block mr-2 min-w-[360px] w-full'} flex-1 duration-300 ease-in-out transition-all h-full`}>
 				<ChatList chats={chats}
 					showChatScreen={showChatScreen}
 					setShowChatScreen={setShowChatScreen}

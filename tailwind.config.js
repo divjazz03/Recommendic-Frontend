@@ -29,6 +29,7 @@ export default {
 				'secondary-500': '#ccd8ff',
 				'secondary-600': '#b3c3ff',
 				'main': '#091627',
+				'main-light': '#0e233e',
 				caution: {
 					100: '#ef4444',
 					200: '#b91c1c',
