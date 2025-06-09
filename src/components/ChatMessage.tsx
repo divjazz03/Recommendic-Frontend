@@ -1,6 +1,6 @@
-import { extractInitialsFromName, handleDateTimeFormatting } from '@/lib/utils/utils'
+import { handleDateTimeFormatting } from '@/lib/utils/utils'
 import React from 'react'
-import InitialsOrAvartar from './InitialsOrAvartar'
+import InitialsOrAvartar from './shared/InitialsOrAvartar'
 
 
 interface ChatMessageProps {
@@ -31,9 +31,9 @@ const ChatMessage:React.FC<ChatMessageProps> = ({
                         </div>
 
                         <div className='w-fit flex flex-col gap-1'>
-                            <div className={`${messageType === 'me'? 'flex-row-reverse' : 'flex-row'} flex  gap-2 p-1 w-full h-fit'`}>
-                                <p>{nameOfCurrentUser}</p>
-                                <p>{handleDateTimeFormatting(date)}</p>
+                            <div className={`${messageType === 'me'? 'flex-row-reverse' : 'flex-row'} flex items-center gap-2 p-1 w-full h-fit'`}>
+                                <h3 className='text-md font-semibold'>{nameOfCurrentUser}</h3>
+                                <p className='text-xs text-center text-dark-1'>{handleDateTimeFormatting(date)}</p>
                             </div>
                             <div tabIndex={0} className={`${messageType === 'me'? 'rounded-se-none bg-main ' : 'rounded-ss-none bg-light-4'} flex flex-row rounded-xl min-w-52 max-w-52 shadow-sm p-3 h-fit'`}>
                                 <p className={`${messageType === 'me'? 'text-light-4':'text-dark-3'} text-wrap text-sm`}>{message}</p>

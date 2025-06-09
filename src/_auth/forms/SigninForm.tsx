@@ -1,5 +1,4 @@
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { useEffect, useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { signInValidation } from '../validations/SignInValidation'
@@ -46,18 +45,21 @@ const SigninForm = () => {
         });
         console.log(userContext)
 
-        data.data.userStage === 'ONBOARDING' ?
-          navigate(userContext.userType === 'CONSULTANT' ? '/consultant/onboarding' : '/patient/onboarding') :
+        if (data.data.userStage === 'ONBOARDING') {
+          navigate(userContext.userType === 'CONSULTANT' ? '/consultant/onboarding' : '/patient/onboarding');
+        }
+        else {
           navigate(userContext.userType === 'CONSULTANT' ? '/consultant/overview' : '/patient/overview');
+        }
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        error as AxiosError;
+        const err = error as AxiosError;
         form.reset()
-        if (error.status === 404) {
+        if (err.status === 404) {
           return toast({ title: `Sign in failed: You don't have an account please sign up`, variant: 'destructive' });
         }
-        return toast({ title: `Sign in failed: ${error.message}`, variant: 'destructive' });
+        return toast({ title: `Sign in failed: ${err.message}`, variant: 'destructive' });
       }
       
       console.error(error)

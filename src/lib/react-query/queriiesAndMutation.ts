@@ -3,7 +3,14 @@ import {
     useQuery,
     useMutation
  } from "@tanstack/react-query";
-import { createNewUser, signinUser, getCurrentUser, resendConfirmationEmail, verifyEmail, getAllSupportedMedicalCategories, sendPatientOnboardingData, sendConsultantOnboardingData } from "../api/backend_api";
+import { createNewUser,
+   signinUser,
+   getCurrentUser, 
+   resendConfirmationEmail, 
+   verifyEmail, 
+   getAllSupportedMedicalCategories, 
+   sendPatientOnboardingData, 
+   sendConsultantOnboardingData } from "../api/backend_api";
 
  type UserCreateMutionProps = {
     typeOfUser: TypeOfUser,

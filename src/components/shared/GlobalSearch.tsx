@@ -2,13 +2,14 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Input } from '../ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
-import { Command, CommandGroup, CommandItem, CommandList } from '../ui/command';
+import { Command, CommandGroup,CommandList } from '../ui/command';
 import { useGlobalSearchContext } from '@/context/GlobalSearchContext';
 import { useDebouncedValue } from '@/hooks/useDebouncedValue';
 import SearchResults from '../SearchResult';
+import { Search } from 'lucide-react';
 
 const GlobalSearch = () => {
-    const {query, setQuery} = useGlobalSearchContext();
+    const {setQuery} = useGlobalSearchContext();
     const [searchText, setSearchText] = useState('');
     const debouncedValue = useDebouncedValue(searchText)
     const [popoverOpen, setPopOverOpen] = useState(false);
@@ -22,7 +23,7 @@ const GlobalSearch = () => {
         } else {
             setQuery(debouncedValue.trim());
         }
-    }, [debouncedValue])
+    }, [debouncedValue, setQuery])
 
     return (
         <>
@@ -31,9 +32,7 @@ const GlobalSearch = () => {
                     <div className='flex flex-row items-center gap-2 pr-1'>
                         <p className='base-regular'>Global&nbsp;Search</p>
                         <div className='h-full min-w-8 max-w-10'>
-                            <img
-                                src='/assets/svg/search-alt-1-svgrepo-com.svg'
-                                className='w-full h-full px-1 py-1 hover:bg-light-4 rounded-sm' />
+                            <Search className='w-6 h-6' />
                         </div>
                     </div>
                 </PopoverTrigger>

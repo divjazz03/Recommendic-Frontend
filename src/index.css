@@ -24,11 +24,7 @@
 @layer utilities {
 
   .side-bar-li {
-    @apply text-lg hover:bg-stone-200 focus:bg-stone-200 mb-3 px-2 ml-3 rounded-md py-3;
-  }
-
-  .side-bar-icons {
-    @apply text-dark-1 hover:text-dark-5 focus-visible:ring-1 focus-visible:ring-offset-1 ring-offset-light-3 !important;
+    @apply text-lg hover:bg-main-light hover:text-light-4  mb-3 px-2 ml-3 rounded-md py-3 focus-visible:ring-1 focus-visible:ring-offset-1 ring-offset-main;
   }
 }
 

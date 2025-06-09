@@ -1,6 +1,5 @@
-import React, { KeyboardEventHandler, useState } from 'react'
+import React from 'react'
 import { Input } from './ui/input'
-import { relative } from 'path';
 import { Search } from 'lucide-react';
 
 interface LocalSearchProps {

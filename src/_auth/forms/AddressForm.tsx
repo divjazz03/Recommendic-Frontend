@@ -1,6 +1,5 @@
 import { Input } from "@/components/ui/input";
 import { AddressFormProps } from "@/types";
-import { Label } from "@/components/ui/label";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 
 export function AddressForm({ formData, handleFormDataChange, form }: AddressFormProps) {
@@ -19,7 +18,7 @@ export function AddressForm({ formData, handleFormDataChange, form }: AddressFor
                 <FormField
                     control={form.control}
                     name="city"
-                    render={({ field }) => (
+                    render={() => (
                         <FormItem>
                             <FormLabel>City</FormLabel>
                             <FormControl>
@@ -39,7 +38,7 @@ export function AddressForm({ formData, handleFormDataChange, form }: AddressFor
                 <FormField
                     control={form.control}
                     name="state"
-                    render={({ field }) => (
+                    render={() => (
                         <FormItem>
                             <FormLabel>State</FormLabel>
                             <FormControl>
@@ -59,7 +58,7 @@ export function AddressForm({ formData, handleFormDataChange, form }: AddressFor
                 <FormField
                     control={form.control}
                     name="country"
-                    render={({ field }) => (
+                    render={() => (
                         <FormItem>
                             <FormLabel>Country</FormLabel>
                             <FormControl>

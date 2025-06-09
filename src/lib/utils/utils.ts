@@ -19,7 +19,13 @@ export const handleDateTimeFormatting = (date: string): string => {
     const endOfWeek = dateToday.endOf('week')
     const daysOfTheWeek = ["Sunday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
     if (dateOfChat.day === dateToday.day) {
-        return `${dateOfChat.hour > 12 ? dateOfChat.hour - 12 : dateOfChat.hour}:${dateOfChat.minute < 10 ? '0' + (dateOfChat.minute):dateOfChat.minute } ${dateOfChat.hour > 12? 'PM':'AM'}`
+        return `${dateOfChat.hour > 12 
+            ? dateOfChat.hour - 12 
+            : dateOfChat.hour}:${dateOfChat.minute < 10 
+                ? '0' + (dateOfChat.minute)
+                :dateOfChat.minute } ${dateOfChat.hour > 12 
+                    ? 'PM'
+                    :'AM'}`
     } else if (dateToday.day - dateOfChat.day === 1) { // is not today but yesterday
         return 'yesterday';
     } else if (dateOfChat >= startOfWeek && dateOfChat <= endOfWeek ) { // difference is less than one week

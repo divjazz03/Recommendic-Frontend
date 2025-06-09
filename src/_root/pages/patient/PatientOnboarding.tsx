@@ -5,7 +5,7 @@ import { useUserContext } from '@/context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { useGetSupportedMedicalCategories, useUpdatePatientOnboardingInfo } from '@/lib/react-query/queriiesAndMutation';
 import { MedicalCategory } from '@/types';
-import React, { FormEvent, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 
 enum SelectAction {

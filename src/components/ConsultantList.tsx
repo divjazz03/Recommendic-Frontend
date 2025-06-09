@@ -1,10 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import LocalSearch from './LocalSearch'
-import { ChevronDown, Filter, Star, Stethoscope } from 'lucide-react'
+import { ChevronDown, Filter, Stethoscope } from 'lucide-react'
 import { Label } from './ui/label'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from './ui/select';
 import ConsultantThumbnail from './ConsultantThumbnail';
-import { handleDateTimeFormatting } from '@/lib/utils/utils';
 
 
 interface ConsultantListProps {
@@ -61,7 +60,7 @@ const ConsultantList = (consultantProps: ConsultantListProps) => {
         , [searchValue, selectedSpecialty, selectedRating, selectedAvailability]);
 
     return (
-        <div ref={thisRef} className='max-w-4x mx-auto p-6 bg-light-4'>
+        <div ref={thisRef} className='max-w-4x mx-auto p-6 bg-blue-50'>
             <header className='mb-4 px-2'>
                 <h1 className='font-bold text-3xl text-dark-4'>Find Medical Consultants</h1>
                 <p className='text-dark-1'>Connect with qualified healthcare professionals</p>

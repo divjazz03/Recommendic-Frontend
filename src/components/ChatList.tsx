@@ -1,9 +1,10 @@
-import React, { MouseEvent, MouseEventHandler, ReactEventHandler, useEffect, useRef, useState } from 'react'
+import React, { MouseEvent, useEffect, useRef, useState } from 'react'
 import ChatThumbnail from './ChatThumbnail';
 import LocalSearch from './LocalSearch';
 import { ChatType } from '@/_root/pages/Chat';
 import { ScrollArea } from './ui/scroll-area';
 import { Separator } from './ui/separator';
+import { Search, Users } from 'lucide-react';
 
 interface ChatListProps {
     setSelectedChat: (value: React.SetStateAction<ChatType>) => void,
@@ -22,6 +23,7 @@ const ChatList: React.FC<ChatListProps> = ({
     const [selectedFilter, setSelectedFilter] = useState('All');
     const [searchBarVisible, setSearchBarVisible] = useState(false);
     const [searchBarHeight, setSearchBarHeight] = useState(0);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [searchTerm, setSearchTerm] = useState('');
     const [filterSectionVisible, setFilterSectionVisible] = useState(false);
     const [filterSectionHeight, setFilterSectionHeight] = useState(0);
@@ -44,7 +46,7 @@ const ChatList: React.FC<ChatListProps> = ({
             setSelectedFilter(value);
     }
     const handleFilter = (value: string) => {
-        console.log("filter called")
+        console.log("filter called: ",value)
         if (selectedFilter.includes('Unread')) {
             setLocalChats((chats) => chats.filter((chat) => chat.messages.find(message => !message.read)))
         } else if (selectedFilter.includes('All')){
@@ -55,7 +57,7 @@ const ChatList: React.FC<ChatListProps> = ({
 
     useEffect(() => {
         handleFilter(selectedFilter);
-    }, [selectedFilter,localChats])
+    }, [selectedFilter, localChats])
 
     useEffect(() => {
         if (searchBarVisible && searchRef.current) {
@@ -73,14 +75,14 @@ const ChatList: React.FC<ChatListProps> = ({
     }, [filterSectionVisible])
 
     return (
-        <section className={`w-full min-h-full flex flex-col  min-w-80 md:max-w-96 shadow-sm rounded-md py-1 bg-white`}>
+        <section className={`w-full min-h-full flex flex-col  min-w-80 md:max-w-96 shadow-sm py-2 rounded-xl bg-white`}>
             <header className={`${(!filterSectionVisible && !searchBarVisible) ? '' : 'space-y-2'} flex py-4 flex-col justify-center min-h-12`}>
-                <div className='flex flex-row justify-between px-4'>
-                    <p className='font-bold text-xl tracking-wider'>Chats</p>
+                <div className='flex justify-between px-6'>
+                    <h3 className='font-bold text-2xl tracking-wider'>Chats</h3>
                     <div>
-                        <div className='flex flex-row space-x-1'>
-                            <div className={`max-w-7 ${searchBarVisible ? 'bg-light-4' : ''} hover:bg-light-4 p-1 rounded-sm`} onClick={() => setSearchBarVisible(!searchBarVisible)}><img src='/assets/svg/search-alt-1-svgrepo-com.svg' className='w-full' /></div>
-                            <div className={`max-w-7 ${filterSectionVisible ? 'bg-light-4' : ''} hover:bg-light-4 p-1 rounded-sm`} onClick={() => setFilterSectionVisible(!filterSectionVisible)}><img src='/assets/svg/people-svgrepo-com.svg' className='w-full' /></div>
+                        <div className='flex space-x-1'>
+                            <div className={`max-w-7 ${searchBarVisible ? 'bg-main text-light-4' : ''} hover:bg-main-light hover:text-light-4 rounded-md flex items-center w-10 h-10 p-1`} onClick={() => setSearchBarVisible(!searchBarVisible)}><Search /></div>
+                            <div className={`max-w-7 ${filterSectionVisible ? 'bg-main text-light-4' : ''} hover:bg-main-light hover:text-light-4 rounded-md flex items-center w-10 h-10 p-1`} onClick={() => setFilterSectionVisible(!filterSectionVisible)}><Users /></div>
                         </div>
                     </div>
                 </div>
@@ -92,7 +94,7 @@ const ChatList: React.FC<ChatListProps> = ({
                 {/* Below is the filter section*/}
                 <div ref={filterSectionRef}
                     style={{ height: `${filterSectionHeight}px` }}
-                    className={`${!filterSectionVisible ? 'opacity-0 overflow-hidden' : 'opacity-100'} flex flex-row gap-2 pl-2 transition-all ease-in-out duration-300`} >
+                    className={`${!filterSectionVisible ? 'opacity-0 overflow-hidden' : 'opacity-100'} flex gap-2 pl-2 transition-all ease-in-out duration-300`} >
                     {filterOptions.map((value, index) =>
                     (<div key={index}
                         onClick={handleFilterClick}

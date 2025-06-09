@@ -1,9 +1,8 @@
 import { Input } from "@/components/ui/input";
 import { UserFormProps } from "@/types";
-import { CountrySelectorDropdown, PhoneInput } from "react-international-phone";
+import {PhoneInput } from "react-international-phone";
 import 'react-international-phone/style.css'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 
 
@@ -20,7 +19,7 @@ export function UserForm({ formData, handleFormDataChange, form }: UserFormProps
                 <FormField
                     control={form.control}
                     name="firstName"
-                    render={({ field }) => (
+                    render={() => (
                         <FormItem>
                             <FormLabel>First Name</FormLabel>
                             <FormControl>
@@ -35,7 +34,7 @@ export function UserForm({ formData, handleFormDataChange, form }: UserFormProps
                 <FormField
                     control={form.control}
                     name="lastName"
-                    render={({ field }) => (
+                    render={() => (
                         <FormItem>
                             <FormLabel>Last Name</FormLabel>
                             <FormControl>
@@ -50,7 +49,7 @@ export function UserForm({ formData, handleFormDataChange, form }: UserFormProps
                 <FormField
                     control={form.control}
                     name="phoneNumber"
-                    render={({ field }) => (
+                    render={() => (
                         <FormItem>
                             <FormLabel>Phone Number</FormLabel>
                             <FormControl>
@@ -79,7 +78,7 @@ export function UserForm({ formData, handleFormDataChange, form }: UserFormProps
                 <FormField
                     control={form.control}
                     name="gender"
-                    render={({ field }) => (
+                    render={() => (
                         <FormItem>
                             <FormLabel>Gender</FormLabel>
                             <FormControl>

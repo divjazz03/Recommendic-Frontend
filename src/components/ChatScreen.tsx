@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import InitialsOrAvartar from './InitialsOrAvartar';
+import InitialsOrAvartar from './shared/InitialsOrAvartar';
 import { ChatType, Message } from '@/_root/pages/Chat';
 import { Separator } from './ui/separator';
 import { ScrollArea } from './ui/scroll-area';
@@ -56,7 +56,7 @@ const ChatScreen: React.FC<ChatScreenProps> = ({
 		scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
 	}, [sendQueue])
   return (
-    <section className={`flex flex-col h-full bg-white w-full rounded-md items-center`}>
+    <section className={`flex flex-col h-full bg-white w-full items-center rounded-xl`}>
 						{selectedChat &&
 							(
 								<div className='w-full h-full flex flex-col'>
@@ -70,7 +70,7 @@ const ChatScreen: React.FC<ChatScreenProps> = ({
 													<InitialsOrAvartar name={selectedChat.nameOfOtherUser} avatarUrl={selectedChat.avatarUrlOfOtherUser}/>
 												</div>
 												<div>
-													<p className='text-lg font-semibold'>{selectedChat.nameOfOtherUser}</p>
+													<h2 className='text-xl font-semibold'>{selectedChat.nameOfOtherUser}</h2>
 													<p>{selectedChatId}</p>
 												</div>
 											</div>
@@ -97,7 +97,7 @@ const ChatScreen: React.FC<ChatScreenProps> = ({
 											<div className='flex flex-row justify-between items-center h-full p-2 '>
 												<AutoResizeTextArea maxHeight={200} placeholder='Write a message' value={text} onChange={(e) => setText(e.target.value)} />
 												<div className='flex flex-row min-h-12 min-w-12 item-center p-1'>
-													<Button disabled={text.length < 1} className='rounded-full p-4 bg-main' onClick={handleSendMessage}>
+													<Button disabled={text.length < 1} className='rounded-full p-4 bg-main-light hover:bg-main' onClick={handleSendMessage}>
 														<div>
 															<svg fill="#FFFFFF" width="800px" height="800px" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
 																<path d="M568.13.012 392 176.142l783.864 783.989L392 1743.87 568.13 1920l960.118-959.87z" fillRule="evenodd" />
@@ -117,7 +117,7 @@ const ChatScreen: React.FC<ChatScreenProps> = ({
 
 							(
 								<div className=' flex flex-row justify-center items-center h-full w-full'>
-									<p className='h3-bold'>Select a Chat</p>
+									<p className='text-4xl font-semibold'>Select a Chat</p>
 								</div>
 							)
 						}

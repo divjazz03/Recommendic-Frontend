@@ -1,5 +1,4 @@
 import {z} from "zod"
-import { Gender } from '../forms/Enums'
 
 export const signUpValidation = z.object({
     firstName: z.string().min(2, 'Too short').max(30, 'Too long'),

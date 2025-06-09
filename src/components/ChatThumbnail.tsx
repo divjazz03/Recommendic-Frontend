@@ -1,7 +1,7 @@
-import React, { ReactNode, useRef } from 'react'
+import React, { useRef } from 'react'
 import { DateTime } from 'luxon'
-import { extractInitialsFromName, handleDateTimeFormatting } from '@/lib/utils/utils';
-import InitialsOrAvartar from './InitialsOrAvartar';
+import {handleDateTimeFormatting } from '@/lib/utils/utils';
+import InitialsOrAvartar from './shared/InitialsOrAvartar';
 
 export interface ChatThumbnailProps {
     imgLink?: string,
@@ -25,7 +25,7 @@ const ChatThumbnail = ({ name, mostRecentChatPreview,imgLink, numberOfUnreadChat
                     </div>
                     <div className='flex flex-row  w-full justify-between'>
                         <div className='flex flex-col gap-4'>
-                            <p className='font-semibold text-lg'>{name}</p>
+                            <h3 className='font-semibold text-xl'>{name}</h3>
                             <p className='text-sm'>{mostRecentChatPreview.slice(0, 15) + (mostRecentChatPreview.length > 15? '...':'')}</p>
                         </div>
                         <div className='flex flex-col min-w-[48px] gap-4 items-center'>

@@ -7,7 +7,6 @@ import {
     AlertDialogTitle
 } from './ui/alert-dialog'
 import { CheckCircle2 } from 'lucide-react';
-import { count } from 'console';
 
 interface EmailConfirmSuccessProps {
     isOpen: boolean;

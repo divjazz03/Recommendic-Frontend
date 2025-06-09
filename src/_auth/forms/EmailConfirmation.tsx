@@ -5,7 +5,7 @@ import { toast } from "@/hooks/use-toast";
 import { useVerifyTokenMutation } from "@/lib/react-query/queriiesAndMutation";
 import axios, { AxiosError } from "axios";
 import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 
 const EmailConfirmation = () => {
@@ -20,8 +20,8 @@ const EmailConfirmation = () => {
     }
     } catch (error) {
         if (axios.isAxiosError(error)) {
-          error as AxiosError;
-          return toast({title: `Couldn't confirm email: ${error.message}`});
+          const err = error as AxiosError;
+          return toast({title: `Couldn't confirm email: ${err.message}`});
         }
     }
   }

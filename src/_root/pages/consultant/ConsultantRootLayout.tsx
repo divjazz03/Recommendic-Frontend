@@ -1,14 +1,14 @@
-import InitialsOrAvartar from '@/components/InitialsOrAvartar';
+import InitialsOrAvartar from '@/components/shared/InitialsOrAvartar';
 import GlobalSearch from '@/components/shared/GlobalSearch';
-import { Input } from '@/components/ui/input';
 import { useUserContext } from '@/context/AuthContext';
 import React, { MutableRefObject, useEffect, useRef, useState } from 'react'
 import { Link, Outlet, useLocation } from 'react-router-dom'
+import { Bell, Calendar1Icon, CalendarClock, ChartLine, MessageSquareMoreIcon, PillBottle, Settings2, Users } from 'lucide-react';
 
 const ConsultantRootLayout = () => {
 
 	const [asideHidden, setAsideHidden] = useState(true);
-	const { userContext } = useUserContext();
+	useUserContext();
 	const location = useLocation();
 	const menuRefs = {
 		"/overview": useRef<HTMLDivElement>(null),
@@ -27,7 +27,7 @@ const ConsultantRootLayout = () => {
 		if (currentRef && currentRef.current) {
 			currentRef.current.focus();
 		}
-	}, [location.pathname]);
+	}, [location]);
 
 	useEffect(() => {
 		function handleClickOutside(event) {
@@ -88,7 +88,7 @@ const ConsultantRootLayout = () => {
 									<li>
 										<Link to={"/consultant/overview"}>
 											<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/overview"]}>
-												<img src='/assets/svg/overview-svgrepo-com.svg' className='max-w-[24px]' />
+												<ChartLine className='w-6 h-6' />
 												<p>Overview</p>
 											</div>
 										</Link>
@@ -96,7 +96,7 @@ const ConsultantRootLayout = () => {
 									<li>
 										<Link to={"/consultant/appointment"}>
 											<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/appointment"]}>
-												<img src='/assets/svg/appointment-svgrepo-com.svg' className='max-w-[24px]'/>
+												<CalendarClock className='w-6 h-6'/>
 												<p>Appointment</p>
 											</div>
 										</Link>
@@ -104,7 +104,7 @@ const ConsultantRootLayout = () => {
 									<li>
 										<Link to={"/consultant/patient"}>
 											<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/patient"]}>
-												<img src='/assets/svg/people-svgrepo-com.svg' className='max-w-[24px]' />
+												<Users className='w-6 h-6 ' />
 												<p>Patients</p>
 											</div>
 										</Link>
@@ -112,7 +112,7 @@ const ConsultantRootLayout = () => {
 									<li>
 										<Link to={"/consultant/schedule"}>
 											<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/schedule"]}>
-												<img src='/assets/svg/schedule-svgrepo-com.svg' className='max-w-[24px]' />
+												<Calendar1Icon className='w-6 h-6' />
 												<p>Schedule</p>
 											</div>
 										</Link>
@@ -121,7 +121,7 @@ const ConsultantRootLayout = () => {
 										<Link to={"/consultant/chat"}>
 											<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/chat"]}>
 												<div className='relative block max-w-fit max-h-fit'>
-													<img src='/assets/svg/chats-svgrepo-com.svg' className='min-w-6 max-w-6' />
+													<MessageSquareMoreIcon className='w-6 h-6' />
 													<div className='absolute min-h-2 min-w-2 rounded-full bg-red-600 top-0 right-0'></div>
 												</div>
 												<p>Chats</p>
@@ -131,7 +131,7 @@ const ConsultantRootLayout = () => {
 									<li >
 										<Link to={"/consultant/medication"}>
 											<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/medication"]}>
-												<img src='/assets/svg/medication-bottle-svgrepo-com.svg' className='max-w-[24px]' />
+												<PillBottle className='w-6 h-6' />
 												<p>Medication</p>
 											</div>
 										</Link>
@@ -145,7 +145,7 @@ const ConsultantRootLayout = () => {
 										<Link to={"/consultant/notification"}>
 											<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/notification"]}>
 												<div className='relative block max-w-fit max-h-fit'>
-													<img src='/assets/svg/notification-12-svgrepo-com.svg' className='max-w-[24px]' />
+													<Bell className='w-6 h-6' />
 													<div className='absolute min-h-2 min-w-2 rounded-full bg-red-600 top-0 right-0'></div>
 												</div>
 												<p className=''>Notification</p>
@@ -155,7 +155,7 @@ const ConsultantRootLayout = () => {
 									<li>
 										<Link to={"/consultant/settings"}>
 											<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/settings"]}>
-												<img src='/assets/svg/settings-2-svgrepo-com.svg' className='max-w-[24px]' />
+												<Settings2 className='w-6 h-6'/>
 												<p className=''>Settings</p>
 											</div>
 										</Link>
@@ -163,11 +163,11 @@ const ConsultantRootLayout = () => {
 								</ul>
 								<hr className='pb-2' />
 								<div className=' flex flex-row gap-2 min-h-10 pl-5'>
-									<InitialsOrAvartar name='Divine Maduks' />
-									<div className='flex flex-col gap-1'>
-										<p className='base-bold'>Dr. Maduks</p>
-										<p className='tiny-thin'>Vetinary</p>
-									</div>
+									<InitialsOrAvartar name='Maduka Divine'/>
+										<div className='flex flex-col gap-1'>
+											<p className='base-bold'>Dr. Maduka</p>
+											<p className='tiny-thin'>Vetinary</p>
+										</div>
 								</div>
 							</div>
 
@@ -190,7 +190,7 @@ const ConsultantRootLayout = () => {
 										<li >
 											<Link to={"/consultant/overview"}>
 												<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/overview"]}>
-													<img src='/assets/svg/overview-svgrepo-com.svg' className='max-w-[24px]' />
+													<ChartLine className='w-6 h-6' />
 													<p>Overview</p>
 												</div>
 											</Link>
@@ -198,7 +198,7 @@ const ConsultantRootLayout = () => {
 										<li>
 										<Link to={"/consultant/appointment"}>
 											<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/appointment"]}>
-												<img src='/assets/svg/appointment-svgrepo-com.svg' className='max-w-[24px]'/>
+												<CalendarClock className='w-6 h-6'/>
 												<p>Appointment</p>
 											</div>
 										</Link>
@@ -206,7 +206,7 @@ const ConsultantRootLayout = () => {
 										<li>
 											<Link to={"/consultant/patient"}>
 												<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/patient"]}>
-													<img src='/assets/svg/people-svgrepo-com.svg' className='max-w-[24px]' />
+													<Users className='w-6 h-6 ' />
 													<p>Patients</p>
 												</div>
 											</Link>
@@ -214,7 +214,7 @@ const ConsultantRootLayout = () => {
 										<li>
 											<Link to={"/consultant/schedule"}>
 												<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/schedule"]}>
-													<img src='/assets/svg/schedule-svgrepo-com.svg' className='max-w-[24px]' />
+													<Calendar1Icon className='w-6 h-6' />
 													<p>Schedule</p>
 												</div>
 											</Link>
@@ -223,7 +223,7 @@ const ConsultantRootLayout = () => {
 											<Link to={"/consultant/chat"}>
 												<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/chat"]}>
 													<div className='relative block max-w-fit max-h-fit'>
-														<img src='/assets/svg/chats-svgrepo-com.svg' className='min-w-6 max-w-6' />
+														<MessageSquareMoreIcon className='w-6 h-6' />
 														<div className='absolute min-h-2 min-w-2 rounded-full bg-red-600 top-0 right-0'></div>
 													</div>
 													<p>Chats</p>
@@ -233,7 +233,7 @@ const ConsultantRootLayout = () => {
 										<li >
 											<Link to={"/consultant/medication"}>
 												<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/medication"]}>
-													<img src='/assets/svg/medication-bottle-svgrepo-com.svg' className='max-w-[24px]' />
+													<PillBottle className='w-6 h-6' />
 													<p>Medication</p>
 												</div>
 											</Link>
@@ -247,7 +247,7 @@ const ConsultantRootLayout = () => {
 											<Link to={"/consultant/notification"}>
 												<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/notification"]}>
 													<div className='relative block max-w-fit max-h-fit'>
-														<img src='/assets/svg/notification-12-svgrepo-com.svg' className='max-w-[24px]' />
+														<Bell className='w-6 h-6' />
 														<div className='absolute min-h-2 min-w-2 rounded-full bg-red-600 top-0 right-0'></div>
 													</div>
 													<p className=''>Notification</p>
@@ -257,7 +257,7 @@ const ConsultantRootLayout = () => {
 										<li>
 											<Link to={"/consultant/settings"}>
 												<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/settings"]}>
-													<img src='/assets/svg/settings-2-svgrepo-com.svg' className='max-w-[24px]' />
+													<Settings2 className='w-6 h-6'/>
 													<p className=''>Settings</p>
 												</div>
 											</Link>
@@ -265,9 +265,9 @@ const ConsultantRootLayout = () => {
 									</ul>
 									<hr className='pb-2' />
 									<div className=' flex flex-row gap-2 min-h-10 pl-5'>
-										<div className='bg-dark-2 max-w-fit max-h-fit p-2 rounded-full'><p className='text-white'>DM</p></div>
+										<InitialsOrAvartar name='Maduka Divine'/>
 										<div className='flex flex-col gap-1'>
-											<p className='base-bold'>Dr. Maduks</p>
+											<p className='base-bold'>Dr. Maduka</p>
 											<p className='tiny-thin'>Vetinary</p>
 										</div>
 									</div>

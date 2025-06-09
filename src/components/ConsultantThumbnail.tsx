@@ -1,5 +1,5 @@
-import React, { MouseEvent } from 'react'
-import InitialsOrAvartar from './InitialsOrAvartar'
+import React from 'react'
+import InitialsOrAvartar from './shared/InitialsOrAvartar'
 import { Calendar, Clock, MapPin, Star, Stethoscope } from 'lucide-react';
 
 interface ConsultantThumbnailProps {

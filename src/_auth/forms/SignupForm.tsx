@@ -9,10 +9,9 @@ import SignupSuccessModal from '@/components/SignupSuccessModal'
 import { useToast } from '@/hooks/use-toast'
 import { useCreateUserMutation } from '@/lib/react-query/queriiesAndMutation'
 import { Link, useNavigate } from 'react-router-dom'
-import { getAllSupportedMedicalCategories } from '@/lib/api/backend_api'
 import { FormWrapper } from './FormWrapper'
 import Loader from '@/components/shared/Loader'
-import { SubmitHandler, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { signUpValidation } from '../validations/SignupValidation'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -23,7 +22,7 @@ import { Progress } from '@/components/ui/progress'
 
 const SignupForm: React.FC = () => {
 
-  const handleFormDataChange = (key: keyof typeof formData, value: any) => {
+  const handleFormDataChange = (key: keyof typeof formData, value: unknown) => {
     setFormData(prev => ({ ...prev, [key]: value, }));
   };
   const handleTypeOfUserSelectChange = (value: string) => handleFormDataChange("typeOfUser", value);
@@ -61,7 +60,7 @@ const SignupForm: React.FC = () => {
     mode: "onChange"
   })
   const [isSuccessfulSignUp, setSuccessfulSignup] = useState<boolean>(false);
-  const { steps, currentStepIndex, step, isFirstStep, isLastStep, next, back } = useMultistepForm([
+  const {currentStepIndex, step, isFirstStep, isLastStep, next, back } = useMultistepForm([
     <UserForm formData={formData} form={form} handleFormDataChange={handleFormDataChange} />,
     <AddressForm formData={formData} form={form} handleFormDataChange={handleFormDataChange} />,
     <AccountForm
@@ -128,12 +127,12 @@ const SignupForm: React.FC = () => {
 
 
   async function handleFormSubmit(form: z.infer<typeof signUpValidation>) {
-    switch (formData.typeOfUser) {
+    switch (form.typeOfUser) {
       case 'Patient':
-        await onSubmitForPatient(formData)
+        await onSubmitForPatient(form)
         break;
       case 'Consultant':
-        await onSubmitForConsultant(formData)
+        await onSubmitForConsultant(form)
         break;
       default:
         break;

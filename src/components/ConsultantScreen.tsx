@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
-import InitialsOrAvartar from './InitialsOrAvartar';
+import InitialsOrAvartar from './shared/InitialsOrAvartar';
 import { Award, BookOpen, Calendar, CheckCircle, Clock, Heart, MapPin, MessageCircle, Shield, Star, TrendingUp, Users, Video } from 'lucide-react';
-import Consultant from '@/_root/pages/patient/Consultant';
 
 
 interface ConsultantProfileProps {
@@ -54,6 +53,7 @@ const ConsultantProfile: React.FC<ConsultantProfileProps> = ({
     isVisible = false
 }) => {
     const [activeTab, setActiveTab] = useState('overview');
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [isAvailable, setIsAvailable] = useState(false);
 
     const thisRef: React.MutableRefObject<HTMLDivElement> = useRef(null);
@@ -101,7 +101,7 @@ const ConsultantProfile: React.FC<ConsultantProfileProps> = ({
                                 <p className='text-xl text-dark-3 mb-3'>{title}</p>
                                 <div className="flex flex-wrap items-center gap-4 mb-4">
                                     <div className="flex items-center gap-1">
-                                        <Star className="w-5 h-5 text-yellow-400 fill-current" />
+                                        <Star className="w-5 h-5 text-main fill-current" />
                                         <span className="font-semibold text-gray-900">{rating}</span>
                                         <span className="text-dark-1">({totalReviews} reviews)</span>
                                     </div>
@@ -276,7 +276,7 @@ const ConsultantProfile: React.FC<ConsultantProfileProps> = ({
                                                 </div>
                                                 <div className="flex">
                                                     {[...Array(review.rating)].map((_, i) => (
-                                                        <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />
+                                                        <Star key={i} className="w-4 h-4 text-main fill-current" />
                                                     ))}
                                                 </div>
                                             </div>

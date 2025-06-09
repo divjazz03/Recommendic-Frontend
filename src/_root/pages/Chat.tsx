@@ -70,14 +70,14 @@ const Chat = () => {
 	]
 
 
-const [chats, setChats] = useState<ChatType[]>(chatsMock);
+const [chats] = useState<ChatType[]>(chatsMock);
 const [selectedChat, setSelectedChat] = useState<ChatType>(null);
 const [showChatScreen, setShowChatScreen] = useState<boolean>(false);
 
 return (
 	<>
-		<main className='flex flex-row h-[800px] bg-light-4 rounded-xl p-2'>
-			<section className={`${showChatScreen ? 'opacity-0 w-0 overflow-hidden sm:min-w-[360px] sm:max-w-360px sm:opacity-100 sm:block sm:mr-2' : 'block mr-2 min-w-[360px] w-full'} flex-1 duration-300 ease-in-out transition-all h-full`}>
+		<main className='flex h-[800px] bg-blue-50 rounded-2xl p-2'>
+			<section className={`${showChatScreen ? 'opacity-0 w-0 overflow-hidden sm:min-w-[360px] sm:max-w-360px sm:opacity-100 sm:block sm:mr-2' : 'block mr-2 min-w-[360px] w-full'} flex-1  duration-300 ease-in-out transition-all h-full`}>
 				<ChatList chats={chats}
 					showChatScreen={showChatScreen}
 					setShowChatScreen={setShowChatScreen}

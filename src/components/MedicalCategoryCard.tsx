@@ -1,5 +1,5 @@
 import { SelectAction } from '@/_root/pages/consultant/ConsultantOnboarding';
-import React, { useRef, useState } from 'react'
+import React, { useState } from 'react'
 
 
 type MedicalCategoryCardProps = {

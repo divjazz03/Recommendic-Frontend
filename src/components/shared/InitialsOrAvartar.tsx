@@ -1,6 +1,5 @@
 import { extractInitialsFromName } from '@/lib/utils/utils'
 import React from 'react'
-import internal from 'stream'
 
 interface InitialsOrAvartarProps {
     name: string,

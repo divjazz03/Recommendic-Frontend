@@ -1,12 +1,9 @@
-import { Label } from '@radix-ui/react-label';
-import { Section } from 'lucide-react';
-import React, { useState } from 'react'
+import React from 'react'
 import { Outlet, Navigate } from 'react-router-dom'
 
 const AuthLayout = () => {
 
   const isAuthenticated = false;
-  const [typeOfUser, setTypeOfUser] = useState<string>("Patient")
 
 
 

@@ -1,7 +1,6 @@
 import { Input } from "@/components/ui/input";
 import { AccountFormProps } from "@/types";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 
 export function AccountForm({
@@ -22,7 +21,7 @@ export function AccountForm({
                 <FormField
                     control={form.control}
                     name="email"
-                    render={({ field }) => (
+                    render={() => (
                         <FormItem>
                             <FormLabel>Email</FormLabel>
                             <FormControl>
@@ -37,7 +36,7 @@ export function AccountForm({
                 <FormField
                     control={form.control}
                     name="typeOfUser"
-                    render={({ field }) => (
+                    render={() => (
                         <FormItem>
                             <FormLabel>Signup As</FormLabel>
                             <FormControl>
@@ -59,7 +58,7 @@ export function AccountForm({
                 <FormField
                     control={form.control}
                     name="password"
-                    render={({ field }) => (
+                    render={() => (
                         <FormItem>
                             <FormLabel>Password</FormLabel>
                             <FormControl>

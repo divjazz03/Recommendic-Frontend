@@ -186,3 +186,7 @@ interface Review {
     comment: string;
     date: string;
 }
+
+export interface SVGProps {
+    className: string
+}

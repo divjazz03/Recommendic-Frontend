@@ -151,7 +151,7 @@ const Consultant = () => {
   }
   
   return (
-    <div className='flex flex-col space-y-2 bg-light-4 w-full max-h-screen min-h-[760px] p-2 rounded-md'>
+    <div className='flex flex-col space-y-2 bg-blue-50 w-full max-h-screen min-h-[760px] p-2 rounded-md'>
       <section>
         <ConsultantList isVisible={profileIsVisible} consultants={consultantPreview} handleViewProfile={handleViewProfile} handleScheduleConsultant={handleScheduleConsultant}/>
         <ConsultantScreen

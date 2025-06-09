@@ -23,12 +23,13 @@ import PatientOverview from './_root/pages/patient/PatientOverview';
 import Consultant from './_root/pages/patient/Consultant';
 import { PatientSchedule } from './_root/pages/patient/PatientSchedule';
 import PatientSettings from './_root/pages/patient/PatientSettings';
-import Appointment from './_root/pages/consultant/Appointment';
+import Appointment from './_root/pages/consultant/ConsultantAppointment';
+import ConsultantAppointment from './_root/pages/consultant/ConsultantAppointment';
 
 
 const App = () => {
   return (
-    <main className=' h-screen w-screen'>
+    <main className='h-screen w-screen'>
       <Routes>
         {/* Public Routes*/}
         <Route path='/landing' element={<Landing />} />
@@ -44,7 +45,7 @@ const App = () => {
         {/*Consultant routes*/}
         <Route  element={<ConsultantRootLayout />}>
           <Route path='/consultant/onboarding' element={<ConsultantOnboarding />} />
-          <Route path='/consultant/appointment' element={<Appointment />} />
+          <Route path='/consultant/appointment' element={<ConsultantAppointment />} />
           <Route path='/consultant/overview' element={<ConsultantOverview />} />
           <Route path='/consultant/patient' element={<Patient/>}/>
           <Route path='/consultant/schedule' element={<ConsultantSchedule />} />
@@ -53,6 +54,7 @@ const App = () => {
           <Route path='/consultant/notification' element={<Notification />} />
           <Route path='/consultant/settings' element={<ConsultantSettings />} />
         </Route>
+        {/* Patient Routes */}
         <Route element={<PatientRootLayout />}>
           <Route path='/patient/onboarding' element={<PatientOnboarding />} />
           <Route path='/patient/overview' element={<PatientOverview />} />
@@ -64,7 +66,6 @@ const App = () => {
           <Route path='/patient/settings' element={<PatientSettings />} />
         </Route>
       </Routes>
-
       <Toaster />
     </main>
   )
