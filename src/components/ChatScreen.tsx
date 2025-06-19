@@ -95,7 +95,7 @@ const ChatScreen: React.FC<ChatScreenProps> = ({
 										<Separator />
 										<div className='w-full h-fit'>
 											<div className='flex flex-row justify-between items-center h-full p-2 '>
-												<AutoResizeTextArea maxHeight={200} placeholder='Write a message' value={text} onChange={(e) => setText(e.target.value)} />
+												<AutoResizeTextArea maxHeight={200} placeholder='Write a message' value={text} onChange={(e) => setText(e.target.value)}/>
 												<div className='flex flex-row min-h-12 min-w-12 item-center p-1'>
 													<Button disabled={text.length < 1} className='rounded-full p-4 bg-main-light hover:bg-main' onClick={handleSendMessage}>
 														<div>

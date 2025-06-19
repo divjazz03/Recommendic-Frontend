@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react'
-import InitialsOrAvartar from './shared/InitialsOrAvartar';
+import InitialsOrAvartar from '../../../components/shared/InitialsOrAvartar';
 import { Award, BookOpen, Calendar, CheckCircle, Clock, Heart, MapPin, MessageCircle, Shield, Star, TrendingUp, Users, Video } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 
-interface ConsultantProfileProps {
+interface ConsultantProfile {
+        id: number
         name: string,
         title: string,
         rating: number,
@@ -14,9 +16,9 @@ interface ConsultantProfileProps {
         image: string,
         specializations: string[],
         languages: string[],
-        consultationFee: string,
+        consultationFee: number,
         nextAvailable: string,
-        education: { degree: string, institution: string, year: string }[],
+        education: { degree: string, institution: string, year: number }[],
         stats: {
             patientsHelped: number,
             successRate: number,
@@ -24,7 +26,7 @@ interface ConsultantProfileProps {
             followUpRate: number
         },
         reviews: {name: string, rating: number, comment: string, date:string}[],
-        availableSlots: {time: string, type: string}[],
+        availableSlots: {time: string}[],
         isVisible?: boolean
         
     
@@ -33,37 +35,52 @@ interface ConsultantProfileProps {
 
 
 
-const ConsultantProfile: React.FC<ConsultantProfileProps> = ({
-    name,
-    availableSlots,
-    bio,
-    consultationFee,
-    education,
-    experience,
-    image = "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=300&h=300&fit=crop&crop=face",
-    languages,
-    location,
-    nextAvailable,
-    rating,
-    reviews,
-    specializations,
-    stats,
-    title,
-    totalReviews,
-    isVisible = false
-}) => {
+const ConsultantProfile = () => {
+    const consultantId: number = useLocation().state.id;
     const [activeTab, setActiveTab] = useState('overview');
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [isAvailable, setIsAvailable] = useState(false);
+    const [consultant, setConsultant] = useState<ConsultantProfile>({
+  id: 1,
+  name: "Dr. Sarah Mitchell",
+  title: "Cardiologist & Internal Medicine Specialist",
+  rating: 4.9,
+  totalReviews: 347,
+  bio: `Dr. Sarah Mitchell is a board-certified cardiologist with over 12 years of experience in treating 
+                      cardiovascular diseases and internal medicine conditions. She specializes in preventive cardiology, 
+                      hypertension management, and heart disease prevention. Dr. Mitchell is known for her patient-centered 
+                      approach and commitment to providing comprehensive care.`,
+  experience: 12,
+  location: "Lagos University Teaching Hospital",
+  image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=300&h=300&fit=crop&crop=face",
+  specializations: ["Cardiology", "Internal Medicine", "Preventive Care", "Hypertension Management"],
+  languages: ["English", "Yoruba", "French"],
+  consultationFee: 20,
+  nextAvailable: "Today, 2:30 PM",
+  education: [
+    { degree: "MD", institution: "University of Lagos", year: 2012 },
+    { degree: "Fellowship in Cardiology", institution: "Johns Hopkins", year: 2015 }
+  ],
+  stats: {
+    patientsHelped: 2847,
+    successRate: 96,
+    responseTime: "< 30 min",
+    followUpRate: 94
+  },
+  reviews: [
+    { name: "Adunni O.", rating: 5, comment: "Excellent care and very thorough explanation of my condition.", date: "2 days ago" },
+    { name: "Michael K.", rating: 5, comment: "Dr. Mitchell helped me manage my hypertension effectively.", date: "1 week ago" },
+    { name: "Fatima A.", rating: 4, comment: "Professional and caring. Highly recommend for heart issues.", date: "2 weeks ago" }
+  ],
+  availableSlots: [
+    { time: "2:30 PM"},
+    { time: "4:00 PM",},
+    { time: "5:30 PM" }
+  ]
+})
 
     const thisRef: React.MutableRefObject<HTMLDivElement> = useRef(null);
 
-
-    useEffect(() => {
-        thisRef.current.hidden= !isVisible
-    },[isVisible])
-
-    
+    const navigate = useNavigate();
 
     const bgColors: Record<string, string> = {
         red: 'bg-red-100',
@@ -79,7 +96,7 @@ const ConsultantProfile: React.FC<ConsultantProfileProps> = ({
     }
 
     return (
-        <section ref={thisRef} className='max-h-[780px] overflow-auto p-4'>
+        <section ref={thisRef} className='max-h-[780px] lg:max-h-[890px] overflow-auto p-4'>
             <div className='max-w-6xl mx-auto'>
                 {/* Header section */}
                 <section className='bg-light-5 rounded-2xl shadow-md p-8 mb-6 relative overflow-hidden'>
@@ -87,7 +104,7 @@ const ConsultantProfile: React.FC<ConsultantProfileProps> = ({
                     <div className='relative z-10'>
                         <div className='flex flex-col lg-flex-row items-start lg:items-center gap-6'>
                             <div className='relative'>
-                                <InitialsOrAvartar name={name} avatarUrl={image} width='100' height='100' />
+                                <InitialsOrAvartar name={consultant.name} avatarUrl={consultant?.image} width='100' height='100' />
                                 <div className={`absolute -bottom-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center ${isAvailable ? 'bg-green-500' : 'bg-gray-400'}`}>
                                     <div className='w-3 h-3 bg-white rounded-full'></div>
                                 </div>
@@ -95,26 +112,26 @@ const ConsultantProfile: React.FC<ConsultantProfileProps> = ({
                             </div>
                             <div className='flex-1'>
                                 <div className='flex items-center gap-3 mb-2'>
-                                    <h1 className='text-3xl font-bold text-main'>{name}</h1>
+                                    <h1 className='text-3xl font-bold text-main'>{consultant.name}</h1>
                                     <Shield className='w-6 h-6 text-main' />
                                 </div>
-                                <p className='text-xl text-dark-3 mb-3'>{title}</p>
+                                <p className='text-xl text-dark-3 mb-3'>{consultant.title}</p>
                                 <div className="flex flex-wrap items-center gap-4 mb-4">
                                     <div className="flex items-center gap-1">
                                         <Star className="w-5 h-5 text-main fill-current" />
-                                        <span className="font-semibold text-gray-900">{rating}</span>
-                                        <span className="text-dark-1">({totalReviews} reviews)</span>
+                                        <span className="font-semibold text-gray-900">{consultant.rating}</span>
+                                        <span className="text-dark-1">({consultant.totalReviews} reviews)</span>
                                     </div>
                                     <div className="flex items-center gap-1 text-dark-1">
                                         <Award className="w-5 h-5" />
-                                        <span>{experience} years experience</span>
+                                        <span>{consultant.experience} years experience</span>
                                     </div>
                                     <div className="flex items-center gap-1 text-dark-1">
                                         <MapPin className="w-5 h-5" />
-                                        <span>{location}</span>
+                                        <span>{consultant.location}</span>
                                     </div>
                                     <div className="flex flex-wrap gap-2 mb-4">
-                                        {specializations.map((spec, index) => (
+                                        {consultant.specializations.map((spec, index) => (
                                             <span key={index} className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
                                                 {spec}
                                             </span>
@@ -122,7 +139,9 @@ const ConsultantProfile: React.FC<ConsultantProfileProps> = ({
                                     </div>
 
                                     <div className="flex flex-col gap-3">
-                                        <button className="px-6 py-3 bg-main-light hover:bg-main text-white rounded-xl font-semibold transition-color duration-100 flex items-center gap-2">
+                                        <button className="px-6 py-3 bg-main-light hover:bg-main text-white rounded-xl font-semibold transition-color duration-100 flex items-center gap-2" 
+                                            onClick={() => navigate(`/patient/schedule`,{state: {id: consultant.id}})}
+                                        >
                                             <Video className="w-5 h-5" />
                                             Book Consultation
                                         </button>
@@ -139,10 +158,10 @@ const ConsultantProfile: React.FC<ConsultantProfileProps> = ({
                 {/* Stats Grid*/}
                 <section className='grid grid-cols-1 sm:grid-cols-2 md-grid-cols-4 gap-4 mb-6 '>
                     {[
-                        { icon: Users, label: "Patients Helped", value: stats.patientsHelped.toLocaleString(), color: 'blue' },
-                        { icon: TrendingUp, label: "Success Rate", value: `${stats.successRate}%`, color: 'green' },
-                        { icon: Clock, label: "Response Time", value: stats.responseTime, color: 'purple' },
-                        { icon: Heart, label: "Follow-up Rate", value: `${stats.followUpRate}%`, color: 'red' }
+                        { icon: Users, label: "Patients Helped", value: consultant.stats.patientsHelped.toLocaleString(), color: 'blue' },
+                        { icon: TrendingUp, label: "Success Rate", value: `${consultant.stats.successRate}%`, color: 'green' },
+                        { icon: Clock, label: "Response Time", value: consultant.stats.responseTime, color: 'purple' },
+                        { icon: Heart, label: "Follow-up Rate", value: `${consultant.stats.followUpRate}%`, color: 'red' }
                     ].map((stat, index) => (
                         <div key={index} className='bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all duration-100'>
                             <div className={`w-12 h-12 rounded-xl flex items-center ${bgColors[stat.color]} justify-center mb-3`}
@@ -184,16 +203,16 @@ const ConsultantProfile: React.FC<ConsultantProfileProps> = ({
                         {activeTab === 'overview' && (
                             <div className='space-y-6'>
                                 <div>
-                                    <h3 className='text-xl font-semibold text-dark-3 mb-3'>About {name}</h3>
+                                    <h3 className='text-xl font-semibold text-dark-3 mb-3'>About {consultant.name}</h3>
                                     <p className='text-dark-1 leading-relaxed'>
-                                        {bio}
+                                        {consultant.bio}
                                     </p>
                                 </div>
 
                                 <div>
                                     <h3 className='text-xl font-semibold text-dark-3 mb-3'>Education & Certifications</h3>
                                     <div className='space-y-3'>
-                                        {education.map((edu, index) => (
+                                        {consultant.education.map((edu, index) => (
                                             <div key={index} className='flex items-center gap-3 p-3 bg-gray-50 rounded-lg'>
                                                 <Award className='w-5 h-5 text-main' />
                                                 <div>
@@ -208,7 +227,7 @@ const ConsultantProfile: React.FC<ConsultantProfileProps> = ({
                                 <div>
                                     <h3 className='text-xl font-semibold text-dark-3 mb-3'>Languages</h3>
                                     <div className='flex gap-2'>
-                                        {languages.map((lang, index) => (
+                                        {consultant.languages.map((lang, index) => (
                                             <span key={index} className='px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm'>
                                                 {lang}
                                             </span>
@@ -224,16 +243,15 @@ const ConsultantProfile: React.FC<ConsultantProfileProps> = ({
                             <section className='space-y-6'>
                                 <div className='flex items-center justify-between '>
                                     <h3 className='text-xl font-semibold text-dark-3'>Available Today</h3>
-                                    <div className="text-lg font-semibold text-main">{consultationFee}</div>
+                                    <div className="text-lg font-semibold text-main">{'$'+ consultant.consultationFee}</div>
                                 </div>
 
                                 <div className="grid gap-3">
-                                    {availableSlots.map((slot, index) => (
+                                    {consultant.availableSlots.map((slot, index) => (
                                         <div key={index} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-light-1 hover:bg-grey-100 transition-all duration-300">
                                             <div className="flex items-center gap-3">
                                                 <Clock className="w-5 h-5 text-dark-1" />
                                                 <span className="font-medium text-dark-3">{slot.time}</span>
-                                                <span className="text-sm text-dark-1">• {slot.type}</span>
                                             </div>
                                             <button className="px-4 py-2 bg-main-light hover:bg-main text-white rounded-lg  transition-colors duration-300">
                                                 Book
@@ -245,7 +263,7 @@ const ConsultantProfile: React.FC<ConsultantProfileProps> = ({
                                 <div className="p-4 bg-green-50 rounded-lg border border-green-200">
                                     <div className="flex items-center gap-2 text-green-800">
                                         <CheckCircle className="w-5 h-5" />
-                                        <span className="font-medium">Next available: {nextAvailable}</span>
+                                        <span className="font-medium">Next available: {consultant.nextAvailable}</span>
                                     </div>
                                 </div>
                             </section>
@@ -256,13 +274,13 @@ const ConsultantProfile: React.FC<ConsultantProfileProps> = ({
                                 <div className="flex items-center justify-between">
                                     <h3 className="text-xl font-semibold text-dark-3">Patient Reviews</h3>
                                     <div className="text-right">
-                                        <div className="text-3xl font-bold text-dark-3">{rating}</div>
-                                        <div className="text-sm text-dark-1">{totalReviews} reviews</div>
+                                        <div className="text-3xl font-bold text-dark-3">{consultant.rating}</div>
+                                        <div className="text-sm text-dark-1">{consultant.totalReviews} reviews</div>
                                     </div>
                                 </div>
 
                                 <div className="space-y-4">
-                                    {reviews.map((review, index) => (
+                                    {consultant.reviews.map((review, index) => (
                                         <div key={index} className="p-4 border border-gray-200 rounded-lg">
                                             <div className="flex items-center justify-between mb-2">
                                                 <div className="flex items-center gap-3">

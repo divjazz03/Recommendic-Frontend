@@ -1,51 +1,118 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import LocalSearch from './LocalSearch'
+import LocalSearch from '../../../components/LocalSearch'
 import { ChevronDown, Filter, Stethoscope } from 'lucide-react'
-import { Label } from './ui/label'
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from './ui/select';
-import ConsultantThumbnail from './ConsultantThumbnail';
+import { Label } from '../../../components/ui/label'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '../../../components/ui/select';
+import ConsultantThumbnail from '../../../components/ConsultantThumbnail';
+import { ConsultantTypeMinimal } from '@/types';
 
 
-interface ConsultantListProps {
-    consultants: {
-        id: number,
-        name: string,
-        specialty: string,
-        rating: number,
-        reviews: number,
-        experience: string,
-        location: string,
-        availability: string,
-        consultationFee: string,
-        image: string,
-        qualifications: string[],
-        languages: string[],
-        nextSlot: string
-    }[],
-    handleViewProfile?: (consultantId: number) => void,
-    handleScheduleConsultant: (consultantId: number) => void,
-    isVisible: boolean;
-}
+const consultantPreview: ConsultantTypeMinimal[] = [
+  {
+    id: 1,
+    name: "Dr. Sarah Johnson",
+    specialty: "Cardiology",
+    rating: 4.9,
+    reviews: 156,
+    experience: 15,
+    location: "Downtown Medical Center",
+    availability: "Available Today",
+    consultationFee: "$150",
+    image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150&h=150&fit=crop&crop=face",
+    qualifications: ["MD", "FACC"],
+    languages: ["English", "Spanish"],
+    nextSlot: "2:00 PM"
+  },
+  {
+    id: 2,
+    name: "Dr. Michael Chen",
+    specialty: "Neurology",
+    rating: 4.8,
+    reviews: 203,
+    experience: 12,
+    location: "City Hospital",
+    availability: "Available Tomorrow",
+    consultationFee: "$180",
+    image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=150&h=150&fit=crop&crop=face",
+    qualifications: ["MD", "PhD"],
+    languages: ["English", "Mandarin"],
+    nextSlot: "10:30 AM"
+  },
+  {
+    id: 3,
+    name: "Dr. Emily Rodriguez",
+    specialty: "Pediatrics",
+    rating: 4.9,
+    reviews: 89,
+    experience: 8,
+    location: "Children's Medical Center",
+    availability: "Available Today",
+    consultationFee: "$120",
+    image: "https://images.unsplash.com/photo-1594824694996-f4653b95c95b?w=150&h=150&fit=crop&crop=face",
+    qualifications: ["MD", "FAAP"],
+    languages: ["English", "Spanish"],
+    nextSlot: "4:15 PM"
+  },
+  {
+    id: 4,
+    name: "Dr. James Wilson",
+    specialty: "Orthopedics",
+    rating: 4.7,
+    reviews: 134,
+    experience: 20,
+    location: "Sports Medicine Clinic",
+    availability: "Available This Week",
+    consultationFee: "$200",
+    image: "https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=150&h=150&fit=crop&crop=face",
+    qualifications: ["MD", "FAAOS"],
+    languages: ["English"],
+    nextSlot: "Tomorrow 9:00 AM"
+  },
+  {
+    id: 5,
+    name: "Dr. Priya Patel",
+    specialty: "Dermatology",
+    rating: 4.8,
+    reviews: 167,
+    experience: 11,
+    location: "Skin Care Institute",
+    availability: "Available Today",
+    consultationFee: "$160",
+    image: "https://images.unsplash.com/photo-1551601651-2a8555f1a136?w=150&h=150&fit=crop&crop=face",
+    qualifications: ["MD", "FAAD"],
+    languages: ["English", "Hindi"],
+    nextSlot: "3:30 PM"
+  },
+  {
+    id: 6,
+    name: "Dr. Robert Kim",
+    specialty: "Psychiatry",
+    rating: 4.6,
+    reviews: 92,
+    experience: 14,
+    location: "Mental Health Center",
+    availability: "Available Tomorrow",
+    consultationFee: "$175",
+    image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150&h=150&fit=crop&crop=face",
+    qualifications: ["MD", "Psychiatry Board Certified"],
+    languages: ["English", "Korean"],
+    nextSlot: "11:00 AM"
+  }
+];
 
-
-const ConsultantList = (consultantProps: ConsultantListProps) => {
+const ConsultantList = () => {
     const specialties = ['all', 'Cardiology', 'Neurology', 'Pediatrics', 'Orthopedics', 'Dermatology', 'Psychiatry'];
     const [showFilters, setShowFilter] = useState(false);
     const [selectedAvailability, setSelectedAvailability] = useState('all');
     const [selectedRating, setSelectedRating] = useState('all');
     const [selectedSpecialty, setSelectedSpecialty] = useState('all');
     const [searchValue, setSearchValue] = useState('')
+    const [consultants, setConsultants] = useState<ConsultantTypeMinimal[]>(consultantPreview)
 
     const thisRef: React.MutableRefObject<HTMLDivElement> = useRef(null);
 
-    useEffect(() => {
-        if(consultantProps.isVisible) {
-            thisRef.current.hidden=true
-        }
-    }, [consultantProps.isVisible])
-
     const filteredConsultants = useMemo(() => {
-        return consultantProps.consultants.filter(consultant => {
+        return consultantPreview.filter(consultant => {
             const matchedSearch = consultant.name.toLowerCase().includes(searchValue.toLowerCase()) ||
                 consultant.specialty.toLowerCase().includes(searchValue.toLowerCase());
             const matchesSpecialty = selectedSpecialty === 'all' || consultant.specialty === selectedSpecialty;
@@ -60,7 +127,7 @@ const ConsultantList = (consultantProps: ConsultantListProps) => {
         , [searchValue, selectedSpecialty, selectedRating, selectedAvailability]);
 
     return (
-        <div ref={thisRef} className='max-w-4x mx-auto p-6 bg-blue-50'>
+        <div ref={thisRef} className='max-w-4x h-full border-2 mx-auto  p-6 bg-blue-50'>
             <header className='mb-4 px-2'>
                 <h1 className='font-bold text-3xl text-dark-4'>Find Medical Consultants</h1>
                 <p className='text-dark-1'>Connect with qualified healthcare professionals</p>
@@ -146,7 +213,7 @@ const ConsultantList = (consultantProps: ConsultantListProps) => {
                 <p className='text-dark-2'>{filteredConsultants.length} results</p>
             </div>
 
-            <section className='space-y-4 overflow-y-auto max-h-[540px] px-2'>
+            <section className='space-y-4 overflow-y-auto h-full max-h-[560px] lg:max-h-[660px] px-2'>
                 {filteredConsultants.map(consultant => (
                     <ConsultantThumbnail
                         experience={consultant.experience}
@@ -162,8 +229,6 @@ const ConsultantList = (consultantProps: ConsultantListProps) => {
                         avatarUrl={consultant.image}
                         key={consultant.id}
                         nextSlot={consultant.nextSlot}
-                        handleViewProfile={consultantProps.handleViewProfile}
-                        handleScheduleConsultant={consultantProps.handleScheduleConsultant}
                     />
                 ))
 

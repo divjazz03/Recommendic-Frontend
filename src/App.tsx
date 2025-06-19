@@ -1,4 +1,4 @@
-import { Routes, Route, matchRoutes } from 'react-router-dom';
+import { Routes, Route} from 'react-router-dom';
 import './index.css';
 import SigninForm from './_auth/forms/SigninForm';
 import SignupForm from './_auth/forms/SignupForm';
@@ -9,7 +9,7 @@ import Landing from './_public/Landing';
 import ConfirmEmail from './_auth/forms/ConfirmEmail';
 import EmailConfirmation from './_auth/forms/EmailConfirmation';
 import Chat from './_root/pages/Chat';
-import Medication from './_root/pages/Medication';
+import Medication from './_root/pages/patient/PatientMedication';
 import Notification from './_root/pages/Notification';
 import ConsultantRootLayout from './_root/pages/consultant/ConsultantRootLayout';
 import ConsultantOnboarding from './_root/pages/consultant/ConsultantOnboarding';
@@ -23,8 +23,11 @@ import PatientOverview from './_root/pages/patient/PatientOverview';
 import Consultant from './_root/pages/patient/Consultant';
 import { PatientSchedule } from './_root/pages/patient/PatientSchedule';
 import PatientSettings from './_root/pages/patient/PatientSettings';
-import Appointment from './_root/pages/consultant/ConsultantAppointment';
 import ConsultantAppointment from './_root/pages/consultant/ConsultantAppointment';
+import PatientMedication from './_root/pages/patient/PatientMedication';
+import ConsultantMedication from './_root/pages/consultant/ConsultantMedication';
+import ConsultantList from './_root/pages/patient/ConsultantList';
+import ConsultantScreen from './_root/pages/patient/ConsultantScreen';
 
 
 const App = () => {
@@ -50,7 +53,7 @@ const App = () => {
           <Route path='/consultant/patient' element={<Patient/>}/>
           <Route path='/consultant/schedule' element={<ConsultantSchedule />} />
           <Route path='/consultant/chat' element={<Chat/>} />
-          <Route path='/consultant/medication' element={<Medication/>} />
+          <Route path='/consultant/medication' element={<ConsultantMedication/>} />
           <Route path='/consultant/notification' element={<Notification />} />
           <Route path='/consultant/settings' element={<ConsultantSettings />} />
         </Route>
@@ -58,10 +61,13 @@ const App = () => {
         <Route element={<PatientRootLayout />}>
           <Route path='/patient/onboarding' element={<PatientOnboarding />} />
           <Route path='/patient/overview' element={<PatientOverview />} />
-          <Route path='/patient/consultant' element={<Consultant/>}/>
+          <Route path='/patient/consultant' element={<Consultant/>}>
+            <Route index element={<ConsultantList/>}/>
+            <Route path='profile' element={<ConsultantScreen />} />
+          </Route>
           <Route path='/patient/schedule' element={<PatientSchedule />} />
           <Route path='/patient/chat' element={<Chat/>} />
-          <Route path='/patient/medication' element={<Medication/>} />
+          <Route path='/patient/medication' element={<PatientMedication/>} />
           <Route path='/patient/notification' element={<Notification />} />
           <Route path='/patient/settings' element={<PatientSettings />} />
         </Route>

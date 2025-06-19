@@ -21,14 +21,14 @@ const MedicalCategoryCard = (props: MedicalCategoryCardProps) => {
     }
     return (
         <div
-            className={`flex flex-col w-fit min-w-[180px] max-w-[240px] py-3 px-2 gap-4 rounded-sm shadow-md hover:shadow-xl hover:duration-400 hover:transition-all cursor-pointer ${selected ? "bg-dark-2": "bg-light-5"} ${props.disabled ? 'outline-none opacity-50 cursor-not-allowed' : ''}`}
+            className={`flex flex-col w-fit min-w-[180pekfx] max-w-[240px] py-3 px-2 gap-4 rounded-sm shadow-md hover:shadow-xl hover:duration-400 hover:transition-all cursor-pointer ${selected ? "bg-dark-2": "bg-light-5"} ${props.disabled ? 'outline-none opacity-50 cursor-not-allowed' : ''}`}
             id={props.categoryName}
             onClick={props.disabled ? () => { } : handleCardClick}>
             <div className='text-center'>
-                <header className={`h3-bold font-poppins text-xl ${selected? 'text-light-5':'text-dark-5'}`}>{props.categoryName}</header>
+                <header className={`font-semibold text-xl font-poppins ${selected? 'text-light-5':'text-dark-5'}`}>{props.categoryName}</header>
             </div>
             <div className='text-start'>
-                <p className={`small-regular tracking-tighter font-thin text-wrap ${selected? 'text-light-1':'text-dark-1'}`}>
+                <p className={`text-md font-thin text-wrap ${selected? 'text-gray-300':'text-gray-700'}`}>
                     {`${props.categoryDescription.slice(0, descTruncLength)} ${props.categoryDescription.length > descTruncLength ? '...' : ''}`}
                 </p>
             </div>

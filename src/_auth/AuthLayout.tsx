@@ -19,7 +19,7 @@ const AuthLayout = () => {
                   <header className='py-4 w-full flex flex-row pl-3 gap-3 shadow-sm shadow-light-1'>
                     <div className='flex justify-start gap-2'>
                       <img src='/assets/svg/logo-no-background.svg' className='max-w-10' />
-                      <p className='font-berkshire text-main h1-bold'>Recommendic</p>
+                      <p className='font-berkshire text-main font-bold text-4xl'>Recommendic</p>
                     </div>
                   </header>
                   <div className='w-full flex flex-col h-full justify-center items-center'>

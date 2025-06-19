@@ -10,24 +10,7 @@ const ConsultantRootLayout = () => {
 	const [asideHidden, setAsideHidden] = useState(true);
 	useUserContext();
 	const location = useLocation();
-	const menuRefs = {
-		"/overview": useRef<HTMLDivElement>(null),
-		"/patient": useRef<HTMLDivElement>(null),
-		"/schedule": useRef<HTMLDivElement>(null),
-		"/chat": useRef<HTMLDivElement>(null),
-		"/medication": useRef<HTMLDivElement>(null),
-		"/notification": useRef<HTMLDivElement>(null),
-		"/settings": useRef<HTMLDivElement>(null),
-		"/appointment": useRef<HTMLDivElement>(null)
-	}
 	const asideRef: MutableRefObject<HTMLElement> = useRef(null);
-
-	useEffect(() => {
-		const currentRef: MutableRefObject<HTMLDivElement> = menuRefs[location.pathname];
-		if (currentRef && currentRef.current) {
-			currentRef.current.focus();
-		}
-	}, [location]);
 
 	useEffect(() => {
 		function handleClickOutside(event) {
@@ -49,7 +32,7 @@ const ConsultantRootLayout = () => {
 				<header className='lg:hidden sticky top-0 bg-white'>
 					<div className='flex flex-row h-20 items-center justify-start w-full border gap-2 pt-4 pl-3'>
 						<img src='/assets/svg/logo-no-background.svg' className='max-w-[32px]' />
-						<p className='font-berkshire text-main h1-bold'>Recommendic</p>
+						<p className='font-berkshire text-main font-bold text-3xl'>Recommendic</p>
 					</div>
 					<div className='flex flex-row justify-between items-center'>
 						<div className=' flex flex-row gap-2 px-1 py-2 lg:hidden'>
@@ -78,7 +61,7 @@ const ConsultantRootLayout = () => {
 						<header className='py-4 flex flex-row items-center justify-between pl-3 gap-3'>
 							<div className='flex justify-start gap-2'>
 								<img src='/assets/svg/logo-no-background.svg' className='max-w-[32px]' />
-								<p className='font-berkshire text-main h1-bold'>Recommendic</p>
+								<p className='font-berkshire text-main font-bold text-3xl'>Recommendic</p>
 							</div>
 							<img src='/assets/svg/cross-svgrepo-com.svg' className='max-w-[24px] mr-2 hover:bg-light-4' onClick={handleMenuClick} />
 						</header>
@@ -87,7 +70,7 @@ const ConsultantRootLayout = () => {
 								<ul>
 									<li>
 										<Link to={"/consultant/overview"}>
-											<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/overview"]}>
+											<div className={`flex flex-row gap-2 side-bar-icons side-bar-li ${location.pathname.includes('/consultant/overview')?'bg-main text-light-4':''}`}>
 												<ChartLine className='w-6 h-6' />
 												<p>Overview</p>
 											</div>
@@ -95,7 +78,7 @@ const ConsultantRootLayout = () => {
 									</li>
 									<li>
 										<Link to={"/consultant/appointment"}>
-											<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/appointment"]}>
+											<div className={`flex flex-row gap-2 side-bar-icons side-bar-li ${location.pathname.includes('/consultant/appointment')?'bg-main text-light-4':''}`} >
 												<CalendarClock className='w-6 h-6'/>
 												<p>Appointment</p>
 											</div>
@@ -103,7 +86,7 @@ const ConsultantRootLayout = () => {
 									</li>
 									<li>
 										<Link to={"/consultant/patient"}>
-											<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/patient"]}>
+											<div className={`flex flex-row gap-2 side-bar-icons side-bar-li ${location.pathname.includes('/consultant/patient')?'bg-main text-light-4':''}`} >
 												<Users className='w-6 h-6 ' />
 												<p>Patients</p>
 											</div>
@@ -111,7 +94,7 @@ const ConsultantRootLayout = () => {
 									</li>
 									<li>
 										<Link to={"/consultant/schedule"}>
-											<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/schedule"]}>
+											<div className={`flex flex-row gap-2 side-bar-icons side-bar-li ${location.pathname.includes('/consultant/schedule')?'bg-main text-light-4':''}`} >
 												<Calendar1Icon className='w-6 h-6' />
 												<p>Schedule</p>
 											</div>
@@ -119,7 +102,7 @@ const ConsultantRootLayout = () => {
 									</li>
 									<li >
 										<Link to={"/consultant/chat"}>
-											<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/chat"]}>
+											<div className={`flex flex-row gap-2 side-bar-icons side-bar-li ${location.pathname.includes('/consultant/chat')?'bg-main text-light-4':''}`} >
 												<div className='relative block max-w-fit max-h-fit'>
 													<MessageSquareMoreIcon className='w-6 h-6' />
 													<div className='absolute min-h-2 min-w-2 rounded-full bg-red-600 top-0 right-0'></div>
@@ -130,7 +113,7 @@ const ConsultantRootLayout = () => {
 									</li>
 									<li >
 										<Link to={"/consultant/medication"}>
-											<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/medication"]}>
+											<div className={`flex flex-row gap-2 side-bar-icons side-bar-li ${location.pathname.includes('/consultant/medication')?'bg-main text-light-4':''}`} >
 												<PillBottle className='w-6 h-6' />
 												<p>Medication</p>
 											</div>
@@ -143,7 +126,7 @@ const ConsultantRootLayout = () => {
 								<ul>
 									<li >
 										<Link to={"/consultant/notification"}>
-											<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/notification"]}>
+											<div className={`flex flex-row gap-2 side-bar-icons side-bar-li ${location.pathname.includes('/consultant/notification')?'bg-main text-light-4':''}`} >
 												<div className='relative block max-w-fit max-h-fit'>
 													<Bell className='w-6 h-6' />
 													<div className='absolute min-h-2 min-w-2 rounded-full bg-red-600 top-0 right-0'></div>
@@ -154,7 +137,7 @@ const ConsultantRootLayout = () => {
 									</li>
 									<li>
 										<Link to={"/consultant/settings"}>
-											<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/settings"]}>
+											<div className={`flex flex-row gap-2 side-bar-icons side-bar-li ${location.pathname.includes('/consultant/settings')?'bg-main text-light-4':''}`} >
 												<Settings2 className='w-6 h-6'/>
 												<p className=''>Settings</p>
 											</div>
@@ -181,7 +164,7 @@ const ConsultantRootLayout = () => {
 							<header className='py-4 flex flex-row items-center justify-between pl-3 gap-3'>
 								<div className='flex justify-start gap-2'>
 									<img src='/assets/svg/logo-no-background.svg' className='max-w-[32px]' />
-									<p className='font-berkshire text-main h1-bold'>Recommendic</p>
+									<p className='font-berkshire text-main font-bold text-3xl'>Recommendic</p>
 								</div>
 							</header>
 							<div className='flex flex-col h-full py-4 justify-between'>
@@ -189,7 +172,7 @@ const ConsultantRootLayout = () => {
 									<ul>
 										<li >
 											<Link to={"/consultant/overview"}>
-												<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/overview"]}>
+												<div className={`flex flex-row gap-2 side-bar-icons side-bar-li ${location.pathname.includes('/consultant/overview')?'bg-main text-light-4':''}`} >
 													<ChartLine className='w-6 h-6' />
 													<p>Overview</p>
 												</div>
@@ -197,7 +180,7 @@ const ConsultantRootLayout = () => {
 										</li>
 										<li>
 										<Link to={"/consultant/appointment"}>
-											<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/appointment"]}>
+											<div className={`flex flex-row gap-2 side-bar-icons side-bar-li ${location.pathname.includes('/consultant/appointment')?'bg-main text-light-4':''}`} >
 												<CalendarClock className='w-6 h-6'/>
 												<p>Appointment</p>
 											</div>
@@ -205,7 +188,7 @@ const ConsultantRootLayout = () => {
 									</li>
 										<li>
 											<Link to={"/consultant/patient"}>
-												<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/patient"]}>
+												<div className={`flex flex-row gap-2 side-bar-icons side-bar-li ${location.pathname.includes('/consultant/patient')?'bg-main text-light-4':''}`}>
 													<Users className='w-6 h-6 ' />
 													<p>Patients</p>
 												</div>
@@ -213,7 +196,7 @@ const ConsultantRootLayout = () => {
 										</li>
 										<li>
 											<Link to={"/consultant/schedule"}>
-												<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/schedule"]}>
+												<div className={`flex flex-row gap-2 side-bar-icons side-bar-li ${location.pathname.includes('/consultant/schedule')?'bg-main text-light-4':''}`} >
 													<Calendar1Icon className='w-6 h-6' />
 													<p>Schedule</p>
 												</div>
@@ -221,7 +204,7 @@ const ConsultantRootLayout = () => {
 										</li>
 										<li >
 											<Link to={"/consultant/chat"}>
-												<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/chat"]}>
+												<div className={`flex flex-row gap-2 side-bar-icons side-bar-li ${location.pathname.includes('/consultant/chat')?'bg-main text-light-4':''}`} >
 													<div className='relative block max-w-fit max-h-fit'>
 														<MessageSquareMoreIcon className='w-6 h-6' />
 														<div className='absolute min-h-2 min-w-2 rounded-full bg-red-600 top-0 right-0'></div>
@@ -232,7 +215,7 @@ const ConsultantRootLayout = () => {
 										</li>
 										<li >
 											<Link to={"/consultant/medication"}>
-												<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/medication"]}>
+												<div className={`flex flex-row gap-2 side-bar-icons side-bar-li ${location.pathname.includes('/consultant/medication')?'bg-main text-light-4':''}`} >
 													<PillBottle className='w-6 h-6' />
 													<p>Medication</p>
 												</div>
@@ -245,7 +228,7 @@ const ConsultantRootLayout = () => {
 									<ul>
 										<li >
 											<Link to={"/consultant/notification"}>
-												<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/notification"]}>
+												<div className={`flex flex-row gap-2 side-bar-icons side-bar-li ${location.pathname.includes('/consultant/notification')?'bg-main text-light-4':''}`} >
 													<div className='relative block max-w-fit max-h-fit'>
 														<Bell className='w-6 h-6' />
 														<div className='absolute min-h-2 min-w-2 rounded-full bg-red-600 top-0 right-0'></div>
@@ -256,7 +239,7 @@ const ConsultantRootLayout = () => {
 										</li>
 										<li>
 											<Link to={"/consultant/settings"}>
-												<div className='flex flex-row gap-2 side-bar-icons side-bar-li' ref={menuRefs["/settings"]}>
+												<div className={`flex flex-row gap-2 side-bar-icons side-bar-li ${location.pathname.includes('/consultant/settings')?'bg-main text-light-4':''}`} >
 													<Settings2 className='w-6 h-6'/>
 													<p className=''>Settings</p>
 												</div>
@@ -276,7 +259,7 @@ const ConsultantRootLayout = () => {
 							</div>
 						</div>
 					</nav>
-					<section className='w-full h-full min-h-fit px-3 py-3'>
+					<section className='w-full h-full flex flex-col gap-2'>
 						<div className='hidden w-full min-h-10 lg:flex flex-row justify-end mb-10'>
 							<GlobalSearch />
 						</div>

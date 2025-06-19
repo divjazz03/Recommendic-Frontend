@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { MutableRefObject, useEffect, useRef } from 'react'
 import { Textarea } from './ui/textarea'
 
 interface AutoResizeTextAreaProps {
@@ -6,13 +6,13 @@ interface AutoResizeTextAreaProps {
     onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void,
     minHeight?: number,
     maxHeight?: number,
-    placeholder?: string
+    placeholder?: string,
 }
 
 const AutoResizeTextArea: React.FC<AutoResizeTextAreaProps> = ({
-    value, onChange, minHeight = 70, maxHeight = 300, placeholder
+    value, onChange, minHeight = 50, maxHeight = 300, placeholder
 }) => {
-    const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const textareaRef = useRef<HTMLTextAreaElement>(null)
 
     useEffect(() => {
         const textarea = textareaRef.current;

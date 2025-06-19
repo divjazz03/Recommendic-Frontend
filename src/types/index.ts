@@ -1,49 +1,8 @@
-
-import { signUpValidation } from "@/_auth/validations/SignupValidation"
 import React, { ReactNode } from "react"
-import { UseFormReturn } from "react-hook-form"
-import { z } from "zod"
-
 
 
 export type OutletContextTypeOfUser = {
     typeOfUser: string
-}
-
-
-export type SignUpFormData = {
-    firstName?: string
-    lastName?: string,
-    email?: string,
-    password?: string,
-    phoneNumber?: string,
-    typeOfUser?: TypeOfUser,
-    gender?: 'Male' | 'Female',
-    city?: string,
-    state?: string,
-    country?: string,
-}
-
-
-export type UserFormProps = {
-    formData: any,
-    handleFormDataChange: (key: keyof SignUpFormData, value: any) => void,
-    form: UseFormReturn<z.infer<typeof signUpValidation>>
-}
-
-
-export type AddressFormProps = {
-    formData: any,
-    handleFormDataChange: (key: keyof SignUpFormData, value: any) => void,
-    form: UseFormReturn<z.infer<typeof signUpValidation>>
-}
-
-
-export type AccountFormProps = {
-    formData: any,
-    handleFormDataChange: (key: keyof SignUpFormData, value: any) => void,
-    handleTypeOfUserSelectChange: (value: string) => void,
-    form: UseFormReturn<z.infer<typeof signUpValidation>>
 }
 
 
@@ -163,28 +122,49 @@ interface ConsultantStats {
     responseTime: string;
     followUpRate: number;
 }
+export interface ConsultantTypeMinimal {
+    id: number,
+    name: string,
+    specialty: string,
+    rating: number,
+    reviews: number,
+    experience: number,
+    location: string,
+    availability: string,
+    consultationFee: string,
+    image: string,
+    qualifications: string[],
+    languages: string[],
+    nextSlot: string
+}
 export interface ConsultantType {
+    id: number
     name: string;
     title: string;
     rating: number;
     verified: boolean;
     experience: number;
-    totalReviews: 347;
+    totalReviews: number;
     bio: string;
     location: string;
     image: string;
-    specialization: string;
-    languages: string;
+    specialization: string[];
+    languages: string[];
     consultationFee: number;
-    nextAvailaible: Date;
     education: ConsultantEducation[],
-    stats: ConsultantStats
+    stats: ConsultantStats,
+    reviews?: Review[],
+    availableSlots?: TimeSlot[],
+    nextAvailable: string
 }
 interface Review {
     name: string;
     rating: number;
     comment: string;
     date: string;
+}
+interface TimeSlot{
+    time: string;
 }
 
 export interface SVGProps {

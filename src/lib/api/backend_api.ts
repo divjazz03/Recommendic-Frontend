@@ -10,6 +10,7 @@ import {
 } from "@/types";
 import axios from "axios";
 import { getJwtFromAuthorization } from "../utils/utils";
+import { error } from "console";
 
 const apiUrl = import.meta.env.VITE_BACKEND_BASE_URL;
 const userLoginPath = import.meta.env.VITE_APP_USER_LOGIN;
@@ -50,6 +51,13 @@ export async function createNewUser(typeOfUser: TypeOfUser,
                 }
             })
                 .then((response) => response.data)
+                .catch(error => {
+                    if (axios.isAxiosError(error)) {
+                        throw error;
+                    } else {
+                        throw new Error(error)
+                    }
+                })
             return result;
         case "Consultant":
             const consultantData = {

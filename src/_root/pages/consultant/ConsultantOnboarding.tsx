@@ -59,8 +59,8 @@ const ConsultantOnboarding = () => {
     return (
         <>
             <main className=''>
-                <div className='h1-bold'>
-                    <header className='text-center'>Consultant&nbsp;Onboarding</header>
+                <div className=''>
+                    <header className='font-semibold text-3xl text-center'>Consultant&nbsp;Onboarding</header>
                     <section className=' px-10 py-10 '>
                         <div className={'flex flex-row flex-wrap justify-left gap-4'}>
                             {

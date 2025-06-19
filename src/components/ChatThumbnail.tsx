@@ -30,8 +30,8 @@ const ChatThumbnail = ({ name, mostRecentChatPreview,imgLink, numberOfUnreadChat
                         </div>
                         <div className='flex flex-col min-w-[48px] gap-4 items-center'>
                             <p>{handleDateTimeFormatting(dateOfLastChat)}</p>
-                            <div className={numberOfUnreadChats < 1 ? 'hidden' : 'flex flex-row justify-center items-center bg-main min-w-fit min-h-fit w-6 h-6 rounded-full'}>
-                                <p className='text-white tiny-thin text-center'>{numberOfUnreadChats <= 99 ? numberOfUnreadChats : '99+'}</p>
+                            <div className={numberOfUnreadChats < 1 ? 'hidden' : 'flex justify-center items-center bg-main min-w-fit min-h-fit w-6 h-6 rounded-full'}>
+                                <p className='text-white text-xs text-center'>{numberOfUnreadChats <= 99 ? numberOfUnreadChats : '99+'}</p>
                             </div>
                         </div>
                     </div>

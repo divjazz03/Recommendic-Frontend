@@ -117,7 +117,7 @@ const ChatList: React.FC<ChatListProps> = ({
                                 <ChatThumbnail
                                     name={chat.nameOfOtherUser}
                                     mostRecentChatPreview={chat.messages[chat.messages.length - 1].message}
-                                    numberOfUnreadChats={chat.messages.filter((message) => !message.read).length}
+                                    numberOfUnreadChats={chat.messages.filter((message) => !message.read && message.type!='me').length}
                                     imgLink={chat.avatarUrlOfOtherUser}
                                 />
                             </div>

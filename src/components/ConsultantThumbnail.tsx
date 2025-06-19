@@ -1,12 +1,13 @@
 import React from 'react'
 import InitialsOrAvartar from './shared/InitialsOrAvartar'
 import { Calendar, Clock, MapPin, Star, Stethoscope } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 interface ConsultantThumbnailProps {
     id: number
     name: string;
     specialty: string;
-    experience: string;
+    experience: number;
     fee: string;
     rating: number;
     reviewCount: number;
@@ -15,8 +16,6 @@ interface ConsultantThumbnailProps {
     availability: string;
     avatarUrl?: string;
     nextSlot?: string;
-    handleViewProfile: (consultantId: number) => void;
-    handleScheduleConsultant: (consultantId: number) => void;
 }
 
 const renderStats = (rating: number) => {
@@ -50,9 +49,7 @@ const ConsultantThumbnail: React.FC<ConsultantThumbnailProps> = ({
     location,
     qualifications,
     reviewCount,
-    nextSlot,
-    handleViewProfile,
-    handleScheduleConsultant
+    nextSlot
 }) => {
     return (
         <div key={id} className='bg-white rounded-lg border-light-3 p-6 hover:shadow-md transition-shadow'>
@@ -68,7 +65,7 @@ const ConsultantThumbnail: React.FC<ConsultantThumbnailProps> = ({
                                 <Stethoscope className='w-4 h-4' />
                                 <span>{specialty}</span>
                                 <span>•</span>
-                                <span>{experience} experience</span>
+                                <span>{experience} years experience</span>
                             </div>
                         </div>
                         <div className='text-right'>
@@ -82,7 +79,7 @@ const ConsultantThumbnail: React.FC<ConsultantThumbnailProps> = ({
                             {renderStats(rating)}
                         </div>
                         <span className='text-sm font-medium text-dark-5'>{rating}</span>
-                        <span className='text-sm text-dark-1'>{reviewCount}</span>
+                        <span className='text-sm text-dark-1'>{reviewCount} reviews</span>
                     </div>
                     {/* Location */}
                     <div className="flex items-center gap-2 mb-2 text-sm text-gray-600">
@@ -104,20 +101,20 @@ const ConsultantThumbnail: React.FC<ConsultantThumbnailProps> = ({
                                 {availability}
                             </div>
                             {availability.includes('Today') && (
-                                <div className="flex items-center gap-1 text-sm text-gray-600">
+                                <div className="hidden sm:flex items-center gap-1 text-sm text-gray-600">
                                     <Clock className="w-4 h-4" />
                                     <span>Next: {nextSlot}</span>
                                 </div>
                             )}
                         </div>
                         <div className="flex items-center gap-2">
-                            <button onClick={() => handleViewProfile(id)} className="px-4 py-2 text-main border border-main rounded-lg hover:bg-light-1 transition-colors">
+                            <Link to={`profile`} state={{id: id}} className="px-4 py-2 text-main border border-main rounded-lg hover:bg-light-1 transition-colors">
                                 View Profile
-                            </button>
-                            <button onClick={() => handleScheduleConsultant(id)} className="px-4 py-2 bg-main text-white rounded-lg hover:bg-main transition-colors flex items-center gap-2">
+                            </Link>
+                            <Link to={`/patient/schedule`} state={{id: id}} className="px-4 py-2 bg-main text-white rounded-lg hover:bg-main transition-colors flex items-center gap-2">
                                 <Calendar className="w-4 h-4" />
                                 Schedule
-                            </button>
+                            </Link>
                         </div>
                     </div>
                 </div>

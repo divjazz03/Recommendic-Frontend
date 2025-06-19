@@ -21,10 +21,10 @@ const ChatMessage:React.FC<ChatMessageProps> = ({
     avatarForThisMessage
 }) => {
   return (
-    <div className={`flex flex-row w-full h-fit`}>
+    <div className={`flex w-full h-fit`}>
         
         {   (
-                <div className={`${messageType === 'me'? 'items-end flex-row-reverse' : 'items-start'} flex flex-row w-full h-fit py-6 px-3`}>
+                <div className={`${messageType === 'me'? 'items-end flex-row-reverse' : 'items-start'} flex w-full h-fit py-6 px-3`}>
                     <div className={`${messageType === 'me'? 'flex-row-reverse':' flex-row'} flex gap-1 '`}>
                         <div className='h-full p-1 w-fit'>
                             <InitialsOrAvartar name={nameOfCurrentUser} avatarUrl={avatarForThisMessage} />
@@ -35,8 +35,8 @@ const ChatMessage:React.FC<ChatMessageProps> = ({
                                 <h3 className='text-md font-semibold'>{nameOfCurrentUser}</h3>
                                 <p className='text-xs text-center text-dark-1'>{handleDateTimeFormatting(date)}</p>
                             </div>
-                            <div tabIndex={0} className={`${messageType === 'me'? 'rounded-se-none bg-main ' : 'rounded-ss-none bg-light-4'} flex flex-row rounded-xl min-w-52 max-w-52 shadow-sm p-3 h-fit'`}>
-                                <p className={`${messageType === 'me'? 'text-light-4':'text-dark-3'} text-wrap text-sm`}>{message}</p>
+                            <div tabIndex={0} className={`${messageType === 'me'? 'rounded-se-none bg-main ' : 'rounded-ss-none bg-blue-50'} flex flex-row rounded-xl min-w-52 max-w-52 shadow-sm p-3 h-fit'`}>
+                                <p className={`${messageType === 'me'? 'text-light-4':'text-dark-1'} text-wrap text-sm`}>{message}</p>
                             </div>
                         </div>
                     </div>

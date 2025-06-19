@@ -1,6 +1,7 @@
 import InitialsOrAvartar from '@/components/shared/InitialsOrAvartar';
 import { ArrowLeft, Calendar, CheckCircle, ChevronLeft, ChevronRight, CreditCard, Info, MessageCircle, Phone, Shield, Star, User, Video } from 'lucide-react';
 import React, { useState } from 'react'
+import { useLocation } from 'react-router-dom';
 
 
 const getDaysInMonth = (date: Date): Date[] => {
@@ -41,23 +42,23 @@ const formatDate = (date: Date): string => {
 }
 
 export const PatientSchedule = () => {
-
+  const location = useLocation();
+  const consultantId: number = location.state.id;
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedTime, setSelectedTime] = useState(null);
   const [consultationType, setConsultationType] = useState('video');
   const [currentStep, setCurrentStep] = useState(1);
   const [currentMonth, setCurrentMonth] = useState(new Date());
-
-  const consultant = {
+  const [ConsultantScheduleData, setConsultantScheduleData] = useState({
     name: "Dr. Sarah Mitchell",
     title: "Cardiologist & Internal Medicine",
     rating: 4.9,
     image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=300&h=300&fit=crop&crop=face",
     fees: {
-      inPerson: "#30,000",
-      video: "₦15,000",
-      phone: "₦12,000",
-      chat: "₦8,000"
+      inPerson: 30,
+      video: 15,
+      phone: 12,
+      chat: 8
     },
     timeSlots: {
       morning: ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
@@ -67,7 +68,8 @@ export const PatientSchedule = () => {
       bookedSlots: ["09:30", "14:30", "17:00"]
     },
     location: 'University Teaching hospital, Lagos'
-  };
+  })
+
   const consultationTypes = [
     {
       id: 'in-person',
@@ -75,7 +77,7 @@ export const PatientSchedule = () => {
       description: 'In-person consultation',
       duration: '1 hour',
       icon: User,
-      fee: consultant.fees.inPerson,
+      fee: ConsultantScheduleData.fees.inPerson,
       recommended: true
     }
     ,
@@ -85,7 +87,7 @@ export const PatientSchedule = () => {
       icon: Video,
       description: 'Face-to-face consultation via video',
       duration: '30 mins',
-      fee: consultant.fees.video
+      fee: ConsultantScheduleData.fees.video
     },
     {
       id: 'phone',
@@ -93,7 +95,7 @@ export const PatientSchedule = () => {
       icon: Phone,
       description: 'Voice consultation over phone',
       duration: '25 mins',
-      fee: consultant.fees.phone
+      fee: ConsultantScheduleData.fees.phone
     },
     {
 
@@ -102,13 +104,13 @@ export const PatientSchedule = () => {
       icon: MessageCircle,
       description: 'Written consultation via chat',
       duration: '45 mins',
-      fee: consultant.fees.chat
+      fee: ConsultantScheduleData.fees.chat
     }
   ];
 
   const isTimeSlotAvailable = (time: string): boolean => {
-    return !consultant.timeSlots.unavailableSlots.includes(time) &&
-      !consultant.timeSlots.bookedSlots.includes(time);
+    return !ConsultantScheduleData.timeSlots.unavailableSlots.includes(time) &&
+      !ConsultantScheduleData.timeSlots.bookedSlots.includes(time);
   }
 
   const nextMonth = () => {
@@ -127,7 +129,7 @@ export const PatientSchedule = () => {
 
   if (currentStep === 4) {
     return (
-      <div className="max-h-[800px] bg-blue-50 p-4">
+      <div className="max-h-[800px] h-full bg-blue-50 p-4">
         <div className="max-w-2xl mx-auto pt-20">
           <div className="bg-white rounded-3xl shadow-2xl p-8 text-center">
             <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -153,7 +155,7 @@ export const PatientSchedule = () => {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Fee:</span>
-                  <span className="font-medium">{consultant.fees[consultationType]}</span>
+                  <span className="font-medium">{ConsultantScheduleData.fees[consultationType]}</span>
                 </div>
               </div>
             </div>
@@ -172,7 +174,7 @@ export const PatientSchedule = () => {
 
   if (currentStep === 3) {
     return (
-      <div className='max-h-[800px] bg-blue-50 p-4'>
+      <div className='max-h-[800px] h-full bg-blue-50 p-4'>
         <div className="max-w-2xl mx-auto pt-20">
           <div className="bg-white rounded-3xl shadow-2xl p-8 text-center">
             <div className="animate-spin w-12 h-12 border-4 border-main-light border-t-transparent rounded-full mx-auto mb-6"></div>
@@ -186,7 +188,7 @@ export const PatientSchedule = () => {
 
 
   return (
-    <section className='bg-gradient-to-br from-blue-50  p-4 '>
+    <section className='bg-gradient-to-br from-blue-50 h-full p-4 '>
       <div className='max-w-3xl mx-auto max-h-[800px] overflow-auto scroll-smooth [&::-webkit-scrollbar]:hidden [scrollbar-width:none] [-ms-overflow-style:none]'>
 
         <header className='sticky flex items-center gap-4 mb-4'>
@@ -198,22 +200,22 @@ export const PatientSchedule = () => {
           </button>
           <div>
             <h1 className='text-3xl font-bold text-dark-3'>Schedule Appointment</h1>
-            <p className='text-dark-1'>Book a consultation with {consultant.name}</p>
+            <p className='text-dark-1'>Book a consultation with {ConsultantScheduleData.name}</p>
           </div>
         </header>
 
         <section className='bg-white rounded-2xl shadow-lg p-6 mb-6'>
           <div className='flex items-center gap-4'>
-            <InitialsOrAvartar name={consultant.name} avatarUrl={consultant.image} />
+            <InitialsOrAvartar name={ConsultantScheduleData.name} avatarUrl={ConsultantScheduleData.image} />
             <div className='flex-1'>
               <div className='flex items-center gap-2 mb-1'>
-                <h3 className='text-xl font-semibold text-dark-3'>{consultant.name}</h3>
+                <h3 className='text-xl font-semibold text-dark-3'>{ConsultantScheduleData.name}</h3>
                 <Shield className='w-5 h-5 text-main' />
               </div>
-              <p className='text-dark-1'>{consultant.title}</p>
+              <p className='text-dark-1'>{ConsultantScheduleData.title}</p>
               <div className='flex items-center gap-1 mt-1'>
                 <Star className='w-4 h-4 text-main fill-current' />
-                <span className='text-sm font-medium text-dark-3'>{consultant.rating}</span>
+                <span className='text-sm font-medium text-dark-3'>{ConsultantScheduleData.rating}</span>
               </div>
             </div>
           </div>
@@ -221,8 +223,8 @@ export const PatientSchedule = () => {
 
 
         {/* Calendar Section*/}
-        <section className='grid lg:grid-cols-2 gap-6'>
-          <div className='lg:col-span-2'>
+        <section className='grid gap-6'>
+          <div className=''>
             <div className='bg-white rounded-2xl shadow-lg p-6 mb-6'>
               <header className='flex items-center justify-between mb-6'>
                 <h2 className='text-xl font-semibold text-dark-3'>Select Date</h2>
@@ -259,7 +261,7 @@ export const PatientSchedule = () => {
                       ${!isDateAvailable(date)
                         ? 'text-light-1 cursor-not-allowed'
                         : selectedDate && date && selectedDate.toDateString() === date.toDateString()
-                        ? 'bg-main-light text-light-5 shadow-lg'
+                        ? 'bg-main text-light-5 shadow-lg'
                         : 'text-dark-2 hover:bg-main-light hover:text-light-5'
                       }
                       `
@@ -277,7 +279,7 @@ export const PatientSchedule = () => {
                 <h2 className='text-xl font-semibold text-dark-3 mb-4'>Available Times</h2>
                 <p className='text-dark-2 mb-6'>{formatDate(selectedDate)}</p>
 
-                {Object.entries(consultant.timeSlots)
+                {Object.entries(ConsultantScheduleData.timeSlots)
                 .filter(([period]) => period !== 'unavailableSlots' && period !== 'bookedSlots')
                 .map(([period, slots]) => (
                   <div key={period} className='mb-6'>
@@ -285,7 +287,7 @@ export const PatientSchedule = () => {
                     <div className='grid grid-cols-3 sm:grid-cols-6 gap-3'>
                       {slots.map(time => {
                         const available = isTimeSlotAvailable(time);
-                        const booked = consultant.timeSlots.bookedSlots.includes(time);
+                        const booked = ConsultantScheduleData.timeSlots.bookedSlots.includes(time);
                         return (
                           <button
                             key={time}
@@ -319,7 +321,7 @@ export const PatientSchedule = () => {
           <div className='space-y-6'>
             {/* Consultation type */}
             <div className='bg-white rounded-2xl shadow-lg p-6'>
-              <h2 className='text-xl font-semibold text-dark-3 mb-4'>Consultantion Type</h2>
+              <h2 className='text-xl font-semibold text-dark-3 mb-4'>Consultation Type</h2>
               <div className='space-y-3'>
                 {consultationTypes.map(type => (
                   <div key={type.id}
@@ -348,10 +350,10 @@ export const PatientSchedule = () => {
                         <div className='flex-1'>
                             <div className='flex items-center justify-between mb-1'>
                               <h3 className='font-medium text-dark-3'>{type.name}</h3>
-                              <span className='font-semibold text-main'>{type.fee}</span>
+                              <span className='font-semibold text-main'>{'$'+type.fee}</span>
                             </div>
-                            <p className='text-sm text-dark-3 mb-1'>{type.description}</p>
-                            <p className='text-xs text-dark-2 mb-1'>{type.duration}</p>
+                            <p className='text-sm text-gray-600 mb-1'>{type.description}</p>
+                            <p className='text-xs text-gray-600 mb-1'>{type.duration}</p>
                         </div>
                       </div>
                     </div>
@@ -385,7 +387,7 @@ export const PatientSchedule = () => {
                       <div className='font-medium text-dark-3'>
                         {consultationTypes.find(t => t.id === consultationType).name}
                       </div>
-                      <div className='font-sm text-dark-1'>
+                      <div className='font-sm text-gray-600'>
                         {consultationTypes.find(t => t.id === consultationType).duration}
                       </div>
                     </div>
@@ -395,7 +397,7 @@ export const PatientSchedule = () => {
                     <div className="flex items-center justify-between mb-4">
                       <span className="text-lg font-medium text-dark-3">Total</span>
                       <span className="text-2xl font-bold text-main">
-                        {consultant.fees[consultationType]}
+                        {ConsultantScheduleData.fees[consultationType]}
                       </span>
                     </div>
                     
