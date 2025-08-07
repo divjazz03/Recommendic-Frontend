@@ -3,7 +3,7 @@ import Loader from '@/components/shared/Loader';
 import { Button } from '@/components/ui/button';
 import { useUserContext } from '@/context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { useGetSupportedMedicalCategories, useUpdatePatientOnboardingInfo } from '@/lib/react-query/queriiesAndMutation';
+import { useGetSupportedMedicalCategories, useUpdatePatientOnboardingInfo } from '@/lib/react-query/generalQueriesAndMutation';
 import { MedicalCategory } from '@/types';
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';

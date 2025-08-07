@@ -1,5 +1,5 @@
 import { useGlobalSearchContext } from "@/context/GlobalSearchContext"
-import { doGlobalSearch } from "@/lib/api/backend_api";
+import { doGlobalSearch } from "@/lib/api/general_api";
 import { useQuery } from "@tanstack/react-query";
 
 export interface SearchResult {

@@ -2,7 +2,7 @@ import EmailConfirmSuccessModal from "@/components/EmailConfirmSuccessModal";
 import Loader from "@/components/shared/Loader";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
-import { useVerifyTokenMutation } from "@/lib/react-query/queriiesAndMutation";
+import { useVerifyTokenMutation } from "@/lib/react-query/generalQueriesAndMutation";
 import axios, { AxiosError } from "axios";
 import { useState } from "react";
 import { useParams } from "react-router-dom";

@@ -78,7 +78,7 @@ const ConsultantProfile = () => {
   ]
 })
 
-    const thisRef: React.MutableRefObject<HTMLDivElement> = useRef(null);
+    const thisRef: React.MutableRefObject<HTMLDivElement|null> = useRef(null);
 
     const navigate = useNavigate();
 

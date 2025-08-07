@@ -8,121 +8,155 @@ import AutoResizeTextArea from './AutoResizeTextArea';
 import { Button } from './ui/button';
 import { DateTime } from 'luxon';
 
-interface ChatScreenProps{
-    selectedChatId?: string;
-    selectedChat?: ChatType;
+interface ChatScreenProps {
+	selectedChatId?: string;
+	selectedChat?: ChatType;
 	setSelectedChat?: (value: React.SetStateAction<ChatType>) => void
-    setShowChatScreen: (value: boolean) => void
+	setShowChatScreen: (value: boolean) => void
 
 }
 
+const SendIcon = () => (<svg fill="#FFFFFF" width="800px" height="800px" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
+	<path d="M568.13.012 392 176.142l783.864 783.989L392 1743.87 568.13 1920l960.118-959.87z" fillRule="evenodd" />
+</svg>);
+
+interface ChatScrollAreaProps {
+	children: React.ReactNode;
+	triggerOnChange?: any;
+}
+
+const ChatScrollArea: React.FC<ChatScrollAreaProps> = ({children,triggerOnChange}) => {
+	const scrollRef = useRef<HTMLDivElement|null>(null);
+
+	useEffect(() => {
+		if (!scrollRef.current) return;
+		scrollRef.current.scrollTo({
+			top: scrollRef.current.scrollHeight,
+			behavior: 'smooth'
+		});
+	}, [triggerOnChange])
+
+	return (
+		<div
+      ref={scrollRef}
+      className='overflow-scroll scroll-smooth [&::-webkit-scrollbar]:hidden [scrollbar-width:none] [-ms-overflow-style:none]'
+    >
+      {children}
+    </div>
+	)
+}
+
 const ChatScreen: React.FC<ChatScreenProps> = ({
-    selectedChatId,
-    selectedChat,
-    setShowChatScreen,
+	selectedChatId,
+	selectedChat,
+	setShowChatScreen,
 	setSelectedChat
 }) => {
 
-    const [text, setText] = useState<string>('');
+	const [text, setText] = useState<string>('');
 	const [sendQueue, setSendQueue] = useState<Message[]>([])
-
-	const scrollAreaRef: React.MutableRefObject<HTMLDivElement> = useRef(null);
 
 
 
 	const handleSendMessage = () => {
 		const message: Message = {
-			id: "randomUUID()",
+			id: crypto.randomUUID(),
 			message: text.trim(),
 			type: 'me',
 			date: DateTime.now().toISO(),
 			read: false,
 			sent: false
 		};
-
-		setSelectedChat(prev => ({ ...prev, messages: [...prev.messages, message] }));
-		setSendQueue((previous) => [...previous, message]);
+		if (selectedChat && setSelectedChat) {
+			setSelectedChat(prev => ({ ...prev, messages: [...prev.messages, message] }));
+			setSendQueue((previous) => [...previous, message]);
+		}
 	}
 
 	useEffect(() => {
-		if(sendQueue.length === 0) return;
-		sendQueue.forEach(message => {
-			message.sent = true;
-			console.log("Sent: ", message)
-		});
+		if (sendQueue.length === 0) return;
 
+		setSendQueue(prev => prev.map(msg => ({ ...msg, sent: true })))
 		setSendQueue(prev => prev.filter(msg => !msg.sent))
-
-		scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
 	}, [sendQueue])
-  return (
-    <section className={`flex flex-col h-full bg-white w-full items-center rounded-xl`}>
-						{selectedChat &&
-							(
-								<div className='w-full h-full flex flex-col'>
-									<div className='w-full h-full flex flex-col'>
-										<header>
-											<div className='flex flex-row items-center p-2 pl-4 space-x-3'>
-												<div className='sm:hidden min-w-1 min-h-1 max-h-10 max-w-10 hover:bg-light-4 p-2' onClick={() => setShowChatScreen(false)}>
-													<img src="/assets/svg/arrow-left-svgrepo-com.svg" alt="" />
-												</div>
-												<div>
-													<InitialsOrAvartar name={selectedChat.nameOfOtherUser} avatarUrl={selectedChat.avatarUrlOfOtherUser}/>
-												</div>
-												<div>
-													<h2 className='text-xl font-semibold'>{selectedChat.nameOfOtherUser}</h2>
-													<p>{selectedChatId}</p>
-												</div>
-											</div>
-										</header>
-										<Separator />
-										<div ref={scrollAreaRef} className='overflow-scroll scroll-smooth [&::-webkit-scrollbar]:hidden [scrollbar-width:none] [-ms-overflow-style:none]'>
-											<ScrollArea className='flex flex-col w-full space-y-2' type='scroll'>
-												{
-													selectedChat?.messages?.map((message, key) => (
-														<ChatMessage key={key}
-															messageType={message.type}
-															nameOfCurrentUser={message.type === 'me' ? selectedChat.nameOfCurrentUser : selectedChat.nameOfOtherUser}
-															message={message.message}
-															date={message.date}
-															avatarForThisMessage={message.type === 'me' ? selectedChat.avatarUrlOfCurrentUser: selectedChat.avatarUrlOfOtherUser}
-														/>
-													))
 
-												}
-											</ScrollArea>
-										</div>
-										<Separator />
-										<div className='w-full h-fit'>
-											<div className='flex flex-row justify-between items-center h-full p-2 '>
-												<AutoResizeTextArea maxHeight={200} placeholder='Write a message' value={text} onChange={(e) => setText(e.target.value)}/>
-												<div className='flex flex-row min-h-12 min-w-12 item-center p-1'>
-													<Button disabled={text.length < 1} className='rounded-full p-4 bg-main-light hover:bg-main' onClick={handleSendMessage}>
-														<div>
-															<svg fill="#FFFFFF" width="800px" height="800px" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
-																<path d="M568.13.012 392 176.142l783.864 783.989L392 1743.87 568.13 1920l960.118-959.87z" fillRule="evenodd" />
-															</svg>
-														</div>
-													</Button>
-												</div>
-											</div>
-										</div>
+	
+	return (
+		<section className={`flex flex-col h-full bg-white w-full items-center rounded-xl`}>
+			{selectedChat &&
+				(
+					<div className='w-full min-h-full max-h-[860px] flex flex-col '>
+						<div className='w-full flex flex-col overflow-auto'>
+							<header>
+								<div className='flex flex-row items-center p-2 pl-4 space-x-3'>
+									<div className='sm:hidden min-w-1 min-h-1 max-h-10 max-w-10 hover:bg-light-4 p-2' onClick={() => setShowChatScreen(false)}>
+										<img src="/assets/svg/arrow-left-svgrepo-com.svg" alt="" />
 									</div>
-
+									<div>
+										<InitialsOrAvartar name={selectedChat.nameOfOtherUser} avatarUrl={selectedChat.avatarUrlOfOtherUser} />
+									</div>
+									<div>
+										<h2 className='text-xl font-semibold'>{selectedChat.nameOfOtherUser}</h2>
+									</div>
 								</div>
+							</header>
+							<Separator />
+							<ChatScrollArea triggerOnChange={sendQueue}>
+								<ScrollArea className='flex flex-col w-full space-y-2' type='scroll'>
+									{
+										selectedChat?.messages?.map((message, key) => (
+											<ChatMessage key={key}
+												messageType={message.type}
+												nameOfCurrentUser={message.type === 'me' ? selectedChat.nameOfCurrentUser : selectedChat.nameOfOtherUser}
+												message={message.message}
+												date={message.date}
+												avatarForThisMessage={message.type === 'me' ? selectedChat.avatarUrlOfCurrentUser : selectedChat.avatarUrlOfOtherUser}
+											/>
+										))
 
-							)
-						}
-						{!selectedChat &&
-
-							(
-								<div className=' flex flex-row justify-center items-center h-full w-full'>
-									<p className='text-4xl font-semibold'>Select a Chat</p>
+									}
+								</ScrollArea>
+							</ChatScrollArea>
+							<Separator />
+							<div className='w-full h-fit'>
+								<div className='flex flex-row justify-between items-center h-full p-2 '>
+									<AutoResizeTextArea
+										maxHeight={200}
+										placeholder='Write a message'
+										value={text}
+										onChange={(e) => setText(e.target.value)}
+										onKeyDown={(e) => {
+											if (e.key === 'Enter' && !e.shiftKey) {
+												e.preventDefault();
+												handleSendMessage();
+											}
+										}}
+									/>
+									<div className='flex flex-row min-h-12 min-w-12 item-center p-1'>
+										<Button disabled={text.length < 1} className='rounded-full p-4 bg-main-light hover:bg-main' onClick={handleSendMessage}>
+											<div>
+												<SendIcon />
+											</div>
+										</Button>
+									</div>
 								</div>
-							)
-						}
-					</section>
-  )
+							</div>
+						</div>
+
+					</div>
+
+				)
+			}
+			{!selectedChat &&
+
+				(
+					<div className=' flex flex-row justify-center items-center h-full w-full'>
+						<p className='text-4xl font-semibold'>Select a Chat</p>
+					</div>
+				)
+			}
+		</section>
+	)
 }
 
 export default ChatScreen

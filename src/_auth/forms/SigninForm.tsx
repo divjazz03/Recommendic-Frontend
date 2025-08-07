@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input'
 import { FormWrapper } from './FormWrapper'
 import { Button } from '@/components/ui/button'
 import { Link, useNavigate } from 'react-router-dom'
-import { useSignInUserMutation } from '@/lib/react-query/queriiesAndMutation'
+import { useSignInUserMutation } from '@/lib/react-query/generalQueriesAndMutation'
 import { useUserContext } from '@/context/AuthContext'
 import { useToast } from '@/hooks/use-toast'
 import { z } from 'zod'
@@ -36,20 +36,17 @@ const SigninForm = () => {
       if (data) {
         setUserInContext({
           user_id: data.data.user_id,
-          first_name: data.data.first_name,
-          last_name: data.data.last_name,
           role: data.data.role,
-          address: data.data.address,
           userStage: data.data.userStage,
           userType: data.data.userType
         });
         console.log(userContext)
 
         if (data.data.userStage === 'ONBOARDING') {
-          navigate(userContext.userType === 'CONSULTANT' ? '/consultant/onboarding' : '/patient/onboarding');
+          navigate(data.data.role === 'ROLE_CONSULTANT' ? '/consultant/onboarding' : '/patient/onboarding');
         }
         else {
-          navigate(userContext.userType === 'CONSULTANT' ? '/consultant/overview' : '/patient/overview');
+          navigate(data.data.role === 'ROLE_CONSULTANT' ? '/consultant/overview' : '/patient/overview');
         }
       }
     } catch (error) {
@@ -59,7 +56,8 @@ const SigninForm = () => {
         if (err.status === 404) {
           return toast({ title: `Sign in failed: You don't have an account please sign up`, variant: 'destructive' });
         }
-        return toast({ title: `Sign in failed: ${err.message}`, variant: 'destructive' });
+        console.log(err)
+        return toast({ title: `Sign in failed: ${err.response?.data?.message}`, variant: 'destructive' });
       }
       
       console.error(error)

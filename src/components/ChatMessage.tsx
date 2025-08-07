@@ -1,4 +1,4 @@
-import { handleDateTimeFormatting } from '@/lib/utils/utils'
+import { handleDateTimeFormatting } from '@/lib/utils'
 import React from 'react'
 import InitialsOrAvartar from './shared/InitialsOrAvartar'
 

@@ -16,7 +16,7 @@ export interface Message {
 	id: string,
 	message: string,
 	type: "me" | "other",
-	date?: string,
+	date: string,
 	read?: boolean,
 	sent?: boolean
 
@@ -76,7 +76,7 @@ const [showChatScreen, setShowChatScreen] = useState<boolean>(false);
 
 return (
 	<>
-		<main className='flex h-[800px] bg-blue-50 rounded-2xl p-2'>
+		<main className='flex h-full max-h-[860px] lg:max-h-screen rounded-2xl p-2'>
 			<section className={`${showChatScreen ? 'opacity-0 w-0 overflow-hidden sm:min-w-[360px] sm:max-w-360px sm:opacity-100 sm:block sm:mr-2' : 'block mr-2 min-w-[360px] w-full'} flex-1  duration-300 ease-in-out transition-all h-full`}>
 				<ChatList chats={chats}
 					showChatScreen={showChatScreen}
@@ -86,7 +86,9 @@ return (
 			<section className={`${showChatScreen && selectedChat != null ? 'block mr-2' : 'hidden sm:block'} w-full min-w-[280px] max-w-[760px] ease-linear duration-200`}>
 				<ChatScreen setShowChatScreen={setShowChatScreen}
 					setSelectedChat={setSelectedChat}
-					selectedChat={selectedChat} />
+					selectedChat={selectedChat}
+					selectedChatId={selectedChat?.id}
+					/>
 			</section>
 			<section className='hidden md:flex flex-col flex-1 h-full w-full bg-white rounded-md'></section>
 		</main>

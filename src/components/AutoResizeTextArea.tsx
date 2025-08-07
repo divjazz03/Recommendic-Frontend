@@ -4,13 +4,14 @@ import { Textarea } from './ui/textarea'
 interface AutoResizeTextAreaProps {
     value: string,
     onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void,
+    onKeyDown: (event: React.KeyboardEvent<HTMLTextAreaElement>) => void,
     minHeight?: number,
     maxHeight?: number,
     placeholder?: string,
 }
 
 const AutoResizeTextArea: React.FC<AutoResizeTextAreaProps> = ({
-    value, onChange, minHeight = 50, maxHeight = 300, placeholder
+    value, onChange, minHeight = 50, maxHeight = 300, placeholder, onKeyDown
 }) => {
     const textareaRef = useRef<HTMLTextAreaElement>(null)
 
@@ -29,6 +30,7 @@ const AutoResizeTextArea: React.FC<AutoResizeTextAreaProps> = ({
             <Textarea
                 ref={textareaRef}
                 onChange={onChange}
+                onKeyDown={onKeyDown}
                 placeholder={placeholder}
                 value={value}
                 style={{

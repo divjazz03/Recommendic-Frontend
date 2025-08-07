@@ -1,13 +1,12 @@
 import { Button } from '@/components/ui/button'
-import React, { FormEvent,useEffect,useState } from 'react'
-import { TypeOfUser } from '@/types'
+import React, { FormEvent, useEffect, useState } from 'react'
 import SignupSuccessModal from '@/components/SignupSuccessModal'
 import { useToast } from '@/hooks/use-toast'
-import { useCreateUserMutation } from '@/lib/react-query/queriiesAndMutation'
+import { useCreateUserMutation } from '@/lib/react-query/generalQueriesAndMutation'
 import { Link, useNavigate } from 'react-router-dom'
 import { FormWrapper } from './FormWrapper'
 import Loader from '@/components/shared/Loader'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { accountFormValidation, addressFormValidation, userFormValidation } from '../validations/SignupValidation'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -19,18 +18,19 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 
 import axios, { AxiosError } from 'axios'
 import { Progress } from '@/components/ui/progress'
+export type TypeOfUser = "Patient" | "Consultant";
 
 type SignUpFormData = {
-    firstName?: string
-    lastName?: string,
-    email?: string,
-    password?: string,
-    phoneNumber?: string,
-    typeOfUser?: TypeOfUser,
-    gender?: 'Male' | 'Female',
-    city?: string,
-    state?: string,
-    country?: string,
+  firstName: string
+  lastName: string,
+  email: string,
+  password: string,
+  phoneNumber: string,
+  typeOfUser: TypeOfUser,
+  gender: 'Male' | 'Female',
+  city: string,
+  state: string,
+  country: string,
 }
 
 const SignupForm: React.FC = () => {
@@ -51,11 +51,11 @@ const SignupForm: React.FC = () => {
     country: "",
   });
   const [step, setStep] = useState(1);
-  const [isSuccessfulSignUp, setSuccessfulSignup] = useState<boolean>(false);  
+  const [isSuccessfulSignUp, setSuccessfulSignup] = useState<boolean>(false);
 
   async function onSubmitForConsultant(values: SignUpFormData) {
 
-      const result = await createNewUser({
+    const result = await createNewUser({
       typeOfUser: values.typeOfUser,
       userData: {
         firstName: values.firstName,
@@ -94,7 +94,7 @@ const SignupForm: React.FC = () => {
       setStep(step => step + 1)
     }
   }
-  function handleBackStep(event: FormEvent) {
+  function handleBackStep() {
     if (step !== 1) {
       setStep(step => step - 1);
     }
@@ -103,124 +103,125 @@ const SignupForm: React.FC = () => {
   function AddressForm() {
 
 
-      const addressForm = useForm<z.infer<typeof addressFormValidation>>({
-        resolver: zodResolver(addressFormValidation),
-        defaultValues: {city: '',country: '', state: ''},
-        mode: 'onChange'
-      })
+    const addressForm = useForm<z.infer<typeof addressFormValidation>>({
+      resolver: zodResolver(addressFormValidation),
+      defaultValues: { city: '', country: '', state: '' },
+      mode: 'onChange'
+    })
 
-      const handleAddressFormSubmit = (form: z.infer<typeof addressFormValidation>) => {
-        event.preventDefault()
-        
-        setFormData(prev => ({...prev,
-          city: form.city,
-          state: form.state,
-          country: form.country
-        }))
-        handleNextStep()
-        console.log(formData)
-      }
-  
-      return (
-        <Form {...addressForm}>
+    const handleAddressFormSubmit = (form: z.infer<typeof addressFormValidation>) => {
 
-          <form onSubmit={addressForm.handleSubmit(handleAddressFormSubmit)}>
-              <div className="flex gap-3 flex-col">
-                  <div>
-                      <header className="text-xl font-semibold text-center"> Address Information</header>
-                  </div>
-  
-                  <FormField
-                      control={addressForm.control}
-                      name="city"
-                      render={() => (
-                          <FormItem>
-                              <FormLabel>City</FormLabel>
-                              <FormControl>
-                                  <Input {...addressForm.register("city")} placeholder='Ibadan'/>
-                              </FormControl>
-                              <FormMessage />
-                          </FormItem>
-                      )}>
-  
-                  </FormField>
+      setFormData(prev => ({
+        ...prev,
+        city: form.city,
+        state: form.state,
+        country: form.country
+      }))
+      handleNextStep()
+      console.log(formData)
+    }
 
-                  <FormField
-                      control={addressForm.control}
-                      name="state"
-                      render={() => (
-                          <FormItem>
-                              <FormLabel>State</FormLabel>
-                              <FormControl>
-                                  <Input {...addressForm.register("state")} placeholder='Oyo' />
-                              </FormControl>
-                              <FormMessage />
-                          </FormItem>
-                      )}>
-  
-                  </FormField>
-  
-  
-                  <FormField
-                      control={addressForm.control}
-                      name="country"
-                      render={() => (
-                          <FormItem>
-                              <FormLabel>Country</FormLabel>
-                              <FormControl>
-                              <Input {...addressForm.register("country")} placeholder='Nigeria'/>
-                              </FormControl>
-                              <FormMessage />
-                          </FormItem>
-                      )}>
-                  </FormField>
-  
-              </div>
-              <div className='flex justify-center flex-col mt-4 gap-2 mb-2 w-full'>
-                {step != 1 && <Button type='button' variant='secondary' className='shad-button_secondary text-dark-4' onClick={handleBackStep}>Back</Button>}
-                <Button type='submit'>
-                  Next
-                </Button>
-              </div>
-          </form>
-        </Form>
-      )
+    return (
+      <Form {...addressForm}>
+
+        <form onSubmit={addressForm.handleSubmit(handleAddressFormSubmit)}>
+          <div className="flex gap-3 flex-col">
+            <div>
+              <header className="text-xl font-semibold text-center"> Address Information</header>
+            </div>
+
+            <FormField
+              control={addressForm.control}
+              name="city"
+              render={() => (
+                <FormItem>
+                  <FormLabel>City</FormLabel>
+                  <FormControl>
+                    <Input {...addressForm.register("city")} placeholder='Ibadan' />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}>
+
+            </FormField>
+
+            <FormField
+              control={addressForm.control}
+              name="state"
+              render={() => (
+                <FormItem>
+                  <FormLabel>State</FormLabel>
+                  <FormControl>
+                    <Input {...addressForm.register("state")} placeholder='Oyo' />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}>
+
+            </FormField>
+
+
+            <FormField
+              control={addressForm.control}
+              name="country"
+              render={() => (
+                <FormItem>
+                  <FormLabel>Country</FormLabel>
+                  <FormControl>
+                    <Input {...addressForm.register("country")} placeholder='Nigeria' />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}>
+            </FormField>
+
+          </div>
+          <div className='flex justify-center flex-col mt-4 gap-2 mb-2 w-full'>
+            {step != 1 && <Button type='button' variant='secondary' className='shad-button_secondary text-dark-4' onClick={handleBackStep}>Back</Button>}
+            <Button type='submit'>
+              Next
+            </Button>
+          </div>
+        </form>
+      </Form>
+    )
   }
   function AccountForm() {
 
     const accountForm = useForm<z.infer<typeof accountFormValidation>>({
-        resolver: zodResolver(accountFormValidation),
-        defaultValues: {email: '', password: '', typeOfUser: 'Patient'},
-        mode: 'onChange'
-      })
+      resolver: zodResolver(accountFormValidation),
+      defaultValues: { email: '', password: '', typeOfUser: 'Patient' },
+      mode: 'onChange'
+    })
 
     const handleAccountFormSubmit = async (form: z.infer<typeof accountFormValidation>) => {
-      event.preventDefault()
-      
-      setFormData((prev) => ({...prev,
+
+      const fullFormData: SignUpFormData = {
+        ...formData,
         email: form.email,
         typeOfUser: form.typeOfUser,
         password: form.password
-      }));
+      }
 
       try {
-        switch(form.typeOfUser) {
-        case 'Patient': await onSubmitForPatient(form);
-        break;
-        case 'Consultant':await onSubmitForConsultant(form);
-        break;  
-      }
-      console.log(formData)
-      toast({title: `Sign up success`})
-      setSuccessfulSignup(true);
+        switch (fullFormData.typeOfUser) {
+          case 'Patient': await onSubmitForPatient(fullFormData);
+            break;
+          case 'Consultant': await onSubmitForConsultant(fullFormData);
+            break;
+        }
+        console.log(fullFormData)
+        toast({ title: `Sign up success` })
+        setSuccessfulSignup(true);
       } catch (error) {
         if (axios.isAxiosError(error)) {
           const err = error as AxiosError;
-          return toast({title: `Sign up failed: ${err.message}`, variant:'destructive'})
+          console.log(error);
+          return toast({ title: `Sign up failed: ${err.message}`, variant: 'destructive' })
         }
       }
 
-      
+
 
     }
 
@@ -228,74 +229,84 @@ const SignupForm: React.FC = () => {
       <Form {...accountForm}>
 
         <form onSubmit={accountForm.handleSubmit(handleAccountFormSubmit)}>
-            <div className="flex flex-col gap-3 justify-center">
-                <div>
-                    <header className="text-xl font-semibold text-center">Account Information</header>
-                </div>
-
-                <FormField
-                    control={accountForm.control}
-                    name="email"
-                    render={() => (
-                        <FormItem>
-                            <FormLabel>Email</FormLabel>
-                            <FormControl>
-                                <Input {...accountForm.register("email")} placeholder='johndoe@gmail.com' />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}>
-
-                </FormField>
-
-                <FormField
-                    control={accountForm.control}
-                    name="typeOfUser"
-                    render={() => (
-                        <FormItem>
-                            <FormLabel>Signup As</FormLabel>
-                            <FormControl>
-                                <Select {...accountForm.register("typeOfUser")} defaultValue='Patient' >
-                                    <SelectTrigger>
-                                        <SelectValue placeholder='Sign up as' />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="Patient" >Patient</SelectItem>
-                                        <SelectItem value="Consultant" >Consultant</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}>
-
-                </FormField>
-                <FormField
-                    control={accountForm.control}
-                    name="password"
-                    render={() => (
-                        <FormItem>
-                            <FormLabel>Password</FormLabel>
-                            <FormControl>
-                            <Input {...accountForm.register("password")} type='password' />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}>
-
-                </FormField>
+          <div className="flex flex-col gap-3 justify-center">
+            <div>
+              <header className="text-xl font-semibold text-center">Account Information</header>
             </div>
-            <div className='flex justify-center flex-col mt-4 gap-2 mb-2 w-full'>
-                {step != 1 && <Button type='button' variant='secondary' className='shad-button_secondary text-dark-4' onClick={handleBackStep}>Back</Button>}
-                <Button type='submit'>
-                  {isCreatingUser ? (<Loader />) : "Finish"}
-                </Button>
-              </div>
+
+            <FormField
+              control={accountForm.control}
+              name="email"
+              render={() => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input {...accountForm.register("email")} placeholder='johndoe@gmail.com' />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}>
+
+            </FormField>
+
+            <FormField
+              control={accountForm.control}
+              name="typeOfUser"
+              render={() => (
+                <FormItem>
+                  <FormLabel>Signup As</FormLabel>
+                  <FormControl>
+                    <Controller
+                      control={accountForm.control}
+                      name='typeOfUser'
+                      render={({ field }) => (
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue='Patient'
+                          value={field.value} >
+                          <SelectTrigger>
+                            <SelectValue placeholder='Sign up as' />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Patient" >Patient</SelectItem>
+                            <SelectItem value="Consultant" >Consultant</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      )}
+                    />
+
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}>
+
+            </FormField>
+            <FormField
+              control={accountForm.control}
+              name="password"
+              render={() => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input {...accountForm.register("password")} type='password' />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}>
+
+            </FormField>
+          </div>
+          <div className='flex justify-center flex-col mt-4 gap-2 mb-2 w-full'>
+            {step != 1 && <Button type='button' variant='secondary' className='shad-button_secondary text-dark-4' onClick={handleBackStep}>Back</Button>}
+            <Button type='submit'>
+              {isCreatingUser ? (<Loader />) : "Finish"}
+            </Button>
+          </div>
         </form>
       </Form>
     )
-}
-function UserForm() {
+  }
+  function UserForm() {
 
     const userForm = useForm<z.infer<typeof userFormValidation>>({
       resolver: zodResolver(userFormValidation),
@@ -309,10 +320,11 @@ function UserForm() {
       firstName: string,
       lastName: string,
       phoneNumber: string,
-      gender: 'Male'|'Female'
+      gender: 'Male' | 'Female'
     }
     const handleUserFormSubmit = (form: z.infer<typeof userFormValidation>) => {
-      setFormData(prev => ({...prev ,firstName: form.firstName, 
+      setFormData(prev => ({
+        ...prev, firstName: form.firstName,
         lastName: form.lastName,
         phoneNumber: form.phoneNumber,
         gender: form.gender
@@ -324,102 +336,102 @@ function UserForm() {
       <Form {...userForm}>
 
         <form onSubmit={userForm.handleSubmit(handleUserFormSubmit)}>
-            <div className="flex flex-col gap-3 justify-center">
-                <div>
-                    <header className="text-xl font-semibold text-center">Personal Information</header>
-                </div>
-
-                <FormField
-                    control={userForm.control}
-                    name="firstName"
-                    render={() => (
-                        <FormItem>
-                            <FormLabel>First Name</FormLabel>
-                            <FormControl>
-                                <Input {...userForm.register("firstName")} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}>
-
-                </FormField>
-
-                <FormField
-                    control={userForm.control}
-                    name="lastName"
-                    render={() => (
-                        <FormItem>
-                            <FormLabel>Last Name</FormLabel>
-                            <FormControl>
-                                <Input {...userForm.register("lastName")} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}>
-
-                </FormField>
-
-                <FormField
-                    control={userForm.control}
-                    name="phoneNumber"
-                    render={() => (
-                        <FormItem>
-                            <FormLabel>Phone Number</FormLabel>
-                            <FormControl>
-                                <PhoneInput
-                                    {...userForm.register("phoneNumber")}
-                                    onChange={() => {}}
-                                    defaultCountry={'ng'}
-                                    className="flex flex-row h-10 border border-slate-200 rounded-md p-0"
-                                    inputClassName="border w-full "
-                                    countrySelectorStyleProps={{
-                                        className: "bg-white",
-                                        dropdownStyleProps: {
-                                            className: "rounded-md"
-                                        }
-
-                                    }}
-                                />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}>
-
-                </FormField>
-
-                <FormField
-                    control={userForm.control}
-                    name="gender"
-                    render={() => (
-                        <FormItem>
-                            <FormLabel>Gender</FormLabel>
-                            <FormControl>
-                            <Select {...userForm.register('gender')} defaultValue="Male" >
-                        <SelectTrigger>
-                            <SelectValue placeholder='Select Your gender' />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="Male" >Male</SelectItem>
-                            <SelectItem value="Female" >Female</SelectItem>
-                        </SelectContent>
-                    </Select>
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}>
-
-                </FormField>
+          <div className="flex flex-col gap-3 justify-center">
+            <div>
+              <header className="text-xl font-semibold text-center">Personal Information</header>
             </div>
-            <div className='flex justify-center flex-col mt-4 gap-2 mb-2 w-full'>
-                {step != 1 && <Button type='button' variant='secondary' className='shad-button_secondary text-dark-4' onClick={handleBackStep}>Back</Button>}
-                <Button type='submit'>
-                  Next
-                </Button>
-              </div>
+
+            <FormField
+              control={userForm.control}
+              name="firstName"
+              render={() => (
+                <FormItem>
+                  <FormLabel>First Name</FormLabel>
+                  <FormControl>
+                    <Input {...userForm.register("firstName")} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}>
+
+            </FormField>
+
+            <FormField
+              control={userForm.control}
+              name="lastName"
+              render={() => (
+                <FormItem>
+                  <FormLabel>Last Name</FormLabel>
+                  <FormControl>
+                    <Input {...userForm.register("lastName")} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}>
+
+            </FormField>
+
+            <FormField
+              control={userForm.control}
+              name="phoneNumber"
+              render={() => (
+                <FormItem>
+                  <FormLabel>Phone Number</FormLabel>
+                  <FormControl>
+                    <PhoneInput
+                      {...userForm.register("phoneNumber")}
+                      onChange={() => { }}
+                      defaultCountry={'ng'}
+                      className="flex flex-row h-10 border border-slate-200 rounded-md p-0"
+                      inputClassName="border w-full "
+                      countrySelectorStyleProps={{
+                        className: "bg-white",
+                        dropdownStyleProps: {
+                          className: "rounded-md"
+                        }
+
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}>
+
+            </FormField>
+
+            <FormField
+              control={userForm.control}
+              name="gender"
+              render={() => (
+                <FormItem>
+                  <FormLabel>Gender</FormLabel>
+                  <FormControl>
+                    <Select {...userForm.register('gender')} defaultValue="Male" >
+                      <SelectTrigger>
+                        <SelectValue placeholder='Select Your gender' />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Male" >Male</SelectItem>
+                        <SelectItem value="Female" >Female</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}>
+
+            </FormField>
+          </div>
+          <div className='flex justify-center flex-col mt-4 gap-2 mb-2 w-full'>
+            {step != 1 && <Button type='button' variant='secondary' className='shad-button_secondary text-dark-4' onClick={handleBackStep}>Back</Button>}
+            <Button type='submit'>
+              Next
+            </Button>
+          </div>
         </form>
       </Form>
     )
-}
+  }
   return (
     <>
       <div className='flex-col flex-center'>
@@ -428,21 +440,21 @@ function UserForm() {
           <p className='pt-2 text-gray-800 text-center'>Lets get you started with recommendic</p>
         </header>
         <FormWrapper >
-              <div className='flex flex-row justify-between w-full mb-3'>
-                <Progress className='h-2' value={step/3 * 100}/>
-              </div>
-              <div className=' flex-center flex-col'>
-                {step === 1 && (
-                  <UserForm />
-                )}
-                {step === 2 && (
-                  <AddressForm />
-                )}
-                {step === 3 && (
-                  <AccountForm/>
-                )}
-              </div>
-              
+          <div className='flex flex-row justify-between w-full mb-3'>
+            <Progress className='h-2' value={step / 3 * 100} />
+          </div>
+          <div className=' flex-center flex-col'>
+            {step === 1 && (
+              <UserForm />
+            )}
+            {step === 2 && (
+              <AddressForm />
+            )}
+            {step === 3 && (
+              <AccountForm />
+            )}
+          </div>
+
           <p className='text-sm font-semibold text-center mt-4'>Already have an account? <span className='mx-1 text-gray-500 hover:text-dark-1'><Link to='/sign-in' className='subtle-semibold hover:no-underline underline'>Sign In</Link></span></p>
         </FormWrapper>
       </div>

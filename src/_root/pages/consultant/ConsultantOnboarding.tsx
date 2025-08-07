@@ -3,7 +3,7 @@ import Loader from '@/components/shared/Loader';
 import { Button } from '@/components/ui/button';
 import { useUserContext } from '@/context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { useGetSupportedMedicalCategories, useUpdateConsultantOnboardingInfo } from '@/lib/react-query/queriiesAndMutation';
+import { useGetSupportedMedicalCategories, useUpdateConsultantOnboardingInfo } from '@/lib/react-query/generalQueriesAndMutation';
 import { MedicalCategory } from '@/types';
 import React, { FormEvent, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
@@ -49,7 +49,7 @@ const ConsultantOnboarding = () => {
                 })
                 navigate('/consultant/overview');
                 return toast({ title: 'Thanks for helping us serve you better' })
-            } catch (error) {
+            } catch (error: any) {
                 return toast({ title: `Onboarding Failed: ${error.message}`, variant: 'destructive' })
             }
         } else {
@@ -61,16 +61,18 @@ const ConsultantOnboarding = () => {
             <main className=''>
                 <div className=''>
                     <header className='font-semibold text-3xl text-center'>Consultant&nbsp;Onboarding</header>
+                    {isLoadingMedicalCategories? <Loader/> : 
+                    <>
                     <section className=' px-10 py-10 '>
                         <div className={'flex flex-row flex-wrap justify-left gap-4'}>
                             {
-                                ['Dentist','Gynecologist', 'Psychiatry','Opthalmology','Surgery'].map((categoryName, index) => (
+                                specialties.map((categoryName, index) => (
                                 <MedicalCategoryCard
                                 key={index}
-                                categoryName={categoryName}
+                                categoryName={categoryName.name}
                                 categoryDescription='A very important person fidof df dofidfoi i fdofidofiekjflsk ekf lkaej afeldkslkdnsk '
                                 selectActionHandler={handleSelectedSpecialtyChange}
-                                disabled={selectedSpecialty && selectedSpecialty !== categoryName}
+                                disabled={selectedSpecialty && selectedSpecialty !== categoryName.name}
                                 />
                             ))
                             }
@@ -79,6 +81,8 @@ const ConsultantOnboarding = () => {
                     <Button className='tracking-normal shad-button_primary' onClick={handleNext}>
                         {isUpdating? <Loader/> :'Next'} 
                     </Button>
+                    </>
+                    }       
                 </div>
             </main>
         </>

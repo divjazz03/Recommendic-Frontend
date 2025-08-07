@@ -9,13 +9,12 @@ import Landing from './_public/Landing';
 import ConfirmEmail from './_auth/forms/ConfirmEmail';
 import EmailConfirmation from './_auth/forms/EmailConfirmation';
 import Chat from './_root/pages/Chat';
-import Medication from './_root/pages/patient/PatientMedication';
 import Notification from './_root/pages/Notification';
 import ConsultantRootLayout from './_root/pages/consultant/ConsultantRootLayout';
 import ConsultantOnboarding from './_root/pages/consultant/ConsultantOnboarding';
 import ConsultantOverview from './_root/pages/consultant/ConsultantOverview';
 import Patient from './_root/pages/consultant/Patient';
-import { ConsultantSchedule } from './_root/pages/consultant/ConsultantSchedule';
+import ConsultantSchedule from './_root/pages/consultant/ConsultantSchedule';
 import ConsultantSettings from './_root/pages/consultant/ConsultantSettings';
 import PatientRootLayout from './_root/pages/patient/PatientRootLayout';
 import PatientOnboarding from './_root/pages/patient/PatientOnboarding';
@@ -28,6 +27,9 @@ import PatientMedication from './_root/pages/patient/PatientMedication';
 import ConsultantMedication from './_root/pages/consultant/ConsultantMedication';
 import ConsultantList from './_root/pages/patient/ConsultantList';
 import ConsultantScreen from './_root/pages/patient/ConsultantScreen';
+import ConsultantModifySchedule from './_root/pages/consultant/ConsultantModifySchedule';
+import ConsultantScheduleDisplay from './_root/pages/consultant/ConsultantScheduleDisplay';
+import ConsultantNewSchedule from './_root/pages/consultant/ConsultantNewSchedule';
 
 
 const App = () => {
@@ -51,7 +53,11 @@ const App = () => {
           <Route path='/consultant/appointment' element={<ConsultantAppointment />} />
           <Route path='/consultant/overview' element={<ConsultantOverview />} />
           <Route path='/consultant/patient' element={<Patient/>}/>
-          <Route path='/consultant/schedule' element={<ConsultantSchedule />} />
+          <Route path='/consultant/schedule' element={<ConsultantSchedule />}>
+            <Route index element={<ConsultantScheduleDisplay />} />
+            <Route path='new' element={<ConsultantNewSchedule />} />
+            <Route path='modify' element={<ConsultantModifySchedule />} />
+          </Route>
           <Route path='/consultant/chat' element={<Chat/>} />
           <Route path='/consultant/medication' element={<ConsultantMedication/>} />
           <Route path='/consultant/notification' element={<Notification />} />

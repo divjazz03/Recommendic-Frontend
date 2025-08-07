@@ -1,6 +1,11 @@
+import axios from "axios";
 import { clsx, type ClassValue } from "clsx"
 import { DateTime } from "luxon";
 import { twMerge } from "tailwind-merge"
+
+
+axios.defaults.withCredentials = true 
+export const apiClient = axios;
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -33,11 +38,4 @@ export const handleDateTimeFormatting = (date: string): string => {
     } else {
         return dateOfChat.monthLong;
     }
-}
-export const getJwtFromAuthorization = (authorizationString: string): string => {
-    if (authorizationString && authorizationString.startsWith('Bearer ')){
-        const token = authorizationString.split(' ')[1];
-        return token;
-    }
-    return null;
 }

@@ -1,17 +1,4 @@
-import ConsultantList from '@/_root/pages/patient/ConsultantList'
-import ConsultantScreen from '@/_root/pages/patient/ConsultantScreen'
-import LocalSearch from '@/components/LocalSearch'
-import { ConsultantType, ConsultantTypeMinimal } from '@/types';
-import React, { useState } from 'react'
-import { Outlet, useNavigate } from 'react-router-dom';
-import { number } from 'zod';
-
-
-
-
-
-
-
+import { Outlet } from 'react-router-dom';
 
 const Consultant = () => {
   return (

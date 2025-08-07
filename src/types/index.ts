@@ -24,7 +24,7 @@ export type NewUser = {
 }
 
 
-export type TypeOfUser = "Patient" | "Consultant";
+
 
 
 export type SigninUserData = {
@@ -59,20 +59,26 @@ export interface SignUpResponse extends Response {
 }
 
 
+export interface AuthUserContext {
+    user_id: string;
+    role: string;
+    userStage: 'ONBOARDING' | 'ACTIVE_USER',
+    userType: 'PATIENT' | 'CONSULTANT' | 'ADMIN'
+}
 export interface UserContext {
     user_id: string;
-    first_name: string;
-    last_name: string;
     role: string;
+    firstName: string;
+    lastName: string;
     address: Address;
     userStage: 'ONBOARDING' | 'ACTIVE_USER',
     userType: 'PATIENT' | 'CONSULTANT' | 'ADMIN'
 }
 
 export interface AuthContextState {
-    userContext: UserContext;
+    userContext: AuthUserContext;
     isAuthenticated: boolean;
-    setUserInContext: React.Dispatch<React.SetStateAction<UserContext>>;
+    setUserInContext: React.Dispatch<React.SetStateAction<AuthUserContext>>;
 }
 
 
@@ -97,6 +103,12 @@ export interface AdminCredentialResponse extends Response {
 }
 export interface AuthenticatedUserResponse {
     userId: string;
+    role: string;
+    user_type: 'PATIENT' | 'ADMIN' | 'CONSULTANT';
+    user_stage: 'ONBOARDING' | 'ACTIVE_USER';
+}
+export interface CurrentUserInfo {
+    userId: string;
     first_name: string;
     last_name: string;
     role: string;
@@ -104,7 +116,7 @@ export interface AuthenticatedUserResponse {
     user_type: 'PATIENT' | 'ADMIN' | 'CONSULTANT';
     user_stage: 'ONBOARDING' | 'ACTIVE_USER';
 }
-interface Response {
+export interface Response {
     time: string;
     code: number;
     status: string;
@@ -148,13 +160,13 @@ export interface ConsultantType {
     bio: string;
     location: string;
     image: string;
-    specialization: string[];
-    languages: string[];
+    specialization?: string[];
+    languages?: string[];
     consultationFee: number;
-    education: ConsultantEducation[],
-    stats: ConsultantStats,
+    education?: ConsultantEducation[],
+    stats?: ConsultantStats,
     reviews?: Review[],
-    availableSlots?: TimeSlot[],
+    availableSlots?: Schedule[],
     nextAvailable: string
 }
 interface Review {
@@ -163,8 +175,24 @@ interface Review {
     comment: string;
     date: string;
 }
-interface TimeSlot{
-    time: string;
+export interface RecurrenceRule {
+    frequency: 'one-off'|'daily'|'weekly'|'monthly',
+    weekDays: ('monday'| 'tuesday'| 'wednesday'| 'thursday'| 'friday'|'saturday'|'sunday')[],
+    interval: number,
+    endDate?: string,
+}
+export interface Schedule{
+    id: number;
+    name: string;
+    startTime: string;
+    endTime: string;
+    isRecurring: boolean;
+    offset: string;
+    channels: string[];
+    recurrenceRule?: RecurrenceRule | undefined;
+    isActive: boolean;
+    createdAt: string;
+    upcomingSessions: number
 }
 
 export interface SVGProps {

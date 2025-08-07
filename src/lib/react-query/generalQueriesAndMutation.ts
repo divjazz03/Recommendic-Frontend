@@ -1,16 +1,18 @@
-import { NewUser, TypeOfUser, SigninUserData } from "@/types";
+import { NewUser, SigninUserData } from "@/types";
 import { 
     useQuery,
     useMutation
  } from "@tanstack/react-query";
-import { createNewUser,
+import {
    signinUser,
    getCurrentUser, 
    resendConfirmationEmail, 
    verifyEmail, 
-   getAllSupportedMedicalCategories, 
-   sendPatientOnboardingData, 
-   sendConsultantOnboardingData } from "../api/backend_api";
+   getAllSupportedMedicalCategories} from "../api/general_api";
+import { TypeOfUser } from "@/_auth/forms/SignupForm";
+import { createNewPatient, sendPatientOnboardingData } from "../api/patient_api";
+import { createNewConsultant, createNewSchedule, sendConsultantOnboardingData } from "../api/consultant_api";
+import { NewSchedule } from "@/_root/pages/consultant/ConsultantNewSchedule";
 
  type UserCreateMutionProps = {
     typeOfUser: TypeOfUser,
@@ -27,7 +29,13 @@ import { createNewUser,
  export const useCreateUserMutation = () => {
     
     return useMutation({
-        mutationFn: (mutationFnProp: UserCreateMutionProps) => createNewUser(mutationFnProp.typeOfUser, mutationFnProp.userData)
+        mutationFn: (mutationFnProp: UserCreateMutionProps) => {
+         switch(mutationFnProp.typeOfUser) {
+            case "Patient": return createNewPatient(mutationFnProp.userData);
+            case "Consultant": return createNewConsultant(mutationFnProp.userData);
+         }
+         
+      }
     });
  }
 
@@ -73,5 +81,11 @@ import { createNewUser,
  export const useVerifyTokenMutation = () => {
    return useMutation({
       mutationFn: (token: string) => verifyEmail(token)
+   })
+ }
+
+ export const useCreateSchedule = () => {
+   return useMutation({
+      mutationFn: (schedule: NewSchedule) => createNewSchedule(schedule)
    })
  }

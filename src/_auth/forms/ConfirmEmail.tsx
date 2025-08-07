@@ -1,7 +1,7 @@
 import Loader from "@/components/shared/Loader";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { useResendEmailMutation } from "@/lib/react-query/queriiesAndMutation";
+import { useResendEmailMutation } from "@/lib/react-query/generalQueriesAndMutation";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom"
 

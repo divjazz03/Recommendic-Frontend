@@ -1,20 +1,13 @@
-import { useGetCurrentUser } from '@/lib/react-query/queriiesAndMutation'
-import { AuthContextState, UserContext } from '@/types'
+import { useGetCurrentUser } from '@/lib/react-query/generalQueriesAndMutation'
+import { AuthContextState, AuthUserContext, UserContext } from '@/types'
 import React from 'react'
 import { createContext, useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 
-export const INITIAL_USER: UserContext = {
+export const INITIAL_USER: AuthUserContext = {
     user_id: '',
-    first_name: '',
-    last_name: '',
     role: '',
-    address: {
-        city: '',
-        state: '',
-        country: ''
-    },
     userStage: 'ONBOARDING',
     userType:'PATIENT',
 }
@@ -29,31 +22,31 @@ const AuthContext = createContext<AuthContextState>(INITIAL_STATE);
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
-    const [userContext, setUserInContext] = useState<UserContext>(INITIAL_USER);
+    const [userContext, setUserInContext] = useState<AuthUserContext>(INITIAL_USER);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const navigate = useNavigate();
-    const {data, error, isPending:isGettingUser} = useGetCurrentUser(!location.pathname.includes('/sign-in'));
+    const {data, error, isPending: isGettingUser} = useGetCurrentUser(
+        !location.pathname.includes('/sign-in') &&
+        !location.pathname.includes('/sign-up')
+    );
 
     useEffect(() => {
             if (error) {
-                // console.error(error)
-                // navigate('/sign-in');
+                console.error(error)
+                navigate('/sign-in');
             } else if(data) {
                 console.log(data)
                 setUserInContext((prev) => {
                     return {
                         user_id: data.userId,
-                        first_name: data.first_name,
-                        last_name: data.last_name,
-                        address: data.address,
                         role: data.role,
                         userStage: data.user_stage,
                         userType: data.user_type
-                    } as UserContext
+                    } as AuthUserContext
                 });
                 setIsAuthenticated(true);
             }
-    }, [data,error])
+    }, [data, error])
 
     const value = {
         userContext,

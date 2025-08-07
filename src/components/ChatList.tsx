@@ -31,20 +31,19 @@ const ChatList: React.FC<ChatListProps> = ({
 
     const filterOptions = ['All', 'Unread']
 
-    const searchRef: React.MutableRefObject<HTMLDivElement> = useRef(null);
-    const filterSectionRef: React.MutableRefObject<HTMLDivElement> = useRef(null);
+    const searchRef: React.MutableRefObject<HTMLDivElement|null> = useRef(null);
+    const filterSectionRef: React.MutableRefObject<HTMLDivElement|null> = useRef(null);
 
     const handleThumbnailClick = () => {
         setSelectedChat((chat) => {
-            chat.messages.forEach(message => message.read = true)
-            return chat;
+            const updatedChat = {
+                ...chat,
+                messages: chat.messages.map(msg => ({...msg, read: true}))
+            }
+            return updatedChat
         })
     };
-    const handleFilterClick = (event: MouseEvent) => {
-            const value = event.currentTarget.innerHTML;
-            console.log(value)
-            setSelectedFilter(value);
-    }
+    
     const handleFilter = (value: string) => {
         console.log("filter called: ",value)
         if (selectedFilter.includes('Unread')) {
@@ -57,7 +56,7 @@ const ChatList: React.FC<ChatListProps> = ({
 
     useEffect(() => {
         handleFilter(selectedFilter);
-    }, [selectedFilter, localChats])
+    }, [selectedFilter, chats])
 
     useEffect(() => {
         if (searchBarVisible && searchRef.current) {
@@ -97,7 +96,7 @@ const ChatList: React.FC<ChatListProps> = ({
                     className={`${!filterSectionVisible ? 'opacity-0 overflow-hidden' : 'opacity-100'} flex gap-2 pl-2 transition-all ease-in-out duration-300`} >
                     {filterOptions.map((value, index) =>
                     (<div key={index}
-                        onClick={handleFilterClick}
+                        onClick={() => setSelectedFilter(value)}
                         className={`${selectedFilter.includes(value) ? 'bg-light-1' : 'bg-light-4 hover:bg-light-3'} cursor-pointer px-2 py-1 rounded-xl h-fit`}>
                         <p className='cursor-pointer'>{value}</p>
                     </div>)
@@ -116,9 +115,10 @@ const ChatList: React.FC<ChatListProps> = ({
                             }} className='flex flex-col items-center justify-center'>
                                 <ChatThumbnail
                                     name={chat.nameOfOtherUser}
-                                    mostRecentChatPreview={chat.messages[chat.messages.length - 1].message}
+                                    mostRecentChatPreview={chat.messages.length ? chat.messages[chat.messages.length - 1].message:''}
                                     numberOfUnreadChats={chat.messages.filter((message) => !message.read && message.type!='me').length}
                                     imgLink={chat.avatarUrlOfOtherUser}
+                                    dateOfLastChat={chat.messages[chat.messages.length - 1]?.date}
                                 />
                             </div>
                         ))}

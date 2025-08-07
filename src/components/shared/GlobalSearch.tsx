@@ -35,7 +35,7 @@ const GlobalSearch = () => {
             <Popover open={popoverOpen} onOpenChange={setPopOverOpen}>
                 <PopoverTrigger asChild>
                     <div className='flex flex-row items-center justify-between gap-2 pr-1'>
-                        <p className='text-lg'>Global&nbsp;Search</p>
+                        <p className='text-lg'>Search</p>
                         <div className='flex flex-col justify-center items-center min-w-8 max-w-10'>
                             <Search className='w-6 h-6' />
                         </div>

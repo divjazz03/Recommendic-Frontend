@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
 import { DateTime } from 'luxon'
-import {handleDateTimeFormatting } from '@/lib/utils/utils';
+import {handleDateTimeFormatting } from '@/lib/utils';
 import InitialsOrAvartar from './shared/InitialsOrAvartar';
 
 export interface ChatThumbnailProps {
@@ -13,7 +13,7 @@ export interface ChatThumbnailProps {
 
 
 
-const ChatThumbnail = ({ name, mostRecentChatPreview,imgLink, numberOfUnreadChats = 9, dateOfLastChat = DateTime.fromJSDate(new Date(2025, 4, 23, 11, 20, 43)).toISO() }: ChatThumbnailProps) => {
+const ChatThumbnail = ({ name, mostRecentChatPreview,imgLink, numberOfUnreadChats = 9, dateOfLastChat}: ChatThumbnailProps) => {
     const divRef = useRef<HTMLDivElement>(null);
 
     return (
@@ -28,8 +28,8 @@ const ChatThumbnail = ({ name, mostRecentChatPreview,imgLink, numberOfUnreadChat
                             <h3 className='font-semibold text-xl'>{name}</h3>
                             <p className='text-sm'>{mostRecentChatPreview.slice(0, 15) + (mostRecentChatPreview.length > 15? '...':'')}</p>
                         </div>
-                        <div className='flex flex-col min-w-[48px] gap-4 items-center'>
-                            <p>{handleDateTimeFormatting(dateOfLastChat)}</p>
+                        <div className='flex flex-col min-w-[48px] gap-4 mt-2 items-center'>
+                            <p className='text-xs'>{DateTime.fromISO(dateOfLastChat).toRelative()}</p>
                             <div className={numberOfUnreadChats < 1 ? 'hidden' : 'flex justify-center items-center bg-main min-w-fit min-h-fit w-6 h-6 rounded-full'}>
                                 <p className='text-white text-xs text-center'>{numberOfUnreadChats <= 99 ? numberOfUnreadChats : '99+'}</p>
                             </div>

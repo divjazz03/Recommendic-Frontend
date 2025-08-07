@@ -109,7 +109,7 @@ const ConsultantList = () => {
     const [searchValue, setSearchValue] = useState('')
     const [consultants, setConsultants] = useState<ConsultantTypeMinimal[]>(consultantPreview)
 
-    const thisRef: React.MutableRefObject<HTMLDivElement> = useRef(null);
+    const thisRef: React.MutableRefObject<HTMLDivElement | null> = useRef(null);
 
     const filteredConsultants = useMemo(() => {
         return consultantPreview.filter(consultant => {

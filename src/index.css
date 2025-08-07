@@ -32,7 +32,7 @@
 
   /* Button */
   .shad-button_primary {
-    @apply bg-main-light hover:bg-main text-light-5 flex gap-2 min-w-44 !important;
+    @apply bg-main-light hover:bg-main text-light-5 rounded-md flex gap-2 min-w-44 !important;
   }
 
   .shad-button_secondary {
