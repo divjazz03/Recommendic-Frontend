@@ -168,3 +168,16 @@ export async function updateSchedule(id: number, schedule: ModifyingSchedule): P
             }
         })
 }
+export async function deleteSchedule(id: number): Promise<Response> {
+    return apiClient.delete(`${apiUrl}${scheduleBasePath}/${id}`)
+    .then(response => response.data.data)
+    .catch((error) => {
+            if (apiClient.isAxiosError(error)) {
+                console.error(error)
+                throw error;
+            }
+            else {
+                throw new Error(error);
+            }
+        })
+}

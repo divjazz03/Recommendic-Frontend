@@ -15,12 +15,12 @@ interface SignupSuccessModalProps {
     onRedirect?: () => void;
 };
 
-const SignupSuccessModal = ({
+const SignupSuccessModal: React.FC<SignupSuccessModalProps> = ({
     isOpen,
     redirectUrl = '/sign-in',
     redirectDelay = 10000,
     onRedirect
-}: SignupSuccessModalProps) => {
+}) => {
     const [redirectCount, setRedirectCount] = useState(Math.ceil(redirectDelay/1000));
 
     useEffect(() => {

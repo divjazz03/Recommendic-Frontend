@@ -12,12 +12,12 @@ const navLinkObject = {
 	overview: {
 		to: '/consultant/overview',
 		icon: ChartLine,
-		description: 'overview'
+		description: 'Overview'
 	},
 	appointment: {
 		to: '/consultant/appointment',
 		icon: CalendarClock,
-		description: 'appointment'
+		description: 'Appointment'
 	},
 	patient: {
 		to: '/consultant/patient',
@@ -37,7 +37,7 @@ const navLinkObject = {
 	medication: {
 		to: '/consultant/medication',
 		icon: ChartLine,
-		description: 'medication'
+		description: 'Medication'
 	},
 	notification: {
 		to: '/consultant/notification',
@@ -45,7 +45,7 @@ const navLinkObject = {
 		description: 'Notification'
 	},
 	setting: {
-		to: '/consultant/setting',
+		to: '/consultant/settings',
 		icon: Settings2,
 		description: 'Setting'
 	},

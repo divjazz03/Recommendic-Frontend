@@ -107,7 +107,7 @@ const PatientMedication = () => {
 
   const [activeTab, setActiveTab] = useState('current');
   const [showAddForm, setShowAddForm] = useState(false);
-  const [selectedMedication, setSelectedMedication] = useState(null);
+  const [selectedMedication, setSelectedMedication] = useState<Medication|null>();
   const [reminderEnabled, setReminderEnabled] = useState(true);
   const [currentMedications, setCurrentMedications] = useState<Medication[]>([...prescribedMedications, ...currentMedicationList])
   const [upcomingDosesState, setUpcomingDoses] = useState<{medication:string,time:string, taken:boolean}[]>(currentMedications.filter(medication => medication.status !== 'completed').flatMap(medication => {
@@ -304,7 +304,7 @@ const PatientMedication = () => {
           </div>
         )}
 
-        {medication.status === 'ongoing' && (
+        {medication && medication.status === 'ongoing' && (
           <div className='flex items-center justify-between pt-3 border-t border-gray-100'>
             <div className='flex items-center gap-2'>
               <div className='text-sm text-gray-600'>Adherence: </div>

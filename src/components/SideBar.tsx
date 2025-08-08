@@ -57,7 +57,7 @@ const SideBar: React.FC<SideBarProps> = ({
       <div className='flex flex-col h-full py-4 justify-between'>
         <ul>
           {Object.entries(navLinks).map(([key, nav], index) => (
-            <Link key={index} to={nav.to} onClick={isMobile ? onClose : undefined}>
+            <Link aria-hidden={isMobile && isHidden} tabIndex={isMobile && isHidden ? -1:0} key={index} to={nav.to} onClick={isMobile ? onClose : undefined}>
               <div
                 className={clsx(
                   'flex flex-row gap-2 side-bar-icons side-bar-li',

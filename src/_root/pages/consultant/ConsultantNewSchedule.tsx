@@ -4,6 +4,7 @@ import { RecurrenceRule, Schedule } from '@/types';
 import { createNewSchedule } from '@/lib/api/consultant_api';
 import axios, { AxiosError } from 'axios';
 import { toast } from '@/hooks/use-toast';
+import { weeksToDays } from 'date-fns';
 
 export interface NewSchedule {
     id: number,
@@ -30,10 +31,10 @@ const ConsultantNewSchedule = () => {
         endTime: '17:00',
         isRecurring: true,
         recurrenceRule: {
-                frequency: 'weekly',
-                weekDays: ['monday'],
-                interval: 1
-            },
+            frequency: 'weekly',
+            weekDays: ['monday'],
+            interval: 1
+        },
         zoneOffset: "+01:00",
         channels: ['video'],
         isActive: true
@@ -85,17 +86,21 @@ const ConsultantNewSchedule = () => {
         ));
     };
 
-    const updateRecurrenceRule = (id: number, field: keyof RecurrenceRule, value: any) => {
-        setSchedules(schedules.map(schedule =>
-            schedule.id === id
-                ? { ...schedule, recurrenceRule: { ...schedule.recurrenceRule, [field]: value } }
-                : schedule
-        ));
+    const updateRecurrenceRule = (id: number, field: keyof RecurrenceRule, value: unknown) => {
+        const scheduleLocal = schedules.filter(schedule => schedule.id === id)[0];
+        if (scheduleLocal && scheduleLocal.recurrenceRule) {
+            setSchedules(schedules.map(schedule =>
+                schedule.id === id
+                    ? { ...schedule, recurrenceRule: { ...schedule.recurrenceRule, [field]: value } }
+                    : schedule
+            ));
+        }
+
     };
 
     const toggleChannel = (scheduleId: number, channel: string) => {
         setSchedules(schedules.map(schedule => {
-            if (schedule.id === scheduleId) {
+            if (schedule.id === scheduleId) {sche
                 const channels = schedule.channels.includes(channel)
                     ? schedule.channels.filter(c => c !== channel)
                     : [...schedule.channels, channel];
@@ -105,20 +110,24 @@ const ConsultantNewSchedule = () => {
         }));
     };
 
-    const toggleDayOfWeek = (scheduleId: number, day) => {
+    const toggleDayOfWeek2 = (scheduleId: number, day: "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday") => {
         setSchedules(schedules.map(schedule => {
-            if (schedule.id === scheduleId) {
-                const daysOfWeek = schedule.recurrenceRule.daysOfWeek.includes(day)
-                    ? schedule.recurrenceRule.daysOfWeek.filter(d => d !== day)
-                    : [...schedule.recurrenceRule.daysOfWeek, day];
-                return {
-                    ...schedule,
-                    recurrenceRule: { ...schedule.recurrenceRule, daysOfWeek }
-                };
+            if (scheduleId != schedule.id) {
+                return schedule;
             }
-            return schedule;
-        }));
-    };
+            if (schedule.recurrenceRule && schedule.recurrenceRule.weekDays) {
+                schedule.recurrenceRule.weekDays = schedule.recurrenceRule.weekDays.includes(day)
+                    ? schedule.recurrenceRule.weekDays.filter(d => d !== day)
+                    : [...schedule.recurrenceRule?.weekDays, day];
+                return schedule;
+            } else if (schedule.recurrenceRule && !schedule.recurrenceRule.weekDays) {
+                schedule.recurrenceRule.weekDays = [day];
+                return schedule;
+            } else {
+                return schedule;
+            }
+        }))
+    }
 
     const saveSchedules = async () => {
         console.log('Saving schedules:', schedules);
@@ -127,15 +136,15 @@ const ConsultantNewSchedule = () => {
             window.history.back()
         } catch (error) {
             if (axios.isAxiosError(error)) {
-        const err = error as AxiosError;
-        console.log(err)
-        return toast({ title: `Creating Schedule failed: ${err.response?.data?.message}`, variant: 'destructive' });
-      }
-      
-      console.error(error)
-      return toast({ title: `Creating Schedule failed Something went wrong`, variant: 'destructive' });
+                const err = error as AxiosError;
+                console.log(err)
+                return toast({ title: `Creating Schedule failed: ${err.response?.data?.message}`, variant: 'destructive' });
+            }
+
+            console.error(error)
+            return toast({ title: `Creating Schedule failed Something went wrong`, variant: 'destructive' });
         }
-        
+
     };
 
     return (
@@ -182,11 +191,11 @@ const ConsultantNewSchedule = () => {
                                     <div className='mb-2'>
                                         <h4 className='font-medium text-gray-900 items-center mb-2'>Name</h4>
                                         <input type='text'
-                                         placeholder='My weekend schedule'
-                                         value={schedule.name}
-                                         onChange={(e) => updateSchedule(schedule.id, 'name', e.target.value)}
-                                         className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent'
-                                         />
+                                            placeholder='My weekend schedule'
+                                            value={schedule.name}
+                                            onChange={(e) => updateSchedule(schedule.id, 'name', e.target.value)}
+                                            className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+                                        />
                                     </div>
 
                                     {/* Time Settings */}
@@ -216,7 +225,7 @@ const ConsultantNewSchedule = () => {
                                                 />
                                             </div>
                                         </div>
-                                    
+
 
                                         {/* Recurring Toggle */}
                                         <div className="flex items-center gap-3">
@@ -255,7 +264,7 @@ const ConsultantNewSchedule = () => {
                                                             {weekDays.map(day => (
                                                                 <button
                                                                     key={day.value}
-                                                                    onClick={() => toggleDayOfWeek(schedule.id, day.value)}
+                                                                    onClick={() => toggleDayOfWeek2(schedule.id, day.value)}
                                                                     className={`px-3 py-1 text-sm rounded-lg transition-colors ${schedule.recurrenceRule?.weekDays.includes(day.value)
                                                                         ? 'bg-blue-600 text-white'
                                                                         : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'

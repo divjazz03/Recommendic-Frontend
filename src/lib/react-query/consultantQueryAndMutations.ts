@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query"
-import { getMySchedules, getScheduleById, updateSchedule } from "../api/consultant_api"
+import { deleteSchedule, getMySchedules, getScheduleById, updateSchedule } from "../api/consultant_api"
 import { ModifyingSchedule } from "@/_root/pages/consultant/ConsultantModifySchedule"
 
 export const useGetCurrentUserSchedules = () => {
@@ -27,5 +27,10 @@ type ScheduleModificationProps = {
 export const useUpdateSchedule = () => {
     return useMutation({
         mutationFn: (mutationFnProp: ScheduleModificationProps) => updateSchedule(mutationFnProp.id, mutationFnProp.schedule)
+    })
+}
+export const useDeleteSchedule = () => {
+    return useMutation({
+        mutationFn: (id: number) => deleteSchedule(id)
     })
 }

@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { Calendar, Clock, Video, Phone, MessageCircle, Users, Trash2, Save, ArrowLeft } from 'lucide-react';
+import { Calendar, Clock, Video, Phone, MessageCircle, Users, Trash2, Save, ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { data, useLocation } from 'react-router-dom';
 import { Schedule } from '@/types';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/hooks/use-toast';
-import { useGetScheduleWithUserId, useUpdateSchedule } from '@/lib/react-query/consultantQueryAndMutations';
+import { useDeleteSchedule, useGetScheduleWithUserId, useUpdateSchedule } from '@/lib/react-query/consultantQueryAndMutations';
+import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 export interface ModifyingRecurrenceRule {
     frequency?: 'one-off' | 'daily' | 'weekly' | 'monthly',
     weekDays?: ('monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday')[],
@@ -25,13 +26,42 @@ export interface ModifyingSchedule {
     isActive?: boolean;
 }
 
+
+const ModificationSuccessModal = () => {
+
+    useEffect( () => {
+        const timeout = setTimeout(() => {
+            window.history.back();
+        }, 2000)
+
+        return () => clearTimeout(timeout);
+    } ,[])
+    return (
+        <AlertDialog open={true} >
+            <AlertDialogContent className='max-w-md'>
+                <AlertDialogHeader>
+                    <div className='flex items-center justify-center mb-4'>
+                        <CheckCircle2 className='h-12 w-12 text-green-500'/>
+                    </div>
+                    <AlertDialogTitle className='text-center text-xl'>Schedule change successful</AlertDialogTitle>
+                    <AlertDialogDescription className='text-center'>
+                        <p className='mt-2'>Your schedule has been modified successfully.</p>
+                        
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+            </AlertDialogContent>
+        </AlertDialog>
+    )
+}
+
 const ConsultantModifySchedule = () => {
     const location = useLocation();
 
     const [scheduleId, setScheduleId] = useState<number>(location.state.scheduleId);
     const { data: scheduleResponse, isPending } = useGetScheduleWithUserId(scheduleId);
     const { mutateAsync: updateAsyncSchedule, isPending: isUpdating } = useUpdateSchedule()
-
+    const { mutateAsync: deleteAsyncSchedule, isPending: isDeleting } = useDeleteSchedule();
+    const [modificationSuccess, setModificationSuccess] = useState<boolean>(false);
     const [schedule, setSchedule] = useState<Schedule>();
     const [modifiedSchedule, setModifiedSchedule] = useState<ModifyingSchedule>();
 
@@ -62,7 +92,7 @@ const ConsultantModifySchedule = () => {
         { value: 'chat', label: 'Chat', icon: MessageCircle, color: 'bg-blue-100 text-blue-600' },
         { value: 'voice', label: 'Voice Call', icon: Phone, color: 'bg-green-100 text-green-600' },
         { value: 'video', label: 'Video Call', icon: Video, color: 'bg-purple-100 text-purple-600' },
-        { value: 'in-person', label: 'In-Person', icon: Users, color: 'bg-orange-100 text-orange-600' }
+        { value: 'in_person', label: 'In-Person', icon: Users, color: 'bg-orange-100 text-orange-600' }
     ];
 
     const weekDays = [
@@ -76,7 +106,8 @@ const ConsultantModifySchedule = () => {
     ];
 
 
-    const removeSchedule = () => {
+    const removeSchedule = async () => {
+        await deleteAsyncSchedule(scheduleId);
         window.history.back();
     };
 
@@ -120,7 +151,7 @@ const ConsultantModifySchedule = () => {
                             : [day];
                         return {
                             ...schedule,
-                            recurrenceRule: { ...schedule.recurrenceRule, weekDays }
+                            recurrenceRule: { ...schedule?.recurrenceRule, weekDays }
                         };
                     }
 
@@ -134,13 +165,12 @@ const ConsultantModifySchedule = () => {
         console.log('Saving schedules:', schedule);
         if (modifiedSchedule) {
             await updateAsyncSchedule({ id: scheduleId, schedule: modifiedSchedule });
-            window.history.back()
+            setModificationSuccess(true)
         }
-        return toast({description: "Schedule successfully modified"});
     };
 
     return (
-        <div className="max-h-[800px] lg:max-h-screen overflow-auto bg-gray-50 p-6">
+        <main className="max-h-[800px] lg:max-h-screen overflow-auto bg-gray-50 p-6">
             <div className="max-w-4xl overflow-auto mx-auto">
                 {/* Header */}
                 <header className="mb-8 flex gap-2">
@@ -370,7 +400,8 @@ const ConsultantModifySchedule = () => {
                     </Button>
                 </div>
             </div>
-        </div>
+            {modificationSuccess && <ModificationSuccessModal/>}
+        </main>
     );
 };
 
