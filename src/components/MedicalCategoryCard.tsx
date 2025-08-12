@@ -1,4 +1,4 @@
-import { SelectAction } from '@/_root/pages/consultant/ConsultantOnboarding';
+import { SelectAction } from '@/components/consultant/ConsultantOnboarding';
 import React, { useState } from 'react'
 
 

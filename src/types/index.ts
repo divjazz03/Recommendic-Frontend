@@ -24,9 +24,6 @@ export type NewUser = {
 }
 
 
-
-
-
 export type SigninUserData = {
     email: string,
     password: string
@@ -60,10 +57,10 @@ export interface SignUpResponse extends Response {
 
 
 export interface AuthUserContext {
-    user_id: string;
-    role: string;
-    userStage: 'ONBOARDING' | 'ACTIVE_USER',
-    userType: 'PATIENT' | 'CONSULTANT' | 'ADMIN'
+    user_id?: string;
+    role?: string;
+    userStage?: 'ONBOARDING' | 'ACTIVE_USER',
+    userType?: 'PATIENT' | 'CONSULTANT' | 'ADMIN'
 }
 export interface UserContext {
     user_id: string;
@@ -75,15 +72,28 @@ export interface UserContext {
     userType: 'PATIENT' | 'CONSULTANT' | 'ADMIN'
 }
 
-export interface AuthContextState {
-    userContext: AuthUserContext;
-    isAuthenticated: boolean;
-    setUserInContext: React.Dispatch<React.SetStateAction<AuthUserContext>>;
-}
-
 
 export interface SignInResponse extends Response {
     data: UserContext
+}
+
+export interface PatientProfile {
+    userName: {
+            first_name: string
+            last_name: string
+            full_name: string
+        }
+        address: Address
+        phoneNumber: string
+}
+export interface ConsultantProfile {
+    userName: {
+            first_name: string
+            last_name: string
+            full_name: string
+        }
+        address: Address
+        phoneNumber: string
 }
 export interface MedicalCategory {
     name: string,
@@ -102,10 +112,12 @@ export interface AdminCredentialResponse extends Response {
     }
 }
 export interface AuthenticatedUserResponse {
-    userId: string;
+    user: {userId: string;
     role: string;
     user_type: 'PATIENT' | 'ADMIN' | 'CONSULTANT';
     user_stage: 'ONBOARDING' | 'ACTIVE_USER';
+    }
+    profile: PatientProfile | ConsultantProfile
 }
 export interface CurrentUserInfo {
     userId: string;
@@ -176,12 +188,12 @@ interface Review {
     date: string;
 }
 export interface RecurrenceRule {
-    frequency: 'one-off'|'daily'|'weekly'|'monthly',
-    weekDays: ('monday'| 'tuesday'| 'wednesday'| 'thursday'| 'friday'|'saturday'|'sunday')[],
+    frequency: 'one-off' | 'daily' | 'weekly' | 'monthly',
+    weekDays: ('monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday')[],
     interval: number,
     endDate?: string,
 }
-export interface Schedule{
+export interface Schedule {
     id: number;
     name: string;
     startTime: string;

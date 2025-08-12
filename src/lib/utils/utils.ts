@@ -12,8 +12,11 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function extractInitialsFromName(name: string): string{
-  const splitName = name.split(" ");
-  return splitName.filter(name => name.length > 3).map((name) => name.charAt(0)).join("");
+    if(name) {
+        const splitName = name.split(" ");
+        return splitName.filter(name => name.length > 3).map((name) => name.charAt(0)).join("");
+    }
+    return ""
 }
 
 export const handleDateTimeFormatting = (date: string): string => {

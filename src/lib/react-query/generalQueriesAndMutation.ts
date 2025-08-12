@@ -1,4 +1,4 @@
-import { NewUser, SigninUserData } from "@/types";
+import { AuthenticatedUserResponse, AuthUserContext, NewUser, SigninUserData } from "@/types";
 import { 
     useQuery,
     useMutation
@@ -12,7 +12,7 @@ import {
 import { TypeOfUser } from "@/_auth/forms/SignupForm";
 import { createNewPatient, sendPatientOnboardingData } from "../api/patient_api";
 import { createNewConsultant, createNewSchedule, sendConsultantOnboardingData } from "../api/consultant_api";
-import { NewSchedule } from "@/_root/pages/consultant/ConsultantNewSchedule";
+import { NewSchedule } from "@/components/consultant/ConsultantNewSchedule";
 
  type UserCreateMutionProps = {
     typeOfUser: TypeOfUser,

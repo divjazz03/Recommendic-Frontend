@@ -1,7 +1,7 @@
 import { NewUser, RecurrenceRule, Response, Schedule, SignUpResponse } from "@/types";
-import { apiClient } from "../utils";
-import { NewSchedule } from "@/_root/pages/consultant/ConsultantNewSchedule";
-import { ModifyingSchedule } from "@/_root/pages/consultant/ConsultantModifySchedule";
+import { apiClient } from "../utils/utils";
+import { NewSchedule } from "@/components/consultant/ConsultantNewSchedule";
+import { ModifyingSchedule } from "@/components/consultant/ConsultantModifySchedule";
 
 const apiUrl = import.meta.env.VITE_BACKEND_BASE_URL;
 const consultantBasePath = import.meta.env.VITE_CONSULTANT_BASE;

@@ -4,11 +4,13 @@ import {
     SignInResponse,
     SigninUserData,
 } from "@/types";
-import { apiClient } from "../utils";
+import { apiClient } from "../utils/utils";
 
 
 const userLoginPath = import.meta.env.VITE_APP_USER_LOGIN;
 const userGetPath = import.meta.env.VITE_CURRENT_AUTH_USER;
+const patientPath = import.meta.env.VITE_PATIENT_BASE;
+const consultantPath = import.meta.env.VITE_CONSULTANT_BASE;
 const medicalCategoriesPath = import.meta.env.VITE_GET_MEDICAL_CATEGORIES;
 const emailConfirmationPath = import.meta.env.VITE_EMAIL_CONFIRMATION;
 const retryEmail = import.meta.env.VITE_RETRY_EMAIL;
@@ -38,7 +40,10 @@ export async function getCurrentUser(): Promise<AuthenticatedUserResponse> {
         apiClient.get(`${apiUrl}${userGetPath}`, {
             withCredentials: true
         })
-            .then(response => response.data)
+            .then(response => { 
+                console.log(response.data.user)
+                return response.data
+            })
             .catch((error) => {
                 if (apiClient.isAxiosError(error)) {
                     throw error;
@@ -49,6 +54,7 @@ export async function getCurrentUser(): Promise<AuthenticatedUserResponse> {
             })
     return result;
 }
+
 
 export async function getAllSupportedMedicalCategories(): Promise<MedicalCategoriesResponse> {
     let result: Promise<MedicalCategoriesResponse> = apiClient.get(`${apiUrl}${medicalCategoriesPath}`)

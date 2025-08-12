@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { Calendar, Clock, Video, Phone, MessageCircle, Users, Trash2, Save, ArrowLeft, CheckCircle2 } from 'lucide-react';
-import { data, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { Schedule } from '@/types';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { toast } from '@/hooks/use-toast';
 import { useDeleteSchedule, useGetScheduleWithUserId, useUpdateSchedule } from '@/lib/react-query/consultantQueryAndMutations';
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 export interface ModifyingRecurrenceRule {
@@ -29,24 +28,24 @@ export interface ModifyingSchedule {
 
 const ModificationSuccessModal = () => {
 
-    useEffect( () => {
+    useEffect(() => {
         const timeout = setTimeout(() => {
             window.history.back();
         }, 2000)
 
         return () => clearTimeout(timeout);
-    } ,[])
+    }, [])
     return (
         <AlertDialog open={true} >
             <AlertDialogContent className='max-w-md'>
                 <AlertDialogHeader>
                     <div className='flex items-center justify-center mb-4'>
-                        <CheckCircle2 className='h-12 w-12 text-green-500'/>
+                        <CheckCircle2 className='h-12 w-12 text-green-500' />
                     </div>
                     <AlertDialogTitle className='text-center text-xl'>Schedule change successful</AlertDialogTitle>
                     <AlertDialogDescription className='text-center'>
                         <p className='mt-2'>Your schedule has been modified successfully.</p>
-                        
+
                     </AlertDialogDescription>
                 </AlertDialogHeader>
             </AlertDialogContent>
@@ -68,23 +67,26 @@ const ConsultantModifySchedule = () => {
     useEffect(() => {
         console.log(scheduleResponse)
         const scheduleData = scheduleResponse?.data;
-        setSchedule(scheduleData);
-        setModifiedSchedule(
-            {
-                name: scheduleData?.name,
-                channels: scheduleData?.channels,
-                endTime: scheduleData?.endTime,
-                startTime: scheduleData?.startTime,
-                isRecurring: scheduleData?.isRecurring,
-                isActive: scheduleData?.isActive,
-                offset: scheduleData?.offset,
-                recurrenceRule: {
-                    endDate: scheduleData?.recurrenceRule?.endDate,
-                    frequency: scheduleData?.recurrenceRule?.frequency,
-                    interval: scheduleData?.recurrenceRule?.interval,
-                    weekDays: scheduleData?.recurrenceRule?.weekDays
-                }
-            })
+        if (scheduleData) {
+            setSchedule(scheduleData);
+            setModifiedSchedule(
+                {
+                    name: scheduleData?.name,
+                    channels: scheduleData?.channels,
+                    endTime: scheduleData?.endTime,
+                    startTime: scheduleData?.startTime,
+                    isRecurring: scheduleData?.isRecurring,
+                    isActive: scheduleData?.isActive,
+                    offset: scheduleData?.offset,
+                    recurrenceRule: {
+                        endDate: scheduleData?.recurrenceRule?.endDate,
+                        frequency: scheduleData?.recurrenceRule?.frequency,
+                        interval: scheduleData?.recurrenceRule?.interval,
+                        weekDays: scheduleData?.recurrenceRule?.weekDays
+                    }
+                })
+        }
+
     }, [scheduleResponse]);
 
 
@@ -116,12 +118,12 @@ const ConsultantModifySchedule = () => {
     };
 
     const toggleRecurrence = (isRecurring: boolean) => {
-        isRecurring ? setModifiedSchedule(schedule => ({ ...schedule,isRecurring: true, recurrenceRule: {}}))
-             : setModifiedSchedule(schedule => ({ ...schedule, isRecurring: false, recurrenceRule: undefined }))
+        isRecurring ? setModifiedSchedule(schedule => ({ ...schedule, isRecurring: true, recurrenceRule: {} }))
+            : setModifiedSchedule(schedule => ({ ...schedule, isRecurring: false, recurrenceRule: undefined }))
     }
 
     const updateRecurrenceRule = (field: keyof ModifyingRecurrenceRule, value: unknown) => {
-        if(modifiedSchedule?.isRecurring) {
+        if (modifiedSchedule?.isRecurring) {
             setModifiedSchedule(schedule => ({ ...schedule, recurrenceRule: { ...schedule?.recurrenceRule, [field]: value } })
             );
         }
@@ -132,7 +134,7 @@ const ConsultantModifySchedule = () => {
             if (channel) {
                 const channels = schedule?.channels?.includes(channel)
                     ? schedule.channels.filter(c => c !== channel)
-                    : [...schedule?.channels, channel];
+                    : schedule?.channels ? [...schedule?.channels, channel] : [channel];
                 return { ...schedule, channels };
             }
             return schedule;
@@ -146,9 +148,9 @@ const ConsultantModifySchedule = () => {
                     if (modifiedSchedule.recurrenceRule) {
                         const weekDays = modifiedSchedule?.recurrenceRule?.weekDays?.includes(day)
                             ? modifiedSchedule?.recurrenceRule.weekDays.filter(d => d !== day)
-                            : schedule?.recurrenceRule?.weekDays 
-                            ? [...schedule.recurrenceRule?.weekDays, day] 
-                            : [day];
+                            : schedule?.recurrenceRule?.weekDays
+                                ? [...schedule.recurrenceRule?.weekDays, day]
+                                : [day];
                         return {
                             ...schedule,
                             recurrenceRule: { ...schedule?.recurrenceRule, weekDays }
@@ -290,10 +292,10 @@ const ConsultantModifySchedule = () => {
                                             <div>
                                                 <label className="block text-sm font-medium text-gray-700 mb-2">Days of Week</label>
                                                 <div className="flex flex-wrap gap-2">
-                                                    {weekDays.map(day => (
+                                                    {weekDays && weekDays.map(day => (
                                                         <button
                                                             key={day.value}
-                                                            onClick={() => toggleDayOfWeek(day.value as typeof modifiedSchedule.recurrenceRule.weekDays[0])}
+                                                            onClick={() => toggleDayOfWeek(day.value)}
                                                             className={`px-3 py-1 text-sm rounded-lg transition-colors ${modifiedSchedule.recurrenceRule?.weekDays?.includes(day.value as typeof modifiedSchedule.recurrenceRule.weekDays[0])
                                                                 ? 'bg-blue-600 text-white'
                                                                 : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
@@ -400,7 +402,7 @@ const ConsultantModifySchedule = () => {
                     </Button>
                 </div>
             </div>
-            {modificationSuccess && <ModificationSuccessModal/>}
+            {modificationSuccess && <ModificationSuccessModal />}
         </main>
     );
 };

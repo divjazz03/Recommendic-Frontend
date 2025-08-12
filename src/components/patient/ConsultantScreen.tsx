@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import InitialsOrAvartar from '../../../components/shared/InitialsOrAvartar';
+import InitialsOrAvartar from '../shared/InitialsOrAvartar';
 import { Award, BookOpen, Calendar, CheckCircle, Clock, Heart, MapPin, MessageCircle, Shield, Star, TrendingUp, Users, Video } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 

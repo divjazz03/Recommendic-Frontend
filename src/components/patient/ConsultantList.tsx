@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import LocalSearch from '../../../components/LocalSearch'
+import LocalSearch from '../LocalSearch'
 import { ChevronDown, Filter, Stethoscope } from 'lucide-react'
-import { Label } from '../../../components/ui/label'
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '../../../components/ui/select';
-import ConsultantThumbnail from '../../../components/ConsultantThumbnail';
+import { Label } from '../ui/label'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '../ui/select';
+import ConsultantThumbnail from '../ConsultantThumbnail';
 import { ConsultantTypeMinimal } from '@/types';
 
 

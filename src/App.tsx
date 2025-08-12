@@ -1,4 +1,4 @@
-import { Routes, Route} from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import './index.css';
 import SigninForm from './_auth/forms/SigninForm';
 import SignupForm from './_auth/forms/SignupForm';
@@ -8,31 +8,28 @@ import { Toaster } from './components/ui/toaster';
 import Landing from './_public/Landing';
 import ConfirmEmail from './_auth/forms/ConfirmEmail';
 import EmailConfirmation from './_auth/forms/EmailConfirmation';
-import Chat from './_root/pages/Chat';
 import Notification from './_root/pages/Notification';
-import ConsultantRootLayout from './_root/pages/consultant/ConsultantRootLayout';
-import ConsultantOnboarding from './_root/pages/consultant/ConsultantOnboarding';
-import ConsultantOverview from './_root/pages/consultant/ConsultantOverview';
-import Patient from './_root/pages/consultant/Patient';
-import ConsultantSchedule from './_root/pages/consultant/ConsultantSchedule';
-import ConsultantSettings from './_root/pages/consultant/ConsultantSettings';
-import PatientRootLayout from './_root/pages/patient/PatientRootLayout';
-import PatientOnboarding from './_root/pages/patient/PatientOnboarding';
-import PatientOverview from './_root/pages/patient/PatientOverview';
-import Consultant from './_root/pages/patient/Consultant';
-import { PatientSchedule } from './_root/pages/patient/PatientSchedule';
-import PatientSettings from './_root/pages/patient/PatientSettings';
-import ConsultantAppointment from './_root/pages/consultant/ConsultantAppointment';
-import PatientMedication from './_root/pages/patient/PatientMedication';
-import ConsultantMedication from './_root/pages/consultant/ConsultantMedication';
-import ConsultantList from './_root/pages/patient/ConsultantList';
-import ConsultantScreen from './_root/pages/patient/ConsultantScreen';
-import ConsultantModifySchedule from './_root/pages/consultant/ConsultantModifySchedule';
-import ConsultantScheduleDisplay from './_root/pages/consultant/ConsultantScheduleDisplay';
-import ConsultantNewSchedule from './_root/pages/consultant/ConsultantNewSchedule';
+import RootLayout from './_root/pages/RootLayout';
+import ConsultantScreen from './components/patient/ConsultantScreen';
+import Consultant from './components/patient/Consultant';
+import ConsultantList from './components/patient/ConsultantList';
+import Schedule from '@/_root/pages/Schedule';
+import { useUserContext } from '@/context/AuthContext';
+import { PatientSchedule } from './components/patient/PatientSchedule';
+import ConsultantSchedule from './components/consultant/ConsultantSchedule';
+import ConsultantNewSchedule from './components/consultant/ConsultantNewSchedule';
+import ConsultantModifySchedule from './components/consultant/ConsultantModifySchedule';
+import ConsultantScheduleDisplay from './components/consultant/ConsultantScheduleDisplay';
+import Overview from '@/_root/pages/Overview';
+import Onboarding from '@/_root/pages/Onboarding';
+import Medication from '@/_root/pages/Medication';
+import Settings from '@/_root/pages/Settings';
+import Appointment from './_root/pages/Appointment';
 
 
 const App = () => {
+  const { userContext } = useUserContext();
+  
   return (
     <main className='h-screen w-screen'>
       <Routes>
@@ -45,37 +42,28 @@ const App = () => {
           <Route path='/confirm-email' element={<ConfirmEmail />} />
           <Route path='/email-confirmation/:token' element={<EmailConfirmation />} />
         </Route>
-        
+
         {/* Private Routes*/}
-        {/*Consultant routes*/}
-        <Route  element={<ConsultantRootLayout />}>
-          <Route path='/consultant/onboarding' element={<ConsultantOnboarding />} />
-          <Route path='/consultant/appointment' element={<ConsultantAppointment />} />
-          <Route path='/consultant/overview' element={<ConsultantOverview />} />
-          <Route path='/consultant/patient' element={<Patient/>}/>
-          <Route path='/consultant/schedule' element={<ConsultantSchedule />}>
-            <Route index element={<ConsultantScheduleDisplay />} />
-            <Route path='new' element={<ConsultantNewSchedule />} />
-            <Route path='modify' element={<ConsultantModifySchedule />} />
-          </Route>
-          <Route path='/consultant/chat' element={<Chat/>} />
-          <Route path='/consultant/medication' element={<ConsultantMedication/>} />
-          <Route path='/consultant/notification' element={<Notification />} />
-          <Route path='/consultant/settings' element={<ConsultantSettings />} />
-        </Route>
-        {/* Patient Routes */}
-        <Route element={<PatientRootLayout />}>
-          <Route path='/patient/onboarding' element={<PatientOnboarding />} />
-          <Route path='/patient/overview' element={<PatientOverview />} />
-          <Route path='/patient/consultant' element={<Consultant/>}>
-            <Route index element={<ConsultantList/>}/>
+        <Route element={<RootLayout/>}>
+          <Route path='/onboarding' element={<Onboarding />} />
+          <Route path='/overview' element={<Overview />} />
+          <Route path='/consultant' element={<Consultant />}>
+            <Route index element={<ConsultantList />} />
             <Route path='profile' element={<ConsultantScreen />} />
           </Route>
-          <Route path='/patient/schedule' element={<PatientSchedule />} />
-          <Route path='/patient/chat' element={<Chat/>} />
-          <Route path='/patient/medication' element={<PatientMedication/>} />
-          <Route path='/patient/notification' element={<Notification />} />
-          <Route path='/patient/settings' element={<PatientSettings />} />
+          <Route path='/schedule' element={<Schedule />} >
+            {userContext.role === 'ROLE_PATIENT'
+              ? <Route element={<PatientSchedule />} />
+              : <Route element={<ConsultantSchedule />}>
+                <Route index element={<ConsultantScheduleDisplay />} />
+                <Route path='new' element={<ConsultantNewSchedule />} />
+                <Route path='modify' element={<ConsultantModifySchedule />} />
+              </Route>}
+          </Route>
+          <Route path='/medication' element={<Medication />} />
+          <Route path='/notification' element={<Notification />} />
+          <Route path='/settings' element={<Settings />} />
+          <Route path='/appointment' element={<Appointment/>} />
         </Route>
       </Routes>
       <Toaster />

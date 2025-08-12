@@ -1,5 +1,5 @@
 import { NewUser, SignUpResponse } from "@/types";
-import { apiClient } from "../utils";
+import { apiClient } from "../utils/utils";
 
 const patientPath = import.meta.env.VITE_PATIENT_BASE;
 const apiUrl = import.meta.env.VITE_BACKEND_BASE_URL;

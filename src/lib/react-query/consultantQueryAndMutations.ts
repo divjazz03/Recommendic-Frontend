@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { deleteSchedule, getMySchedules, getScheduleById, updateSchedule } from "../api/consultant_api"
-import { ModifyingSchedule } from "@/_root/pages/consultant/ConsultantModifySchedule"
+import { ModifyingSchedule } from "@/components/consultant/ConsultantModifySchedule"
 
 export const useGetCurrentUserSchedules = () => {
     return useQuery({

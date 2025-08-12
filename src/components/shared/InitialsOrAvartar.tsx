@@ -1,4 +1,4 @@
-import { extractInitialsFromName } from '@/lib/utils'
+import { extractInitialsFromName } from '@/lib/utils/utils'
 import React from 'react'
 
 interface InitialsOrAvartarProps {

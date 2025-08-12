@@ -1,63 +1,51 @@
-
 import GlobalSearch from '@/components/shared/GlobalSearch';
-import { MutableRefObject, useEffect, useRef, useState } from 'react'
-import { Outlet, useLocation } from 'react-router-dom'
-import { Bell, Calendar1Icon, CalendarClock, ChartLine,MessageSquareMoreIcon, Settings2, Users } from 'lucide-react';
 import SideBar from '@/components/SideBar';
 import Logo from '@/components/svg/Logo';
-
-
+import { useUserContext } from '@/context/AuthContext';
+import { Bell, Calendar1Icon, CalendarClock, ChartLine, Loader, Settings2 } from 'lucide-react';
+import React, { MutableRefObject, useEffect, useRef, useState } from 'react'
+import { Outlet, useLocation } from 'react-router-dom';
 
 const navLinkObject = {
-	overview: {
-		to: '/consultant/overview',
-		icon: ChartLine,
-		description: 'Overview'
-	},
-	appointment: {
-		to: '/consultant/appointment',
-		icon: CalendarClock,
-		description: 'Appointment'
-	},
-	patient: {
-		to: '/consultant/patient',
-		icon: Users,
-		description: 'Patients'
-	},
-	schedule: {
-		to: '/consultant/schedule',
-		icon: Calendar1Icon,
-		description: 'Schedule'
-	},
-	chat: {
-		to: '/consultant/chat',
-		icon: MessageSquareMoreIcon,
-		description: 'Chat'
-	},
-	medication: {
-		to: '/consultant/medication',
-		icon: ChartLine,
-		description: 'Medication'
-	},
-	notification: {
-		to: '/consultant/notification',
-		icon: Bell,
-		description: 'Notification'
-	},
-	setting: {
-		to: '/consultant/settings',
-		icon: Settings2,
-		description: 'Setting'
-	},
+    overview: {
+        to: '/overview',
+        icon: ChartLine,
+        description: 'Overview'
+    },
+    appointment: {
+        to: '/appointment',
+        icon: CalendarClock,
+        description: 'Appointment'
+    },
+    schedule: {
+        to: '/schedule',
+        icon: Calendar1Icon,
+        description: 'Schedule'
+    },
+    medication: {
+        to: '/medication',
+        icon: ChartLine,
+        description: 'Medication'
+    },
+    notification: {
+        to: '/notification',
+        icon: Bell,
+        description: 'Notification'
+    },
+    setting: {
+        to: '/settings',
+        icon: Settings2,
+        description: 'Setting'
+    },
 }
-const ConsultantRootLayout = () => {
 
-	const [asideHidden, setAsideHidden] = useState(true);
+const RootLayout = () => {
+    const [asideHidden, setAsideHidden] = useState(true);
 	const location = useLocation();
 	const asideRef: MutableRefObject<HTMLElement | null> = useRef(null);
+	const {userContext:auth, profileData,  isLoading} = useUserContext();
 
 	useEffect(() => {
-		//const { user } = useUserContext();
 		function handleClickOutside(event: MouseEvent) {
 			if (asideRef.current && !asideRef.current.contains(event.target as Node)) {
 				setAsideHidden(true);
@@ -80,10 +68,9 @@ const ConsultantRootLayout = () => {
 	const handleMenuClick = () => {
 		setAsideHidden(aside => !aside);
 	};
-
-
-	return (
-		<main className='relative bg-light-4 min-w-[320px] max-w-full h-screen overflow-hidden'>
+  return (
+	isLoading ? <div className='flex justify-center h-full items-center '><Loader className=' animate-spin' /></div>  :
+    <main className='relative bg-light-4 min-w-[320px] max-w-full h-screen overflow-hidden'>
 			<div className='border-2'>
 
 				{/* Mobile Header */}
@@ -110,12 +97,12 @@ const ConsultantRootLayout = () => {
 				<SideBar
 					navLinks={navLinkObject}
 					sideBarRef={asideRef}
-					name='Maduka Divine'
-					title='Dr. Maduka'
-					specialization='Veterinary'
+					name={profileData?.userName?.full_name ?? 'Guest'}
+					specialization={undefined}
 					isMobile
 					isHidden={asideHidden}
 					onClose={handleMenuClick}
+					userContext={auth}
 				/>
 
 				<div className='lg:flex lg:flex-row w-full h-screen'>
@@ -126,6 +113,7 @@ const ConsultantRootLayout = () => {
 						name='Maduka Divine'
 						title='Dr. Maduka'
 						specialization='Veterinary'
+						userContext={auth}
 					/>
 
 					{/* Main content */}
@@ -139,7 +127,7 @@ const ConsultantRootLayout = () => {
 				</div>
 			</div>
 		</main>
-	)
+  )
 }
 
-export default ConsultantRootLayout
+export default RootLayout

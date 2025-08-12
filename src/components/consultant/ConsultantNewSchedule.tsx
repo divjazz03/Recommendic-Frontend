@@ -100,7 +100,7 @@ const ConsultantNewSchedule = () => {
 
     const toggleChannel = (scheduleId: number, channel: string) => {
         setSchedules(schedules.map(schedule => {
-            if (schedule.id === scheduleId) {sche
+            if (schedule.id === scheduleId) {
                 const channels = schedule.channels.includes(channel)
                     ? schedule.channels.filter(c => c !== channel)
                     : [...schedule.channels, channel];
