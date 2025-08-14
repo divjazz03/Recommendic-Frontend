@@ -2,7 +2,6 @@ import { NewUser, SignUpResponse } from "@/types";
 import { apiClient } from "../utils/utils";
 
 const patientPath = import.meta.env.VITE_PATIENT_BASE;
-const apiUrl = import.meta.env.VITE_BACKEND_BASE_URL;
 
 export async function createNewPatient(
     userData: NewUser) {
@@ -18,7 +17,7 @@ export async function createNewPatient(
         state: userData.state,
         country: userData.country
     }
-    result = apiClient.post(`${apiUrl}${patientPath}`, patientData, {
+    result = apiClient.post(`${patientPath}`, patientData, {
         headers: {
             'Content-Type': 'application/json'
         }
@@ -35,7 +34,7 @@ export async function createNewPatient(
 }
 
 export async function getAllPatients(params: { page?: number, size?: number, sort?: boolean }): Promise<any> {
-    let result = await apiClient.get(`${apiUrl}${patientPath}`, { params: params })
+    let result = await apiClient.get(`${patientPath}`, { params: params })
         .then(response => response.data)
         .catch((error) => {
             if (apiClient.isAxiosError(error)) {
@@ -51,7 +50,7 @@ export async function getAllPatients(params: { page?: number, size?: number, sor
 
 
 export async function deletePatient(patientId: string): Promise<Response> {
-    let result = await apiClient.delete(`${apiUrl}${patientPath}/${patientId}`)
+    let result = await apiClient.delete(`${patientPath}/${patientId}`)
         .then(response => response.data)
         .catch((error) => {
             if (apiClient.isAxiosError(error)) {
@@ -67,7 +66,7 @@ export async function deletePatient(patientId: string): Promise<Response> {
 
 export async function sendPatientOnboardingData(medicalCategories: string[], userId: string): Promise<Response> {
     let result = await apiClient.post(
-        `${apiUrl}${patientPath}/${userId}/onboard`,
+        `${patientPath}/${userId}/onboard`,
         { medicalCategories: medicalCategories },)
         .then(response => response.data)
         .catch((error) => {

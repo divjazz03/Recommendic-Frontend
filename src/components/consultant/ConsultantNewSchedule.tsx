@@ -170,7 +170,7 @@ const ConsultantNewSchedule = () => {
                         <div key={schedule.id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                             <div className="flex items-center justify-between mb-6">
                                 <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                                    <Calendar className="w-5 h-5 text-blue-600" />
+                                    <Calendar className="w-5 h-5 text-main" />
                                     Schedule {index + 1}
                                 </h3>
                                 {schedules.length > 1 && (
@@ -194,7 +194,7 @@ const ConsultantNewSchedule = () => {
                                             placeholder='My weekend schedule'
                                             value={schedule.name}
                                             onChange={(e) => updateSchedule(schedule.id, 'name', e.target.value)}
-                                            className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+                                            className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-main focus:border-transparent'
                                         />
                                     </div>
 
@@ -212,7 +212,7 @@ const ConsultantNewSchedule = () => {
                                                     type="time"
                                                     value={schedule.startTime}
                                                     onChange={(e) => updateSchedule(schedule.id, 'startTime', e.target.value)}
-                                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-main focus:border-transparent"
                                                 />
                                             </div>
                                             <div>
@@ -221,7 +221,7 @@ const ConsultantNewSchedule = () => {
                                                     type="time"
                                                     value={schedule.endTime}
                                                     onChange={(e) => updateSchedule(schedule.id, 'endTime', e.target.value)}
-                                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-main focus:border-transparent"
                                                 />
                                             </div>
                                         </div>
@@ -234,7 +234,7 @@ const ConsultantNewSchedule = () => {
                                                 id={`recurring-${schedule.id}`}
                                                 checked={schedule.isRecurring}
                                                 onChange={(e) => updateSchedule(schedule.id, 'isRecurring', e.target.checked)}
-                                                className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                                                className="w-4 h-4 text-blue-600 rounded focus:ring-main"
                                             />
                                             <label htmlFor={`recurring-${schedule.id}`} className="text-sm font-medium text-gray-700">
                                                 Recurring Schedule
@@ -249,7 +249,7 @@ const ConsultantNewSchedule = () => {
                                                     <select
                                                         value={schedule.recurrenceRule?.frequency}
                                                         onChange={(e) => updateRecurrenceRule(schedule.id, 'frequency', e.target.value)}
-                                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-main"
                                                     >
                                                         <option value="daily">Daily</option>
                                                         <option value="weekly">Weekly</option>
@@ -266,7 +266,7 @@ const ConsultantNewSchedule = () => {
                                                                     key={day.value}
                                                                     onClick={() => toggleDayOfWeek2(schedule.id, day.value)}
                                                                     className={`px-3 py-1 text-sm rounded-lg transition-colors ${schedule.recurrenceRule?.weekDays.includes(day.value)
-                                                                        ? 'bg-blue-600 text-white'
+                                                                        ? 'bg-main-light text-white'
                                                                         : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
                                                                         }`}
                                                                 >
@@ -285,7 +285,7 @@ const ConsultantNewSchedule = () => {
                                                             min="1"
                                                             value={schedule.recurrenceRule?.interval}
                                                             onChange={(e) => updateRecurrenceRule(schedule.id, 'interval', parseInt(e.target.value))}
-                                                            className="w-20 px-2 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                                            className="w-20 px-2 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-main"
                                                         />
                                                         <span className="text-sm text-gray-600">
                                                             {schedule.recurrenceRule?.frequency === 'daily' ? 'day(s)' :
@@ -300,7 +300,7 @@ const ConsultantNewSchedule = () => {
                                                         type="date"
                                                         value={schedule.recurrenceRule?.endDate}
                                                         onChange={(e) => updateRecurrenceRule(schedule.id, 'endDate', e.target.value)}
-                                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-main"
                                                     />
                                                 </div>
                                             </div>
@@ -322,7 +322,7 @@ const ConsultantNewSchedule = () => {
                                                     key={channel.value}
                                                     onClick={() => toggleChannel(schedule.id, channel.value)}
                                                     className={`flex items-center gap-3 p-4 rounded-lg border-2 transition-all ${isSelected
-                                                        ? 'border-blue-500 bg-blue-50'
+                                                        ? 'border-main-light '
                                                         : 'border-gray-200 bg-white hover:border-gray-300'
                                                         }`}
                                                 >
@@ -332,7 +332,7 @@ const ConsultantNewSchedule = () => {
                                                     <div className="flex-1 text-left">
                                                         <div className="font-medium text-gray-900">{channel.label}</div>
                                                     </div>
-                                                    <div className={`w-4 h-4 rounded-full border-2 ${isSelected ? 'bg-blue-500 border-blue-500' : 'border-gray-300'
+                                                    <div className={`w-4 h-4 rounded-full border-2 ${isSelected ? 'bg-main border-main' : 'border-gray-300'
                                                         }`}>
                                                         {isSelected && <div className="w-2 h-2 bg-white rounded-full m-0.5" />}
                                                     </div>
@@ -351,7 +351,7 @@ const ConsultantNewSchedule = () => {
                                         id={`active-${schedule.id}`}
                                         checked={schedule.isActive}
                                         onChange={(e) => updateSchedule(schedule.id, 'isActive', e.target.checked)}
-                                        className="w-4 h-4 text-green-600 rounded focus:ring-green-500"
+                                        className="w-4 h-4"
                                     />
                                     <label htmlFor={`active-${schedule.id}`} className="text-sm font-medium text-gray-700">
                                         Schedule is active
@@ -366,7 +366,7 @@ const ConsultantNewSchedule = () => {
                 <div className="flex items-center justify-between mt-8 pt-6 border-t border-gray-200">
                     <button
                         onClick={addSchedule}
-                        className="flex items-center gap-2 px-4 py-2 text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+                        className="flex items-center gap-2 px-6 py-3 text-main-light bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
                     >
                         <Plus className="w-4 h-4" />
                         Add Another Schedule
@@ -374,7 +374,7 @@ const ConsultantNewSchedule = () => {
 
                     <button
                         onClick={saveSchedules}
-                        className="flex items-center gap-2 px-6 py-3 shadcn-button_primary transition-colors font-medium"
+                        className="flex items-center gap-2 px-6 py-3 text-white bg-main-light hover:bg-main rounded-lg transition-colors font-medium"
                     >
                         <Save className="w-4 h-4" />
                         Save Schedules

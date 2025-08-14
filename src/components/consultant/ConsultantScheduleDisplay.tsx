@@ -320,7 +320,7 @@ const ConsultantScheduleDisplay = () => {
                             <p className="text-gray-600 mb-6">Create your first schedule to start accepting consultations</p>
                             <button
                                 onClick={handleCreateNewSchedule}
-                                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                                className="inline-flex items-center gap-2 px-4 py-2 bg-main-light text-white rounded-lg hover:bg-main transition-colors font-medium"
                             >
                                 <Plus className="w-4 h-4" />
                                 Create Schedule

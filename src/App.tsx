@@ -25,6 +25,7 @@ import Onboarding from '@/_root/pages/Onboarding';
 import Medication from '@/_root/pages/Medication';
 import Settings from '@/_root/pages/Settings';
 import Appointment from './_root/pages/Appointment';
+import Consultation from './_root/pages/Consultation';
 
 
 const App = () => {
@@ -64,6 +65,7 @@ const App = () => {
           <Route path='/notification' element={<Notification />} />
           <Route path='/settings' element={<Settings />} />
           <Route path='/appointment' element={<Appointment/>} />
+          <Route path='/consultation' element={<Consultation />} />
         </Route>
       </Routes>
       <Toaster />

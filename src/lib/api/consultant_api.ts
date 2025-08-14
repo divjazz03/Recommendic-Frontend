@@ -3,7 +3,7 @@ import { apiClient } from "../utils/utils";
 import { NewSchedule } from "@/components/consultant/ConsultantNewSchedule";
 import { ModifyingSchedule } from "@/components/consultant/ConsultantModifySchedule";
 
-const apiUrl = import.meta.env.VITE_BACKEND_BASE_URL;
+
 const consultantBasePath = import.meta.env.VITE_CONSULTANT_BASE;
 const scheduleBasePath = import.meta.env.VITE_SCHEDULE_BASE;
 
@@ -29,7 +29,7 @@ interface ScheduleResponse extends Response {
 }
 
 export async function sendConsultantOnboardingData(medicalSpecialization: string, userId: string) {
-    let result = await apiClient.post(`${apiUrl}${consultantBasePath}/${userId}/onboard`, { medicalSpecialization: medicalSpecialization })
+    let result = await apiClient.post(`${consultantBasePath}/${userId}/onboard`, { medicalSpecialization: medicalSpecialization })
         .then(response => response.data)
         .catch((error) => {
             if (apiClient.isAxiosError(error)) {
@@ -44,7 +44,7 @@ export async function sendConsultantOnboardingData(medicalSpecialization: string
 }
 
 export async function deleteConsultant(consultantId: string): Promise<Response> {
-    let result = await apiClient.delete(`${apiUrl}${consultantBasePath}/${consultantId}`)
+    let result = await apiClient.delete(`${consultantBasePath}/${consultantId}`)
         .then(response => response.data)
         .catch((error) => {
             if (apiClient.isAxiosError(error)) {
@@ -58,7 +58,7 @@ export async function deleteConsultant(consultantId: string): Promise<Response> 
 }
 
 export async function getAllConsultants(params: { page?: number, size?: number, sort?: boolean }): Promise<any> {
-    let result = await apiClient.get(`${apiUrl}${consultantBasePath}`, { params: params })
+    let result = await apiClient.get(`${consultantBasePath}`, { params: params })
         .then(response => response.data)
         .catch((error) => {
             if (apiClient.isAxiosError(error)) {
@@ -87,7 +87,7 @@ export async function createNewConsultant(
         state: userData.state,
         country: userData.country,
     }
-    result = apiClient.post(`${apiUrl}${consultantBasePath}`, consultantData, {
+    result = apiClient.post(`${consultantBasePath}`, consultantData, {
         headers: {
             'Content-Type': 'application/json'
         }
@@ -106,7 +106,7 @@ export async function createNewConsultant(
 }
 
 export async function createNewSchedule(schedule: NewSchedule): Promise<ScheduleCreationResponse> {
-    return apiClient.post(`${apiUrl}${scheduleBasePath}`, schedule, {
+    return apiClient.post(`${scheduleBasePath}`, schedule, {
         headers: {
             'Content-Type': 'application/json'
         }
@@ -124,7 +124,7 @@ export async function createNewSchedule(schedule: NewSchedule): Promise<Schedule
 }
 
 export async function getMySchedules(): Promise<SchedulesResponse> {
-    return apiClient.get(`${apiUrl}${scheduleBasePath}/me`)
+    return apiClient.get(`${scheduleBasePath}/me`)
     .then(response => response.data)
     .catch(error => {
         if (apiClient.isAxiosError(error)) {
@@ -137,7 +137,7 @@ export async function getMySchedules(): Promise<SchedulesResponse> {
 }
 
 export async function getScheduleById(id: number): Promise<ScheduleResponse> {
-    return apiClient.get(`${apiUrl}${scheduleBasePath}/${id}`)
+    return apiClient.get(`${scheduleBasePath}/${id}`)
     .then(response => response.data)
     .catch(error => {
         if (apiClient.isAxiosError(error)) {
@@ -150,7 +150,7 @@ export async function getScheduleById(id: number): Promise<ScheduleResponse> {
 }
 
 export async function updateSchedule(id: number, schedule: ModifyingSchedule): Promise<ScheduleResponse> {
-    return apiClient.patch(`${apiUrl}${scheduleBasePath}/${id}`, 
+    return apiClient.patch(`${scheduleBasePath}/${id}`, 
         schedule, 
         {
             headers: {
@@ -169,7 +169,7 @@ export async function updateSchedule(id: number, schedule: ModifyingSchedule): P
         })
 }
 export async function deleteSchedule(id: number): Promise<Response> {
-    return apiClient.delete(`${apiUrl}${scheduleBasePath}/${id}`)
+    return apiClient.delete(`${scheduleBasePath}/${id}`)
     .then(response => response.data.data)
     .catch((error) => {
             if (apiClient.isAxiosError(error)) {

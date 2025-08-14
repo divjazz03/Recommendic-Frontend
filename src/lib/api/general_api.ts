@@ -14,14 +14,13 @@ const consultantPath = import.meta.env.VITE_CONSULTANT_BASE;
 const medicalCategoriesPath = import.meta.env.VITE_GET_MEDICAL_CATEGORIES;
 const emailConfirmationPath = import.meta.env.VITE_EMAIL_CONFIRMATION;
 const retryEmail = import.meta.env.VITE_RETRY_EMAIL;
-const apiUrl = import.meta.env.VITE_BACKEND_BASE_URL;
 
 
 
 
 
 export async function signinUser(userData: SigninUserData): Promise<SignInResponse> {
-    let result: Promise<SignInResponse> = apiClient.post(`${apiUrl}${userLoginPath}`, userData)
+    let result: Promise<SignInResponse> = apiClient.post(`${userLoginPath}`, userData)
         .then((response) => response.data
         )
         .catch((error) => {
@@ -37,7 +36,7 @@ export async function signinUser(userData: SigninUserData): Promise<SignInRespon
 
 export async function getCurrentUser(): Promise<AuthenticatedUserResponse> {
     let result: Promise<AuthenticatedUserResponse> =
-        apiClient.get(`${apiUrl}${userGetPath}`, {
+        apiClient.get(`${userGetPath}`, {
             withCredentials: true
         })
             .then(response => { 
@@ -57,7 +56,7 @@ export async function getCurrentUser(): Promise<AuthenticatedUserResponse> {
 
 
 export async function getAllSupportedMedicalCategories(): Promise<MedicalCategoriesResponse> {
-    let result: Promise<MedicalCategoriesResponse> = apiClient.get(`${apiUrl}${medicalCategoriesPath}`)
+    let result: Promise<MedicalCategoriesResponse> = apiClient.get(`${medicalCategoriesPath}`)
         .then(response => {
             console.log(response.data)
             return response.data
@@ -73,7 +72,7 @@ export async function getAllSupportedMedicalCategories(): Promise<MedicalCategor
     return result;
 }
 export async function resendConfirmationEmail(userEmail: string): Promise<string> {
-    let result = apiClient.post(`${apiUrl}${retryEmail}`, { email: userEmail })
+    let result = apiClient.post(`${retryEmail}`, { email: userEmail })
         .then(response => response.data)
         .catch((error) => {
             if (apiClient.isAxiosError(error)) {
@@ -87,7 +86,7 @@ export async function resendConfirmationEmail(userEmail: string): Promise<string
 }
 
 export async function verifyEmail(token: string): Promise<string> {
-    let result = apiClient.post(`${apiUrl}${emailConfirmationPath}?token=${token}`)
+    let result = apiClient.post(`${emailConfirmationPath}?token=${token}`)
         .then(response => response.data)
         .catch((error) => {
             if (apiClient.isAxiosError(error)) {
@@ -101,7 +100,7 @@ export async function verifyEmail(token: string): Promise<string> {
 }
 
 export async function doGlobalSearch(query: string) {
-    let result = apiClient.get(`${apiUrl}/search/${query}`)
+    let result = apiClient.get(`/search/${query}`)
         .then(response => response.data)
         .catch((error) => {
             if (apiClient.isAxiosError(error)) {

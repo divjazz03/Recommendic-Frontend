@@ -44,8 +44,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     );
     useEffect(() => {
             if (error) {
-                console.error(error)
-                navigate('/sign-in');
+                // console.error(error)
+                // navigate('/sign-in');
             } else if(data) {
                 console.log(data)
                 setUserInContext(() => {

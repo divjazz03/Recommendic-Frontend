@@ -4,7 +4,8 @@ import { DateTime } from "luxon";
 import { twMerge } from "tailwind-merge"
 
 
-axios.defaults.withCredentials = true 
+axios.defaults.withCredentials = true
+axios.defaults.baseURL = import.meta.env.VITE_BACKEND_BASE_URL;
 export const apiClient = axios;
 
 export function cn(...inputs: ClassValue[]) {
@@ -25,7 +26,6 @@ export const handleDateTimeFormatting = (date: string): string => {
     const dateOfChat = DateTime.fromISO(date);
     const startOfWeek = dateToday.startOf('week');
     const endOfWeek = dateToday.endOf('week')
-    const daysOfTheWeek = ["Sunday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
     if (dateOfChat.day === dateToday.day) {
         return `${dateOfChat.hour > 12 
             ? dateOfChat.hour - 12 
