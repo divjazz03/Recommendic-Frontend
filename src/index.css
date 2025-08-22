@@ -13,7 +13,7 @@
   }
 
   body {
-    @apply bg-light-5 text-dark-3 dark:bg-dark-1 dark:text-light-4 min-h-screen font-poppins;
+    @apply bg-light-5 text-dark-3 dark:bg-dark-1 dark:text-light-4 h-full font-poppins;
   }
 
   :root {

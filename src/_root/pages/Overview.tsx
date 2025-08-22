@@ -3,7 +3,7 @@ import React from 'react'
 
 const Overview = () => {
   return (
-    <GlobalSearch />
+    <p>Overview</p>
   )
 }
 

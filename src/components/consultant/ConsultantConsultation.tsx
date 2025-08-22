@@ -1,5 +1,7 @@
 import { Activity, AlertCircle, Calendar, CheckCircle, Clock, Edit3, ExternalLink, FileText, Heart, MessageCircle, Paperclip, Pill, Plus, Save, Send, Shield, Thermometer, User, Video, X } from 'lucide-react';
-import React, { MutableRefObject, useEffect, useRef, useState } from 'react'
+import React, { MutableRefObject, useRef, useState } from 'react'
+import TextareaAutosize from 'react-textarea-autosize'
+import ChatInputArea from '../ChatInputArea';
 
 
 interface Message {
@@ -55,7 +57,7 @@ interface ConsultationInfoProps {
     sendMessage: () => void
     addPrescription: () => void
     removePrescription: (id: number) => void
-    messagesEndRef: MutableRefObject<HTMLDivElement | null>
+    scrollToBottom: (ref: MutableRefObject<HTMLDivElement>) => void
 }
 interface DeskTopMedicalInfoProps extends MedicalInfoProps {
     setActiveTab: (value: React.SetStateAction<string>) => void
@@ -80,8 +82,9 @@ interface ChatViewProps {
     message: string,
     setMessage: (value: React.SetStateAction<string>) => void
     messages: Message[]
-    messagesEndRef: MutableRefObject<HTMLDivElement | null>
     sendMessage: () => void
+    scrollToBottom: (ref: MutableRefObject<HTMLDivElement>) => void
+    messagesEndRef: MutableRefObject<HTMLDivElement | null>
 }
 interface NoteViewProps {
     clinicalNotes: string,
@@ -94,11 +97,12 @@ const ChatView = ({
     message,
     messages,
     setMessage,
-    messagesEndRef,
-    sendMessage
+    sendMessage,
+    scrollToBottom,
+    messagesEndRef
 }: ChatViewProps) => (
-    <div className="flex-1 flex flex-col overflow-y-auto">
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+    <div className="flex flex-col overflow-y-auto border-2 h-full">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-4">
             {messages && messages.map((msg) => (
                 <div key={msg.id} className={`flex ${msg.sender === 'doctor' ? 'justify-end' : 'justify-start'}`}>
                     {msg.type === 'system' ? (
@@ -114,7 +118,7 @@ const ChatView = ({
                             ? 'bg-main text-white'
                             : 'bg-white text-gray-900 border border-gray-200'
                             }`}>
-                            <p className="text-sm">{msg.content}</p>
+                            {msg.content.split('\n').map((message) => (<p className="text-sm text-wrap">{message}</p>))}
                             <span className={`text-xs mt-1 block ${msg.sender === 'doctor' ? 'text-green-100' : 'text-gray-500'
                                 }`}>
                                 {msg.timestamp}
@@ -122,32 +126,20 @@ const ChatView = ({
                         </div>
                     )}
                 </div>
+
             ))}
+
             <div ref={messagesEndRef} />
         </div>
 
-        <div className="border-t border-gray-200 bg-white p-4 border">
-            <div className="flex items-center gap-3">
-                <button className="p-2 text-gray-400 hover:text-gray-600">
-                    <Paperclip className="w-5 h-5" />
-                </button>
-                <div className="flex-1">
-                    <input
-                        type="text"
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                        onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-                        placeholder="Message patient..."
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg   focus:border-transparent"
-                    />
-                </div>
-                <button
-                    onClick={sendMessage}
-                    className="p-2 bg-main-light text-white rounded-lg hover:bg-main"
-                >
-                    <Send className="w-5 h-5" />
-                </button>
-            </div>
+        <div className="border-t border-gray-200 bg-white p-4 border over">
+            <ChatInputArea
+                messagesEndRef={messagesEndRef}
+                scrollToBottom={scrollToBottom}
+                sendMessage={sendMessage}
+                setMessage={setMessage}
+                message={message}
+            />
         </div>
     </div>
 );
@@ -161,155 +153,155 @@ const PrescriptionView = ({
     setShowPrescriptionForm,
     showPrescriptionForm
 }: MedicalInfoProps) => (
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
-            <div className="flex items-center justify-between">
-                <h4 className="font-semibold text-gray-900">Medications</h4>
-                <button
-                    onClick={() => setShowPrescriptionForm(!showPrescriptionForm)}
-                    className="flex items-center gap-2 px-3 py-2 bg-main-light text-white text-sm rounded-lg"
-                >
-                    <Plus className="w-4 h-4" />
-                    Add Med
-                </button>
-            </div>
-
-            {showPrescriptionForm && (
-                <div className="bg-white border border-gray-200 rounded-lg p-4 space-y-3">
-                    <h5 className="font-medium text-main">Add Medication</h5>
-                    <input
-                        type="text"
-                        placeholder="Medication name"
-                        value={newMedication.name}
-                        onChange={(e) => setNewMedication({ ...newMedication, name: e.target.value })}
-                        className="w-full px-3 py-3 border border-gray-300 rounded-lg "
-                    />
-                    <div className="grid grid-cols-2 gap-3">
-                        <input
-                            type="text"
-                            placeholder="Dosage"
-                            value={newMedication.dosage}
-                            onChange={(e) => setNewMedication({ ...newMedication, dosage: e.target.value })}
-                            className="px-3 py-3 border border-gray-300 rounded-lg  "
-                        />
-                        <input
-                            type="text"
-                            placeholder="Frequency"
-                            value={newMedication.frequency}
-                            onChange={(e) => setNewMedication({ ...newMedication, frequency: e.target.value })}
-                            className="px-3 py-3 border border-gray-300 rounded-lg  "
-                        />
-                    </div>
-                    <input
-                        type="text"
-                        placeholder="Duration (e.g., 7 days)"
-                        value={newMedication.duration}
-                        onChange={(e) => setNewMedication({ ...newMedication, duration: e.target.value })}
-                        className="w-full px-3 py-3 border border-gray-300 rounded-lg  "
-                    />
-                    <div className="flex gap-3">
-                        <button
-                            onClick={addPrescription}
-                            className="flex-1 px-4 py-3 bg-main-light hover:bg-main text-white rounded-lg font-medium"
-                        >
-                            Add Medication
-                        </button>
-                        <button
-                            onClick={() => setShowPrescriptionForm(false)}
-                            className="px-4 py-3 border border-gray-300 text-gray-700 rounded-lg"
-                        >
-                            Cancel
-                        </button>
-                    </div>
-                </div>
-            )}
-
-            <div className="space-y-3">
-                {prescription.map((med) => (
-                    <div key={med.id} className="bg-white border border-gray-200 rounded-lg p-4">
-                        <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                                <div className="flex items-center gap-2 mb-2">
-                                    <Pill className="w-5 h-5 text-green-600" />
-                                    <span className="font-medium text-gray-900">{med.name}</span>
-                                </div>
-                                <p className="text-sm text-gray-600 mb-1">{med.dosage} • {med.frequency}</p>
-                                <p className="text-sm text-gray-500">Duration: {med.duration}</p>
-                            </div>
-                            <button
-                                onClick={() => removePrescription(med.id)}
-                                className="p-2 text-red-400 hover:text-red-600"
-                            >
-                                <X className="w-5 h-5" />
-                            </button>
-                        </div>
-                    </div>
-                ))}
-
-                {prescription.length === 0 && (
-                    <div className="text-center text-gray-500 py-12">
-                        <Pill className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                        <p>No medications prescribed yet</p>
-                        <p className="text-sm">Tap "Add Med" to prescribe medication</p>
-                    </div>
-                )}
-            </div>
+    <div className="flex-1 p-4 space-y-4 bg-gray-50">
+        <div className="flex items-center justify-between">
+            <h4 className="font-semibold text-gray-900">Medications</h4>
+            <button
+                onClick={() => setShowPrescriptionForm(!showPrescriptionForm)}
+                className="flex items-center gap-2 px-3 py-2 bg-main-light text-white text-sm rounded-lg"
+            >
+                <Plus className="w-4 h-4" />
+                Add Med
+            </button>
         </div>
-    );
-    const NotesView = ({
-        diagnosis,
-        setClinicalNotes,
-        setDiagnosis,
-        clinicalNotes
-    }:NoteViewProps) => (
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
-            {/* Quick Actions */}
-            <div className="grid grid-cols-2 gap-3">
-                <button className="flex items-center gap-2 px-4 py-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">
-                    <Heart className="w-5 h-5 text-red-500" />
-                    <span className="text-sm font-medium">Vitals</span>
-                </button>
-                <button className="flex items-center gap-2 px-4 py-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">
-                    <FileText className="w-5 h-5 text-blue-500" />
-                    <span className="text-sm font-medium">Templates</span>
-                </button>
-                <button className="flex items-center gap-2 px-4 py-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">
-                    <Activity className="w-5 h-5 text-green-500" />
-                    <span className="text-sm font-medium">Lab Orders</span>
-                </button>
-                <button className="flex items-center gap-2 px-4 py-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">
-                    <Calendar className="w-5 h-5 text-purple-500" />
-                    <span className="text-sm font-medium">Follow-up</span>
-                </button>
-            </div>
 
-            {/* Clinical Notes */}
-            <div className="bg-white rounded-lg border border-gray-200 p-4">
-                <div className="flex items-center justify-between mb-3">
-                    <h4 className="font-semibold text-gray-900">Clinical Notes</h4>
-                    <button className="p-1 text-gray-400">
-                        <Edit3 className="w-4 h-4" />
+        {showPrescriptionForm && (
+            <div className="bg-white border border-gray-200 rounded-lg p-4 space-y-2">
+                <h5 className="font-medium text-main">Add Medication</h5>
+                <input
+                    type="text"
+                    placeholder="Medication name"
+                    value={newMedication.name}
+                    onChange={(e) => setNewMedication({ ...newMedication, name: e.target.value })}
+                    className="w-full px-3 py-3 border border-gray-300 rounded-lg "
+                />
+                <div className="grid grid-cols-2 gap-3">
+                    <input
+                        type="text"
+                        placeholder="Dosage"
+                        value={newMedication.dosage}
+                        onChange={(e) => setNewMedication({ ...newMedication, dosage: e.target.value })}
+                        className="px-3 py-3 border border-gray-300 rounded-lg  "
+                    />
+                    <input
+                        type="text"
+                        placeholder="Frequency"
+                        value={newMedication.frequency}
+                        onChange={(e) => setNewMedication({ ...newMedication, frequency: e.target.value })}
+                        className="px-3 py-3 border border-gray-300 rounded-lg  "
+                    />
+                </div>
+                <input
+                    type="text"
+                    placeholder="Duration (e.g., 7 days)"
+                    value={newMedication.duration}
+                    onChange={(e) => setNewMedication({ ...newMedication, duration: e.target.value })}
+                    className="w-full px-3 py-3 border border-gray-300 rounded-lg  "
+                />
+                <div className="flex gap-3">
+                    <button
+                        onClick={addPrescription}
+                        className="flex-1 px-4 py-3 bg-main-light hover:bg-main text-white rounded-lg font-medium"
+                    >
+                        Add Medication
+                    </button>
+                    <button
+                        onClick={() => setShowPrescriptionForm(false)}
+                        className="px-4 py-3 border border-gray-300 text-gray-700 rounded-lg"
+                    >
+                        Cancel
                     </button>
                 </div>
-                <textarea
-                    value={clinicalNotes}
-                    onChange={(e) => setClinicalNotes(e.target.value)}
-                    className="w-full h-32 px-3 py-2 text-sm border border-gray-300 rounded resize-none "
-                    placeholder="Enter clinical observations..."
-                />
             </div>
+        )}
 
-            {/* Diagnosis */}
-            <div className="bg-white rounded-lg border border-gray-200 p-4">
-                <h4 className="font-semibold text-gray-900 mb-3">Provisional Diagnosis</h4>
-                <textarea
-                    value={diagnosis}
-                    onChange={(e) => setDiagnosis(e.target.value)}
-                    className="w-full h-24 px-3 py-2 text-sm border border-gray-300 rounded resize-none"
-                    placeholder="Enter diagnosis..."
-                />
-            </div>
+        <div className="space-y-3">
+            {prescription.map((med) => (
+                <div key={med.id} className="bg-white border border-gray-200 rounded-lg p-4">
+                    <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-2">
+                                <Pill className="w-5 h-5 text-green-600" />
+                                <span className="font-medium text-gray-900">{med.name}</span>
+                            </div>
+                            <p className="text-sm text-gray-600 mb-1">{med.dosage} • {med.frequency}</p>
+                            <p className="text-sm text-gray-500">Duration: {med.duration}</p>
+                        </div>
+                        <button
+                            onClick={() => removePrescription(med.id)}
+                            className="p-2 text-red-400 hover:text-red-600"
+                        >
+                            <X className="w-5 h-5" />
+                        </button>
+                    </div>
+                </div>
+            ))}
+
+            {prescription.length === 0 && (
+                <div className="text-center text-gray-500 py-12">
+                    <Pill className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                    <p>No medications prescribed yet</p>
+                    <p className="text-sm">Tap "Add Med" to prescribe medication</p>
+                </div>
+            )}
         </div>
-    );
+    </div>
+);
+const NotesView = ({
+    diagnosis,
+    setClinicalNotes,
+    setDiagnosis,
+    clinicalNotes
+}: NoteViewProps) => (
+    <div className="flex-1 p-4 space-y-4 bg-gray-50">
+        {/* Quick Actions */}
+        <div className="grid grid-cols-2 gap-3">
+            <button className="flex items-center gap-2 px-4 py-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">
+                <Heart className="w-5 h-5 text-red-500" />
+                <span className="text-sm font-medium">Vitals</span>
+            </button>
+            <button className="flex items-center gap-2 px-4 py-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">
+                <FileText className="w-5 h-5 text-blue-500" />
+                <span className="text-sm font-medium">Templates</span>
+            </button>
+            <button className="flex items-center gap-2 px-4 py-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">
+                <Activity className="w-5 h-5 text-green-500" />
+                <span className="text-sm font-medium">Lab Orders</span>
+            </button>
+            <button className="flex items-center gap-2 px-4 py-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">
+                <Calendar className="w-5 h-5 text-purple-500" />
+                <span className="text-sm font-medium">Follow-up</span>
+            </button>
+        </div>
+
+        {/* Clinical Notes */}
+        <div className="bg-white rounded-lg border border-gray-200 p-4">
+            <div className="flex items-center justify-between mb-3">
+                <h4 className="font-semibold text-gray-900">Clinical Notes</h4>
+                <button className="p-1 text-gray-400">
+                    <Edit3 className="w-4 h-4" />
+                </button>
+            </div>
+            <textarea
+                value={clinicalNotes}
+                onChange={(e) => setClinicalNotes(e.target.value)}
+                className="w-full h-32 px-3 py-2 text-sm border border-gray-300 rounded resize-none "
+                placeholder="Enter clinical observations..."
+            />
+        </div>
+
+        {/* Diagnosis */}
+        <div className="bg-white rounded-lg border border-gray-200 p-4">
+            <h4 className="font-semibold text-gray-900 mb-3">Provisional Diagnosis</h4>
+            <textarea
+                value={diagnosis}
+                onChange={(e) => setDiagnosis(e.target.value)}
+                className="w-full h-24 px-3 py-2 text-sm border border-gray-300 rounded resize-none"
+                placeholder="Enter diagnosis..."
+            />
+        </div>
+    </div>
+);
 
 const MobileView = (
     { message,
@@ -332,19 +324,19 @@ const MobileView = (
         patientData,
         sendMessage,
         removePrescription,
-        messagesEndRef,
+        scrollToBottom
     }: ConsultationInfoProps
 
 ) => {
 
     const [currentView, setCurrentView] = useState('chat');
-    messagesEndRef = useRef<HTMLDivElement | null>(null)
+    const messagesEndRef = useRef<HTMLDivElement | null>(null)
     const NavigationBar = () => (
-        <div className="bg-white border-t border-gray-200 px-2 py-2">
+        <div className="bg-white border-y border-gray-200 px-2 pt-2 ">
             <div className="flex justify-around">
                 <button
                     onClick={() => setCurrentView('chat')}
-                    className={`flex flex-col items-center px-3 py-2 rounded-lg ${currentView === 'chat' ? 'bg-main-light text-white' : 'text-gray-500'
+                    className={`flex flex-col items-center px-3 py-2 ${currentView === 'chat' ? 'border border-transparent border-b-2 border-b-main text-main' : 'text-gray-500'
                         }`}
                 >
                     <MessageCircle className="w-5 h-5" />
@@ -352,7 +344,7 @@ const MobileView = (
                 </button>
                 <button
                     onClick={() => setCurrentView('patient')}
-                    className={`flex flex-col items-center px-3 py-2 rounded-lg ${currentView === 'patient' ? 'bg-main-light text-white' : 'text-gray-500'
+                    className={`flex flex-col items-center px-3 py-2 ${currentView === 'patient' ? 'border border-transparent border-b-2 border-b-main text-main' : 'text-gray-500'
                         }`}
                 >
                     <User className="w-5 h-5" />
@@ -360,7 +352,7 @@ const MobileView = (
                 </button>
                 <button
                     onClick={() => setCurrentView('notes')}
-                    className={`flex flex-col items-center px-3 py-2 rounded-lg ${currentView === 'notes' ? 'bg-main-light text-white' : 'text-gray-500'
+                    className={`flex flex-col items-center px-3 py-2 ${currentView === 'notes' ? 'border border-transparent border-b-2 border-b-main text-main' : 'text-gray-500'
                         }`}
                 >
                     <FileText className="w-5 h-5" />
@@ -368,7 +360,7 @@ const MobileView = (
                 </button>
                 <button
                     onClick={() => setCurrentView('prescription')}
-                    className={`flex flex-col items-center px-5 py-2 rounded-lg ${currentView === 'prescription' ? 'bg-main-light text-white' : 'text-gray-500'
+                    className={`flex flex-col items-center px-5 py-2 ${currentView === 'prescription' ? 'border border-transparent border-b-2 border-b-main text-main' : 'text-gray-500'
                         }`}
                 >
                     <Pill className="w-5 h-5" />
@@ -376,7 +368,7 @@ const MobileView = (
                 </button>
                 <button
                     onClick={() => setCurrentView('history')}
-                    className={`flex flex-col items-center px-3 py-2 rounded-lg ${currentView === 'history' ? 'bg-main-light text-white' : 'text-gray-500'
+                    className={`flex flex-col items-center px-3 py-2 ${currentView === 'history' ? 'border border-transparent border-b-2 border-b-main text-main' : 'text-gray-500'
                         }`}
                 >
                     <Clock className="w-5 h-5" />
@@ -386,7 +378,7 @@ const MobileView = (
         </div>
     );
     const Header = () => (
-        <div className="bg-white border-b border-gray-200 p-4 sticky top-0 z-10">
+        <div className="bg-white border-b border-gray-200 p-4 sticky top-0 z-10 ">
             <div className="flex items-center gap-3">
                 <img
                     src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face"
@@ -561,18 +553,19 @@ const MobileView = (
                     messages={messages}
                     sendMessage={sendMessage}
                     setMessage={setMessage}
+                    scrollToBottom={scrollToBottom}
                 />;
             case 'patient':
                 return <PatientView />;
             case 'notes':
-                return <NotesView 
-                clinicalNotes={clinicalNotes}
-                diagnosis={diagnosis}
-                setClinicalNotes={setClinicalNotes}
-                setDiagnosis={setDiagnosis}
+                return <NotesView
+                    clinicalNotes={clinicalNotes}
+                    diagnosis={diagnosis}
+                    setClinicalNotes={setClinicalNotes}
+                    setDiagnosis={setDiagnosis}
                 />;
             case 'prescription':
-                return <PrescriptionView 
+                return <PrescriptionView
                     addPrescription={addPrescription}
                     clinicalNotes={clinicalNotes}
                     diagnosis={diagnosis}
@@ -595,6 +588,7 @@ const MobileView = (
                     messagesEndRef={messagesEndRef}
                     messages={messages}
                     sendMessage={sendMessage}
+                    scrollToBottom={scrollToBottom}
                     setMessage={setMessage} />;
         }
     };
@@ -602,18 +596,22 @@ const MobileView = (
 
 
     return (
-        <div className='max-w-md mx-auto my-1 bg-white h-[820px] flex flex-col'>
-            <Header />
-            {renderCurrentView()}
-            {currentView !== 'chat' && (
-                <div className="p-4 bg-white border-t border-gray-200">
-                    <button className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-main-light hover:bg-main text-white rounded-lg font-medium">
-                        <Save className="w-5 h-5" />
-                        Save Changes
-                    </button>
-                </div>
-            )}
+        <div className='lg:hidden h-full'>
             <NavigationBar />
+            <Header />
+            <div className='overflow-auto h-full'>
+                {renderCurrentView()}
+                
+            </div>
+            {currentView !== 'chat' && (
+                    <div className="p-4 bg-white border-t border-gray-200">
+                        <button className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-main-light hover:bg-main text-white rounded-lg font-medium">
+                            <Save className="w-5 h-5" />
+                            Save Changes
+                        </button>
+                    </div>
+                )}
+
         </div>
     )
 
@@ -624,11 +622,12 @@ const ChatSection = (
         messages,
         setMessage,
         messagesEndRef,
-        sendMessage
+        sendMessage,
+        scrollToBottom
     }: ChatViewProps
 ) => (
-    <div className="flex-1 flex flex-col bg-gray-600 overflow-y-auto">
-        <div className="flex-1 overflow-y-auto p-4 border space-y-4 max-h-[590px]">
+    <div className="flex-1 flex flex-col overflow-y-auto h-full">
+        <div className="flex-1 overflow-y-auto p-4 border space-y-4">
             {messages.map((msg) => (
                 <div key={msg.id} className={`flex ${msg.sender === 'doctor' ? 'justify-end' : msg.sender === 'patient' ? 'justify-start' : 'justify-center'}`}>
                     {msg.type === 'system' ? (
@@ -640,11 +639,11 @@ const ChatSection = (
                             <span className="text-xs mt-1 block">{msg.timestamp}</span>
                         </div>
                     ) : (
-                        <div className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${msg.sender === 'doctor'
+                        <div key={msg.id} className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${msg.sender === 'doctor'
                             ? 'bg-main text-white'
                             : 'bg-white text-gray-900 border border-gray-200'
                             }`}>
-                            <p className="text-sm">{msg.content}</p>
+                            {msg.content.split('\n').map((value) => (<p className="text-sm">{value}</p>))}
                             <span className={`text-xs mt-1 block ${msg.sender === 'doctor' ? 'text-green-100' : 'text-gray-500'
                                 }`}>
                                 {msg.timestamp}
@@ -656,48 +655,34 @@ const ChatSection = (
             <div ref={messagesEndRef} />
         </div>
 
-        <div className="border-t border-gray-200 bg-white p-4">
-            <div className="flex items-center gap-3">
-                <button className="p-2 text-gray-400 hover:text-gray-600 transition-colors">
-                    <Paperclip className="w-5 h-5" />
-                </button>
-                <div className="flex-1 relative">
-                    <input
-                        type="text"
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                        onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-                        placeholder="Send message to patient..."
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg  focus:ring-main focus:border-transparent"
-                    />
-                </div>
-                <button
-                    onClick={sendMessage}
-                    className="p-2 bg-main-light text-white rounded-lg hover:bg-main transition-colors"
-                >
-                    <Send className="w-5 h-5" />
-                </button>
-            </div>
+        <div className="border border-gray-200  p-2 h-fit ">
+            <ChatInputArea
+                message={message}
+                messagesEndRef={messagesEndRef}
+                scrollToBottom={scrollToBottom}
+                sendMessage={sendMessage}
+                setMessage={setMessage}
+            />
         </div>
     </div>
 );
-const MedicalPanel = ({ 
-    setActiveTab, 
-    activeTab, 
-    clinicalNotes, 
-    setClinicalNotes, 
-    diagnosis, 
-    newMedication, 
-    prescription, 
-    setDiagnosis, 
-    setNewMedication, 
-    setShowPrescriptionForm, 
+const MedicalPanel = ({
+    setActiveTab,
+    activeTab,
+    clinicalNotes,
+    setClinicalNotes,
+    diagnosis,
+    newMedication,
+    prescription,
+    setDiagnosis,
+    setNewMedication,
+    setShowPrescriptionForm,
     showPrescriptionForm,
     patientData,
     addPrescription,
     removePrescription
-    
-  }: DeskTopMedicalInfoProps) => (
+
+}: DeskTopMedicalInfoProps) => (
     <div className="w-96 bg-white border-l overflow-auto border-gray-200 p-4">
         {/* Tab Navigation */}
         <div className="flex border-b border-gray-200 mb-4">
@@ -967,13 +952,11 @@ const DesktopView = (
         patientData,
         sendMessage,
         removePrescription,
-        messagesEndRef
+        scrollToBottom
     }: ConsultationInfoProps
 ) => {
-    const [currentView, setCurrentView] = useState('active');
-
     const [activeTab, setActiveTab] = useState('notes');
-    messagesEndRef = useRef<HTMLDivElement | null>(null)
+    const messagesEndRef = useRef<MutableRefObject<HTMLDivElement> | null>(null)
 
     const PatientInfo = () => (
         <div className="bg-white border-b border-gray-200 p-4">
@@ -1010,10 +993,10 @@ const DesktopView = (
     );
 
     const VideoCallSection = () => (
-        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-b border-gray-200 p-4">
+        <div className="border-b border-gray-200 p-2">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                    <div className="bg-white rounded-lg p-3 shadow-sm">
+                    <div className="bg-white ring-1 ring-gray-500 rounded-lg p-3">
                         <CheckCircle className="w-6 h-6 text-main-light" />
                     </div>
                     <div>
@@ -1037,44 +1020,45 @@ const DesktopView = (
 
 
     return (
-        <div className="flex flex-col max-w-7xl mx-auto bg-white rounded-lg">
+        <div className="hidden lg:flex flex-col h-full max-w-7xl mx-auto bg-white rounded-lg">
             <PatientInfo />
 
-            <div className="flex flex-row">
+            <div className="flex flex-row h-full">
                 {/* Main Content */}
-                <div className="flex flex-col border border-1">
+                <div className="flex-1 h-full overflow-y-auto">
                     <VideoCallSection />
                     <ChatSection
                         message={message}
                         messages={messages}
                         messagesEndRef={messagesEndRef}
+                        scrollToBottom={scrollToBottom}
                         sendMessage={sendMessage}
                         setMessage={setMessage}
                     />
                 </div>
 
                 {/* Medical Panel */}
-                <MedicalPanel 
-                activeTab={activeTab}
-                addPrescription={addPrescription}
-                clinicalNotes={clinicalNotes}
-                diagnosis={diagnosis}
-                newMedication={newMedication}
-                patientData={patientData}
-                prescription={prescription}
-                removePrescription={removePrescription}
-                setActiveTab={setActiveTab}
-                setClinicalNotes={setClinicalNotes}
-                setDiagnosis={setDiagnosis}
-                setNewMedication={setNewMedication}
-                setPrescription={setPrescription}
-                setShowPrescriptionForm={setShowPrescriptionForm}
-                showPrescriptionForm={showPrescriptionForm}
+                <MedicalPanel
+                    activeTab={activeTab}
+                    addPrescription={addPrescription}
+                    clinicalNotes={clinicalNotes}
+                    diagnosis={diagnosis}
+                    newMedication={newMedication}
+                    patientData={patientData}
+                    prescription={prescription}
+                    removePrescription={removePrescription}
+                    setActiveTab={setActiveTab}
+                    setClinicalNotes={setClinicalNotes}
+                    setDiagnosis={setDiagnosis}
+                    setNewMedication={setNewMedication}
+                    setPrescription={setPrescription}
+                    setShowPrescriptionForm={setShowPrescriptionForm}
+                    showPrescriptionForm={showPrescriptionForm}
                 />
             </div>
 
             {/* Bottom Status Bar */}
-            <div className="bg-gray-50 border-t border-gray-200 px-4 py-2 flex items-center justify-between text-sm text-gray-600">
+            <div className=" border-t border-gray-200 px-4 py-2 flex items-center justify-between text-sm text-gray-600">
                 <div className="flex items-center gap-4">
                     <span>Session ID: #CS-2024-0189</span>
                     <span>•</span>
@@ -1132,7 +1116,6 @@ const ConsultantConsultation = () => {
     ]);
     const [videoStatus, setVideoStatus] = useState('connected');
     const [consultationTime, setConsultationTime] = useState('12:45');
-    const messagesEndRef = useRef<HTMLDivElement | null>(null);
     const patientData: PatientData = {
         name: 'John Smith',
         age: 45,
@@ -1149,11 +1132,11 @@ const ConsultantConsultation = () => {
         }
     };
 
-    const scrollToBottom = () => {
+    const scrollToBottom = (messagesEndRef: MutableRefObject<HTMLDivElement>) => {
         messagesEndRef.current?.scrollIntoView()
     };
 
-    useEffect(() => { scrollToBottom() }, [messages])
+
 
     const sendMessage = () => {
 
@@ -1187,57 +1170,54 @@ const ConsultantConsultation = () => {
 
 
     return (
-        <main>
-            <div className='lg:hidden h-full'>
-                <MobileView
-                    addPrescription={addPrescription}
-                    clinicalNotes={clinicalNotes}
-                    consultationTime={consultationTime}
-                    diagnosis={diagnosis}
-                    message={message ?? ''}
-                    messages={messages}
-                    newMedication={newMedication}
-                    patientData={patientData}
-                    prescription={prescription}
-                    removePrescription={removePrescription}
-                    sendMessage={sendMessage}
-                    setClinicalNotes={setClinicalNotes}
-                    setDiagnosis={setDiagnosis}
-                    setMessage={setMessage}
-                    setMessages={setMessages}
-                    setNewMedication={setNewMedication}
-                    setPrescription={setPrescription}
-                    setShowPrescriptionForm={setShowPrescriptionForm}
-                    showPrescriptionForm={showPrescriptionForm}
-                    videoStatus={videoStatus}
-                    messagesEndRef={messagesEndRef}
-                />
-            </div>
-            <div className='hidden lg:block'>
-                <DesktopView
-                    addPrescription={addPrescription}
-                    clinicalNotes={clinicalNotes}
-                    consultationTime={consultationTime}
-                    diagnosis={diagnosis}
-                    message={message ?? ''}
-                    messages={messages}
-                    newMedication={newMedication}
-                    patientData={patientData}
-                    prescription={prescription}
-                    removePrescription={removePrescription}
-                    sendMessage={sendMessage}
-                    setClinicalNotes={setClinicalNotes}
-                    setDiagnosis={setDiagnosis}
-                    setMessage={setMessage}
-                    setMessages={setMessages}
-                    setNewMedication={setNewMedication}
-                    setPrescription={setPrescription}
-                    setShowPrescriptionForm={setShowPrescriptionForm}
-                    showPrescriptionForm={showPrescriptionForm}
-                    videoStatus={videoStatus}
-                    messagesEndRef={messagesEndRef}
-                />
-            </div>
+        <main className='h-full'>
+
+            <MobileView
+                addPrescription={addPrescription}
+                clinicalNotes={clinicalNotes}
+                consultationTime={consultationTime}
+                diagnosis={diagnosis}
+                message={message ?? ''}
+                messages={messages}
+                newMedication={newMedication}
+                patientData={patientData}
+                prescription={prescription}
+                removePrescription={removePrescription}
+                sendMessage={sendMessage}
+                setClinicalNotes={setClinicalNotes}
+                setDiagnosis={setDiagnosis}
+                setMessage={setMessage}
+                setMessages={setMessages}
+                setNewMedication={setNewMedication}
+                setPrescription={setPrescription}
+                setShowPrescriptionForm={setShowPrescriptionForm}
+                showPrescriptionForm={showPrescriptionForm}
+                videoStatus={videoStatus}
+                scrollToBottom={scrollToBottom}
+            />
+            <DesktopView
+                addPrescription={addPrescription}
+                clinicalNotes={clinicalNotes}
+                consultationTime={consultationTime}
+                diagnosis={diagnosis}
+                message={message ?? ''}
+                messages={messages}
+                newMedication={newMedication}
+                patientData={patientData}
+                prescription={prescription}
+                removePrescription={removePrescription}
+                sendMessage={sendMessage}
+                setClinicalNotes={setClinicalNotes}
+                setDiagnosis={setDiagnosis}
+                setMessage={setMessage}
+                setMessages={setMessages}
+                setNewMedication={setNewMedication}
+                setPrescription={setPrescription}
+                setShowPrescriptionForm={setShowPrescriptionForm}
+                showPrescriptionForm={showPrescriptionForm}
+                videoStatus={videoStatus}
+                scrollToBottom={scrollToBottom}
+            />
 
         </main>
     )

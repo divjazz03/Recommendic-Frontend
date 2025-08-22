@@ -44,7 +44,7 @@ import { NewSchedule } from "@/components/consultant/ConsultantNewSchedule";
       queryKey: ['getCurrentUser'],
       queryFn: getCurrentUser,
       enabled: enabled,
-      staleTime: 1000 * 3600 //1 hour
+      retry: false
    })
  }
 

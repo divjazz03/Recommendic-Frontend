@@ -5,7 +5,6 @@ import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Command, CommandGroup, CommandList } from '../ui/command';
 import { useGlobalSearchContext } from '@/context/GlobalSearchContext';
 import { useDebouncedValue } from '@/hooks/useDebouncedValue';
-import SearchResults from '../SearchResult';
 import { Loader, Search } from 'lucide-react';
 import { useSearchResults } from '@/hooks/useSearchResults';
 
@@ -42,7 +41,7 @@ const GlobalSearch = () => {
                     </div>
                 </PopoverTrigger>
                 <PopoverContent
-                    className='w-96 py-1 px-1 flex flex-col' sideOffset={8}
+                    className='w-[30rem] py-1 px-1 flex flex-col' sideOffset={8}
                     onInteractOutside={(e) => {
                         if (triggerRef.current && triggerRef.current.contains(e.target as Node)) {
                             e.preventDefault();
