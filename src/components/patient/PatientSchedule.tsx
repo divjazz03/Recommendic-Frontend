@@ -104,7 +104,7 @@ export const PatientSchedule = () => {
 
   if (currentStep === 4) {
     return (
-      <div className="max-h-[800px] h-full bg-blue-50 p-4">
+      <div className="h-full bg-blue-50 p-4">
         <div className="max-w-2xl mx-auto pt-20">
           <div className="bg-white rounded-3xl shadow-2xl p-8 text-center">
             <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">

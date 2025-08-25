@@ -22,7 +22,7 @@ const renderStats = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
         <Star
             key={i}
-            className={`'w-4 h-4 ${i < Math.floor(rating) ?
+            className={`h-4 ${i < Math.floor(rating) ?
                 'fill-main text-main' : 'text-light-1'}`}
         />
     ));
@@ -64,8 +64,10 @@ const ConsultantThumbnail: React.FC<ConsultantThumbnailProps> = ({
                             <div className='flex items-center gap-2 text-sm text-dark-1'>
                                 <Stethoscope className='w-4 h-4' />
                                 <span>{specialty}</span>
-                                <span>•</span>
-                                <span>{experience} years experience</span>
+                                <span className='hidden sm:flex items-center gap-2'>
+                                    <span>•</span>
+                                    <span>{experience} years exp</span>
+                                </span>
                             </div>
                         </div>
                         <div className='text-right'>
@@ -74,12 +76,12 @@ const ConsultantThumbnail: React.FC<ConsultantThumbnailProps> = ({
                         </div>
                     </div>
                     {/* Rating */}
-                    <div className='flex items-center gap-2'>
+                    <div className='flex items-start justify-start gap-2'>
                         <div className='flex items-center gap-1'>
                             {renderStats(rating)}
                         </div>
                         <span className='text-sm font-medium text-dark-5'>{rating}</span>
-                        <span className='text-sm text-dark-1'>{reviewCount} reviews</span>
+                        <span className='text-sm text-dark-1'>{reviewCount}&nbsp;reviews</span>
                     </div>
                     {/* Location */}
                     <div className="flex items-center gap-2 mb-2 text-sm text-gray-600">
@@ -96,7 +98,7 @@ const ConsultantThumbnail: React.FC<ConsultantThumbnailProps> = ({
                     </div>
                     {/* Bottom Row */}
                     <div className="flex justify-between items-center">
-                        <div className="flex items-center gap-4">
+                        <div className="hidden sm:flex items-center gap-4">
                             <div className={`px-3 py-1 rounded-full text-xs font-medium ${getAvailabilityColor(availability)}`}>
                                 {availability}
                             </div>
@@ -108,11 +110,11 @@ const ConsultantThumbnail: React.FC<ConsultantThumbnailProps> = ({
                             )}
                         </div>
                         <div className="flex items-center gap-2">
-                            <Link to={`profile`} state={{id: id}} className="px-4 py-2 text-main border border-main rounded-lg hover:bg-light-1 transition-colors">
-                                View Profile
+                            <Link to={`profile`} state={{id: id}} className="px-2 py-2 sm:px-4 sm:py-2 text-main border border-main rounded-lg hover:bg-light-1 transition-colors">
+                                View&nbsp;Profile
                             </Link>
-                            <Link to={`/patient/schedule`} state={{id: id}} className="px-4 py-2 bg-main text-white rounded-lg hover:bg-main transition-colors flex items-center gap-2">
-                                <Calendar className="w-4 h-4" />
+                            <Link to={`/schedule`} state={{id: id}} className="px-2 py-2 sm:px-4 sm:py-2 bg-main text-white rounded-lg hover:bg-main transition-colors flex items-center gap-2">
+                                <span className='hidden sm:inline'><Calendar className="w-4 h-4" /></span>
                                 Schedule
                             </Link>
                         </div>

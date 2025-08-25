@@ -19,12 +19,19 @@
   :root {
     --radius: 0.5rem;
   }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
 
 @layer utilities {
 
   .side-bar-li {
-    @apply text-lg hover:bg-main-light hover:text-light-4  mb-3 px-2 ml-3 rounded-md py-3 focus-visible:ring-1 focus-visible:ring-offset-1 ring-offset-main;
+    @apply text-lg hover:bg-main-light hover:text-light-4 mb-3 px-2 ml-3 rounded-md py-3 focus-visible:ring-1 focus-visible:ring-offset-1 ring-offset-main;
   }
 }
 

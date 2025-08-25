@@ -105,7 +105,7 @@ const ConsultantProfile = () => {
                         <div className='flex flex-col lg-flex-row items-start lg:items-center gap-6'>
                             <div className='relative'>
                                 <InitialsOrAvartar name={consultant.name} avatarUrl={consultant?.image} width='100' height='100' />
-                                <div className={`absolute -bottom-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center ${isAvailable ? 'bg-green-500' : 'bg-gray-400'}`}>
+                                <div className={`absolute -bottom-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center ${true ? 'bg-green-500' : 'bg-gray-400'}`}>
                                     <div className='w-3 h-3 bg-white rounded-full'></div>
                                 </div>
 
@@ -175,8 +175,8 @@ const ConsultantProfile = () => {
                 </section>
 
                 {/*Tab navigation */}
-                <div className='bg-white rounded-xl shadow-lg mb-6'>
-                    <div className='flex border-b border-light-3'>
+                <div className='bg-white rounded-xl shadow-lg mb-6 '>
+                    <div className='flex justify-around border-b border-light-3'>
                         {[
                             { id: 'overview', label: 'Overview', icon: BookOpen },
                             { id: 'availability', label: 'Availability', icon: Calendar },
@@ -185,12 +185,12 @@ const ConsultantProfile = () => {
                             <button
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
-                                className={`flex items-center gap-2 px-6 py-5 font-medium transition-all duration-100 ${activeTab === tab.id
+                                className={`flex items-center gap-2 px-4 py-4 font-medium transition-all duration-100 ${activeTab === tab.id
                                     ? 'text-main  border-b-2 border-main '
                                     : 'text-dark-1 hover:text-dark-1 hover:bg-light-3'
                                     }`}
                             >
-                                <tab.icon className='w-5 h-5 ' />
+                                <tab.icon className=' h-5 w-5 ' />
                                 {tab.label}
                             </button>
                         ))}
@@ -274,7 +274,7 @@ const ConsultantProfile = () => {
                                 <div className="flex items-center justify-between">
                                     <h3 className="text-xl font-semibold text-dark-3">Patient Reviews</h3>
                                     <div className="text-right">
-                                        <div className="text-3xl font-bold text-dark-3">{consultant.rating}</div>
+                                        <div className="text-2xl font-bold text-dark-3">{consultant.rating}</div>
                                         <div className="text-sm text-dark-1">{consultant.totalReviews} reviews</div>
                                     </div>
                                 </div>

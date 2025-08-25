@@ -127,14 +127,13 @@ const ConsultantList = () => {
         , [searchValue, selectedSpecialty, selectedRating, selectedAvailability]);
 
     return (
-        <div ref={thisRef} className='max-w-4x h-full border-2 mx-auto  p-6 bg-blue-50'>
-            <header className='mb-4 px-2'>
+        <div ref={thisRef} className='max-w-4x h-full mx-auto p-4 gap-2 lg:p-6 overflow-auto flex flex-col'>
+            <header className='px-2'>
                 <h1 className='font-bold text-3xl text-dark-4'>Find Medical Consultants</h1>
                 <p className='text-dark-1'>Connect with qualified healthcare professionals</p>
             </header>
             <LocalSearch placeholder='Search by name or specialty' setSearchValue={setSearchValue} />
-            <div className='mb-4'></div>
-            <section className='mb-4 px-2'>
+            <section className='px-2'>
                 <button
                     onClick={() => setShowFilter(() => !showFilters)}
                     className='flex items-center gap-2 px-4 py-2 mb-4 rounded-sm border border-light-3 hover:bg-light-1 transition-colors'
@@ -209,11 +208,11 @@ const ConsultantList = () => {
                 )}
             </section>
 
-            <div className='mb-2 px-2'>
+            <div className='px-2'>
                 <p className='text-dark-2'>{filteredConsultants.length} results</p>
             </div>
 
-            <section className='space-y-4 overflow-y-auto h-full max-h-[560px] lg:max-h-[660px] px-2'>
+            <section className='space-y-4 overflow-y-auto h-full p-2 scrollbar-hide flex-1'>
                 {filteredConsultants.map(consultant => (
                     <ConsultantThumbnail
                         experience={consultant.experience}

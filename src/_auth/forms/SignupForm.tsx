@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button'
-import React, { FormEvent, useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import SignupSuccessModal from '@/components/SignupSuccessModal'
 import { useToast } from '@/hooks/use-toast'
 import { useCreateUserMutation } from '@/lib/react-query/generalQueriesAndMutation'
@@ -55,7 +55,7 @@ const SignupForm: React.FC = () => {
 
   async function onSubmitForConsultant(values: SignUpFormData) {
 
-    const result = await createNewUser({
+    await createNewUser({
       typeOfUser: values.typeOfUser,
       userData: {
         firstName: values.firstName,
@@ -72,7 +72,7 @@ const SignupForm: React.FC = () => {
   }
 
   async function onSubmitForPatient(values: SignUpFormData) {
-    const result = await createNewUser({
+    await createNewUser({
       typeOfUser: values.typeOfUser,
       userData: {
         firstName: values.firstName,
@@ -100,97 +100,11 @@ const SignupForm: React.FC = () => {
     }
   }
 
-  function AddressForm() {
-
-
-    const addressForm = useForm<z.infer<typeof addressFormValidation>>({
-      resolver: zodResolver(addressFormValidation),
-      defaultValues: { city: '', country: '', state: '' },
-      mode: 'onChange'
-    })
-
-    const handleAddressFormSubmit = (form: z.infer<typeof addressFormValidation>) => {
-
-      setFormData(prev => ({
-        ...prev,
-        city: form.city,
-        state: form.state,
-        country: form.country
-      }))
-      handleNextStep()
-      console.log(formData)
-    }
-
-    return (
-      <Form {...addressForm}>
-
-        <form onSubmit={addressForm.handleSubmit(handleAddressFormSubmit)}>
-          <div className="flex gap-3 flex-col">
-            <div>
-              <header className="text-xl font-semibold text-center"> Address Information</header>
-            </div>
-
-            <FormField
-              control={addressForm.control}
-              name="city"
-              render={() => (
-                <FormItem>
-                  <FormLabel>City</FormLabel>
-                  <FormControl>
-                    <Input {...addressForm.register("city")} placeholder='Ibadan' />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}>
-
-            </FormField>
-
-            <FormField
-              control={addressForm.control}
-              name="state"
-              render={() => (
-                <FormItem>
-                  <FormLabel>State</FormLabel>
-                  <FormControl>
-                    <Input {...addressForm.register("state")} placeholder='Oyo' />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}>
-
-            </FormField>
-
-
-            <FormField
-              control={addressForm.control}
-              name="country"
-              render={() => (
-                <FormItem>
-                  <FormLabel>Country</FormLabel>
-                  <FormControl>
-                    <Input {...addressForm.register("country")} placeholder='Nigeria' />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}>
-            </FormField>
-
-          </div>
-          <div className='flex justify-center flex-col mt-4 gap-2 mb-2 w-full'>
-            {step != 1 && <Button type='button' variant='secondary' className='shad-button_secondary text-dark-4' onClick={handleBackStep}>Back</Button>}
-            <Button type='submit'>
-              Next
-            </Button>
-          </div>
-        </form>
-      </Form>
-    )
-  }
   function AccountForm() {
 
     const accountForm = useForm<z.infer<typeof accountFormValidation>>({
       resolver: zodResolver(accountFormValidation),
-      defaultValues: { email: '', password: '', typeOfUser: 'Patient' },
+      defaultValues: { typeOfUser: 'Patient' },
       mode: 'onChange'
     })
 
@@ -231,7 +145,7 @@ const SignupForm: React.FC = () => {
         <form onSubmit={accountForm.handleSubmit(handleAccountFormSubmit)}>
           <div className="flex flex-col gap-3 justify-center">
             <div>
-              <header className="text-xl font-semibold text-center">Account Information</header>
+              <header className="text-xl font-semibold text-center">Account Data</header>
             </div>
 
             <FormField
@@ -295,6 +209,20 @@ const SignupForm: React.FC = () => {
               )}>
 
             </FormField>
+            <FormField
+              control={accountForm.control}
+              name="confirmPassword"
+              render={() => (
+                <FormItem>
+                  <FormLabel>Confirm Password</FormLabel>
+                  <FormControl>
+                    <Input {...accountForm.register("confirmPassword")} type='password' />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}>
+
+            </FormField>
           </div>
           <div className='flex justify-center flex-col mt-4 gap-2 mb-2 w-full'>
             {step != 1 && <Button type='button' variant='secondary' className='shad-button_secondary text-dark-4' onClick={handleBackStep}>Back</Button>}
@@ -316,17 +244,11 @@ const SignupForm: React.FC = () => {
         gender: 'Male'
       }
     })
-    interface UserFormDataType {
-      firstName: string,
-      lastName: string,
-      phoneNumber: string,
-      gender: 'Male' | 'Female'
-    }
     const handleUserFormSubmit = (form: z.infer<typeof userFormValidation>) => {
       setFormData(prev => ({
         ...prev, firstName: form.firstName,
         lastName: form.lastName,
-        phoneNumber: form.phoneNumber,
+        dateOfBirth: form.dateOfBirth,
         gender: form.gender
       }))
       handleNextStep();
@@ -338,7 +260,7 @@ const SignupForm: React.FC = () => {
         <form onSubmit={userForm.handleSubmit(handleUserFormSubmit)}>
           <div className="flex flex-col gap-3 justify-center">
             <div>
-              <header className="text-xl font-semibold text-center">Personal Information</header>
+              <header className="text-xl font-semibold text-center">Personal Data</header>
             </div>
 
             <FormField
@@ -355,7 +277,6 @@ const SignupForm: React.FC = () => {
               )}>
 
             </FormField>
-
             <FormField
               control={userForm.control}
               name="lastName"
@@ -373,31 +294,18 @@ const SignupForm: React.FC = () => {
 
             <FormField
               control={userForm.control}
-              name="phoneNumber"
+              name="dateOfBirth"
               render={() => (
                 <FormItem>
-                  <FormLabel>Phone Number</FormLabel>
+                  <FormLabel>Date of Birth</FormLabel>
                   <FormControl>
-                    <PhoneInput
-                      {...userForm.register("phoneNumber")}
-                      onChange={() => { }}
-                      defaultCountry={'ng'}
-                      className="flex flex-row h-10 border border-slate-200 rounded-md p-0"
-                      inputClassName="border w-full "
-                      countrySelectorStyleProps={{
-                        className: "bg-white",
-                        dropdownStyleProps: {
-                          className: "rounded-md"
-                        }
-
-                      }}
-                    />
+                    <Input {...userForm.register("dateOfBirth")} type='date' />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
-              )}>
+              )}
 
-            </FormField>
+            ></FormField>
 
             <FormField
               control={userForm.control}
@@ -441,16 +349,13 @@ const SignupForm: React.FC = () => {
         </header>
         <FormWrapper >
           <div className='flex flex-row justify-between w-full mb-3'>
-            <Progress className='h-2' value={step / 3 * 100} />
+            <Progress className='h-2' value={step / 2 * 100} />
           </div>
           <div className=' flex-center flex-col'>
             {step === 1 && (
               <UserForm />
             )}
             {step === 2 && (
-              <AddressForm />
-            )}
-            {step === 3 && (
               <AccountForm />
             )}
           </div>

@@ -1,9 +1,167 @@
-import { Activity, AlertCircle, Calendar, CheckCircle, Clock, Edit3, ExternalLink, FileText, Heart, MessageCircle, Paperclip, Pill, Plus, Save, Send, Shield, Thermometer, User, Video, X } from 'lucide-react';
-import React, { MutableRefObject, useRef, useState } from 'react'
+import { Activity, AlertCircle, ArrowLeft, Brain, Calendar, CheckCircle, ChevronRight, Clock, Edit3, ExternalLink, Eye, FileText, Heart, LucideProps, MessageCircle, Paperclip, Pause, Pill, Play, Plus, Save, Send, Shield, Stethoscope, Target, Thermometer, Timer, User, Users, Video, X } from 'lucide-react';
+import React, { MutableRefObject, useEffect, useRef, useState } from 'react'
 import TextareaAutosize from 'react-textarea-autosize'
 import ChatInputArea from '../ChatInputArea';
 
+const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+};
 
+const ConsultantConsultation = () => {
+    const [message, setMessage] = useState<string>();
+    const [clinicalNotes, setClinicalNotes] = useState('Patient reports chest pain for 3 days. Pain described as sharp, intermittent...')
+    const [diagnosis, setDiagnosis] = useState('');
+    const [prescription, setPrescription] = useState<Prescription[]>([]);
+    const [newMedication, setNewMedication] = useState<Medication>({ name: '', dosage: '', frequency: '', duration: '' });
+    const [showPrescriptionForm, setShowPrescriptionForm] = useState(false);
+    const [messages, setMessages] = useState<Message[]>([
+        {
+            id: 1,
+            sender: 'system',
+            content: 'Patient John Smith has joined the consultation.',
+            timestamp: '2:30 PM',
+            type: 'system'
+        },
+        {
+            id: 2,
+            sender: 'patient',
+            content: 'Hello Doctor, I\'ve been experiencing chest pain for the past few days.',
+            timestamp: '2:30 PM',
+            type: 'message'
+        },
+        {
+            id: 3,
+            sender: 'doctor',
+            content: 'Hello John! Can you describe the type of chest pain you\'re experiencing?',
+            timestamp: '2:31 PM',
+            type: 'message'
+        },
+        {
+            id: 4,
+            sender: 'patient',
+            content: 'It\'s a sharp pain that comes and goes, usually when I take deep breaths.',
+            timestamp: '2:32 PM',
+            type: 'message'
+        }
+    ]);
+    const [videoStatus, setVideoStatus] = useState('connected');
+    const [consultationTime, setConsultationTime] = useState('12:45');
+    const patientData: PatientData = {
+        name: 'John Smith',
+        age: 45,
+        gender: 'Male',
+        allergies: ['Penicillin', 'Shellfish'],
+        conditions: ['Hypertension', 'Type 2 Diabetes'],
+        lastVisit: '6 months ago',
+        insurance: 'Blue Cross Blue Shield',
+        lastRecordedVitals: {
+            bloodPressure: '140/90',
+            heartRate: '78 bpm',
+            temperature: '98.6°F',
+            weight: '185 lbs',
+            recordedDate: '6 months ago',
+            recordedBy: 'Dr. Williams'
+        },
+        connectedDevices: [
+            { type: 'Apple Watch', lastSync: '2 hours ago', heartRate: '72-85 bpm (today)' },
+            { type: 'Home BP Monitor', lastSync: '3 days ago', reading: '138/88 mmHg' }
+        ],
+        patientReported: {
+            painLevel: '6/10',
+            symptoms: ['Sharp chest pain when breathing', 'Occasional shortness of breath'],
+            duration: '3 days',
+            triggers: 'Deep breathing, movement'
+        }
+    };
+    const scrollToBottom = (messagesEndRef: MutableRefObject<HTMLDivElement>) => {
+        messagesEndRef.current?.scrollIntoView()
+    };
+    const sendMessage = () => {
+
+        if (message && message.trim()) {
+            const newMessage: Message = {
+                id: messages.length + 1,
+                sender: 'doctor',
+                content: message,
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                type: 'message'
+            };
+            setMessages([...messages, newMessage]);
+            setMessage('');
+        }
+    };
+    const addPrescription = () => {
+        if (newMedication.name && newMedication.dosage) {
+            setPrescription([...prescription, { ...newMedication, id: prescription.length + 1 }])
+            setNewMedication({ name: '', dosage: '', frequency: '', duration: '' });
+            setShowPrescriptionForm(false);
+        }
+    };
+    const removePrescription = (id: number) => {
+        setPrescription(prescription.filter(med => med.id !== id));
+    };
+
+
+
+
+
+
+
+    return (
+        <main className='h-full'>
+
+            <MobileView
+                addPrescription={addPrescription}
+                clinicalNotes={clinicalNotes}
+                consultationTime={consultationTime}
+                diagnosis={diagnosis}
+                message={message ?? ''}
+                messages={messages}
+                newMedication={newMedication}
+                patientData={patientData}
+                prescription={prescription}
+                removePrescription={removePrescription}
+                sendMessage={sendMessage}
+                setClinicalNotes={setClinicalNotes}
+                setDiagnosis={setDiagnosis}
+                setMessage={setMessage}
+                setMessages={setMessages}
+                setNewMedication={setNewMedication}
+                setPrescription={setPrescription}
+                setShowPrescriptionForm={setShowPrescriptionForm}
+                showPrescriptionForm={showPrescriptionForm}
+                videoStatus={videoStatus}
+                scrollToBottom={scrollToBottom}
+            />
+            <DesktopView
+                addPrescription={addPrescription}
+                clinicalNotes={clinicalNotes}
+                consultationTime={consultationTime}
+                diagnosis={diagnosis}
+                message={message ?? ''}
+                messages={messages}
+                newMedication={newMedication}
+                patientData={patientData}
+                prescription={prescription}
+                removePrescription={removePrescription}
+                sendMessage={sendMessage}
+                setClinicalNotes={setClinicalNotes}
+                setDiagnosis={setDiagnosis}
+                setMessage={setMessage}
+                setMessages={setMessages}
+                setNewMedication={setNewMedication}
+                setPrescription={setPrescription}
+                setShowPrescriptionForm={setShowPrescriptionForm}
+                showPrescriptionForm={showPrescriptionForm}
+                videoStatus={videoStatus}
+                scrollToBottom={scrollToBottom}
+            />
+
+        </main>
+    )
+}
 interface Message {
     id: number,
     sender: string,
@@ -20,6 +178,9 @@ interface Medication {
 interface Prescription extends Medication {
     id: number,
 }
+interface ConnectedDevice {
+    type: string, lastSync: string, heartRate?: string, reading?: string
+}
 interface PatientData {
     name: string
     age: number
@@ -28,11 +189,20 @@ interface PatientData {
     conditions: string[]
     lastVisit: string
     insurance: string
-    vitals: {
-        bloodPressure: string
-        heartRate: string
-        temperature: string
-        weight: string
+    lastRecordedVitals: {
+        bloodPressure: string,
+        heartRate: string,
+        temperature: string,
+        weight: string,
+        recordedDate: string,
+        recordedBy: string
+    },
+    connectedDevices: ConnectedDevice[],
+    patientReported: {
+        painLevel: string,
+        symptoms: string[],
+        duration: string,
+        triggers: string
     }
 
 }
@@ -92,6 +262,738 @@ interface NoteViewProps {
     diagnosis: string
     setDiagnosis: (value: React.SetStateAction<string>) => void
 }
+interface PatientViewProps {
+    patientData: PatientData
+}
+interface ExamResults {
+    'vital-signs'?: string
+    'visual-inspection'?: string
+    'movement-assessment'?: string
+    'respiratory-exam'?: string
+    'neurological'?: string
+    'pain-assessment'?: string
+
+}
+interface ExamSection {
+    id: string
+    title: string
+    icon: React.ForwardRefExoticComponent<Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>>
+    color: string
+    status: string
+}
+
+interface PatientExamInterfaceHeaderProps extends PatientExamProps {
+    setExaminationIsOpen?: (value: React.SetStateAction<boolean>) => void
+}
+
+
+interface PatientExamInterfaceOverviewProps extends PatientExamProps {
+    examSections: ExamSection[]
+}
+
+interface PatientExamProps {
+    examState: PatientExamState
+    setPatientExamState: (value: React.SetStateAction<PatientExamState>) => void
+    setExaminationIsOpen?: (value: React.SetStateAction<boolean>) => void
+}
+
+
+interface PatientExaminationInterfaceVitalSignsProps extends PatientExamProps {
+
+
+}
+interface PatientExaminationInterfaceVisualInspectionProps extends PatientExamProps {
+
+}
+interface PatientExaminationInterfaceVisualInspectionProps extends PatientExamProps {
+}
+interface PatientExaminationInterfaceMovementAssessmentProps extends PatientExamProps {
+}
+
+interface PatientExamState {
+    currentSection: string
+    examResults: ExamResults
+    activeExam: {}
+    timerRunning: boolean
+    timer: number
+    examNotes: string
+}
+
+
+const MovementAssessment = ({
+    examState, setPatientExamState
+}: PatientExamProps) => (
+    <div className="p-4 space-y-4">
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+            <h3 className="font-semibold text-green-800 mb-2">Movement & Mobility Assessment</h3>
+            <p className="text-sm text-green-700">
+                Guide the patient through basic movement tests while observing via video.
+            </p>
+        </div>
+
+        <div className="space-y-4">
+            {/* Range of Motion */}
+            <div className="bg-white border border-gray-200 rounded-lg p-4">
+                <h4 className="font-medium text-gray-900 mb-3">Range of Motion Tests</h4>
+                <div className="text-sm text-gray-700 space-y-3 mb-4">
+                    <div>
+                        <p><strong>Neck Movement:</strong></p>
+                        <p>Ask patient to: "Slowly turn your head left, then right. Now look up, then down."</p>
+                    </div>
+                    <div>
+                        <p><strong>Shoulder Movement:</strong></p>
+                        <p>Ask patient to: "Raise both arms above your head, then lower them."</p>
+                    </div>
+                </div>
+                <div className="space-y-3">
+                    <div>
+                        <label className="block text-gray-600 mb-1">Neck ROM</label>
+                        <select className="w-full px-2 py-2 border border-gray-300 rounded text-sm">
+                            <option>Full range, no pain</option>
+                            <option>Limited ROM, no pain</option>
+                            <option>Full range, with pain</option>
+                            <option>Limited ROM, with pain</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label className="block text-gray-600 mb-1">Shoulder ROM</label>
+                        <select className="w-full px-2 py-2 border border-gray-300 rounded text-sm">
+                            <option>Full range, no pain</option>
+                            <option>Limited ROM, no pain</option>
+                            <option>Full range, with pain</option>
+                            <option>Limited ROM, with pain</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            {/* Coordination Test */}
+            <div className="bg-white border border-gray-200 rounded-lg p-4">
+                <h4 className="font-medium text-gray-900 mb-3">Basic Coordination</h4>
+                <div className="text-sm text-gray-700 space-y-2 mb-4">
+                    <p><strong>Finger-to-Nose Test:</strong></p>
+                    <p>Ask patient to: "Touch your nose with your index finger, then extend your arm. Repeat 5 times with each hand."</p>
+                </div>
+                <div>
+                    <label className="block text-gray-600 mb-1">Coordination Assessment</label>
+                    <select className="w-full px-2 py-2 border border-gray-300 rounded text-sm">
+                        <option>Normal coordination</option>
+                        <option>Mild incoordination</option>
+                        <option>Significant incoordination</option>
+                        <option>Unable to perform</option>
+                    </select>
+                </div>
+            </div>
+
+            {/* Balance Assessment */}
+            <div className="bg-white border border-gray-200 rounded-lg p-4">
+                <h4 className="font-medium text-gray-900 mb-3">Static Balance (if safe)</h4>
+                <div className="text-sm text-gray-700 space-y-2 mb-4">
+                    <p><strong>Safety First:</strong> Only if patient feels stable and has support nearby</p>
+                    <p>Ask patient to: "Stand with feet together for 10 seconds. Hold onto a chair if needed."</p>
+                </div>
+                <div>
+                    <label className="block text-gray-600 mb-1">Balance Assessment</label>
+                    <select className="w-full px-2 py-2 border border-gray-300 rounded text-sm">
+                        <option>Stable balance</option>
+                        <option>Mild unsteadiness</option>
+                        <option>Significant balance issues</option>
+                        <option>Not attempted (safety)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <button
+            onClick={() => setPatientExamState({ ...examState, examResults: { ...examState.examResults, 'movement-assessment': 'completed' } })}
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-green-600 text-white rounded-lg font-medium"
+        >
+            <CheckCircle className="w-5 h-5" />
+            Complete Movement Assessment
+        </button>
+    </div>
+);
+
+const VisualInspectionExam = ({
+    examState,
+    setPatientExamState
+}: PatientExaminationInterfaceVisualInspectionProps) => (
+    <div className="p-4 space-y-4">
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <h3 className="font-semibold text-blue-800 mb-2">Visual Inspection via Video</h3>
+            <p className="text-sm text-blue-700">
+                Observe the patient through video and document your findings.
+            </p>
+        </div>
+
+        <div className="space-y-4">
+            {/* General Appearance */}
+            <div className="bg-white border border-gray-200 rounded-lg p-4">
+                <h4 className="font-medium text-gray-900 mb-3">General Appearance</h4>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <label className="block text-gray-600 mb-2">Overall Appearance</label>
+                        <div className="space-y-2">
+                            {['Well-appearing', 'Appears unwell', 'In distress', 'Comfortable'].map(option => (
+                                <label key={option} className="flex items-center gap-2">
+                                    <input type="radio" name="appearance" value={option} className="text-blue-600" />
+                                    <span>{option}</span>
+                                </label>
+                            ))}
+                        </div>
+                    </div>
+                    <div>
+                        <label className="block text-gray-600 mb-2">Level of Alertness</label>
+                        <div className="space-y-2">
+                            {['Alert and oriented', 'Drowsy', 'Confused', 'Agitated'].map(option => (
+                                <label key={option} className="flex items-center gap-2">
+                                    <input type="radio" name="alertness" value={option} className="text-blue-600" />
+                                    <span>{option}</span>
+                                </label>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Skin and Color */}
+            <div className="bg-white border border-gray-200 rounded-lg p-4">
+                <h4 className="font-medium text-gray-900 mb-3">Skin Color & Condition</h4>
+                <div className="text-sm text-gray-700 mb-3">
+                    <p><strong>Ask patient to:</strong> Show hands and face clearly to camera</p>
+                </div>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <label className="block text-gray-600 mb-2">Skin Color</label>
+                        <select className="w-full px-2 py-2 border border-gray-300 rounded">
+                            <option>Normal</option>
+                            <option>Pale</option>
+                            <option>Flushed</option>
+                            <option>Cyanotic (blue)</option>
+                            <option>Jaundiced (yellow)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label className="block text-gray-600 mb-2">Visible Lesions</label>
+                        <select className="w-full px-2 py-2 border border-gray-300 rounded">
+                            <option>None visible</option>
+                            <option>Rash present</option>
+                            <option>Lesions present</option>
+                            <option>Bruising</option>
+                        </select>
+                    </div>
+                </div>
+                <div className="mt-3">
+                    <label className="block text-gray-600 mb-1">Observations</label>
+                    <textarea className="w-full px-2 py-2 text-sm border border-gray-300 rounded resize-none h-16" placeholder="Describe any visible skin changes, lesions, or abnormalities..."></textarea>
+                </div>
+            </div>
+
+            {/* Breathing Pattern */}
+            <div className="bg-white border border-gray-200 rounded-lg p-4">
+                <h4 className="font-medium text-gray-900 mb-3">Breathing Pattern Observation</h4>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <label className="block text-gray-600 mb-2">Breathing Pattern</label>
+                        <div className="space-y-2">
+                            {['Regular, unlabored', 'Rapid (tachypnea)', 'Slow (bradypnea)', 'Labored', 'Irregular'].map(option => (
+                                <label key={option} className="flex items-center gap-2">
+                                    <input type="radio" name="breathing" value={option} className="text-blue-600" />
+                                    <span>{option}</span>
+                                </label>
+                            ))}
+                        </div>
+                    </div>
+                    <div>
+                        <label className="block text-gray-600 mb-2">Use of Accessory Muscles</label>
+                        <div className="space-y-2">
+                            {['None observed', 'Mild use', 'Significant use', 'Unable to assess'].map(option => (
+                                <label key={option} className="flex items-center gap-2">
+                                    <input type="radio" name="accessory" value={option} className="text-blue-600" />
+                                    <span>{option}</span>
+                                </label>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button
+            onClick={() => setPatientExamState({ ...examState, examResults: { ...examState.examResults, 'visual-inspection': 'completed' } })}
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 text-white rounded-lg font-medium"
+        >
+            <CheckCircle className="w-5 h-5" />
+            Complete Visual Inspection
+        </button>
+    </div>
+);
+
+const VitalSignsExam = ({ setPatientExamState, examState }: PatientExaminationInterfaceVitalSignsProps) => (
+    <div className="p-4 space-y-4">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <h3 className="font-semibold text-red-800 mb-2">Patient Instructions: Self-Check Vitals</h3>
+            <p className="text-sm text-red-700">
+                Guide the patient through these self-assessments while you observe via video.
+            </p>
+        </div>
+
+        <div className="space-y-4">
+            {/* Pulse Check */}
+            <div className="bg-white border border-gray-200 rounded-lg p-4">
+                <div className="flex items-center gap-2 mb-3">
+                    <Heart className="w-5 h-5 text-red-500" />
+                    <h4 className="font-medium text-gray-900">Pulse Check</h4>
+                </div>
+                <div className="text-sm text-gray-700 space-y-2 mb-4">
+                    <p><strong>Instructions for patient:</strong></p>
+                    <p>1. Place two fingers on your wrist below your palm</p>
+                    <p>2. Count heartbeats for 15 seconds</p>
+                    <p>3. Multiply by 4 for beats per minute</p>
+                </div>
+                <div className="grid grid-cols-3 gap-3">
+                    <div>
+                        <label className="block text-xs text-gray-600 mb-1">Patient Count (15s)</label>
+                        <input type="number" className="w-full px-2 py-1 border border-gray-300 rounded text-sm" placeholder="e.g., 18" />
+                    </div>
+                    <div>
+                        <label className="block text-xs text-gray-600 mb-1">BPM (x4)</label>
+                        <input type="number" className="w-full px-2 py-1 border border-gray-300 rounded text-sm" placeholder="72" />
+                    </div>
+                    <div>
+                        <label className="block text-xs text-gray-600 mb-1">Rhythm</label>
+                        <select className="w-full px-2 py-1 border border-gray-300 rounded text-sm">
+                            <option>Regular</option>
+                            <option>Irregular</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            {/* Breathing Assessment */}
+            <div className="bg-white border border-gray-200 rounded-lg p-4">
+                <div className="flex items-center gap-2 mb-3">
+                    <Users className="w-5 h-5 text-purple-500" />
+                    <h4 className="font-medium text-gray-900">Breathing Rate</h4>
+                </div>
+                <div className="text-sm text-gray-700 space-y-2 mb-4">
+                    <p><strong>Instructions for patient:</strong></p>
+                    <p>1. Sit comfortably and breathe normally</p>
+                    <p>2. Count each breath (in and out = 1) for 30 seconds</p>
+                    <p>3. Tell me the count</p>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                    <div>
+                        <label className="block text-xs text-gray-600 mb-1">Count (30s)</label>
+                        <input type="number" className="w-full px-2 py-1 border border-gray-300 rounded text-sm" placeholder="e.g., 9" />
+                    </div>
+                    <div>
+                        <label className="block text-xs text-gray-600 mb-1">Per Minute (x2)</label>
+                        <input type="number" className="w-full px-2 py-1 border border-gray-300 rounded text-sm" placeholder="18" />
+                    </div>
+                </div>
+            </div>
+
+            {/* Temperature */}
+            <div className="bg-white border border-gray-200 rounded-lg p-4">
+                <div className="flex items-center gap-2 mb-3">
+                    <Thermometer className="w-5 h-5 text-orange-500" />
+                    <h4 className="font-medium text-gray-900">Temperature (if available)</h4>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                    <div>
+                        <label className="block text-xs text-gray-600 mb-1">Temperature</label>
+                        <input type="number" step="0.1" className="w-full px-2 py-1 border border-gray-300 rounded text-sm" placeholder="98.6" />
+                    </div>
+                    <div>
+                        <label className="block text-xs text-gray-600 mb-1">Method</label>
+                        <select className="w-full px-2 py-1 border border-gray-300 rounded text-sm">
+                            <option>Oral</option>
+                            <option>Forehead</option>
+                            <option>Ear</option>
+                            <option>Not available</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button
+            onClick={() => setPatientExamState({ ...examState, examResults: { ...examState.examResults, 'vital-signs': 'completed' } })}
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-red-600 text-white rounded-lg font-medium"
+        >
+            <CheckCircle className="w-5 h-5" />
+            Complete Vital Signs Assessment
+        </button>
+    </div>
+);
+
+
+const ExamOverview = ({
+    examState,
+    setPatientExamState,
+    examSections
+}: PatientExamInterfaceOverviewProps) => (
+    <div className="p-4 space-y-4">
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div className="flex items-center gap-2 mb-2">
+                <Stethoscope className="w-5 h-5 text-blue-600" />
+                <h3 className="font-semibold text-blue-800">Remote Examination Guide</h3>
+            </div>
+            <p className="text-sm text-blue-700">
+                Guide the patient through self-examinations and visual assessments via video call.
+                Each section provides step-by-step instructions for the patient.
+            </p>
+        </div>
+
+        <div className="flex items-center justify-between mb-4">
+            <h3 className="font-semibold text-gray-900">Examination Sections</h3>
+            <button
+                onClick={() => { setPatientExamState({ ...examState, timer: 0, timerRunning: true }) }}
+                className="flex items-center gap-2 px-3 py-2 bg-green-600 text-white rounded-lg text-sm"
+            >
+                <Play className="w-4 h-4" />
+                Start Exam
+            </button>
+        </div>
+
+        <div className="space-y-3">
+            {examSections.map((section) => {
+                const IconComponent = section.icon;
+                return (
+                    <button
+                        key={section.id}
+                        // onClick={() => { setCurrentSection(section.id); setActiveExam(section.id); }}
+                        onClick={() => { setPatientExamState({ ...examState, currentSection: section.id, activeExam: section.id }) }}
+                        className="w-full flex items-center justify-between p-4 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                        <div className="flex items-center gap-3">
+                            <div className={`p-2 rounded-lg bg-${section.color}-100`}>
+                                <IconComponent className={`w-5 h-5 text-${section.color}-600`} />
+                            </div>
+                            <div className="text-left">
+                                <h4 className="font-medium text-gray-900">{section.title}</h4>
+                                <p className="text-sm text-gray-500">
+                                    {section.status === 'completed' ? 'Completed' : 'Not started'}
+                                </p>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            {section.status === 'completed' && (
+                                <CheckCircle className="w-5 h-5 text-green-600" />
+                            )}
+                            <ChevronRight className="w-5 h-5 text-gray-400" />
+                        </div>
+                    </button>
+                );
+            })}
+        </div>
+
+        {/* Quick Notes */}
+        <div className="bg-white border border-gray-200 rounded-lg p-4">
+            <h4 className="font-medium text-gray-900 mb-3">General Examination Notes</h4>
+            <textarea
+                value={examState.examNotes}
+                onChange={(e) => setPatientExamState({ ...examState, examNotes: e.target.value })}
+                placeholder="Overall patient presentation, cooperation level, general observations..."
+                className="w-full h-24 px-3 py-2 text-sm border border-gray-300 rounded resize-none focus:ring-2 focus:ring-blue-500"
+            />
+        </div>
+    </div>
+);
+
+const Header = ({
+    examState,
+    setPatientExamState,
+    setExaminationIsOpen
+    
+}: PatientExamInterfaceHeaderProps) =>{ 
+
+    useEffect(() => {
+    let interval = null;
+    if (examState.timerRunning) {
+      interval = setInterval(() => {
+        console.log("timer increment")
+        console.log(examState.timer)
+        setPatientExamState({...examState, timer: examState.timer ++});
+      }, 1000);
+    }
+    
+    return () => clearInterval(interval);
+  }, [examState.timerRunning]);
+    
+    return (
+    <div className="bg-white border-b border-gray-200 p-4 sticky top-0 z-0">
+        <div className="flex items-center gap-3">
+            <button
+                onClick={() => setExaminationIsOpen ? setExaminationIsOpen(false) : ''}
+                className="p-2 hover:bg-gray-100 rounded-lg"
+            >
+                <ArrowLeft className="w-5 h-5 text-gray-600" />
+            </button>
+            <div className="flex-1">
+                <h2 className="font-semibold text-gray-900">Remote Patient Examination</h2>
+                <p className="text-sm text-gray-600">John Smith • Guided Assessment</p>
+            </div>
+            <div className="flex items-center gap-2 bg-green-100 px-3 py-1 rounded-full">
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <span className="text-sm text-green-700">Video Active</span>
+            </div>
+        </div>
+
+        {examState.timerRunning && (
+            <div className="mt-3 flex items-center justify-center bg-blue-50 border border-blue-200 rounded-lg p-2">
+                <Timer className="w-4 h-4 text-blue-600 mr-2" />
+                <span className="text-sm font-mono text-blue-800">Exam Timer: {formatTime(examState.timer)}</span>
+                <button
+                    onClick={() => setPatientExamState({ ...examState, timerRunning: false })}
+                    className="ml-3 text-blue-600 hover:text-blue-800"
+                >
+                    <Pause className="w-4 h-4" />
+                </button>
+            </div>
+        )}
+    </div>
+)};
+
+const PatientExaminationInterface: React.FC<PatientExamProps> = ({
+    examState,
+    setPatientExamState,
+    setExaminationIsOpen
+}) => {
+
+    const examSections = [
+        {
+            id: 'vital-signs',
+            title: 'Vital Signs Self-Check',
+            icon: Heart,
+            color: 'red',
+            status: examState.examResults['vital-signs'] ? 'completed' : 'pending'
+        },
+        {
+            id: 'visual-inspection',
+            title: 'Visual Inspection',
+            icon: Eye,
+            color: 'blue',
+            status: examState.examResults['visual-inspection'] ? 'completed' : 'pending'
+        },
+        {
+            id: 'movement-assessment',
+            title: 'Movement Assessment',
+            icon: Activity,
+            color: 'green',
+            status: examState.examResults['movement-assessment'] ? 'completed' : 'pending'
+        },
+        {
+            id: 'respiratory-exam',
+            title: 'Breathing Assessment',
+            icon: Users,
+            color: 'purple',
+            status: examState.examResults['respiratory-exam'] ? 'completed' : 'pending'
+        },
+        {
+            id: 'neurological',
+            title: 'Basic Neurological',
+            icon: Brain,
+            color: 'indigo',
+            status: examState.examResults['neurological'] ? 'completed' : 'pending'
+        },
+        {
+            id: 'pain-assessment',
+            title: 'Pain Assessment',
+            icon: Target,
+            color: 'orange',
+            status: examState.examResults['pain-assessment'] ? 'completed' : 'pending'
+        }
+    ]
+
+    const renderCurrentSection = () => {
+        switch (examState.currentSection) {
+            case 'vital-signs':
+                return <VitalSignsExam
+                    examState={examState}
+                    setPatientExamState={setPatientExamState}
+                />;
+            case 'visual-inspection':
+                return <VisualInspectionExam
+                    examState={examState}
+                    setPatientExamState={setPatientExamState}
+                />;
+            case 'movement-assessment':
+                return <MovementAssessment
+                    examState={examState}
+                    setPatientExamState={setPatientExamState}
+                />;
+            default:
+                return <ExamOverview
+                    examState={examState}
+                    setPatientExamState={setPatientExamState}
+                    examSections={examSections}
+                />
+
+        }
+    }
+
+    return (
+        <main className='h-full'>
+            <Header setExaminationIsOpen={setExaminationIsOpen} examState={examState} setPatientExamState={setPatientExamState} />
+            <div className='flex-1 overflow-y-auto'>
+                {renderCurrentSection()}
+            </div>
+            {/* Bottom Action Bar */}
+            <div className="bg-white border-t border-gray-200 p-4 flex gap-3">
+                {examState.currentSection !== 'overview' && (
+                    <button
+                        onClick={() => setPatientExamState({...examState, currentSection: 'overview'})}
+                        className="flex-1 flex items-center justify-center gap-2 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium"
+                    >
+                        <ArrowLeft className="w-5 h-5 text-gray-600" /> Overview
+                    </button>
+                )}
+                <button className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 text-white rounded-lg font-medium">
+                    <Save className="w-5 h-5" />
+                    Save Examination
+                </button>
+            </div>
+        </main>);
+};
+
+const PatientView = ({ patientData }: PatientViewProps) => (
+    <div className="flex-1 overflow-y-auto p-4 space-y-4 rounded-lg">
+        {/* Allergies Alert */}
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <div className="flex items-center gap-2 mb-2">
+                <AlertCircle className="w-5 h-5 text-red-600" />
+                <h4 className="font-semibold text-red-800">Allergies</h4>
+            </div>
+            <div className="space-y-1">
+                {patientData.allergies.map((allergy, index) => (
+                    <div key={index} className="text-sm text-red-700">⚠️ {allergy}</div>
+                ))}
+            </div>
+        </div>
+
+        {/* Patient Reported Symptoms*/}
+        <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+            <h4 className="font-semibold text-orange-800 mb-3">Current Symptoms (Patient-Reported)</h4>
+            <div className="space-y-3">
+                <div>
+                    <p className="text-sm text-orange-700 font-medium">Pain Level:</p>
+                    <p className="text-lg font-bold text-orange-800">{patientData.patientReported.painLevel}</p>
+                </div>
+                <div>
+                    <p className="text-sm text-orange-700 font-medium">Symptoms:</p>
+                    {patientData.patientReported.symptoms.map((symptom, index) => (
+                        <p key={index} className="text-sm text-orange-800">• {symptom}</p>
+                    ))}
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                    <div>
+                        <p className="text-sm text-orange-700 font-medium">Duration:</p>
+                        <p className="text-sm text-orange-800">{patientData.patientReported.duration}</p>
+                    </div>
+                    <div>
+                        <p className="text-sm text-orange-700 font-medium">Triggers:</p>
+                        <p className="text-sm text-orange-800">{patientData.patientReported.triggers}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {/* Connected Devices Data */}
+        {patientData.connectedDevices.length > 0 && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <h4 className="font-semibold text-blue-800 mb-3">Connected Device Data</h4>
+                <div className="space-y-3">
+                    {patientData.connectedDevices.map((device, index) => (
+                        <div key={index} className="bg-white rounded p-3 border border-blue-100">
+                            <div className="flex justify-between items-start mb-1">
+                                <span className="font-medium text-blue-900">{device.type}</span>
+                                <span className="text-xs text-blue-600">{device.lastSync}</span>
+                            </div>
+                            <p className="text-sm text-blue-800">{device.heartRate || device.reading}</p>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        )}
+
+        {/* Last Recorded Vitals */}
+        <div className="bg-white rounded-lg border border-gray-200 p-4">
+            <div className="flex items-center justify-between mb-3">
+                <h4 className="font-semibold text-gray-900">Last Recorded Vitals</h4>
+                <span className="text-xs text-gray-500">{patientData.lastRecordedVitals.recordedDate}</span>
+            </div>
+            <p className="text-xs text-gray-500 mb-3">Recorded by {patientData.lastRecordedVitals.recordedBy}</p>
+            <div className="grid grid-cols-2 gap-4">
+                <div className="flex items-center gap-3">
+                    <Heart className="w-6 h-6 text-gray-400" />
+                    <div>
+                        <p className="text-sm text-gray-600">Heart Rate</p>
+                        <p className="font-semibold text-gray-700">{patientData.lastRecordedVitals.heartRate}</p>
+                    </div>
+                </div>
+                <div className="flex items-center gap-3">
+                    <Activity className="w-6 h-6 text-gray-400" />
+                    <div>
+                        <p className="text-sm text-gray-600">Blood Pressure</p>
+                        <p className="font-semibold text-gray-700">{patientData.lastRecordedVitals.bloodPressure}</p>
+                    </div>
+                </div>
+                <div className="flex items-center gap-3">
+                    <Thermometer className="w-6 h-6 text-gray-400" />
+                    <div>
+                        <p className="text-sm text-gray-600">Temperature</p>
+                        <p className="font-semibold text-gray-700">{patientData.lastRecordedVitals.temperature}</p>
+                    </div>
+                </div>
+                <div className="flex items-center gap-3">
+                    <User className="w-6 h-6 text-gray-400" />
+                    <div>
+                        <p className="text-sm text-gray-600">Weight</p>
+                        <p className="font-semibold text-gray-700">{patientData.lastRecordedVitals.weight}</p>
+                    </div>
+                </div>
+            </div>
+            <div className="mt-3 p-2 bg-gray-50 rounded text-center">
+                <p className="text-xs text-gray-600">💡 Recommend in-person visit for current vitals if needed</p>
+            </div>
+        </div>
+
+        {/* Medical Conditions */}
+        <div className="bg-white rounded-lg border border-gray-200 p-4">
+            <h4 className="font-semibold text-gray-900 mb-3">Medical Conditions</h4>
+            <div className="space-y-2">
+                {patientData.conditions.map((condition, index) => (
+                    <div key={index} className="flex items-center gap-2 p-2 bg-orange-50 rounded">
+                        <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                        <span className="text-sm text-orange-800">{condition}</span>
+                    </div>
+                ))}
+            </div>
+        </div>
+
+        {/* Patient Info */}
+        <div className="bg-white rounded-lg border border-gray-200 p-4">
+            <h4 className="font-semibold text-gray-900 mb-3">Patient Information</h4>
+            <div className="space-y-3 text-sm">
+                <div className="flex justify-between">
+                    <span className="text-gray-600">Gender:</span>
+                    <span className="font-medium">{patientData.gender}</span>
+                </div>
+                <div className="flex justify-between">
+                    <span className="text-gray-600">Last Visit:</span>
+                    <span className="font-medium">{patientData.lastVisit}</span>
+                </div>
+                <div className="flex justify-between">
+                    <span className="text-gray-600">Insurance:</span>
+                    <span className="font-medium">{patientData.insurance}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+);
+
 
 const ChatView = ({
     message,
@@ -153,7 +1055,7 @@ const PrescriptionView = ({
     setShowPrescriptionForm,
     showPrescriptionForm
 }: MedicalInfoProps) => (
-    <div className="flex-1 p-4 space-y-4 bg-gray-50">
+    <div className="flex-1 p-4 space-y-4 h-full">
         <div className="flex items-center justify-between">
             <h4 className="font-semibold text-gray-900">Medications</h4>
             <button
@@ -247,61 +1149,93 @@ const PrescriptionView = ({
         </div>
     </div>
 );
-const NotesView = ({
+const NotesView: React.FC<NoteViewProps> = ({
     diagnosis,
     setClinicalNotes,
     setDiagnosis,
     clinicalNotes
-}: NoteViewProps) => (
-    <div className="flex-1 p-4 space-y-4 bg-gray-50">
-        {/* Quick Actions */}
-        <div className="grid grid-cols-2 gap-3">
-            <button className="flex items-center gap-2 px-4 py-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">
-                <Heart className="w-5 h-5 text-red-500" />
-                <span className="text-sm font-medium">Vitals</span>
-            </button>
-            <button className="flex items-center gap-2 px-4 py-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">
-                <FileText className="w-5 h-5 text-blue-500" />
-                <span className="text-sm font-medium">Templates</span>
-            </button>
-            <button className="flex items-center gap-2 px-4 py-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">
-                <Activity className="w-5 h-5 text-green-500" />
-                <span className="text-sm font-medium">Lab Orders</span>
-            </button>
-            <button className="flex items-center gap-2 px-4 py-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">
-                <Calendar className="w-5 h-5 text-purple-500" />
-                <span className="text-sm font-medium">Follow-up</span>
-            </button>
-        </div>
+}) => {
 
-        {/* Clinical Notes */}
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
-            <div className="flex items-center justify-between mb-3">
-                <h4 className="font-semibold text-gray-900">Clinical Notes</h4>
-                <button className="p-1 text-gray-400">
-                    <Edit3 className="w-4 h-4" />
+    const [examinationIsOpen, setExaminationIsOpen] = useState(false);
+    const [templateIsOpen, setTemplateIsOpen] = useState(false);
+    const [labOrdersIsOpen, setLabOrdersIsOpen] = useState(false);
+    const [followUpIsOpen, setFollowUpIsOpen] = useState(false);
+
+    const [patientExamInterfaceState, setPatientExamInterfaceState] = useState<PatientExamState>({
+        activeExam: false,
+        currentSection: '',
+        examNotes: '',
+        examResults: {},
+        timerRunning: false,
+        timer: 0
+    })
+    
+
+
+    if (examinationIsOpen) {
+        return <PatientExaminationInterface
+            examState={patientExamInterfaceState}
+            setPatientExamState={setPatientExamInterfaceState}
+            setExaminationIsOpen = {setExaminationIsOpen}
+        />
+    }
+
+
+    return (
+        <div className="flex-1 p-4 space-y-4 w-full">
+            {/* Quick Actions */}
+            <div className="grid grid-cols-2 gap-3">
+                <button
+                    onClick={() => setExaminationIsOpen(true)}
+                    className="flex items-center gap-2 px-4 py-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">
+                    <Heart className="w-5 h-5 text-red-500" />
+                    <span className="text-sm font-medium">Examination</span>
+                </button>
+                <button className="flex items-center gap-2 px-4 py-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">
+                    <FileText className="w-5 h-5 text-blue-500" />
+                    <span className="text-sm font-medium">Templates</span>
+                </button>
+                <button className="flex items-center gap-2 px-4 py-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">
+                    <Activity className="w-5 h-5 text-green-500" />
+                    <span className="text-sm font-medium">Lab Orders</span>
+                </button>
+                <button className="flex items-center gap-2 px-4 py-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">
+                    <Calendar className="w-5 h-5 text-purple-500" />
+                    <span className="text-sm font-medium">Follow-up</span>
                 </button>
             </div>
-            <textarea
-                value={clinicalNotes}
-                onChange={(e) => setClinicalNotes(e.target.value)}
-                className="w-full h-32 px-3 py-2 text-sm border border-gray-300 rounded resize-none "
-                placeholder="Enter clinical observations..."
-            />
-        </div>
 
-        {/* Diagnosis */}
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
-            <h4 className="font-semibold text-gray-900 mb-3">Provisional Diagnosis</h4>
-            <textarea
-                value={diagnosis}
-                onChange={(e) => setDiagnosis(e.target.value)}
-                className="w-full h-24 px-3 py-2 text-sm border border-gray-300 rounded resize-none"
-                placeholder="Enter diagnosis..."
-            />
+            {/* Clinical Notes */}
+            <div className="bg-white rounded-lg border border-gray-200 p-4">
+                <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-semibold text-gray-900">Clinical Notes</h4>
+                    <button className="p-1 text-gray-400">
+                        <Edit3 className="w-4 h-4" />
+                    </button>
+                </div>
+                <textarea
+                    value={clinicalNotes}
+                    onChange={(e) => setClinicalNotes(e.target.value)}
+                    className="w-full h-32 px-3 py-2 text-sm border border-gray-300 rounded resize-none "
+                    placeholder="Enter clinical observations..."
+                />
+            </div>
+
+            {/* Diagnosis */}
+            <div className="bg-white rounded-lg border border-gray-200 p-4">
+                <h4 className="font-semibold text-gray-900 mb-3">Provisional Diagnosis</h4>
+                <textarea
+                    value={diagnosis}
+                    onChange={(e) => setDiagnosis(e.target.value)}
+                    className="w-full h-24 px-3 py-2 text-sm border border-gray-300 rounded resize-none"
+                    placeholder="Enter diagnosis..."
+                />
+            </div>
         </div>
-    </div>
-);
+    )
+};
+
+
 
 const MobileView = (
     { message,
@@ -415,89 +1349,7 @@ const MobileView = (
             </div>
         </div>
     );
-    const PatientView = () => (
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
-            {/* Allergies Alert */}
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                <div className="flex items-center gap-2 mb-2">
-                    <AlertCircle className="w-5 h-5 text-red-600" />
-                    <h4 className="font-semibold text-red-800">Allergies</h4>
-                </div>
-                <div className="space-y-1">
-                    {patientData.allergies.map((allergy, index) => (
-                        <div key={index} className="text-sm text-red-700">⚠️ {allergy}</div>
-                    ))}
-                </div>
-            </div>
 
-            {/* Vital Signs */}
-            <div className="bg-white rounded-lg border border-gray-200 p-4">
-                <h4 className="font-semibold text-gray-900 mb-3">Vital Signs</h4>
-                <div className="grid grid-cols-2 gap-4">
-                    <div className="flex items-center gap-3">
-                        <Heart className="w-6 h-6 text-red-500" />
-                        <div>
-                            <p className="text-sm text-gray-600">Heart Rate</p>
-                            <p className="font-semibold">{patientData.vitals.heartRate}</p>
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                        <Activity className="w-6 h-6 text-green-500" />
-                        <div>
-                            <p className="text-sm text-gray-600">Blood Pressure</p>
-                            <p className="font-semibold">{patientData.vitals.bloodPressure}</p>
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                        <Thermometer className="w-6 h-6 text-orange-500" />
-                        <div>
-                            <p className="text-sm text-gray-600">Temperature</p>
-                            <p className="font-semibold">{patientData.vitals.temperature}</p>
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                        <User className="w-6 h-6 text-gray-500" />
-                        <div>
-                            <p className="text-sm text-gray-600">Weight</p>
-                            <p className="font-semibold">{patientData.vitals.weight}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Medical Conditions */}
-            <div className="bg-white rounded-lg border border-gray-200 p-4">
-                <h4 className="font-semibold text-gray-900 mb-3">Medical Conditions</h4>
-                <div className="space-y-2">
-                    {patientData.conditions.map((condition, index) => (
-                        <div key={index} className="flex items-center gap-2 p-2 bg-orange-50 rounded">
-                            <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                            <span className="text-sm text-orange-800">{condition}</span>
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            {/* Patient Info */}
-            <div className="bg-white rounded-lg border border-gray-200 p-4">
-                <h4 className="font-semibold text-gray-900 mb-3">Patient Information</h4>
-                <div className="space-y-3 text-sm">
-                    <div className="flex justify-between">
-                        <span className="text-gray-600">Gender:</span>
-                        <span className="font-medium">{patientData.gender}</span>
-                    </div>
-                    <div className="flex justify-between">
-                        <span className="text-gray-600">Last Visit:</span>
-                        <span className="font-medium">{patientData.lastVisit}</span>
-                    </div>
-                    <div className="flex justify-between">
-                        <span className="text-gray-600">Insurance:</span>
-                        <span className="font-medium">{patientData.insurance}</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
     const HistoryView = () => (
         <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
             {/* Previous Consultations */}
@@ -556,7 +1408,9 @@ const MobileView = (
                     scrollToBottom={scrollToBottom}
                 />;
             case 'patient':
-                return <PatientView />;
+                return <PatientView
+                    patientData={patientData}
+                />;
             case 'notes':
                 return <NotesView
                     clinicalNotes={clinicalNotes}
@@ -601,16 +1455,16 @@ const MobileView = (
             <Header />
             <div className='overflow-auto h-full'>
                 {renderCurrentView()}
-                
+
             </div>
             {currentView !== 'chat' && (
-                    <div className="p-4 bg-white border-t border-gray-200">
-                        <button className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-main-light hover:bg-main text-white rounded-lg font-medium">
-                            <Save className="w-5 h-5" />
-                            Save Changes
-                        </button>
-                    </div>
-                )}
+                <div className="p-4 bg-white border-t border-gray-200">
+                    <button className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-main-light hover:bg-main text-white rounded-lg font-medium">
+                        <Save className="w-5 h-5" />
+                        Save Changes
+                    </button>
+                </div>
+            )}
 
         </div>
     )
@@ -639,7 +1493,7 @@ const ChatSection = (
                             <span className="text-xs mt-1 block">{msg.timestamp}</span>
                         </div>
                     ) : (
-                        <div key={msg.id} className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${msg.sender === 'doctor'
+                        <div key={msg.id} className={`relative max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${msg.sender === 'doctor'
                             ? 'bg-main text-white'
                             : 'bg-white text-gray-900 border border-gray-200'
                             }`}>
@@ -648,6 +1502,7 @@ const ChatSection = (
                                 }`}>
                                 {msg.timestamp}
                             </span>
+                            <div className={`absolute w-2 h-5 -bottom-[6px]  ${msg.sender === 'doctor'? 'right-0 rounded-l-full bg-main' : '-left-[1px] rounded-r-full bg-white border-l border-b'}`}></div>
                         </div>
                     )}
                 </div>
@@ -678,14 +1533,22 @@ const MedicalPanel = ({
     setNewMedication,
     setShowPrescriptionForm,
     showPrescriptionForm,
+    setPrescription,
     patientData,
     addPrescription,
     removePrescription
 
 }: DeskTopMedicalInfoProps) => (
-    <div className="w-96 bg-white border-l overflow-auto border-gray-200 p-4">
+    <div className="w-[27rem] bg-white border-l h-full flex flex-col border-gray-200 p-4">
         {/* Tab Navigation */}
-        <div className="flex border-b border-gray-200 mb-4">
+        <div className="flex border-b border-gray-200 mb-4 sticky">
+            <button
+                onClick={() => setActiveTab('patientInfo')}
+                className={`px-3 py-2 text-sm font-medium border-b-2 ${activeTab === 'patientInfo' ? 'border-main-light text-main-light' : 'border-transparent text-gray-500'
+                    }`}
+            >
+                Patient Info
+            </button>
             <button
                 onClick={() => setActiveTab('notes')}
                 className={`px-3 py-2 text-sm font-medium border-b-2 ${activeTab === 'notes' ? 'border-main-light text-main-light' : 'border-transparent text-gray-500'
@@ -708,197 +1571,80 @@ const MedicalPanel = ({
                 History
             </button>
         </div>
+        <div className='flex-1 overflow-auto h-full scrollbar-hide'>
+            {activeTab === 'notes' && (
+                <NotesView
+                    clinicalNotes={clinicalNotes}
+                    diagnosis={diagnosis}
+                    setClinicalNotes={setClinicalNotes}
+                    setDiagnosis={setDiagnosis}
+                />
+            )}
+            {activeTab === 'patientInfo' && (
+                <PatientView patientData={patientData} />
+            )
+            }
 
-        {activeTab === 'notes' && (
-            <div className="space-y-4">
-                <QuickActions />
+            {activeTab === 'prescription' && (
+                <PrescriptionView
+                    addPrescription={addPrescription}
+                    clinicalNotes={clinicalNotes}
+                    diagnosis={diagnosis}
+                    newMedication={newMedication}
+                    patientData={patientData}
+                    prescription={prescription}
+                    removePrescription={removePrescription}
+                    setClinicalNotes={setClinicalNotes}
+                    setDiagnosis={setDiagnosis}
+                    setNewMedication={setNewMedication}
+                    setPrescription={setPrescription}
+                    setShowPrescriptionForm={setShowPrescriptionForm}
+                    showPrescriptionForm={showPrescriptionForm}
+                />
+            )}
 
-                {/* Clinical Notes */}
-                <div className="bg-gray-50 rounded-lg p-3">
-                    <div className="flex items-center justify-between mb-2">
-                        <h5 className="text-sm font-medium text-gray-700">Clinical Notes</h5>
-                        <button className="p-1 text-gray-400 hover:text-gray-600">
-                            <Edit3 className="w-4 h-4" />
-                        </button>
-                    </div>
-                    <textarea
-                        value={clinicalNotes}
-                        onChange={(e) => setClinicalNotes(e.target.value)}
-                        className="w-full h-32 px-3 py-2 text-sm border border-gray-300 rounded resize-none  "
-                        placeholder="Enter clinical observations, symptoms, examination findings..."
-                    />
-                </div>
-
-                {/* Diagnosis */}
-                <div className="bg-gray-50 rounded-lg p-3">
-                    <h5 className="text-sm font-medium text-gray-700 mb-2">Provisional Diagnosis</h5>
-                    <textarea
-                        value={diagnosis}
-                        onChange={(e) => setDiagnosis(e.target.value)}
-                        className="w-full h-20 px-3 py-2 text-sm border border-gray-300 rounded resize-none  "
-                        placeholder="Enter provisional diagnosis..."
-                    />
-                </div>
-
-                {/* Vital Signs */}
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                    <h5 className="text-sm font-medium text-blue-700 mb-2">Current Vitals</h5>
-                    <div className="grid grid-cols-2 gap-2 text-sm">
-                        <div className="flex items-center gap-2">
-                            <Heart className="w-4 h-4 text-red-500" />
-                            <span>{patientData.vitals.heartRate}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <Activity className="w-4 h-4 text-green-500" />
-                            <span>{patientData.vitals.bloodPressure}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <Thermometer className="w-4 h-4 text-orange-500" />
-                            <span>{patientData.vitals.temperature}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <User className="w-4 h-4 text-gray-500" />
-                            <span>{patientData.vitals.weight}</span>
+            {activeTab === 'history' && (
+                <div className="space-y-4">
+                    {/* Medical Conditions */}
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                        <h5 className="text-sm font-medium text-red-700 mb-2">Medical Conditions</h5>
+                        <div className="space-y-1">
+                            {patientData.conditions.map((condition, index) => (
+                                <div key={index} className="text-sm text-red-600">• {condition}</div>
+                            ))}
                         </div>
                     </div>
-                </div>
-            </div>
-        )}
 
-        {activeTab === 'prescription' && (
-            <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                    <h5 className="text-sm font-medium text-gray-700">Medications</h5>
-                    <button
-                        onClick={() => setShowPrescriptionForm(!showPrescriptionForm)}
-                        className="flex items-center gap-1 px-2 py-1 bg-main-light text-white text-xs rounded hover:bg-main-light"
-                    >
-                        <Plus className="w-3 h-3" />
-                        Add Med
-                    </button>
-                </div>
-
-                {showPrescriptionForm && (
-                    <div className=" bg-blue-50 rounded-lg p-3 space-y-3">
-                        <input
-                            type="text"
-                            placeholder="Medication name"
-                            value={newMedication.name}
-                            onChange={(e) => setNewMedication({ ...newMedication, name: e.target.value })}
-                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded  focus:ring-main"
-                        />
-                        <div className="grid grid-cols-2 gap-2">
-                            <input
-                                type="text"
-                                placeholder="Dosage"
-                                value={newMedication.dosage}
-                                onChange={(e) => setNewMedication({ ...newMedication, dosage: e.target.value })}
-                                className="px-3 py-2 text-sm border border-gray-300 rounded  focus:ring-main"
-                            />
-                            <input
-                                type="text"
-                                placeholder="Frequency"
-                                value={newMedication.frequency}
-                                onChange={(e) => setNewMedication({ ...newMedication, frequency: e.target.value })}
-                                className="px-3 py-2 text-sm border border-gray-300 rounded  focus:ring-main"
-                            />
-                        </div>
-                        <input
-                            type="text"
-                            placeholder="Duration (e.g., 7 days)"
-                            value={newMedication.duration}
-                            onChange={(e) => setNewMedication({ ...newMedication, duration: e.target.value })}
-                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded  focus:ring-main"
-                        />
-                        <div className="flex gap-2">
-                            <button
-                                onClick={addPrescription}
-                                className="flex-1 px-3 py-2 bg-main-light text-white text-sm rounded hover:bg-main"
-                            >
-                                Add
-                            </button>
-                            <button
-                                onClick={() => setShowPrescriptionForm(false)}
-                                className="px-3 py-2 border border-gray-300 text-gray-700 text-sm rounded hover:bg-blue-50"
-                            >
-                                Cancel
-                            </button>
+                    {/* Allergies */}
+                    <div className="bg-orange-50 border border-orange-200 rounded-lg p-3">
+                        <h5 className="text-sm font-medium text-orange-700 mb-2">Allergies</h5>
+                        <div className="space-y-1">
+                            {patientData.allergies.map((allergy, index) => (
+                                <div key={index} className="text-sm text-orange-600">⚠️ {allergy}</div>
+                            ))}
                         </div>
                     </div>
-                )}
 
-                <div className="space-y-2">
-                    {prescription.map((med) => (
-                        <div key={med.id} className="bg-white border border-gray-200 rounded-lg p-3">
-                            <div className="flex items-start justify-between">
-                                <div className="flex-1">
-                                    <div className="flex items-center gap-2 mb-1">
-                                        <Pill className="w-4 h-4 text-green-600" />
-                                        <span className="font-medium text-gray-900 text-sm">{med.name}</span>
-                                    </div>
-                                    <p className="text-xs text-gray-600">{med.dosage} • {med.frequency}</p>
-                                    <p className="text-xs text-gray-500">Duration: {med.duration}</p>
-                                </div>
-                                <button
-                                    onClick={() => removePrescription(med.id)}
-                                    className="p-1 text-red-400 hover:text-red-600"
-                                >
-                                    <X className="w-4 h-4" />
-                                </button>
+                    {/* Previous Consultations */}
+                    <div className="bg-gray-50 rounded-lg p-3">
+                        <h5 className="text-sm font-medium text-gray-700 mb-2">Recent Consultations</h5>
+                        <div className="space-y-2 text-sm text-gray-600">
+                            <div className="border-l-2 border-green-200 pl-3">
+                                <p className="font-medium">6 months ago</p>
+                                <p>Annual check-up • Dr. Williams</p>
+                                <p className="text-xs">BP slightly elevated, advised lifestyle changes</p>
+                            </div>
+                            <div className="border-l-2 border-blue-200 pl-3">
+                                <p className="font-medium">1 year ago</p>
+                                <p>Diabetes follow-up • Dr. Chen</p>
+                                <p className="text-xs">HbA1c: 7.2%, medication adjusted</p>
                             </div>
                         </div>
-                    ))}
-
-                    {prescription.length === 0 && (
-                        <div className="text-center text-gray-500 text-sm py-8">
-                            No medications prescribed yet
-                        </div>
-                    )}
-                </div>
-            </div>
-        )}
-
-        {activeTab === 'history' && (
-            <div className="space-y-4">
-                {/* Medical Conditions */}
-                <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-                    <h5 className="text-sm font-medium text-red-700 mb-2">Medical Conditions</h5>
-                    <div className="space-y-1">
-                        {patientData.conditions.map((condition, index) => (
-                            <div key={index} className="text-sm text-red-600">• {condition}</div>
-                        ))}
                     </div>
                 </div>
+            )}
 
-                {/* Allergies */}
-                <div className="bg-orange-50 border border-orange-200 rounded-lg p-3">
-                    <h5 className="text-sm font-medium text-orange-700 mb-2">Allergies</h5>
-                    <div className="space-y-1">
-                        {patientData.allergies.map((allergy, index) => (
-                            <div key={index} className="text-sm text-orange-600">⚠️ {allergy}</div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Previous Consultations */}
-                <div className="bg-gray-50 rounded-lg p-3">
-                    <h5 className="text-sm font-medium text-gray-700 mb-2">Recent Consultations</h5>
-                    <div className="space-y-2 text-sm text-gray-600">
-                        <div className="border-l-2 border-green-200 pl-3">
-                            <p className="font-medium">6 months ago</p>
-                            <p>Annual check-up • Dr. Williams</p>
-                            <p className="text-xs">BP slightly elevated, advised lifestyle changes</p>
-                        </div>
-                        <div className="border-l-2 border-blue-200 pl-3">
-                            <p className="font-medium">1 year ago</p>
-                            <p>Diabetes follow-up • Dr. Chen</p>
-                            <p className="text-xs">HbA1c: 7.2%, medication adjusted</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        )}
-
+        </div>
         {/* Save Button */}
         <div className="mt-6 pt-4 border-t border-gray-200">
             <button className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-main-light text-white rounded-lg hover:bg-main transition-colors">
@@ -1005,8 +1751,8 @@ const DesktopView = (
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
-                    <button className="px-3 py-2 border text-xs border-main text-main rounded-lg hover:bg-blue-100 transition-colors flex items-center gap-2">
-                        <ExternalLink className="w-4 h-4" />
+                    <button className="px-3 py-2 border text-xs border-main text-main rounded-lg hover:bg-blue-100 transition-colors flex items-center gap-1">
+                        <ExternalLink className="w-5 h-5" />
                         Return to Video
                     </button>
                     <button className="px-3 py-2 text-xs bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
@@ -1023,18 +1769,20 @@ const DesktopView = (
         <div className="hidden lg:flex flex-col h-full max-w-7xl mx-auto bg-white rounded-lg">
             <PatientInfo />
 
-            <div className="flex flex-row h-full">
+            <div className="flex flex-row h-full overflow-y-auto">
                 {/* Main Content */}
-                <div className="flex-1 h-full overflow-y-auto">
+                <div className="flex-1 flex flex-col h-full">
                     <VideoCallSection />
-                    <ChatSection
-                        message={message}
-                        messages={messages}
-                        messagesEndRef={messagesEndRef}
-                        scrollToBottom={scrollToBottom}
-                        sendMessage={sendMessage}
-                        setMessage={setMessage}
-                    />
+                    <div className='flex-1 overflow-auto'>
+                        <ChatSection
+                            message={message}
+                            messages={messages}
+                            messagesEndRef={messagesEndRef}
+                            scrollToBottom={scrollToBottom}
+                            sendMessage={sendMessage}
+                            setMessage={setMessage}
+                        />
+                    </div>
                 </div>
 
                 {/* Medical Panel */}
@@ -1072,155 +1820,6 @@ const DesktopView = (
         </div>
     )
 
-}
-
-
-
-
-const ConsultantConsultation = () => {
-    const [message, setMessage] = useState<string>();
-    const [clinicalNotes, setClinicalNotes] = useState('Patient reports chest pain for 3 days. Pain described as sharp, intermittent...')
-    const [diagnosis, setDiagnosis] = useState('');
-    const [prescription, setPrescription] = useState<Prescription[]>([]);
-    const [newMedication, setNewMedication] = useState<Medication>({ name: '', dosage: '', frequency: '', duration: '' });
-    const [showPrescriptionForm, setShowPrescriptionForm] = useState(false);
-    const [messages, setMessages] = useState<Message[]>([
-        {
-            id: 1,
-            sender: 'system',
-            content: 'Patient John Smith has joined the consultation.',
-            timestamp: '2:30 PM',
-            type: 'system'
-        },
-        {
-            id: 2,
-            sender: 'patient',
-            content: 'Hello Doctor, I\'ve been experiencing chest pain for the past few days.',
-            timestamp: '2:30 PM',
-            type: 'message'
-        },
-        {
-            id: 3,
-            sender: 'doctor',
-            content: 'Hello John! Can you describe the type of chest pain you\'re experiencing?',
-            timestamp: '2:31 PM',
-            type: 'message'
-        },
-        {
-            id: 4,
-            sender: 'patient',
-            content: 'It\'s a sharp pain that comes and goes, usually when I take deep breaths.',
-            timestamp: '2:32 PM',
-            type: 'message'
-        }
-    ]);
-    const [videoStatus, setVideoStatus] = useState('connected');
-    const [consultationTime, setConsultationTime] = useState('12:45');
-    const patientData: PatientData = {
-        name: 'John Smith',
-        age: 45,
-        gender: 'Male',
-        allergies: ['Penicillin', 'Shellfish'],
-        conditions: ['Hypertension', 'Type 2 Diabetes'],
-        lastVisit: '6 months ago',
-        insurance: 'Blue Cross Blue Shield',
-        vitals: {
-            bloodPressure: '140/90',
-            heartRate: '78 bpm',
-            temperature: '98.6°F',
-            weight: '185 lbs'
-        }
-    };
-
-    const scrollToBottom = (messagesEndRef: MutableRefObject<HTMLDivElement>) => {
-        messagesEndRef.current?.scrollIntoView()
-    };
-
-
-
-    const sendMessage = () => {
-
-        if (message && message.trim()) {
-            const newMessage: Message = {
-                id: messages.length + 1,
-                sender: 'doctor',
-                content: message,
-                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                type: 'message'
-            };
-            setMessages([...messages, newMessage]);
-            setMessage('');
-        }
-    };
-
-    const addPrescription = () => {
-        if (newMedication.name && newMedication.dosage) {
-            setPrescription([...prescription, { ...newMedication, id: prescription.length + 1 }])
-            setNewMedication({ name: '', dosage: '', frequency: '', duration: '' });
-            setShowPrescriptionForm(false);
-        }
-    };
-
-    const removePrescription = (id: number) => {
-        setPrescription(prescription.filter(med => med.id !== id));
-    }
-
-
-
-
-
-    return (
-        <main className='h-full'>
-
-            <MobileView
-                addPrescription={addPrescription}
-                clinicalNotes={clinicalNotes}
-                consultationTime={consultationTime}
-                diagnosis={diagnosis}
-                message={message ?? ''}
-                messages={messages}
-                newMedication={newMedication}
-                patientData={patientData}
-                prescription={prescription}
-                removePrescription={removePrescription}
-                sendMessage={sendMessage}
-                setClinicalNotes={setClinicalNotes}
-                setDiagnosis={setDiagnosis}
-                setMessage={setMessage}
-                setMessages={setMessages}
-                setNewMedication={setNewMedication}
-                setPrescription={setPrescription}
-                setShowPrescriptionForm={setShowPrescriptionForm}
-                showPrescriptionForm={showPrescriptionForm}
-                videoStatus={videoStatus}
-                scrollToBottom={scrollToBottom}
-            />
-            <DesktopView
-                addPrescription={addPrescription}
-                clinicalNotes={clinicalNotes}
-                consultationTime={consultationTime}
-                diagnosis={diagnosis}
-                message={message ?? ''}
-                messages={messages}
-                newMedication={newMedication}
-                patientData={patientData}
-                prescription={prescription}
-                removePrescription={removePrescription}
-                sendMessage={sendMessage}
-                setClinicalNotes={setClinicalNotes}
-                setDiagnosis={setDiagnosis}
-                setMessage={setMessage}
-                setMessages={setMessages}
-                setNewMedication={setNewMedication}
-                setPrescription={setPrescription}
-                setShowPrescriptionForm={setShowPrescriptionForm}
-                showPrescriptionForm={showPrescriptionForm}
-                videoStatus={videoStatus}
-                scrollToBottom={scrollToBottom}
-            />
-
-        </main>
-    )
 }
 
 export default ConsultantConsultation

@@ -5,7 +5,7 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 export interface AuthContextState {
-    userContext?: AuthUserContext;
+    userContext: AuthUserContext;
     profileData?: ConsultantProfile | PatientProfile
     isAuthenticated: boolean;
     setUserInContext: React.Dispatch<React.SetStateAction<AuthUserContext>>;

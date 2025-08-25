@@ -53,8 +53,8 @@ const App = () => {
             <Route path='profile' element={<ConsultantScreen />} />
           </Route>
           <Route path='/schedule' element={<Schedule />} >
-            {userContext.role === 'ROLE_PATIENT'
-              ? <Route element={<PatientSchedule />} />
+            {true
+              ? <Route index element={<PatientSchedule />} />
               : <Route element={<ConsultantSchedule />}>
                 <Route index element={<ConsultantScheduleDisplay />} />
                 <Route path='new' element={<ConsultantNewSchedule />} />

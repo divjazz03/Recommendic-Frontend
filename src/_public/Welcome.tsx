@@ -15,13 +15,9 @@ const Welcome = () => {
           <div className='flex flex-col justify-center gap-3 items-center'>
             <img src='/assets/svg/logo-no-background.svg' className='object-cover min-h-52' />
             <header className='text-5xl font-bold text-main font-berkshire'>Recommendic</header>
-            <p className='tracking-wider text-sm text-dark-5'>Bridging the Gap</p>
+            <p className='tracking-wider text-sm text-dark-1'>Bridging the Gap</p>
           </div>
           <div className='flex flex-col px-4 gap-2 justify-center items-center'>
-            <p className='text-sm text-dark-1 font-thin tracking-wide text-pretty text-center mb-5' >
-              This app bridges the gap between Medical Practitioners and Patients
-              making interaction a walk in the park
-            </p>
             <Button className='shad-button_primary' onClick={handleSignUpRedirect} type='button'>Sign Up</Button>
             <Button className='shad-button_secondary' onClick={handleLoginRedirect} type='button'>Log In</Button>
           </div>

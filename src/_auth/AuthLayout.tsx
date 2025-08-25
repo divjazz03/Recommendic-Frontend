@@ -14,9 +14,9 @@ const AuthLayout = () => {
 
           (
             <>
-              <div className='flex flex-row'>
-                <div className='flex flex-col gap-4 w-full h-screen'>
-                  <header className='py-4 w-full flex flex-row pl-3 gap-3 shadow-sm shadow-light-1'>
+              <div className='flex flex-row h-full'>
+                <div className='flex flex-col gap-4 w-full h-full'>
+                  <header className='py-4 w-full flex flex-row pl-3 gap-3'>
                     <div className='flex justify-start gap-2'>
                       <img src='/assets/svg/logo-no-background.svg' className='max-w-10' />
                       <p className='font-berkshire text-main font-bold text-4xl'>Recommendic</p>
@@ -30,7 +30,7 @@ const AuthLayout = () => {
                 </div>
                 <img src='/assets/images/loginSmall.jpg'
                   alt='logo'
-                  className='hidden xl:block h-screen w-1/2 object-cover bg-no-repeat' />
+                  className='hidden xl:block h-full w-1/2 rounded-tl-[30rem] rounded-bl-[30rem] bg-right-top bg-no-repeat opacity-95' />
               </div>
             </>
           )
