@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { LucideProps, User2 } from 'lucide-react'
+import { HamIcon, LucideProps, Menu, User2, X } from 'lucide-react'
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import InitialsOrAvartar from './shared/InitialsOrAvartar'
@@ -18,8 +18,8 @@ interface SideBarProps {
   title?: string
   specialization?: string
   onClose?: () => void
+  setAsideHidden?: (value: React.SetStateAction<boolean>) => void
   isHidden?: boolean
-  sideBarRef?: React.RefObject<HTMLElement>
   userContext?: AuthUserContext
 }
 const SideBar: React.FC<SideBarProps> = ({
@@ -28,23 +28,22 @@ const SideBar: React.FC<SideBarProps> = ({
   title,
   specialization,
   onClose,
-  isHidden = false,
-  sideBarRef,
+  isHidden,
+  setAsideHidden,
   userContext
 }) => {
   const location = useLocation();
   return (
     <nav
-      ref={sideBarRef}
-      className={clsx('border border-pink-800 bg-white overflow-auto flex flex-col pr-3',
-        'hidden lg:flex', 'lg:min-w-[320px] justify-between h-full')}
+      className={clsx('border bg-white overflow-auto flex flex-col pr-3',
+        'justify-between h-full')}
     >
       <div className='flex flex-col gap-6'>
-        <header className='py-4 items-center pl-3 gap-3'>
-          <div className='flex justify-start gap-2'>
+        <header className='py-4 items-center pl-4 gap-3'>
+          <div className='flex justify-between gap-3'>
             {/* <img src='/assets/svg/logo-no-background.svg' className='max-w-[32px]' /> */}
             <Logo className='w-8 h-8' />
-            <p className='font-berkshire text-main font-bold text-3xl'>Recommendic</p>
+            <X className='w-8 h-8' onClick={() => setAsideHidden(true)}/>
           </div>
 
         </header>

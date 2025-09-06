@@ -4,7 +4,7 @@ import SideBar from '@/components/SideBar';
 import Logo from '@/components/svg/Logo';
 import { useUserContext } from '@/context/AuthContext';
 import clsx from 'clsx';
-import { Bell, Calendar1Icon, CalendarClock, ChartLine, Loader, Settings2, User2 } from 'lucide-react';
+import { Bell, Calendar1Icon, CalendarClock, ChartLine, Loader, Menu, Settings2, User2 } from 'lucide-react';
 import React, { MutableRefObject, useEffect, useRef, useState } from 'react'
 import { Link, Outlet, useLocation } from 'react-router-dom';
 
@@ -53,7 +53,7 @@ const mobileNavLinks = {
 const RootLayout = () => {
 	const [asideHidden, setAsideHidden] = useState(true);
 	const location = useLocation();
-	const asideRef: MutableRefObject<HTMLElement | null> = useRef(null);
+	const asideRef: MutableRefObject<HTMLDivElement | null> = useRef(null);
 	const { userContext: auth, profileData, isLoading } = useUserContext();
 
 	useEffect(() => {
@@ -80,17 +80,23 @@ const RootLayout = () => {
 			<main className='bg-light-4 min-w-[320px] w-full h-full'>
 				<div className='lg:flex lg:flex-row  h-full'>
 
-					{/* Desktop Sidebar */}
-					<SideBar
-						navLinks={navLinkObject}
-						name='Maduka Divine'
-						title='Dr. Maduka'
-						specialization='Veterinary'
-						userContext={auth}
-					/>
+
+
 
 					{/* Main content */}
-					<section className='w-full h-full flex-1 flex flex-col '>
+					<section className='relative w-full h-full flex-1 flex flex-col '>
+						<div ref={asideRef} className={`absolute transition-all duration-200 h-full w-[20em] top-0 z-50 ${asideHidden ?'-left-[20em]':'left-0'}` }>
+							<SideBar
+								navLinks={navLinkObject}
+								name='Maduka Divine'
+								title='Dr. Maduka'
+								specialization='Veterinary'
+								userContext={auth}
+								isHidden={asideHidden}
+								setAsideHidden={setAsideHidden}
+							/>
+						</div>
+
 						{/* Mobile Header */}
 						<header className='lg:hidden bg-white'>
 							<div className='flex flex-row h-20 items-center justify-between w-full border gap-2 pt-4 pl-3'>
@@ -110,10 +116,19 @@ const RootLayout = () => {
 
 							</div>
 						</header>
+						{/* Laptop header */}
+						<header className='hidden lg:flex bg-white w-full border-b py-2 px-2'>
+							<div className='flex justify-start gap-3'>
+								{/* <img src='/assets/svg/logo-no-background.svg' className='max-w-[32px]' /> */}
+								<Menu className='w-8 h-8' onClick={() => setAsideHidden(false)}/>
+								<Logo className='w-8 h-8' />
+								<p className='font-berkshire text-main font-bold text-3xl'>Recommendic</p>
+							</div>
+						</header>
 						<div className='flex-1 h-full border-gray-950 overflow-auto'>
 							<Outlet />
 						</div>
-						<div className='lg:hidden h-16 bg-white shadow-lg'>
+						<div className='lg:hidden h-20 flex flex-col justify-center bg-white shadow-lg'>
 							<MobileNavBar />
 						</div>
 					</section>

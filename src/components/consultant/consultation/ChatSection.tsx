@@ -14,7 +14,7 @@ const ChatSection = (
     }: ChatViewProps
 ) => (
     <div className="flex-1 flex flex-col overflow-y-auto h-full">
-        <div className="flex-1 overflow-y-auto p-4 border space-y-4">
+        <div className="flex-1 overflow-y-auto p-4 space-y-4">
             {messages.map((msg) => (
                 <div key={msg.id} className={`flex ${msg.sender === 'doctor' ? 'justify-end' : msg.sender === 'patient' ? 'justify-start' : 'justify-center'}`}>
                     {msg.type === 'system' ? (

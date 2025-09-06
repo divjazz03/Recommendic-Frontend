@@ -36,10 +36,9 @@ const MobileNavBar = () => {
           <li key={index}>
             <Link to={nav.to}>
               <div
-                className={clsx(
-                  'flex flex-col py-1 px-2 gap-2 justify-center items-center text-gray-700',
-                  location.pathname.startsWith(nav.to) && 'text-black '
-                )}
+                className={`
+                  flex flex-col py-1 px-2 gap-2 justify-center items-center ${location.pathname.startsWith(nav.to)? 'text-dark-3': 'text-gray-700'} `
+                }
               >
                 <nav.icon className={clsx('w-6 h-6')}/>
                 <p className='text-sm font-semibold'>{nav.description}</p>

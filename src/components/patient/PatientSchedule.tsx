@@ -18,7 +18,7 @@ const formatDate = (date: Date): string => {
 
 export const PatientSchedule = () => {
   const location = useLocation();
-  const consultantId: number = location.state.id;
+  //const consultantId: number = location.state.id;
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedTime, setSelectedTime] = useState(null);
   const [consultationType, setConsultationType] = useState<string>('video');
@@ -104,7 +104,7 @@ export const PatientSchedule = () => {
 
   if (currentStep === 4) {
     return (
-      <div className="h-full bg-blue-50 p-4">
+      <div className="h-full bg-gray-50 p-4">
         <div className="max-w-2xl mx-auto pt-20">
           <div className="bg-white rounded-3xl shadow-2xl p-8 text-center">
             <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -149,7 +149,7 @@ export const PatientSchedule = () => {
 
   if (currentStep === 3) {
     return (
-      <div className='max-h-[800px] h-full bg-blue-50 p-4'>
+      <div className='max-h-[800px] h-full bg-gray-50 p-4'>
         <div className="max-w-2xl mx-auto pt-20">
           <div className="bg-white rounded-3xl shadow-2xl p-8 text-center">
             <div className="animate-spin w-12 h-12 border-4 border-main-light border-t-transparent rounded-full mx-auto mb-6"></div>
@@ -163,10 +163,10 @@ export const PatientSchedule = () => {
 
 
   return (
-    <section className='bg-gradient-to-br from-blue-50 h-full p-4 '>
-      <div className='max-w-3xl mx-auto max-h-[800px] overflow-auto scroll-smooth [&::-webkit-scrollbar]:hidden [scrollbar-width:none] [-ms-overflow-style:none]'>
+    <section className='bg-gray-50 h-full p-4 '>
+      <div className='flex flex-col h-full max-w-3xl mx-auto overflow-auto scroll-smooth [&::-webkit-scrollbar]:hidden [scrollbar-width:none] [-ms-overflow-style:none]'>
 
-        <header className='sticky flex items-center gap-4 mb-4'>
+        <header className='flex items-center gap-4 mb-4'>
           <button
             onClick={() => window.history.back()}
             className='p-2 hover:bg-white rounded-xl transition-colors duration-100'
@@ -179,7 +179,7 @@ export const PatientSchedule = () => {
           </div>
         </header>
 
-        <section className='bg-white rounded-2xl shadow-lg p-6 mb-6'>
+        <section className=' bg-white rounded-2xl shadow-lg p-6 mb-6'>
           <div className='flex items-center gap-4'>
             <InitialsOrAvartar name={ConsultantScheduleData.name} avatarUrl={ConsultantScheduleData.image} />
             <div className='flex-1'>

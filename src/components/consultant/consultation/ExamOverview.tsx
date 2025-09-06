@@ -101,7 +101,7 @@ const ExamOverview = () => {
                         <button
                             key={section.id}
                             // onClick={() => { setCurrentSection(section.id); setActiveExam(section.id); }}
-                            onClick={() => { setPatientExamState({ currentSection: section.id})}}
+                            onClick={() => { setPatientExamState({ currentSection: section.id, activeExam: section.id})}}
                             className="w-full flex items-center justify-between p-4 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                         >
                             <div className="flex items-center gap-3">

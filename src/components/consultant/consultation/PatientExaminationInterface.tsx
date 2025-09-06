@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Header from './Header';
-import { ArrowLeft, Save } from 'lucide-react';
+import { ArrowLeft, Check, Save } from 'lucide-react';
 import VitalSignsExam from './VitalSignsExam';
 import VisualInspectionExam from './VisualInspectionExam';
 import MovementAssessment from './MovementAssessment';
@@ -10,7 +10,9 @@ import { useShallow } from 'zustand/react/shallow';
 
 const PatientExaminationInterface = () => {
 
-    const {currentSection, setPatientExamState} = usePatientExamStore(
+    const [examCompleted, setExamCompleted] = useState(false);
+
+    const { currentSection, setPatientExamState } = usePatientExamStore(
         useShallow((s) => ({
             currentSection: s.patientExamState.currentSection,
             examResults: s.patientExamState.examResults,
@@ -19,7 +21,19 @@ const PatientExaminationInterface = () => {
         }))
     )
 
-    
+    const handleSaveExamination = () => {
+        setExamCompleted(true);
+        setPatientExamState({
+            activeExam: undefined,
+            currentSection: undefined,
+            examNotes: '',
+            examResults: {},
+            timer: 0,
+            timerRunning: false
+        })
+    }
+
+
 
     const renderCurrentSection = () => {
         switch (currentSection) {
@@ -55,10 +69,17 @@ const PatientExaminationInterface = () => {
                         <ArrowLeft className="w-5 h-5 text-gray-600" /> Overview
                     </button>
                 )}
-                <button className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 text-white rounded-lg font-medium">
-                    <Save className="w-5 h-5" />
-                    Save Examination
-                </button>
+                {examCompleted ?
+                    <button className='flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-green-600 text-white rounded-lg font-medium'>
+                        <Check className='w-5 h-5' />
+                        Completed
+                    </button> :
+                    <button
+                        onClick={() => handleSaveExamination()}
+                        className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 text-white rounded-lg font-medium">
+                        <Save className="w-5 h-5" />
+                        Save Examination
+                    </button>}
             </div>
         </main>);
 };

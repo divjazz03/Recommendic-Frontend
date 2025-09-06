@@ -29,9 +29,9 @@ const MedicalPanel = ({
     removePrescription
 
 }: DeskTopMedicalInfoProps) => (
-    <div className="w-[27rem] bg-white border-l h-full flex flex-col border-gray-200 p-4">
+    <div className="w-[30rem] bg-white border-l h-full flex flex-col border-gray-200 p-4">
         {/* Tab Navigation */}
-        <div className="flex border-b border-gray-200 mb-4 sticky">
+        <div className="flex border-b h-[3rem] border-gray-200 sticky">
             <button
                 onClick={() => setActiveTab('patientInfo')}
                 className={`px-3 py-2 text-sm font-medium border-b-2 ${activeTab === 'patientInfo' ? 'border-main-light text-main-light' : 'border-transparent text-gray-500'

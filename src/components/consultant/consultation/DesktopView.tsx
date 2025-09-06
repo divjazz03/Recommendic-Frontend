@@ -1,4 +1,4 @@
-import { CheckCircle, Clock, ExternalLink, Shield } from 'lucide-react';
+import { CheckCircle, Clock, ExternalLink, Shield, Square, StopCircle } from 'lucide-react';
 import React, { MutableRefObject, useRef, useState } from 'react'
 import { ConsultationInfoProps, MedicalInfoProps } from '../ConsultantConsultation';
 import ChatSection from './ChatSection';
@@ -71,7 +71,7 @@ const DesktopView = (
         <div className="border-b border-gray-200 p-2">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                    <div className="bg-white ring-1 ring-gray-500 rounded-lg p-3">
+                    <div className="bg-white p-3">
                         <CheckCircle className="w-6 h-6 text-main-light" />
                     </div>
                     <div>
@@ -84,7 +84,8 @@ const DesktopView = (
                         <ExternalLink className="w-5 h-5" />
                         Return to Video
                     </button>
-                    <button className="px-3 py-2 text-xs bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+                    <button className="px-3 py-2 text-xs bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center gap-1">
+                        <Square className='w-5 h-5' />
                         End Session
                     </button>
                 </div>

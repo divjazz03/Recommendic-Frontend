@@ -1,4 +1,4 @@
-import { MessageCircle, User, FileText, Pill, Clock, CheckCircle, ExternalLink, Save, AlertCircle, Activity, Heart, Plus, Thermometer, X } from 'lucide-react';
+import { MessageCircle, User, FileText, Pill, Clock, CheckCircle, ExternalLink, Save, AlertCircle, Activity, Heart, Plus, Thermometer, X, Video } from 'lucide-react';
 import React, { MutableRefObject, useRef, useState } from 'react'
 import { ConsultationInfoProps, MedicalInfoProps, Message, PatientData } from '../ConsultantConsultation';
 import NotesView from './NotesView';
@@ -35,7 +35,7 @@ const MobileView = (
     const [currentView, setCurrentView] = useState('chat');
     const messagesEndRef = useRef<HTMLDivElement | null>(null)
     const NavigationBar = () => (
-        <div className="bg-white border-y border-gray-200 px-2 pt-2 ">
+        <div className="bg-white px-2 pt-2 ">
             <div className="flex justify-around">
                 <button
                     onClick={() => setCurrentView('chat')}
@@ -100,13 +100,13 @@ const MobileView = (
                         <span className="truncate">{consultationTime} • In Session</span>
                     </div>
                 </div>
-                {/* <button className="p-2 bg-main-light text-white rounded-lg">
+                <button className="p-2 bg-main-light text-white rounded-lg">
                     <Video className="w-5 h-5" />
-                </button> */}
+                </button>
             </div>
 
             {/* Video Status Banner */}
-            <div className="mt-3 bg-blue-50 border border-blue-200 rounded-lg p-3 flex items-center justify-between">
+            {/* <div className="mt-3 bg-blue-50 border border-blue-200 rounded-lg p-3 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-main-light" />
                     <span className="text-sm text-main">Video call active</span>
@@ -115,7 +115,7 @@ const MobileView = (
                     <ExternalLink className="w-3 h-3" />
                     Join
                 </button>
-            </div>
+            </div> */}
         </div>
     );
 
@@ -255,7 +255,7 @@ export interface ChatViewProps {
 
 
 
-
+items-center
 const ChatView = ({
     message,
     messages,
@@ -264,13 +264,13 @@ const ChatView = ({
     scrollToBottom,
     messagesEndRef
 }: ChatViewProps) => (
-    <div className="flex flex-col overflow-y-auto border-2 h-full">
+    <div className="flex flex-col overflow-y-auto h-full">
         <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-4">
             {messages && messages.map((msg) => (
-                <div key={msg.id} className={`flex ${msg.sender === 'doctor' ? 'justify-end' : 'justify-start'}`}>
+                <div key={msg.id} className={`flex ${msg.sender === 'doctor' ? 'justify-end' : msg.sender === 'patient'? 'justify-start': 'justify-center'}`}>
                     {msg.type === 'system' ? (
                         <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 max-w-xs text-center">
-                            <div className="flex items-center justify-center gap-2 text-main-light">
+                            <div className="flex items-center gap-2 text-main-light">
                                 <AlertCircle className="w-4 h-4" />
                                 <span className="text-sm ">{msg.content}</span>
                             </div>
