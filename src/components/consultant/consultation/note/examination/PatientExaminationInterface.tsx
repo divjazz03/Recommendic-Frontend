@@ -8,11 +8,19 @@ import ExamOverview from './ExamOverview';
 import { usePatientExamStore } from '@/stores/PatientExamStore';
 import { useShallow } from 'zustand/react/shallow';
 
-const PatientExaminationInterface = () => {
+export interface PatientExaminationInterfaceProps {
+    backToHome: () => void
+}
+
+const PatientExaminationInterface : React.FC<PatientExaminationInterfaceProps> = (
+    {
+        backToHome
+    }
+) => {
 
     const [examCompleted, setExamCompleted] = useState(false);
 
-    const { currentSection, setPatientExamState } = usePatientExamStore(
+    const { currentSection, setPatientExamState,examResults } = usePatientExamStore(
         useShallow((s) => ({
             currentSection: s.patientExamState.currentSection,
             examResults: s.patientExamState.examResults,
@@ -22,6 +30,7 @@ const PatientExaminationInterface = () => {
     )
 
     const handleSaveExamination = () => {
+        console.log(examResults)
         setExamCompleted(true);
         setPatientExamState({
             activeExam: undefined,
@@ -54,8 +63,8 @@ const PatientExaminationInterface = () => {
     }
 
     return (
-        <main className='h-full'>
-            <Header />
+        <main className='h-full lg:min-w-[60em] lg:max-w-[60em]'>
+            <Header backToHome={backToHome}/>
             <div className='flex-1 overflow-y-auto'>
                 {renderCurrentSection()}
             </div>

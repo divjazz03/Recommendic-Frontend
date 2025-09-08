@@ -2,7 +2,7 @@
 import { usePatientExamStore } from '@/stores/PatientExamStore';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CheckCircle } from 'lucide-react';
-import React from 'react'
+import React, { useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useShallow } from 'zustand/react/shallow';
@@ -29,6 +29,7 @@ export const visualsValidation = z.object({
 })
 
 const VisualInspectionExam = () => {
+    const [complete, setComplete] = useState<boolean>(false)
     const { examResults,setPatientExamState} = usePatientExamStore(
         useShallow((s) => ({
             setPatientExamState: s.setPatientExamState,
@@ -42,6 +43,7 @@ const VisualInspectionExam = () => {
 
     const handleSubmit = (formData: z.infer<typeof visualsValidation>) => {
         console.log(formData)
+        setComplete(true)
         setPatientExamState({
             examResults: {
                 ...examResults,
@@ -161,7 +163,8 @@ const VisualInspectionExam = () => {
 
             <button
                 type='submit'
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 text-white rounded-lg font-medium"
+                disabled={complete}
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 disabled:bg-light-1 text-white rounded-lg font-medium"
             >
                 <CheckCircle className="w-5 h-5" />
                 Complete Visual Inspection

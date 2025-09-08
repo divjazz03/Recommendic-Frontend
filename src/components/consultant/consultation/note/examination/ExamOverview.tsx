@@ -1,7 +1,7 @@
 
 import { usePatientExamStore } from '@/stores/PatientExamStore';
 import { useShallow } from "zustand/react/shallow";
-import { Activity, Brain, CheckCircle, ChevronRight, Eye, Heart, Play, Stethoscope, Target, Users } from 'lucide-react';
+import { Activity, CheckCircle, ChevronRight, Eye, Heart, Play, Stethoscope} from 'lucide-react';
 import React from 'react'
 
 const ExamOverview = () => {
@@ -15,8 +15,6 @@ const ExamOverview = () => {
             timerRunning: s.patientExamState.timerRunning
         }))
     )
-
-    console.log('exam overview rerenders with current section: ')
 
     const examSections = [
         {

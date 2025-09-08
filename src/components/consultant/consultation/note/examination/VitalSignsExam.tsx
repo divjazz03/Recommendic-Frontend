@@ -1,7 +1,7 @@
 import { usePatientExamStore } from '@/stores/PatientExamStore';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CheckCircle, Heart, Thermometer, Users } from 'lucide-react';
-import React from 'react'
+import React, { useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useShallow } from 'zustand/react/shallow';
@@ -27,6 +27,7 @@ export const vitalsValidation = z.object({
 })
 
 const VitalSignsExam = () => {
+    const [complete, setComplete] = useState<boolean>(false)
     const { setPatientExamState, examResults } = usePatientExamStore(
         useShallow((s) => ({
             setPatientExamState: s.setPatientExamState,
@@ -40,6 +41,7 @@ const VitalSignsExam = () => {
     })
 
     const handleSubmit = (formData: z.infer<typeof vitalsValidation>) => {
+        setComplete(true)
         setPatientExamState(
             {
                 examResults: {
@@ -150,7 +152,8 @@ const VitalSignsExam = () => {
 
                 <button
                     type='submit'
-                    className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-red-600 text-white rounded-lg font-medium"
+                    disabled={complete}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-red-600 disabled:bg-light-1 text-white rounded-lg font-medium"
                 >
                     <CheckCircle className="w-5 h-5" />
                     Complete Vital Signs Assessment

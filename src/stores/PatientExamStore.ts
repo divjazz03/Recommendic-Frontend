@@ -1,8 +1,8 @@
 import {create} from 'zustand'
-import { VitalSignResult } from '@/components/consultant/consultation/VitalSignsExam'
+import { VitalSignResult } from '@/components/consultant/consultation/note/examination/VitalSignsExam'
 import React from 'react'
-import { VisualInspectionResult } from '@/components/consultant/consultation/VisualInspectionExam'
-import { MovementAssessmentResult } from '@/components/consultant/consultation/MovementAssessment'
+import { VisualInspectionResult } from '@/components/consultant/consultation/note/examination/VisualInspectionExam'
+import { MovementAssessmentResult } from '@/components/consultant/consultation/note/examination/MovementAssessment'
 
 export interface ExamResults {
     'vital-signs'?: VitalSignResult
@@ -32,9 +32,7 @@ export interface PatientExamState {
 
 export interface PatientExamContext {
     patientExamState: PatientExamState
-    examinationIsOpen: boolean
     setPatientExamState: (partial : Partial<PatientExamState>) => void
-    setExaminationIsOpen: (isOpen: boolean) => void
     resetExam: () => void
 }
 
@@ -48,7 +46,6 @@ const patientExamInitialState: PatientExamState = {
 }
 const patientExamContextIntialState : Omit<PatientExamContext,
 'setPatientExamState'| 'setExaminationIsOpen'| 'resetExam'>  = {
-    examinationIsOpen: false,
     patientExamState: patientExamInitialState
 }
 
@@ -61,9 +58,7 @@ export const usePatientExamStore = create<PatientExamContext>((set) => ({
             ...partial
         }
     })),
-    setExaminationIsOpen: (isOpen) => set({examinationIsOpen: isOpen}),
     resetExam: () => set({
-        examinationIsOpen: false,
         patientExamState:{...patientExamInitialState}
     })
 }))

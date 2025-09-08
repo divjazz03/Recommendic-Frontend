@@ -1,10 +1,11 @@
 import { MessageCircle, User, FileText, Pill, Clock, CheckCircle, ExternalLink, Save, AlertCircle, Activity, Heart, Plus, Thermometer, X, Video } from 'lucide-react';
 import React, { MutableRefObject, useRef, useState } from 'react'
-import { ConsultationInfoProps, MedicalInfoProps, Message, PatientData } from '../ConsultantConsultation';
-import NotesView from './NotesView';
+import { ConsultationInfoProps, MedicalInfoProps, Message, PatientData } from './ConsultantConsultation';
+import NotesView from './note/NotesView';
 import ChatInputArea from '@/components/ChatInputArea';
-import PatientView from './PatientView';
-import PrescriptionView from './PrescriptionView';
+import PatientView from './patient/PatientView';
+import PrescriptionView from './prescription/PrescriptionView';
+import ChatView from './chat/ChatView';
 
 const MobileView = (
     { message,
@@ -244,66 +245,6 @@ export default MobileView
 
 
 
-export interface ChatViewProps {
-    message: string,
-    setMessage: (value: React.SetStateAction<string>) => void
-    messages: Message[]
-    sendMessage: () => void
-    scrollToBottom: (ref: MutableRefObject<HTMLDivElement>) => void
-    messagesEndRef: MutableRefObject<HTMLDivElement | null>
-}
 
 
-
-items-center
-const ChatView = ({
-    message,
-    messages,
-    setMessage,
-    sendMessage,
-    scrollToBottom,
-    messagesEndRef
-}: ChatViewProps) => (
-    <div className="flex flex-col overflow-y-auto h-full">
-        <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-4">
-            {messages && messages.map((msg) => (
-                <div key={msg.id} className={`flex ${msg.sender === 'doctor' ? 'justify-end' : msg.sender === 'patient'? 'justify-start': 'justify-center'}`}>
-                    {msg.type === 'system' ? (
-                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 max-w-xs text-center">
-                            <div className="flex items-center gap-2 text-main-light">
-                                <AlertCircle className="w-4 h-4" />
-                                <span className="text-sm ">{msg.content}</span>
-                            </div>
-                            <span className="text-xs  mt-1 block">{msg.timestamp}</span>
-                        </div>
-                    ) : (
-                        <div className={`max-w-xs px-4 py-2 rounded-lg ${msg.sender === 'doctor'
-                            ? 'bg-main text-white'
-                            : 'bg-white text-gray-900 border border-gray-200'
-                            }`}>
-                            {msg.content.split('\n').map((message) => (<p className="text-sm text-wrap">{message}</p>))}
-                            <span className={`text-xs mt-1 block ${msg.sender === 'doctor' ? 'text-green-100' : 'text-gray-500'
-                                }`}>
-                                {msg.timestamp}
-                            </span>
-                        </div>
-                    )}
-                </div>
-
-            ))}
-
-            <div ref={messagesEndRef} />
-        </div>
-
-        <div className="border-t border-gray-200 bg-white p-4 border over">
-            <ChatInputArea
-                messagesEndRef={messagesEndRef}
-                scrollToBottom={scrollToBottom}
-                sendMessage={sendMessage}
-                setMessage={setMessage}
-                message={message}
-            />
-        </div>
-    </div>
-);
 

@@ -6,7 +6,7 @@ interface ChatInputAreaProps {
     sendMessage: () => void,
     messagesEndRef: MutableRefObject<HTMLDivElement|null>
     setMessage: (value: React.SetStateAction<string>) => void
-    scrollToBottom: (ref: MutableRefObject<HTMLDivElement|null>) => void
+    scrollToBottom?: (ref: MutableRefObject<HTMLDivElement|null>) => void
 }
 
 const ChatInputArea: React.FC<ChatInputAreaProps> = ({
@@ -41,7 +41,7 @@ const ChatInputArea: React.FC<ChatInputAreaProps> = ({
                             }
                             if (e.key === 'Enter') {
                                 sendMessage()
-                                scrollToBottom(messagesEndRef)
+                                if (scrollToBottom) scrollToBottom(messagesEndRef)
                                 if (textareaRef.current) textareaRef.current.value=''
                                 return
                             }

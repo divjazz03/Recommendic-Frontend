@@ -1,18 +1,16 @@
 import ChatInputArea from '@/components/ChatInputArea';
 import { AlertCircle, Save } from 'lucide-react';
 import React from 'react'
-import { MedicalInfoProps } from '../ConsultantConsultation';
-import NotesView from './NotesView';
-import PatientView from './PatientView';
-import PrescriptionView from './PrescriptionView';
+import { MedicalInfoProps } from './ConsultantConsultation';
+import NotesView from './note/NotesView';
+import PatientView from './patient/PatientView';
+import PrescriptionView from './prescription/PrescriptionView';
 
 interface DeskTopMedicalInfoProps extends MedicalInfoProps {
-    setActiveTab: (value: React.SetStateAction<string>) => void
     activeTab: string
 }
 
 const MedicalPanel = ({
-    setActiveTab,
     activeTab,
     clinicalNotes,
     setClinicalNotes,
@@ -29,38 +27,8 @@ const MedicalPanel = ({
     removePrescription
 
 }: DeskTopMedicalInfoProps) => (
-    <div className="w-[30rem] bg-white border-l h-full flex flex-col border-gray-200 p-4">
-        {/* Tab Navigation */}
-        <div className="flex border-b h-[3rem] border-gray-200 sticky">
-            <button
-                onClick={() => setActiveTab('patientInfo')}
-                className={`px-3 py-2 text-sm font-medium border-b-2 ${activeTab === 'patientInfo' ? 'border-main-light text-main-light' : 'border-transparent text-gray-500'
-                    }`}
-            >
-                Patient Info
-            </button>
-            <button
-                onClick={() => setActiveTab('notes')}
-                className={`px-3 py-2 text-sm font-medium border-b-2 ${activeTab === 'notes' ? 'border-main-light text-main-light' : 'border-transparent text-gray-500'
-                    }`}
-            >
-                Clinical Notes
-            </button>
-            <button
-                onClick={() => setActiveTab('prescription')}
-                className={`px-3 py-2 text-sm font-medium border-b-2 ${activeTab === 'prescription' ? 'border-main-light text-main-light' : 'border-transparent text-gray-500'
-                    }`}
-            >
-                Prescription
-            </button>
-            <button
-                onClick={() => setActiveTab('history')}
-                className={`px-3 py-2 text-sm font-medium border-b-2 ${activeTab === 'history' ? 'border-main-light text-main-light' : 'border-transparent text-gray-500'
-                    }`}
-            >
-                History
-            </button>
-        </div>
+    <div className="bg-white w-full h-full flex flex-col items-center border-gray-200 p-4">
+        
         <div className='flex-1 overflow-auto h-full scrollbar-hide'>
             {activeTab === 'notes' && (
                 <NotesView
@@ -94,7 +62,7 @@ const MedicalPanel = ({
             )}
 
             {activeTab === 'history' && (
-                <div className="space-y-4">
+                <div className="space-y-4 min-w-[60em]">
                     {/* Medical Conditions */}
                     <div className="bg-red-50 border border-red-200 rounded-lg p-3">
                         <h5 className="text-sm font-medium text-red-700 mb-2">Medical Conditions</h5>
@@ -136,7 +104,7 @@ const MedicalPanel = ({
 
         </div>
         {/* Save Button */}
-        <div className="mt-6 pt-4 border-t border-gray-200">
+        <div className="mt-6 border-gray-200">
             <button className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-main-light text-white rounded-lg hover:bg-main transition-colors">
                 <Save className="w-4 h-4" />
                 Save & Complete Session

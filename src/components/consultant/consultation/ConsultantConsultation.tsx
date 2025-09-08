@@ -1,10 +1,10 @@
 import { Activity, AlertCircle, ArrowLeft, Brain, Calendar, CheckCircle, ChevronRight, Clock, Edit3, ExternalLink, Eye, FileText, Heart, LucideProps, MessageCircle, Paperclip, Pause, Pill, Play, Plus, Save, Send, Shield, Stethoscope, Target, Thermometer, Timer, User, Users, Video, X } from 'lucide-react';
 import React, { MutableRefObject, useEffect, useRef, useState } from 'react'
-import MobileView from './consultation/MobileView';
-import DesktopView from './consultation/DesktopView';
+import MobileView from './MobileView';
+import DesktopView from './DesktopView';
 
 const ConsultantConsultation = () => {
-    const [message, setMessage] = useState<string>();
+    const [message, setMessage] = useState<string>("");
     const [clinicalNotes, setClinicalNotes] = useState('Patient reports chest pain for 3 days. Pain described as sharp, intermittent...')
     const [diagnosis, setDiagnosis] = useState('');
     const [prescription, setPrescription] = useState<Prescription[]>([]);
@@ -222,7 +222,7 @@ export interface ConsultationInfoProps {
     sendMessage: () => void
     addPrescription: () => void
     removePrescription: (id: number) => void
-    scrollToBottom: (ref: MutableRefObject<HTMLDivElement>) => void
+    scrollToBottom?: (ref: MutableRefObject<HTMLDivElement|null>) => void
 }
 
 export interface MedicalInfoProps {

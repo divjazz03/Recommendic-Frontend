@@ -7,7 +7,7 @@ interface PatientViewProps {
 }
 
 const PatientView = ({ patientData }: PatientViewProps) => (
-    <div className="flex-1 overflow-y-auto p-4 space-y-4 rounded-lg">
+    <div className="flex-1 overflow-y-auto p-4 space-y-4 rounded-lg lg:min-w-[60em]">
         {/* Allergies Alert */}
         <div className="bg-red-50 border border-red-200 rounded-lg p-4">
             <div className="flex items-center gap-2 mb-2">

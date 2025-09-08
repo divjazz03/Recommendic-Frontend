@@ -3,7 +3,6 @@ import GlobalSearch from '@/components/shared/GlobalSearch';
 import SideBar from '@/components/SideBar';
 import Logo from '@/components/svg/Logo';
 import { useUserContext } from '@/context/AuthContext';
-import clsx from 'clsx';
 import { Bell, Calendar1Icon, CalendarClock, ChartLine, Loader, Menu, Settings2, User2 } from 'lucide-react';
 import React, { MutableRefObject, useEffect, useRef, useState } from 'react'
 import { Link, Outlet, useLocation } from 'react-router-dom';
@@ -76,7 +75,8 @@ const RootLayout = () => {
 		}
 	}, [])
 	return (
-		isLoading ? <div className='flex justify-center h-full items-center '><Loader className=' animate-spin' /></div> :
+		isLoading ? <div className='flex justify-center h-full items-center '><Loader className=' animate-spin' /></div> 
+		:
 			<main className='bg-light-4 min-w-[320px] w-full h-full'>
 				<div className='lg:flex lg:flex-row  h-full'>
 
@@ -117,13 +117,13 @@ const RootLayout = () => {
 							</div>
 						</header>
 						{/* Laptop header */}
-						<header className='hidden lg:flex bg-white w-full border-b py-2 px-2'>
+						<header className='hidden lg:flex bg-white w-full border-b py-2 px-2 justify-between'>
 							<div className='flex justify-start gap-3'>
-								{/* <img src='/assets/svg/logo-no-background.svg' className='max-w-[32px]' /> */}
 								<Menu className='w-8 h-8' onClick={() => setAsideHidden(false)}/>
 								<Logo className='w-8 h-8' />
 								<p className='font-berkshire text-main font-bold text-3xl'>Recommendic</p>
 							</div>
+							<GlobalSearch />
 						</header>
 						<div className='flex-1 h-full border-gray-950 overflow-auto'>
 							<Outlet />

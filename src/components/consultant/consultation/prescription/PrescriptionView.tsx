@@ -11,8 +11,8 @@ const PrescriptionView = ({
     setShowPrescriptionForm,
     showPrescriptionForm
 }: MedicalInfoProps) => (
-    <div className="flex-1 p-4 space-y-4 h-full">
-        <div className="flex items-center justify-between">
+    <div className="flex-1 p-4 space-y-4 lg:min-w-[60em] border rounded-lg h-full">
+        <div className="flex items-center justify-between r">
             <h4 className="font-semibold text-gray-900">Medications</h4>
             <button
                 onClick={() => setShowPrescriptionForm(!showPrescriptionForm)}

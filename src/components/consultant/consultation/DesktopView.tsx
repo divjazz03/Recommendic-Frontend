@@ -1,7 +1,7 @@
-import { CheckCircle, Clock, ExternalLink, Shield, Square, StopCircle } from 'lucide-react';
+import { CheckCircle, Clock, ExternalLink, Shield, Square} from 'lucide-react';
 import React, { MutableRefObject, useRef, useState } from 'react'
-import { ConsultationInfoProps, MedicalInfoProps } from '../ConsultantConsultation';
-import ChatSection from './ChatSection';
+import { ConsultationInfoProps} from './ConsultantConsultation';
+import ChatSection from './chat/ChatSection';
 import MedicalPanel from './MedicalPanel';
 
 
@@ -34,7 +34,7 @@ const DesktopView = (
     const messagesEndRef = useRef<MutableRefObject<HTMLDivElement> | null>(null)
 
     const PatientInfo = () => (
-        <div className="bg-white border-b border-gray-200 p-4">
+        <div className="bg-white border-b border-gray-200 p-4 rounded-t-lg">
             <div className="flex items-center gap-4">
                 <img
                     src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face"
@@ -45,7 +45,7 @@ const DesktopView = (
                     <div className="flex items-center gap-3">
                         <h3 className="font-semibold text-gray-900">{patientData.name}</h3>
                         <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
-                            {patientData.age}y, {patientData.gender}
+                            {patientData.age}y,&nbsp;{patientData.gender}
                         </span>
                     </div>
                     <p className="text-sm text-gray-600">Last visit: {patientData.lastVisit} • {patientData.insurance}</p>
@@ -68,7 +68,7 @@ const DesktopView = (
     );
 
     const VideoCallSection = () => (
-        <div className="border-b border-gray-200 p-2">
+        <div className="border rounded-t-lg border-gray-200 p-2 bg-white">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                     <div className="bg-white p-3">
@@ -96,12 +96,50 @@ const DesktopView = (
 
 
     return (
-        <div className="hidden lg:flex flex-col h-full max-w-7xl mx-auto bg-white rounded-lg">
+        <div className="hidden lg:flex flex-col h-full max-w-7xl mx-auto bg-white mt-1 rounded-t-lg ">
             <PatientInfo />
-
-            <div className="flex flex-row h-full overflow-y-auto">
+            {/* Tab Navigation */}
+                <div className="flex justify-center border-b h-[5rem] border-gray-200 gap-7">
+                    <button
+                        onClick={() => setActiveTab('')}
+                        className={`px-3 py-2 text-sm font-medium border-b-2 ${activeTab === '' ? 'border-main-light text-main-light' : 'border-transparent text-gray-500 hover:border-gray-200 '
+                            }`}
+                    >
+                        Chat
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('patientInfo')}
+                        className={`px-3 py-2 text-sm font-medium border-b-2 ${activeTab === 'patientInfo' ? 'border-main-light text-main-light' : 'border-transparent text-gray-500 hover:border-gray-200 '
+                            }`}
+                    >
+                        Patient Info
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('notes')}
+                        className={`px-3 py-2 text-sm font-medium border-b-2 ${activeTab === 'notes' ? 'border-main-light text-main-light' : 'border-transparent text-gray-500 hover:border-gray-200 '
+                            }`}
+                    >
+                        Clinical Notes
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('prescription')}
+                        className={`px-3 py-2 text-sm font-medium border-b-2 ${activeTab === 'prescription' ? 'border-main-light text-main-light' : 'border-transparent text-gray-500 hover:border-gray-200 '
+                            }`}
+                    >
+                        Prescription
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('history')}
+                        className={`px-3 py-2 text-sm font-medium border-b-2  ${activeTab === 'history' ? 'border-main-light text-main-light' : 'border-transparent text-gray-500 hover:border-gray-200 '
+                            }`}
+                    >
+                        History
+                    </button>
+                </div>
+            <div className="h-full mx-auto overflow-y-auto bg-gray-50 rounded-t-lg">
                 {/* Main Content */}
-                <div className="flex-1 flex flex-col h-full">
+                {activeTab === '' ? 
+                <div className="flex-1 flex flex-col h-full max-w-[60em] min-w-[60em]">
                     <VideoCallSection />
                     <div className='flex-1 overflow-auto'>
                         <ChatSection
@@ -113,9 +151,9 @@ const DesktopView = (
                             setMessage={setMessage}
                         />
                     </div>
-                </div>
-
-                {/* Medical Panel */}
+                </div> 
+                : 
+                /* Medical Panel */
                 <MedicalPanel
                     activeTab={activeTab}
                     addPrescription={addPrescription}
@@ -125,14 +163,14 @@ const DesktopView = (
                     patientData={patientData}
                     prescription={prescription}
                     removePrescription={removePrescription}
-                    setActiveTab={setActiveTab}
                     setClinicalNotes={setClinicalNotes}
                     setDiagnosis={setDiagnosis}
                     setNewMedication={setNewMedication}
                     setPrescription={setPrescription}
                     setShowPrescriptionForm={setShowPrescriptionForm}
                     showPrescriptionForm={showPrescriptionForm}
-                />
+                />}
+
             </div>
 
             {/* Bottom Status Bar */}

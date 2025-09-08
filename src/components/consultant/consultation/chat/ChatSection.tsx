@@ -1,7 +1,7 @@
 import ChatInputArea from '@/components/ChatInputArea';
 import { AlertCircle } from 'lucide-react';
 import React from 'react'
-import { ChatViewProps } from './MobileView';
+import { ChatViewProps } from './ChatView';
 
 const ChatSection = (
     {
@@ -43,7 +43,7 @@ const ChatSection = (
             <div ref={messagesEndRef} />
         </div>
 
-        <div className="border border-gray-200  p-2 h-fit ">
+        <div className="border border-gray-200 p-2 bg-white h-fit ">
             <ChatInputArea
                 message={message}
                 messagesEndRef={messagesEndRef}

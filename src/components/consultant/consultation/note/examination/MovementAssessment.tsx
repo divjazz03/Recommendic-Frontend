@@ -1,7 +1,7 @@
 import { usePatientExamStore } from '@/stores/PatientExamStore';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CheckCircle } from 'lucide-react';
-import React from 'react'
+import React, { useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useShallow } from 'zustand/react/shallow';
@@ -21,6 +21,7 @@ const movementAssessmentValidation = z.object({
 })
 
 const MovementAssessment = () => {
+    const [complete, setComplete] = useState<boolean>(false)
     const { examResult, setPatientExamState
     } = usePatientExamStore(
         useShallow((s) => ({
@@ -35,6 +36,7 @@ const MovementAssessment = () => {
     });
 
     const submit = (formData: z.infer<typeof movementAssessmentValidation>) => {
+        setComplete(true)
         setPatientExamState({
             examResults: {
                 ...examResult, 
@@ -133,7 +135,8 @@ const MovementAssessment = () => {
 
             <button
                 type='submit'
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-green-600 text-white rounded-lg font-medium"
+                disabled={complete}
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-green-600 disabled:bg-light-1 text-white rounded-lg font-medium"
             >
                 <CheckCircle className="w-5 h-5" />
                 Complete Movement Assessment

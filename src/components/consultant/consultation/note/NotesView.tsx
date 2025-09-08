@@ -1,9 +1,8 @@
 
 import { Heart, FileText, Activity, Calendar, Edit3 } from 'lucide-react';
-import React from 'react'
-import PatientExaminationInterface from './PatientExaminationInterface';
-import { usePatientExamStore } from '@/stores/PatientExamStore';
-import { useShallow } from 'zustand/react/shallow';
+import React, { useState } from 'react'
+import PatientExaminationInterface from './examination/PatientExaminationInterface';
+import PatientLabOrderScreen from './lab_order/PatientLabOrderScreen';
 
 interface NoteViewProps {
     clinicalNotes: string,
@@ -18,34 +17,35 @@ const NotesView: React.FC<NoteViewProps> = ({
     setDiagnosis,
     clinicalNotes,
 }) => {
-    const {examinationIsOpen, setExaminationIsOpen} = usePatientExamStore(
-        useShallow((s) => ({
-                    examinationIsOpen: s.examinationIsOpen,
-                    setExaminationIsOpen: s.setExaminationIsOpen
-        
-                }))
-    )
+    const [currentSection, setCurrentSection] = useState('')
 
-    if (examinationIsOpen) {
-        return <PatientExaminationInterface/>
+    const backToHome = () => setCurrentSection('');
+
+
+    switch (currentSection) {
+        case 'examination': return <PatientExaminationInterface backToHome={backToHome}/>
+        case 'labOrders': return <PatientLabOrderScreen backToHome={backToHome}/>
     }
 
 
     return (
-        <div className="flex-1 p-4 space-y-4 w-full">
+        <div className="flex-1 p-4 space-y-4 lg:min-w-[60em]">
             {/* Quick Actions */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
                 <button
-                    onClick={() => setExaminationIsOpen ? setExaminationIsOpen(true) : ''}
+                    onClick={() => setCurrentSection('examination')}
                     className="flex items-center gap-2 px-4 py-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">
                     <Heart className="w-5 h-5 text-red-500" />
                     <span className="text-sm font-medium">Examination</span>
                 </button>
-                <button className="flex items-center gap-2 px-4 py-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">
+                <button 
+                    className="flex items-center gap-2 px-4 py-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">
                     <FileText className="w-5 h-5 text-blue-500" />
                     <span className="text-sm font-medium">Templates</span>
                 </button>
-                <button className="flex items-center gap-2 px-4 py-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">
+                <button
+                    onClick={() => setCurrentSection('labOrders')} 
+                    className="flex items-center gap-2 px-4 py-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">
                     <Activity className="w-5 h-5 text-green-500" />
                     <span className="text-sm font-medium">Lab Orders</span>
                 </button>
