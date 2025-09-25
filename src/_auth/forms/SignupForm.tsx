@@ -18,6 +18,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 
 import axios, { AxiosError } from 'axios'
 import { Progress } from '@/components/ui/progress'
+import { Gender } from '@/types'
 export type TypeOfUser = "Patient" | "Consultant";
 
 type SignUpFormData = {
@@ -25,9 +26,9 @@ type SignUpFormData = {
   lastName: string,
   email: string,
   password: string,
-  phoneNumber: string,
+  dateOfBirth: string,
   typeOfUser: TypeOfUser,
-  gender: 'Male' | 'Female',
+  gender: Gender,
   city: string,
   state: string,
   country: string,
@@ -43,9 +44,9 @@ const SignupForm: React.FC = () => {
     lastName: "",
     email: "",
     password: "",
-    phoneNumber: "",
+    dateOfBirth: "",
     typeOfUser: "Patient",
-    gender: 'Male',
+    gender: 'male',
     city: "",
     state: "",
     country: "",
@@ -62,7 +63,7 @@ const SignupForm: React.FC = () => {
         lastName: values.lastName,
         email: values.email,
         password: values.password,
-        phoneNumber: values.phoneNumber,
+        dateOfBirth: values.dateOfBirth,
         gender: values.gender,
         city: values.city,
         state: values.state,
@@ -79,7 +80,7 @@ const SignupForm: React.FC = () => {
         lastName: values.lastName,
         email: values.email,
         password: values.password,
-        phoneNumber: values.phoneNumber,
+        dateOfBirth: values.dateOfBirth,
         gender: values.gender,
         city: values.city,
         state: values.state,
@@ -241,7 +242,7 @@ const SignupForm: React.FC = () => {
       defaultValues: {
         firstName: '',
         lastName: '',
-        gender: 'Male'
+        gender: 'male'
       }
     })
     const handleUserFormSubmit = (form: z.infer<typeof userFormValidation>) => {
@@ -314,13 +315,13 @@ const SignupForm: React.FC = () => {
                 <FormItem>
                   <FormLabel>Gender</FormLabel>
                   <FormControl>
-                    <Select {...userForm.register('gender')} defaultValue="Male" >
+                    <Select {...userForm.register('gender')} defaultValue="male" >
                       <SelectTrigger>
                         <SelectValue placeholder='Select Your gender' />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="Male" >Male</SelectItem>
-                        <SelectItem value="Female" >Female</SelectItem>
+                        <SelectItem value="male" >Male</SelectItem>
+                        <SelectItem value="female" >Female</SelectItem>
                       </SelectContent>
                     </Select>
                   </FormControl>

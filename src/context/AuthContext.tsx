@@ -11,16 +11,9 @@ export interface AuthContextState {
     setUserInContext: React.Dispatch<React.SetStateAction<AuthUserContext>>;
     isLoading: boolean
 }
-export const INITIAL_USER: AuthUserContext = {
-    user_id: undefined,
-    role: undefined,
-    userStage: undefined,
-    userType:undefined,
-}
 
 const INITIAL_STATE: AuthContextState = {
-    userContext: INITIAL_USER,
-    profileData: undefined,
+    userContext: {},
     isAuthenticated: false,
     setUserInContext: () => { },
     isLoading:false
@@ -30,7 +23,7 @@ const AuthContext = createContext<AuthContextState>(INITIAL_STATE);
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
-    const [userContext, setUserInContext] = useState<AuthUserContext>(INITIAL_USER);
+    const [userContext, setUserInContext] = useState<AuthUserContext>({});
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const navigate = useNavigate();
 
@@ -58,7 +51,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 });
                 setIsAuthenticated(true);
             }
-    }, [data, error, navigate])
+    }, [data, error])
 
     const value:AuthContextState = {
         userContext,
@@ -77,4 +70,10 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
 export default AuthProvider
 
-export const useUserContext = () => useContext(AuthContext);
+export const useUserContext = () => {
+    const context = useContext(AuthContext)
+    if (!context) {
+        throw new Error("useUserContext must be used inside an AuthProvider")
+    }
+    return context;
+}

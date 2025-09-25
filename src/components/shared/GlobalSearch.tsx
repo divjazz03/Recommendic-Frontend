@@ -13,11 +13,7 @@ const GlobalSearch = () => {
     const [searchText, setSearchText] = useState('');
     const debouncedValue = useDebouncedValue(searchText)
     const [popoverOpen, setPopOverOpen] = useState(false);
-
     const { data, isLoading, isError } = useSearchResults();
-
-
-
 
     const triggerRef = useRef(null);
 
@@ -27,7 +23,7 @@ const GlobalSearch = () => {
         } else {
             setQuery(debouncedValue.trim());
         }
-    }, [debouncedValue, setQuery])
+    }, [debouncedValue])
 
     return (
         <>

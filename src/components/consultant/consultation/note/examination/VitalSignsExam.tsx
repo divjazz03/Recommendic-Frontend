@@ -17,11 +17,11 @@ export interface VitalSignResult {
 }
 
 export const vitalsValidation = z.object({
-    patientPulseCount: z.string(),
-    BPM: z.string(),
+    patientPulseCount: z.string().min(1, "pulse count is required"),
+    BPM: z.string().min(1, "BPM is required"),
     pulseRhythm: z.enum(['irregular', 'regular']),
-    breathingCount30sec: z.string(),
-    breathPerMin: z.string(),
+    breathingCount30sec: z.string().min(1, "Breathing count is required"),
+    breathPerMin: z.string().min(1,"Breathing rate is required"),
     temperature: z.string().optional(),
     temperatureMethod: z.enum(['oral', 'forehead', 'ear', 'not-available']).optional()
 })

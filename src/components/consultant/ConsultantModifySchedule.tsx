@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import { Calendar, Clock, Video, Phone, MessageCircle, Users, Trash2, Save, ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { Calendar, Clock, Video, Users, Trash2, Save, ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
-import { Schedule } from '@/types';
+import { RecurrenceRuleFrequency, Schedule, WeekDay } from '@/types';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useDeleteSchedule, useGetScheduleWithUserId, useUpdateSchedule } from '@/lib/react-query/consultantQueryAndMutations';
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 export interface ModifyingRecurrenceRule {
-    frequency?: 'one-off' | 'daily' | 'weekly' | 'monthly',
-    weekDays?: ('monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday')[],
+    frequency?: RecurrenceRuleFrequency,
+    weekDays?: WeekDay[],
     interval?: number,
     endDate?: string,
 }
@@ -24,6 +24,19 @@ export interface ModifyingSchedule {
     recurrenceRule?: ModifyingRecurrenceRule;
     isActive?: boolean;
 }
+const weekDays = [
+    { value: 'monday', label: 'Mon' },
+    { value: 'tuesday', label: 'Tue' },
+    { value: 'wednesday', label: 'Wed' },
+    { value: 'thursday', label: 'Thu' },
+    { value: 'friday', label: 'Fri' },
+    { value: 'saturday', label: 'Sat' },
+    { value: 'sunday', label: 'Sun' }
+];
+const channelOptions = [
+    { value: 'online', label: 'Online', icon: Video, color: 'bg-blue-100 text-blue-600' },
+    { value: 'in_person', label: 'In-Person', icon: Users, color: 'bg-orange-100 text-orange-600' }
+];
 
 
 const ModificationSuccessModal = () => {
@@ -45,7 +58,6 @@ const ModificationSuccessModal = () => {
                     <AlertDialogTitle className='text-center text-xl'>Schedule change successful</AlertDialogTitle>
                     <AlertDialogDescription className='text-center'>
                         <p className='mt-2'>Your schedule has been modified successfully.</p>
-
                     </AlertDialogDescription>
                 </AlertDialogHeader>
             </AlertDialogContent>
@@ -89,25 +101,6 @@ const ConsultantModifySchedule = () => {
 
     }, [scheduleResponse]);
 
-
-    const channelOptions = [
-        { value: 'chat', label: 'Chat', icon: MessageCircle, color: 'bg-blue-100 text-blue-600' },
-        { value: 'voice', label: 'Voice Call', icon: Phone, color: 'bg-green-100 text-green-600' },
-        { value: 'video', label: 'Video Call', icon: Video, color: 'bg-purple-100 text-purple-600' },
-        { value: 'in_person', label: 'In-Person', icon: Users, color: 'bg-orange-100 text-orange-600' }
-    ];
-
-    const weekDays = [
-        { value: 'monday', label: 'Mon' },
-        { value: 'tuesday', label: 'Tue' },
-        { value: 'wednesday', label: 'Wed' },
-        { value: 'thursday', label: 'Thu' },
-        { value: 'friday', label: 'Fri' },
-        { value: 'saturday', label: 'Sat' },
-        { value: 'sunday', label: 'Sun' }
-    ];
-
-
     const removeSchedule = async () => {
         await deleteAsyncSchedule(scheduleId);
         window.history.back();
@@ -141,7 +134,7 @@ const ConsultantModifySchedule = () => {
         });
     };
 
-    const toggleDayOfWeek = (day: "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday") => {
+    const toggleDayOfWeek = (day: WeekDay) => {
         if (modifiedSchedule) {
             setModifiedSchedule(schedule => {
                 if (day) {
@@ -295,8 +288,9 @@ const ConsultantModifySchedule = () => {
                                                     {weekDays && weekDays.map(day => (
                                                         <button
                                                             key={day.value}
-                                                            onClick={() => toggleDayOfWeek(day.value)}
-                                                            className={`px-3 py-1 text-sm rounded-lg transition-colors ${modifiedSchedule.recurrenceRule?.weekDays?.includes(day.value as typeof modifiedSchedule.recurrenceRule.weekDays[0])
+                                                            onClick={() => toggleDayOfWeek(day.value as WeekDay)}
+                                                            className={`px-3 py-1 text-sm rounded-lg transition-colors
+                                                                ${modifiedSchedule.recurrenceRule?.weekDays?.includes(day.value as typeof modifiedSchedule.recurrenceRule.weekDays[0])
                                                                 ? 'bg-blue-600 text-white'
                                                                 : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
                                                                 }`}

@@ -16,7 +16,7 @@ const ChatSection = (
     <div className="flex-1 flex flex-col overflow-y-auto h-full">
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
             {messages.map((msg) => (
-                <div key={msg.id} className={`flex ${msg.sender === 'doctor' ? 'justify-end' : msg.sender === 'patient' ? 'justify-start' : 'justify-center'}`}>
+                <div key={msg.id} className={`flex ${msg.sender === 'me' ? 'justify-end' : msg.sender === 'other' ? 'justify-start' : 'justify-center'}`}>
                     {msg.type === 'system' ? (
                         <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 max-w-md text-center">
                             <div className="flex items-center justify-center gap-2 text-main">
@@ -26,16 +26,16 @@ const ChatSection = (
                             <span className="text-xs mt-1 block">{msg.timestamp}</span>
                         </div>
                     ) : (
-                        <div key={msg.id} className={`relative max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${msg.sender === 'doctor'
+                        <div key={msg.id} className={`relative max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${msg.sender === 'me'
                             ? 'bg-main text-white'
                             : 'bg-white text-gray-900 border border-gray-200'
                             }`}>
                             {msg.content.split('\n').map((value) => (<p className="text-sm">{value}</p>))}
-                            <span className={`text-xs mt-1 block ${msg.sender === 'doctor' ? 'text-green-100' : 'text-gray-500'
+                            <span className={`text-xs mt-1 block ${msg.sender === 'me' ? 'text-green-100' : 'text-gray-500'
                                 }`}>
                                 {msg.timestamp}
                             </span>
-                            <div className={`absolute w-2 h-5 -bottom-[6px]  ${msg.sender === 'doctor' ? 'right-0 rounded-l-full bg-main' : '-left-[1px] rounded-r-full bg-white border-l border-b'}`}></div>
+                            <div className={`absolute w-2 h-5 -bottom-[6px]  ${msg.sender === 'me' ? 'right-0 rounded-l-full bg-main' : '-left-[1px] rounded-r-full bg-white border-l border-b'}`}></div>
                         </div>
                     )}
                 </div>

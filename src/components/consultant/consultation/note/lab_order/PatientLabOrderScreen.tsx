@@ -1,11 +1,32 @@
 
 import { AlertCircle, ArrowLeft, Calendar, CheckCircle, Clock, Download, FileText, Filter, Mail, Phone, Plus, Search, User } from 'lucide-react';
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 
 interface PatientLabOrderScreenProps {
     backToHome: () => void
 }
-
+type Priority = 'urgent' | 'routine' | 'STAT'
+type Status = 'pending' | 'completed' | 'processing'
+interface LabOrder {
+    id: string
+    testType: string
+    orderDate: string
+    resultDate?: string
+    priority: Priority
+    status: Status
+    physician: string
+    expectedDate: string
+    department: string
+    fastingRequired: boolean
+    instructions: string
+    results?: 'Available'
+}
+const statusTabs = [
+    { key: 'all', label: 'All Orders' },
+    { key: 'pending', label: 'Pending' },
+    { key: 'processing', label: 'Processing' },
+    { key: 'completed', label: 'Completed' }
+]
 const patient = {
     id: 'P-4521',
     name: 'Sarah Johnson',
@@ -19,12 +40,12 @@ const patient = {
     bloodType: 'O+'
 };
 
-const labOrders = [
+const staticlabOrders: LabOrder[]= [
     {
         id: 'LO-2024-001',
         testType: 'Complete Blood Count (CBC)',
         orderDate: '2024-09-06',
-        priority: 'Routine',
+        priority: 'routine',
         status: 'pending',
         physician: 'Dr. Michael Chen',
         expectedDate: '2024-09-07',
@@ -36,7 +57,7 @@ const labOrders = [
         id: 'LO-2024-002',
         testType: 'Lipid Panel',
         orderDate: '2024-09-05',
-        priority: 'Routine',
+        priority: 'routine',
         status: 'completed',
         physician: 'Dr. Emily Rodriguez',
         expectedDate: '2024-09-06',
@@ -50,7 +71,7 @@ const labOrders = [
         id: 'LO-2024-003',
         testType: 'Thyroid Function Tests (TSH, T3, T4)',
         orderDate: '2024-09-04',
-        priority: 'Urgent',
+        priority: 'urgent',
         status: 'completed',
         physician: 'Dr. James Wilson',
         expectedDate: '2024-09-05',
@@ -64,7 +85,7 @@ const labOrders = [
         id: 'LO-2024-004',
         testType: 'HbA1c',
         orderDate: '2024-09-06',
-        priority: 'Routine',
+        priority: 'routine',
         status: 'processing',
         physician: 'Dr. Lisa Thompson',
         expectedDate: '2024-09-07',
@@ -76,7 +97,7 @@ const labOrders = [
         id: 'LO-2024-005',
         testType: 'Vitamin D (25-OH)',
         orderDate: '2024-08-30',
-        priority: 'Routine',
+        priority: 'routine',
         status: 'completed',
         physician: 'Dr. Michael Chen',
         expectedDate: '2024-09-02',
@@ -106,9 +127,9 @@ const getPriorityColor = (priority: string) => {
     switch (priority) {
         case 'STAT':
             return 'bg-red-100 text-red-800';
-        case 'Urgent':
+        case 'urgent':
             return 'bg-orange-100 text-orange-800';
-        case 'Routine':
+        case 'routine':
             return 'bg-blue-100 text-blue-800';
         default:
             return 'bg-gray-100 text-gray-800';
@@ -119,21 +140,22 @@ const PatientLabOrderScreen: React.FC<PatientLabOrderScreenProps> = ({ backToHom
 
     const [activeTab, setActiveTab] = useState('all');
     const [searchQuery, setSearchQuery] = useState('');
+    const [labOrders, setLabOrders] = useState<LabOrder[]>(staticlabOrders);
 
 
-    const filteredOrders = labOrders.filter(order => {
+    const filteredOrders = useMemo(() => labOrders.filter(order => {
         const matchesTab = activeTab === 'all' || order.status === activeTab;
         const matchesSearch = order.testType.toLowerCase().includes(searchQuery.toLowerCase()) ||
             order.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
             order.physician.toLowerCase().includes(searchQuery.toLowerCase());
         return matchesTab && matchesSearch;
-    });
+    }), [activeTab,searchQuery]);
 
     const tabCounts = {
         all: labOrders.length,
         pending: labOrders.filter(o => o.status === 'pending').length,
         processing: labOrders.filter(o => o.status === 'processing').length,
-        completed: labOrders.filter(o => o.status === 'com-4pleted').length
+        completed: labOrders.filter(o => o.status === 'completed').length
     };
 
     return (
@@ -225,12 +247,7 @@ const PatientLabOrderScreen: React.FC<PatientLabOrderScreenProps> = ({ backToHom
                 <div className="bg-white rounded-lg shadow-sm mb-6 ">
                     <div className="border-b border-gray-200">
                         <nav className="flex space-x-8 px-6 overflow-x-auto scrollbar-hide">
-                            {[
-                                { key: 'all', label: 'All Orders' },
-                                { key: 'pending', label: 'Pending' },
-                                { key: 'processing', label: 'Processing' },
-                                { key: 'completed', label: 'Completed' }
-                            ].map(tab => (
+                            {statusTabs.map(tab => (
                                 <button
                                     key={tab.key}
                                     onClick={() => setActiveTab(tab.key)}
@@ -241,7 +258,7 @@ const PatientLabOrderScreen: React.FC<PatientLabOrderScreenProps> = ({ backToHom
                                 >
                                     {tab.label}
                                     <span className="ml-2 bg-gray-100 text-gray-600 py-0.5 px-2 rounded-full text-xs">
-                                        {tabCounts[tab.key]}
+                                        {tabCounts[tab.key as keyof typeof tabCounts]}
                                     </span>
                                 </button>
                             ))}
@@ -303,7 +320,7 @@ const PatientLabOrderScreen: React.FC<PatientLabOrderScreenProps> = ({ backToHom
                                             <div className="text-sm text-gray-900">{order.physician}</div>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getPriorityColor(order.priority)}`}>
+                                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize ${getPriorityColor(order.priority)}`}>
                                                 {order.priority}
                                             </span>
                                         </td>

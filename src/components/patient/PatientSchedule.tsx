@@ -1,10 +1,30 @@
 import CustomCalender from '@/components/shared/CustomCalender';
 import InitialsOrAvartar from '@/components/shared/InitialsOrAvartar';
-import { ArrowLeft, Calendar, CheckCircle, ChevronLeft, ChevronRight, CreditCard, Info, MessageCircle, Phone, Shield, Star, User, Video } from 'lucide-react';
+import { ArrowLeft, Calendar, CheckCircle,CreditCard, Info, Shield, Star, User, Video } from 'lucide-react';
 import React, { useState } from 'react'
 import { useLocation } from 'react-router-dom';
 
+interface Fee {
+  online: number
+  inPerson: number
+}
+interface TimeSlots{
+  morning: string[]
+  afternoon: string[]
+  evening: string[]
+  unavailableSlots: string[]
+  bookedSlots: string[]
+}
 
+export interface ConsultantScheduleData {
+  fullName: string
+  title?: string
+  rating: number
+  image: string
+  fees: Fee
+  timeSlots: TimeSlots
+  location: string
+}
 
 
 const formatDate = (date: Date): string => {
@@ -20,20 +40,18 @@ export const PatientSchedule = () => {
   const location = useLocation();
   //const consultantId: number = location.state.id;
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [selectedTime, setSelectedTime] = useState(null);
-  const [consultationType, setConsultationType] = useState<string>('video');
+  const [selectedTime, setSelectedTime] = useState<string|null>(null);
+  const [consultationType, setConsultationType] = useState<'inPerson'|'online'>('inPerson');
   const [currentStep, setCurrentStep] = useState(1);
   const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [ConsultantScheduleData, setConsultantScheduleData] = useState({
-    name: "Dr. Sarah Mitchell",
+  const [consultantScheduleData, setConsultantScheduleData] = useState<ConsultantScheduleData>({
+    fullName: "Dr. " + "Sarah Mitchell",
     title: "Cardiologist & Internal Medicine",
     rating: 4.9,
     image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=300&h=300&fit=crop&crop=face",
     fees: {
       inPerson: 30,
-      video: 15,
-      phone: 12,
-      chat: 8
+      online: 15
     },
     timeSlots: {
       morning: ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30"],
@@ -47,45 +65,28 @@ export const PatientSchedule = () => {
 
   const consultationTypes = [
     {
-      id: 'in-person',
+      id: 'inPerson',
       name: 'In Person',
       description: 'In-person consultation',
       duration: '1 hour',
       icon: User,
-      fee: ConsultantScheduleData.fees.inPerson,
+      fee: consultantScheduleData.fees.inPerson,
       recommended: true
     }
     ,
     {
-      id: 'video',
-      name: 'Video Call',
+      id: 'online',
+      name: 'Online',
       icon: Video,
       description: 'Face-to-face consultation via video',
       duration: '30 mins',
-      fee: ConsultantScheduleData.fees.video
+      fee: consultantScheduleData.fees.online
     },
-    {
-      id: 'phone',
-      name: 'Phone Call',
-      icon: Phone,
-      description: 'Voice consultation over phone',
-      duration: '25 mins',
-      fee: ConsultantScheduleData.fees.phone
-    },
-    {
-
-      id: 'chat',
-      name: 'Text Chat',
-      icon: MessageCircle,
-      description: 'Written consultation via chat',
-      duration: '45 mins',
-      fee: ConsultantScheduleData.fees.chat
-    }
   ];
 
   const isTimeSlotAvailable = (time: string): boolean => {
-    return !ConsultantScheduleData.timeSlots.unavailableSlots.includes(time) &&
-      !ConsultantScheduleData.timeSlots.bookedSlots.includes(time);
+    return !consultantScheduleData.timeSlots.unavailableSlots.includes(time) &&
+      !consultantScheduleData.timeSlots.bookedSlots.includes(time);
   }
 
   const nextMonth = () => {
@@ -130,7 +131,7 @@ export const PatientSchedule = () => {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Fee:</span>
-                  <span className="font-medium">{ConsultantScheduleData.fees[consultationType]}</span>
+                  <span className="font-medium">{consultantScheduleData.fees[consultationType]}</span>
                 </div>
               </div>
             </div>
@@ -164,7 +165,8 @@ export const PatientSchedule = () => {
 
   return (
     <section className='bg-gray-50 h-full p-4 '>
-      <div className='flex flex-col h-full max-w-3xl mx-auto overflow-auto scroll-smooth [&::-webkit-scrollbar]:hidden [scrollbar-width:none] [-ms-overflow-style:none]'>
+      <div className='flex flex-col h-full max-w-3xl mx-auto overflow-auto scroll-smooth
+       [&::-webkit-scrollbar]:hidden [scrollbar-width:none] [-ms-overflow-style:none]'>
 
         <header className='flex items-center gap-4 mb-4'>
           <button
@@ -175,22 +177,22 @@ export const PatientSchedule = () => {
           </button>
           <div>
             <h1 className='text-3xl font-bold text-dark-3'>Schedule Appointment</h1>
-            <p className='text-dark-1'>Book a consultation with {ConsultantScheduleData.name}</p>
+            <p className='text-dark-1'>Book a consultation with {consultantScheduleData.fullName}</p>
           </div>
         </header>
 
         <section className=' bg-white rounded-2xl shadow-lg p-6 mb-6'>
           <div className='flex items-center gap-4'>
-            <InitialsOrAvartar name={ConsultantScheduleData.name} avatarUrl={ConsultantScheduleData.image} />
+            <InitialsOrAvartar name={consultantScheduleData.fullName} avatarUrl={consultantScheduleData.image} />
             <div className='flex-1'>
               <div className='flex items-center gap-2 mb-1'>
-                <h3 className='text-xl font-semibold text-dark-3'>{ConsultantScheduleData.name}</h3>
+                <h3 className='text-xl font-semibold text-dark-3'>{consultantScheduleData.fullName}</h3>
                 <Shield className='w-5 h-5 text-main' />
               </div>
-              <p className='text-dark-1'>{ConsultantScheduleData.title}</p>
+              <p className='text-dark-1'>{consultantScheduleData.title}</p>
               <div className='flex items-center gap-1 mt-1'>
                 <Star className='w-4 h-4 text-main fill-current' />
-                <span className='text-sm font-medium text-dark-3'>{ConsultantScheduleData.rating}</span>
+                <span className='text-sm font-medium text-dark-3'>{consultantScheduleData.rating}</span>
               </div>
             </div>
           </div>
@@ -215,15 +217,15 @@ export const PatientSchedule = () => {
                 <h2 className='text-xl font-semibold text-dark-3 mb-4'>Available Times</h2>
                 <p className='text-dark-2 mb-6'>{formatDate(selectedDate)}</p>
 
-                {Object.entries(ConsultantScheduleData.timeSlots)
+                {Object.entries(consultantScheduleData.timeSlots)
                 .filter(([period]) => period !== 'unavailableSlots' && period !== 'bookedSlots')
-                .map(([period, slots]) => (
+                .map(([period, slots]:[string,string[]]) => (
                   <div key={period} className='mb-6'>
                     <h3 className='text-lg font-medium text-dark-2 mb-3 capitalize'>{period}</h3>
                     <div className='grid grid-cols-3 sm:grid-cols-6 gap-3'>
-                      {slots.map(time => {
+                      {slots.map((time: string) => {
                         const available = isTimeSlotAvailable(time);
-                        const booked = ConsultantScheduleData.timeSlots.bookedSlots.includes(time);
+                        const booked = consultantScheduleData.timeSlots.bookedSlots.includes(time);
                         return (
                           <button
                             key={time}
@@ -333,7 +335,7 @@ export const PatientSchedule = () => {
                     <div className="flex items-center justify-between mb-4">
                       <span className="text-lg font-medium text-dark-3">Total</span>
                       <span className="text-2xl font-bold text-main">
-                        {ConsultantScheduleData.fees[consultationType]}
+                        {consultantScheduleData.fees[consultationType]}
                       </span>
                     </div>
                     

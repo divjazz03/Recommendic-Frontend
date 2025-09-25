@@ -47,7 +47,7 @@ const ConsultantOnboarding = () => {
                     specialty: selectedSpecialty,
                     userId: userContext.user_id
                 })
-                navigate('/consultant/overview');
+                navigate('/overview');
                 return toast({ title: 'Thanks for helping us serve you better' })
             } catch (error: any) {
                 return toast({ title: `Onboarding Failed: ${error.message}`, variant: 'destructive' })

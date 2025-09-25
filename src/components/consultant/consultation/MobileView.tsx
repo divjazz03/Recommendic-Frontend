@@ -2,7 +2,6 @@ import { MessageCircle, User, FileText, Pill, Clock, CheckCircle, ExternalLink, 
 import React, { MutableRefObject, useRef, useState } from 'react'
 import { ConsultationInfoProps, MedicalInfoProps, Message, PatientData } from './ConsultantConsultation';
 import NotesView from './note/NotesView';
-import ChatInputArea from '@/components/ChatInputArea';
 import PatientView from './patient/PatientView';
 import PrescriptionView from './prescription/PrescriptionView';
 import ChatView from './chat/ChatView';

@@ -11,7 +11,7 @@ export async function createNewPatient(
         lastName: userData.lastName,
         email: userData.email,
         password: userData.password,
-        phoneNumber: userData.phoneNumber,
+        dateOfBirth: userData.dateOfBirth,
         gender: userData.gender,
         city: userData.city,
         state: userData.state,

@@ -24,7 +24,7 @@ const formatDays = (days: string[]) => {
         monday: 'Mondays', tuesday: 'Tuesdays', wednesday: 'Wednesdays', thursday: 'Thursdays',
         friday: 'Fridays', saturday: 'Saturdays', sunday: 'Sundays'
     };
-    return days.map(day => dayNames[day]).join(', ');
+    return days.map(day => dayNames[day as keyof typeof dayNames]).join(', ');
 };
 
 const formatRecurrence = (rule: RecurrenceRule) => {
@@ -197,7 +197,7 @@ const ConsultantScheduleDisplay = () => {
                                             <div className="text-sm text-gray-600 mb-2">Available Channels:</div>
                                             <div className="flex flex-wrap gap-2">
                                                 {schedule.channels.map(channel => {
-                                                    const channelInfo: ChannelInfo = channelOptions[channel.toLowerCase()];
+                                                    const channelInfo: ChannelInfo = channelOptions[channel.toLowerCase() as keyof typeof channelOptions];
                                                     const Icon = channelInfo.icon;
                                                     return (
                                                         <div
@@ -276,7 +276,7 @@ const ConsultantScheduleDisplay = () => {
                                             <div className="text-sm text-gray-600 mb-2">Available Channels:</div>
                                             <div className="flex flex-wrap gap-2">
                                                 {schedule.channels.map(channel => {
-                                                    const channelInfo: ChannelInfo = channelOptions[channel.toLowerCase()];
+                                                    const channelInfo: ChannelInfo = channelOptions[channel.toLowerCase() as keyof typeof channelOptions];
                                                     const Icon = channelInfo.icon;
                                                     return (
                                                         <div

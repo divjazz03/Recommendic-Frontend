@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { Calendar, Clock, Video, Phone, MessageCircle, Users, Plus, Trash2, Save, ArrowLeft } from 'lucide-react';
-import { RecurrenceRule, Schedule } from '@/types';
+import { Calendar, Clock, Video, Phone, MessageCircle, Users, Plus, Trash2, Save, ArrowLeft, VideoIcon } from 'lucide-react';
+import { RecurrenceRule, Schedule, WeekDay} from '@/types';
 import { createNewSchedule } from '@/lib/api/consultant_api';
 import axios, { AxiosError } from 'axios';
 import { toast } from '@/hooks/use-toast';
-import { weeksToDays } from 'date-fns';
 
 export interface NewSchedule {
     id: number,
@@ -17,7 +16,7 @@ export interface NewSchedule {
     channels: string[],
     isActive: boolean
 }
-const NewConsultatantCreatedModal = () => {
+const NewConsultantCreatedModal = () => {
     return <div className='ab'>
 
     </div>
@@ -41,9 +40,7 @@ const ConsultantNewSchedule = () => {
     }]);
 
     const channelOptions = [
-        { value: 'chat', label: 'Chat', icon: MessageCircle, color: 'bg-blue-100 text-blue-600' },
-        { value: 'voice', label: 'Voice Call', icon: Phone, color: 'bg-green-100 text-green-600' },
-        { value: 'video', label: 'Video Call', icon: Video, color: 'bg-purple-100 text-purple-600' },
+        { value: 'online', label: 'Online', icon: VideoIcon, color: 'bg-blue-100 text-blue-600' },
         { value: 'in_person', label: 'In-Person', icon: Users, color: 'bg-orange-100 text-orange-600' }
     ];
 
@@ -70,18 +67,18 @@ const ConsultantNewSchedule = () => {
                 weekDays: ['monday'],
                 interval: 1
             },
-            channels: ['video'],
+            channels: ['online'],
             isActive: true
         };
         setSchedules([...schedules, newSchedule]);
     };
 
     const removeSchedule = (id: number) => {
-        setSchedules(schedules.filter(schedule => schedule.id !== id));
+        setSchedules(schedules => schedules.filter(schedule => schedule.id !== id));
     };
 
     const updateSchedule = (id: number, field: keyof Schedule, value: any) => {
-        setSchedules(schedules.map(schedule =>
+        setSchedules(schedules => schedules.map(schedule =>
             schedule.id === id ? { ...schedule, [field]: value } : schedule
         ));
     };
@@ -95,7 +92,6 @@ const ConsultantNewSchedule = () => {
                     : schedule
             ));
         }
-
     };
 
     const toggleChannel = (scheduleId: number, channel: string) => {
@@ -110,7 +106,7 @@ const ConsultantNewSchedule = () => {
         }));
     };
 
-    const toggleDayOfWeek2 = (scheduleId: number, day: "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday") => {
+    const toggleDayOfWeek2 = (scheduleId: number, day: WeekDay) => {
         setSchedules(schedules.map(schedule => {
             if (scheduleId != schedule.id) {
                 return schedule;
@@ -132,7 +128,7 @@ const ConsultantNewSchedule = () => {
     const saveSchedules = async () => {
         console.log('Saving schedules:', schedules);
         try {
-            const response = await createNewSchedule(schedules[0]);
+            const response = await createNewSchedule(schedules);
             window.history.back()
         } catch (error) {
             if (axios.isAxiosError(error)) {

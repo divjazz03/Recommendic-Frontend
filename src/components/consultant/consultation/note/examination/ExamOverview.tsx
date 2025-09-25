@@ -1,7 +1,7 @@
 
-import { usePatientExamStore } from '@/stores/PatientExamStore';
+import { ExamStage, usePatientExamStore } from '@/stores/PatientExamStore';
 import { useShallow } from "zustand/react/shallow";
-import { Activity, CheckCircle, ChevronRight, Eye, Heart, Play, Stethoscope} from 'lucide-react';
+import { Activity, CheckCircle, ChevronRight, Eye, Heart, Play, Square, Stethoscope, StopCircle} from 'lucide-react';
 import React from 'react'
 
 const ExamOverview = () => {
@@ -12,9 +12,16 @@ const ExamOverview = () => {
             examResults: s.patientExamState.examResults,
             setPatientExamState: s.setPatientExamState,
             examNotes: s.patientExamState.examNotes,
-            timerRunning: s.patientExamState.timerRunning
+            timerRunning: s.patientExamState.timerRunning,
         }))
     )
+
+    const selectExamStage = (stage: ExamStage) => {
+        if (!timerRunning) {
+            setPatientExamState({timerRunning: true})
+        }
+        setPatientExamState({currentSection: stage, activeExam: stage});
+    }
 
     const examSections = [
         {
@@ -85,7 +92,7 @@ const ExamOverview = () => {
                     onClick={() => setPatientExamState({timerRunning: false, timer: 0})}
                     className="flex items-center gap-2 px-3 py-2 bg-red-600 text-white rounded-lg text-sm"
                 >
-                    <Play className="w-4 h-4" />
+                    <Square className="w-4 h-4" />
                     Stop Exam
                 </button> 
                  }
@@ -99,7 +106,7 @@ const ExamOverview = () => {
                         <button
                             key={section.id}
                             // onClick={() => { setCurrentSection(section.id); setActiveExam(section.id); }}
-                            onClick={() => { setPatientExamState({ currentSection: section.id, activeExam: section.id})}}
+                            onClick={() => selectExamStage(section.id as ExamStage)}
                             className="w-full flex items-center justify-between p-4 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                         >
                             <div className="flex items-center gap-3">

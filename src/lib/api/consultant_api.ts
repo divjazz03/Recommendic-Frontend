@@ -81,7 +81,7 @@ export async function createNewConsultant(
         lastName: userData.lastName,
         email: userData.email,
         password: userData.password,
-        phoneNumber: userData.phoneNumber,
+        dateOfBirth: userData.dateOfBirth,
         gender: userData.gender,
         city: userData.city,
         state: userData.state,
@@ -105,8 +105,8 @@ export async function createNewConsultant(
     return result;
 }
 
-export async function createNewSchedule(schedule: NewSchedule): Promise<ScheduleCreationResponse> {
-    return apiClient.post(`${scheduleBasePath}`, schedule, {
+export async function createNewSchedule(schedules: NewSchedule[]): Promise<ScheduleCreationResponse> {
+    return apiClient.post(`${scheduleBasePath}`, schedules, {
         headers: {
             'Content-Type': 'application/json'
         }

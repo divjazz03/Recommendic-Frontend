@@ -12,11 +12,11 @@ export const useSearchResults = () => {
 
     return useQuery<SearchResult[]>({
         queryKey: ['search', query],
-        queryFn: async () => {
+        queryFn: () => {
             if (!query) return [];
-            const data = await doGlobalSearch(query);
+            return doGlobalSearch(query);
         },
         enabled: !!query,
-        staleTime: 1000* 60
+        staleTime: 1000 * 60
     });
 };

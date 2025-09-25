@@ -3,6 +3,7 @@ import { ArrowLeft, Pause, Timer } from 'lucide-react';
 import React, { useEffect} from 'react'
 import { useShallow } from 'zustand/react/shallow';
 import { PatientExaminationInterfaceProps } from './PatientExaminationInterface';
+
 const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -20,7 +21,7 @@ const Header: React.FC<PatientExaminationInterfaceProps> = ({backToHome}) => {
         })));
 
     useEffect(() => {
-            let interval = null;
+            let interval = undefined
             let localTimer = timer
             if (timerRunning) {
                 interval = setInterval(() => {

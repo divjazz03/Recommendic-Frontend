@@ -5,12 +5,11 @@ import {
     SigninUserData,
 } from "@/types";
 import { apiClient } from "../utils/utils";
+import { SearchResult } from "@/hooks/useSearchResults";
 
 
 const userLoginPath = import.meta.env.VITE_APP_USER_LOGIN;
 const userGetPath = import.meta.env.VITE_CURRENT_AUTH_USER;
-const patientPath = import.meta.env.VITE_PATIENT_BASE;
-const consultantPath = import.meta.env.VITE_CONSULTANT_BASE;
 const medicalCategoriesPath = import.meta.env.VITE_GET_MEDICAL_CATEGORIES;
 const emailConfirmationPath = import.meta.env.VITE_EMAIL_CONFIRMATION;
 const retryEmail = import.meta.env.VITE_RETRY_EMAIL;
@@ -99,8 +98,8 @@ export async function verifyEmail(token: string): Promise<string> {
     return result;
 }
 
-export async function doGlobalSearch(query: string) {
-    let result = apiClient.get(`/search/${query}`)
+export async function doGlobalSearch(query: string): Promise<SearchResult[]> {
+    return apiClient.get(`/search?query=${query}`)
         .then(response => response.data)
         .catch((error) => {
             if (apiClient.isAxiosError(error)) {

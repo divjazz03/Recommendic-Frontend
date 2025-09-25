@@ -4,7 +4,7 @@ export const userFormValidation = z.object({
   firstName: z.string().min(2, 'Too short').max(30, 'Too long'),
   lastName: z.string().min(2, 'Too short').max(30, 'Too long'),
   dateOfBirth: z.string().date(),
-  gender: z.enum(['Male','Female'])
+  gender: z.enum(['male','female'])
 })
 export const addressFormValidation = z.object({
   city: z.string(),

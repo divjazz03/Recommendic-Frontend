@@ -4,8 +4,10 @@ import React from 'react'
 import { VisualInspectionResult } from '@/components/consultant/consultation/note/examination/VisualInspectionExam'
 import { MovementAssessmentResult } from '@/components/consultant/consultation/note/examination/MovementAssessment'
 
+export type ExamStage = 'vital-signs' | 'visual-inspection' | 'movement-assessment'
+
 export interface ExamResults {
-    'vital-signs'?: VitalSignResult
+    'vital-signs' ?: VitalSignResult
     'visual-inspection'?: VisualInspectionResult
     'movement-assessment'?: MovementAssessmentResult
     // 'respiratory-exam'?: any
@@ -15,16 +17,9 @@ export interface ExamResults {
 }
 
 export interface PatientExamState {
-    currentSection: 'vital-signs' | 'visual-inspection' | 'movement-assessment' | undefined
-    // 'respiratory-exam' |
-    // 'neurological' |
-    // 'pain-assessment' 
+    currentSection?: ExamStage
     examResults: ExamResults
-    activeExam: 
-    'vital-signs' | 'visual-inspection' | 'movement-assessment' | undefined,
-    //  'respiratory-exam' |
-    // 'neurological' |
-    // 'pain-assessment'
+    activeExam?: ExamStage
     timerRunning: boolean
     timer: number
     examNotes: string
@@ -37,9 +32,7 @@ export interface PatientExamContext {
 }
 
 const patientExamInitialState: PatientExamState = {
-    currentSection: undefined,
     examResults: {},
-    activeExam: undefined,
     timerRunning: false,
     timer: 0,
     examNotes: '',

@@ -56,8 +56,7 @@ const PatientExaminationInterface : React.FC<PatientExaminationInterfaceProps> =
                 return <MovementAssessment
                 />;
             default:
-                return <ExamOverview
-                />
+                return <ExamOverview/>
 
         }
     }

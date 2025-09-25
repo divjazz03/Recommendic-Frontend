@@ -3,6 +3,37 @@ import React, { MutableRefObject, useEffect, useRef, useState } from 'react'
 import MobileView from './MobileView';
 import DesktopView from './DesktopView';
 
+const sampleMessages: Message[] = [
+        {
+            id: 1,
+            sender: 'system',
+            content: 'Patient John Smith has joined the session.',
+            timestamp: '2:30 PM',
+            type: 'system'
+        },
+        {
+            id: 2,
+            sender: 'other',
+            content: 'Hello Doctor, I\'ve been experiencing chest pain for the past few days.',
+            timestamp: '2:30 PM',
+            type: 'message'
+        },
+        {
+            id: 3,
+            sender: 'me',
+            content: 'Hello John! Can you describe the type of chest pain you\'re experiencing?',
+            timestamp: '2:31 PM',
+            type: 'message'
+        },
+        {
+            id: 4,
+            sender: 'other',
+            content: 'It\'s a sharp pain that comes and goes, usually when I take deep breaths.',
+            timestamp: '2:32 PM',
+            type: 'message'
+        }
+    ]
+
 const ConsultantConsultation = () => {
     const [message, setMessage] = useState<string>("");
     const [clinicalNotes, setClinicalNotes] = useState('Patient reports chest pain for 3 days. Pain described as sharp, intermittent...')
@@ -10,36 +41,7 @@ const ConsultantConsultation = () => {
     const [prescription, setPrescription] = useState<Prescription[]>([]);
     const [newMedication, setNewMedication] = useState<Medication>({ name: '', dosage: '', frequency: '', duration: '' });
     const [showPrescriptionForm, setShowPrescriptionForm] = useState(false);
-    const [messages, setMessages] = useState<Message[]>([
-        {
-            id: 1,
-            sender: 'system',
-            content: 'Patient John Smith has joined the consultation.',
-            timestamp: '2:30 PM',
-            type: 'system'
-        },
-        {
-            id: 2,
-            sender: 'patient',
-            content: 'Hello Doctor, I\'ve been experiencing chest pain for the past few days.',
-            timestamp: '2:30 PM',
-            type: 'message'
-        },
-        {
-            id: 3,
-            sender: 'doctor',
-            content: 'Hello John! Can you describe the type of chest pain you\'re experiencing?',
-            timestamp: '2:31 PM',
-            type: 'message'
-        },
-        {
-            id: 4,
-            sender: 'patient',
-            content: 'It\'s a sharp pain that comes and goes, usually when I take deep breaths.',
-            timestamp: '2:32 PM',
-            type: 'message'
-        }
-    ]);
+    const [messages, setMessages] = useState<Message[]>(sampleMessages);
     const [videoStatus, setVideoStatus] = useState('connected');
     const [consultationTime, setConsultationTime] = useState('12:45');
 
@@ -70,15 +72,15 @@ const ConsultantConsultation = () => {
             triggers: 'Deep breathing, movement'
         }
     };
-    const scrollToBottom = (messagesEndRef: MutableRefObject<HTMLDivElement>) => {
-        messagesEndRef.current?.scrollIntoView()
+    const scrollToBottom = (messagesEndRef: MutableRefObject<HTMLDivElement|null>) => {
+        messagesEndRef?.current?.scrollIntoView()
     };
     const sendMessage = () => {
 
         if (message && message.trim()) {
             const newMessage: Message = {
                 id: messages.length + 1,
-                sender: 'doctor',
+                sender: 'me',
                 content: message,
                 timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                 type: 'message'
@@ -159,10 +161,10 @@ const ConsultantConsultation = () => {
 }
 export interface Message {
     id: number,
-    sender: string,
+    sender: ChatMessageSender,
     content: string,
     timestamp: string,
-    type: 'system' | 'message'
+    type: ChatMessageType
 }
 interface Medication {
     name: string,
@@ -240,6 +242,8 @@ export interface MedicalInfoProps {
     addPrescription: () => void
     removePrescription: (id: number) => void
 }
+export type ChatMessageType = "system" | "message"
+export type ChatMessageSender = "system" | "me" | "other"
 
 export interface ExamSection {
     id: string

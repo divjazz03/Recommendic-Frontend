@@ -13,7 +13,6 @@ const ChatInputArea: React.FC<ChatInputAreaProps> = ({
     sendMessage,setMessage,messagesEndRef,scrollToBottom,message
 }) => {
     const textareaRef = useRef<HTMLTextAreaElement>(null)
-    const [scrollHeight, setScrollHeight] = useState(0);
 
     useEffect(() => {
         const textarea = textareaRef.current;
@@ -36,14 +35,14 @@ const ChatInputArea: React.FC<ChatInputAreaProps> = ({
                         }
                     onKeyDown={(e) => {
                             if (e.shiftKey && e.key === 'Enter') {
-                                //setMessage(e => e+"\n")
                                 return
                             }
                             if (e.key === 'Enter') {
+                                if(message.length === 0) return;
                                 sendMessage()
                                 if (scrollToBottom) scrollToBottom(messagesEndRef)
                                 if (textareaRef.current) textareaRef.current.value=''
-                                return
+                                
                             }
                         }}
                     placeholder={"Send a message"}
@@ -52,12 +51,13 @@ const ChatInputArea: React.FC<ChatInputAreaProps> = ({
                     style={{
                         resize: 'none'
                     }}
-                    className='rounded-lg py-2 px-1 tracking-wider outline-none w-full'
+                    className='rounded-lg py-2 px-1 trif(message.length === 0) tracking-wider outline-none w-full'
                 />
             </div>
             <button
                 onClick={sendMessage}
-                className="p-2 bg-main-light text-white rounded-lg hover:bg-main"
+                disabled={message.length === 0}
+                className="p-2 bg-main-light text-white rounded-lg hover:bg-main disabled:bg-gray-600"
             >
                 <Send className="w-5 h-5" />
             </button>
