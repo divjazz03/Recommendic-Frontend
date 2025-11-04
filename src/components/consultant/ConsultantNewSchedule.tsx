@@ -10,12 +10,15 @@ export interface NewSchedule {
     name: string,
     startTime: string,
     endTime: string,
-    isRecurring: boolean,
     recurrenceRule?: RecurrenceRule,
     zoneOffset: string,
     channels: string[],
     isActive: boolean
 }
+const channelOptions = [
+        { value: 'online', label: 'Online', icon: VideoIcon, color: 'bg-blue-100 text-blue-600' },
+        { value: 'in_person', label: 'In-Person', icon: Users, color: 'bg-orange-100 text-orange-600' }
+    ];
 const NewConsultantCreatedModal = () => {
     return <div className='ab'>
 
@@ -28,21 +31,17 @@ const ConsultantNewSchedule = () => {
         name: '',
         startTime: '09:00',
         endTime: '17:00',
-        isRecurring: true,
         recurrenceRule: {
             frequency: 'weekly',
             weekDays: ['monday'],
             interval: 1
         },
         zoneOffset: "+01:00",
-        channels: ['video'],
+        channels: [],
         isActive: true
     }]);
 
-    const channelOptions = [
-        { value: 'online', label: 'Online', icon: VideoIcon, color: 'bg-blue-100 text-blue-600' },
-        { value: 'in_person', label: 'In-Person', icon: Users, color: 'bg-orange-100 text-orange-600' }
-    ];
+    
 
     const weekDays = [
         { value: 'monday', label: 'Mon' },
@@ -60,7 +59,6 @@ const ConsultantNewSchedule = () => {
             name: '',
             startTime: '09:00',
             endTime: '17:00',
-            isRecurring: true,
             zoneOffset: "+01:00",
             recurrenceRule: {
                 frequency: 'weekly',
@@ -222,23 +220,8 @@ const ConsultantNewSchedule = () => {
                                             </div>
                                         </div>
 
-
-                                        {/* Recurring Toggle */}
-                                        <div className="flex items-center gap-3">
-                                            <input
-                                                type="checkbox"
-                                                id={`recurring-${schedule.id}`}
-                                                checked={schedule.isRecurring}
-                                                onChange={(e) => updateSchedule(schedule.id, 'isRecurring', e.target.checked)}
-                                                className="w-4 h-4 text-blue-600 rounded focus:ring-main"
-                                            />
-                                            <label htmlFor={`recurring-${schedule.id}`} className="text-sm font-medium text-gray-700">
-                                                Recurring Schedule
-                                            </label>
-                                        </div>
-
                                         {/* Recurrence Settings */}
-                                        {schedule.isRecurring && (
+                                        {(
                                             <div className="space-y-4 p-4 bg-blue-50 rounded-lg">
                                                 <div>
                                                     <label className="block text-sm font-medium text-gray-700 mb-2">Frequency</label>
@@ -247,6 +230,7 @@ const ConsultantNewSchedule = () => {
                                                         onChange={(e) => updateRecurrenceRule(schedule.id, 'frequency', e.target.value)}
                                                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-main"
                                                     >
+                                                        <option value={"one-off"}>One off</option>
                                                         <option value="daily">Daily</option>
                                                         <option value="weekly">Weekly</option>
                                                         <option value="monthly">Monthly</option>
@@ -260,8 +244,8 @@ const ConsultantNewSchedule = () => {
                                                             {weekDays.map(day => (
                                                                 <button
                                                                     key={day.value}
-                                                                    onClick={() => toggleDayOfWeek2(schedule.id, day.value)}
-                                                                    className={`px-3 py-1 text-sm rounded-lg transition-colors ${schedule.recurrenceRule?.weekDays.includes(day.value)
+                                                                    onClick={() => toggleDayOfWeek2(schedule.id, day.value as WeekDay)}
+                                                                    className={`px-3 py-1 text-sm rounded-lg transition-colors ${schedule.recurrenceRule?.weekDays.includes(day.value as WeekDay)
                                                                         ? 'bg-main-light text-white'
                                                                         : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
                                                                         }`}
@@ -273,6 +257,7 @@ const ConsultantNewSchedule = () => {
                                                     </div>
                                                 )}
 
+                                                {schedule.recurrenceRule?.frequency !== 'one-off' &&
                                                 <div>
                                                     <label className="block text-sm font-medium text-gray-700 mb-2">Repeat Every</label>
                                                     <div className="flex items-center gap-2">
@@ -288,7 +273,7 @@ const ConsultantNewSchedule = () => {
                                                                 schedule.recurrenceRule?.frequency === 'weekly' ? 'week(s)' : 'month(s)'}
                                                         </span>
                                                     </div>
-                                                </div>
+                                                </div>}
 
                                                 <div>
                                                     <label className="block text-sm font-medium text-gray-700 mb-2">End Date (Optional)</label>

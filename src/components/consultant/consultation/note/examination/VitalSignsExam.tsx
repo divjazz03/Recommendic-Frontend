@@ -1,4 +1,4 @@
-import { usePatientExamStore } from '@/stores/PatientExamStore';
+import { usePatientExamStore } from '@/store/PatientExamStore';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CheckCircle, Heart, Thermometer, Users } from 'lucide-react';
 import React, { useState } from 'react'

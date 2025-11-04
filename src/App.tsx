@@ -10,7 +10,6 @@ import ConfirmEmail from './_auth/forms/ConfirmEmail';
 import EmailConfirmation from './_auth/forms/EmailConfirmation';
 import Notification from './_root/pages/Notification';
 import RootLayout from './_root/pages/RootLayout';
-import ConsultantScreen from './components/patient/ConsultantScreen';
 import Consultant from './components/patient/Consultant';
 import ConsultantList from './components/patient/ConsultantList';
 import Schedule from '@/_root/pages/Schedule';
@@ -20,12 +19,15 @@ import ConsultantSchedule from './components/consultant/ConsultantSchedule';
 import ConsultantNewSchedule from './components/consultant/ConsultantNewSchedule';
 import ConsultantModifySchedule from './components/consultant/ConsultantModifySchedule';
 import ConsultantScheduleDisplay from './components/consultant/ConsultantScheduleDisplay';
-import Overview from '@/_root/pages/Overview';
+import Home from '@/_root/pages/Home';
 import Onboarding from '@/_root/pages/Onboarding';
 import Medication from '@/_root/pages/Medication';
 import Settings from '@/_root/pages/Settings';
 import Appointment from './_root/pages/Appointment';
 import Consultation from './_root/pages/Consultation';
+import Profile from './_root/pages/Profile';
+import { ErrorBoundary } from './components/ErrorBoundary';
+import ConsultantScreen from './components/patient/ConsultantScreen';
 
 
 const App = () => {
@@ -33,7 +35,8 @@ const App = () => {
   
   return (
     <main className='h-screen w-screen'>
-      <Routes>
+      <ErrorBoundary>
+        <Routes>
         {/* Public Routes*/}
         <Route path='/landing' element={<Landing />} />
         <Route path='/welcome' element={<Welcome />} />
@@ -47,8 +50,9 @@ const App = () => {
         {/* Private Routes*/}
         <Route element={<RootLayout/>}>
           <Route path='/onboarding' element={<Onboarding />} />
-          <Route path='/overview' element={<Overview />} />
-          <Route path='/consultant' element={<Consultant />}>
+          <Route index element={<Home />} />
+          <Route path='/profile' element={<Profile/>}/>
+          <Route path='/consultants' element={<Consultant/>}>
             <Route index element={<ConsultantList />} />
             <Route path='profile' element={<ConsultantScreen />} />
           </Route>
@@ -69,6 +73,8 @@ const App = () => {
         </Route>
       </Routes>
       <Toaster />
+      </ErrorBoundary>
+      
     </main>
   )
 }

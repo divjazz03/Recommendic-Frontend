@@ -20,6 +20,11 @@ interface ImportMetaEnv {
     readonly VITE_ADMIN_BASE: string;
 
     readonly VITE_SCHEDULE_BASE: string;
+    readonly VITE_CONSULTATION_BASE:string;
+
+    readonly VITE_NOTIFICATION_BASE:string;
+
+    readonly VITE_APPOINTMENT_BASE:string;
 }
 
 interface ImportMeta {

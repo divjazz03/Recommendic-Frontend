@@ -1,5 +1,5 @@
 
-import { usePatientExamStore } from '@/stores/PatientExamStore';
+import { usePatientExamStore } from '@/store/PatientExamStore';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CheckCircle } from 'lucide-react';
 import React, { useState } from 'react'

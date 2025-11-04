@@ -1,18 +1,24 @@
-import { AuthenticatedUserResponse, AuthUserContext, NewUser, SigninUserData } from "@/types";
+import { NewUser, SigninUserData } from "@/types";
 import { 
     useQuery,
-    useMutation
+    useMutation,
+    useQueryClient
  } from "@tanstack/react-query";
 import {
    signinUser,
    getCurrentUser, 
    resendConfirmationEmail, 
    verifyEmail, 
-   getAllSupportedMedicalCategories} from "../api/general_api";
+   getAllSupportedMedicalCategories,
+   startNewConsultation,
+   endConsultation,
+   getMyNotificationSettings,
+   updateMyNotificationSettings} from "../api/general_api";
 import { TypeOfUser } from "@/_auth/forms/SignupForm";
 import { createNewPatient, sendPatientOnboardingData } from "../api/patient_api";
 import { createNewConsultant, createNewSchedule, sendConsultantOnboardingData } from "../api/consultant_api";
 import { NewSchedule } from "@/components/consultant/ConsultantNewSchedule";
+import { ModifyingNotificationSetting } from "@/hooks/useNotificationSettings";
 
  type UserCreateMutionProps = {
     typeOfUser: TypeOfUser,
@@ -44,7 +50,7 @@ import { NewSchedule } from "@/components/consultant/ConsultantNewSchedule";
       queryKey: ['getCurrentUser'],
       queryFn: getCurrentUser,
       enabled: enabled,
-      retry: false
+      retry: 3,
    })
  }
 
@@ -86,6 +92,35 @@ import { NewSchedule } from "@/components/consultant/ConsultantNewSchedule";
 
  export const useCreateSchedule = () => {
    return useMutation({
-      mutationFn: (schedule: NewSchedule) => createNewSchedule(schedule)
+      mutationFn: (schedule: NewSchedule[]) => createNewSchedule(schedule)
    })
  }
+
+ export const useStartConsultation = () => {
+   return useMutation({
+      mutationFn: (appointmentId: string) => startNewConsultation(appointmentId)
+   })
+ }
+ export const useEndConsultation = () => {
+   return useMutation({
+      mutationFn: (consultationId: string) => endConsultation(consultationId)
+   })
+ }
+
+ export const useGetNotificationSettings = () => {
+    return useQuery ({
+        queryKey: ['getNotificationSettings'],
+        queryFn: getMyNotificationSettings,
+        staleTime: 1000 * 3600
+    })
+}
+
+export const useUpdateNotificationSettings = () => {
+   const client = useQueryClient();
+   return useMutation({
+      mutationFn: (modifyingNotification: ModifyingNotificationSetting) => updateMyNotificationSettings(modifyingNotification),
+      onSuccess: () => {
+         client.invalidateQueries({queryKey: ['getNotificationSettings']})
+      }
+   });
+}

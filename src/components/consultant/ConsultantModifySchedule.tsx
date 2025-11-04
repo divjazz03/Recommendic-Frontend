@@ -18,7 +18,6 @@ export interface ModifyingSchedule {
     name?: string;
     startTime?: string;
     endTime?: string;
-    isRecurring?: boolean;
     offset?: string;
     channels?: string[];
     recurrenceRule?: ModifyingRecurrenceRule;
@@ -87,7 +86,6 @@ const ConsultantModifySchedule = () => {
                     channels: scheduleData?.channels,
                     endTime: scheduleData?.endTime,
                     startTime: scheduleData?.startTime,
-                    isRecurring: scheduleData?.isRecurring,
                     isActive: scheduleData?.isActive,
                     offset: scheduleData?.offset,
                     recurrenceRule: {
@@ -116,10 +114,9 @@ const ConsultantModifySchedule = () => {
     }
 
     const updateRecurrenceRule = (field: keyof ModifyingRecurrenceRule, value: unknown) => {
-        if (modifiedSchedule?.isRecurring) {
-            setModifiedSchedule(schedule => ({ ...schedule, recurrenceRule: { ...schedule?.recurrenceRule, [field]: value } })
-            );
-        }
+        setModifiedSchedule(schedule => ({ ...schedule, recurrenceRule: { ...schedule?.recurrenceRule, [field]: value } })
+        );
+
     };
 
     const toggleChannel = (channel: string) => {
@@ -252,22 +249,8 @@ const ConsultantModifySchedule = () => {
                                     </div>
                                 </div>
 
-                                {/* Recurring Toggle */}
-                                <div className="flex items-center gap-3">
-                                    <input
-                                        type="checkbox"
-                                        id='recurring'
-                                        checked={modifiedSchedule?.isRecurring}
-                                        onChange={(e) => toggleRecurrence(e.target.checked)}
-                                        className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
-                                    />
-                                    <label htmlFor={`recurring`} className="text-sm font-medium text-gray-700">
-                                        Recurring Schedule
-                                    </label>
-                                </div>
-
                                 {/* Recurrence Settings */}
-                                {modifiedSchedule?.isRecurring && (
+                                {(
                                     <div className="space-y-4 p-4 bg-blue-50 rounded-lg">
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-2">Frequency</label>
@@ -281,7 +264,7 @@ const ConsultantModifySchedule = () => {
                                             </select>
                                         </div>
 
-                                        {modifiedSchedule.recurrenceRule?.frequency === 'weekly' && (
+                                        {modifiedSchedule && modifiedSchedule.recurrenceRule?.frequency === 'weekly' && (
                                             <div>
                                                 <label className="block text-sm font-medium text-gray-700 mb-2">Days of Week</label>
                                                 <div className="flex flex-wrap gap-2">
@@ -291,8 +274,8 @@ const ConsultantModifySchedule = () => {
                                                             onClick={() => toggleDayOfWeek(day.value as WeekDay)}
                                                             className={`px-3 py-1 text-sm rounded-lg transition-colors
                                                                 ${modifiedSchedule.recurrenceRule?.weekDays?.includes(day.value as typeof modifiedSchedule.recurrenceRule.weekDays[0])
-                                                                ? 'bg-blue-600 text-white'
-                                                                : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                                                                    ? 'bg-blue-600 text-white'
+                                                                    : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
                                                                 }`}
                                                         >
                                                             {day.label}

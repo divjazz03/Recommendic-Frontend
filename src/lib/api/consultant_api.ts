@@ -1,7 +1,7 @@
-import { NewUser, RecurrenceRule, Response, Schedule, SignUpResponse } from "@/types";
-import { apiClient } from "../utils/utils";
+import { Address, ConsultantEducation, NewUser, RecurrenceRule, Response, Schedule, SignUpResponse, UserName } from "@/types";
 import { NewSchedule } from "@/components/consultant/ConsultantNewSchedule";
 import { ModifyingSchedule } from "@/components/consultant/ConsultantModifySchedule";
+import { apiClient } from "../axios";
 
 
 const consultantBasePath = import.meta.env.VITE_CONSULTANT_BASE;
@@ -21,7 +21,7 @@ interface ScheduleCreationResponse extends Response {
     }
 }
 
-interface SchedulesResponse extends Response {
+export interface SchedulesResponse extends Response {
     data: Schedule[]
 }
 interface ScheduleResponse extends Response {
@@ -31,14 +31,6 @@ interface ScheduleResponse extends Response {
 export async function sendConsultantOnboardingData(medicalSpecialization: string, userId: string) {
     let result = await apiClient.post(`${consultantBasePath}/${userId}/onboard`, { medicalSpecialization: medicalSpecialization })
         .then(response => response.data)
-        .catch((error) => {
-            if (apiClient.isAxiosError(error)) {
-                throw error;
-            }
-            else {
-                throw new Error(error);
-            }
-        })
     return result;
 
 }
@@ -46,28 +38,12 @@ export async function sendConsultantOnboardingData(medicalSpecialization: string
 export async function deleteConsultant(consultantId: string): Promise<Response> {
     let result = await apiClient.delete(`${consultantBasePath}/${consultantId}`)
         .then(response => response.data)
-        .catch((error) => {
-            if (apiClient.isAxiosError(error)) {
-                throw error;
-            }
-            else {
-                throw new Error(error);
-            }
-        })
     return result;
 }
 
 export async function getAllConsultants(params: { page?: number, size?: number, sort?: boolean }): Promise<any> {
     let result = await apiClient.get(`${consultantBasePath}`, { params: params })
         .then(response => response.data)
-        .catch((error) => {
-            if (apiClient.isAxiosError(error)) {
-                throw error;
-            }
-            else {
-                throw new Error(error);
-            }
-        })
 
     return result;
 }
@@ -93,15 +69,6 @@ export async function createNewConsultant(
         }
     })
         .then((response) => response.data)
-        .catch((error) => {
-            if (apiClient.isAxiosError(error)) {
-                console.error(error)
-                throw error;
-            }
-            else {
-                throw new Error(error);
-            }
-        })
     return result;
 }
 
@@ -111,73 +78,80 @@ export async function createNewSchedule(schedules: NewSchedule[]): Promise<Sched
             'Content-Type': 'application/json'
         }
     }).then(response => response.data)
-        .catch(error => {
-            if (apiClient.isAxiosError(error)) {
-                console.error(error)
-                throw error;
-            }
-            else {
-                throw new Error(error);
-            }
-        });
 
 }
 
 export async function getMySchedules(): Promise<SchedulesResponse> {
     return apiClient.get(`${scheduleBasePath}/me`)
-    .then(response => response.data)
-    .catch(error => {
-        if (apiClient.isAxiosError(error)) {
-            console.error(error)
-            throw error;
-        } else {
-            throw new Error(error)
-        }
-    })
+        .then(response => response.data)
 }
 
 export async function getScheduleById(id: number): Promise<ScheduleResponse> {
     return apiClient.get(`${scheduleBasePath}/${id}`)
-    .then(response => response.data)
-    .catch(error => {
-        if (apiClient.isAxiosError(error)) {
-            console.error(error)
-            throw error;
-        } else {
-            throw new Error(error)
-        }
-    })
+        .then(response => response.data)
 }
 
 export async function updateSchedule(id: number, schedule: ModifyingSchedule): Promise<ScheduleResponse> {
-    return apiClient.patch(`${scheduleBasePath}/${id}`, 
-        schedule, 
+    return apiClient.patch(`${scheduleBasePath}/${id}`,
+        schedule,
         {
             headers: {
-                'Content-Type': 'application/json' 
+                'Content-Type': 'application/json'
             }
         })
         .then((response) => response.data)
-        .catch((error) => {
-            if (apiClient.isAxiosError(error)) {
-                console.error(error)
-                throw error;
-            }
-            else {
-                throw new Error(error);
-            }
-        })
 }
 export async function deleteSchedule(id: number): Promise<Response> {
     return apiClient.delete(`${scheduleBasePath}/${id}`)
-    .then(response => response.data.data)
-    .catch((error) => {
-            if (apiClient.isAxiosError(error)) {
-                console.error(error)
-                throw error;
-            }
-            else {
-                throw new Error(error);
-            }
-        })
+        .then(response => response.data.data)
+}
+
+export interface ProfileDetails {
+    profile: {
+        userName: UserName
+        email: string
+        phoneNumber: string,
+        dateOfBirth: string,
+        gender: string,
+        location: string,
+        address: Address,
+        specialty: string,
+        experience: string,
+        languages: string[]
+        bio: string
+    }
+    education: ConsultantEducation
+}
+
+export interface ProfileDetailsResponse extends Response {
+    data: ProfileDetails
+}
+
+export async function getMyProfileDetails(): Promise<ProfileDetailsResponse> {
+    return apiClient.get(`${consultantBasePath}/profiles/details`)
+        .then(response => response.data)
+
+
+}
+export interface ConsultantProfile {
+    userName?: UserName
+    email?: string
+    phoneNumber?: string,
+    dateOfBirth?: string,
+    gender?: string,
+    location?: string,
+    address?: Address,
+    specialty?: string,
+    experience?: string,
+    bio?: string,
+    languages?: string[]
+}
+export interface ConsultantProfileUpdateRequest {
+    education?: ConsultantEducation
+    profile?: ConsultantProfile
+}
+
+export async function updateConsultantProfileDetails(consultantProfile: ConsultantProfileUpdateRequest): Promise<ProfileDetailsResponse> {
+    return apiClient.patch(`${consultantBasePath}/profiles`,consultantProfile )
+    .then(response => response.data);
 }

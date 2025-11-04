@@ -19,7 +19,7 @@ const PatientOnboarding = () => {
     const { error: errorGettingSupportedCategories, data: supportedCategories, isPending: isLoadingMedicalCategories } = useGetSupportedMedicalCategories();
     const { userContext } = useUserContext();
     const [specialties, setSpecialties] = useState<MedicalCategory[]>([])
-    const [selectedInterests, setSelectedInterests] = useState([]);
+    const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
     const { mutateAsync: updatePatientOnboardingInfo, isPending:isUpdating } = useUpdatePatientOnboardingInfo()
     const { toast } = useToast();
     const navigate = useNavigate();
@@ -47,7 +47,7 @@ const PatientOnboarding = () => {
                     interests: selectedInterests.filter(interest => interest != " "),
                     userId: userContext.user_id
                 })
-                navigate('/patient/overview');
+                navigate('/');
                 return toast({ title: 'Thanks for helping us serve you better' })
             } catch (error) {
                 return toast({ title: `Onboarding Failed: ${error.message}`, variant: 'destructive' })

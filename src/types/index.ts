@@ -1,3 +1,5 @@
+import { PatientData } from "@/components/consultant/consultation/ConsultantConsultation"
+import { ConsultantScheduleData, Fee } from "@/components/patient/PatientSchedule"
 import React, { ReactNode } from "react"
 
 export type UserType = 'PATIENT' | 'CONSULTANT' | 'ADMIN'
@@ -33,43 +35,58 @@ export type SigninUserData = {
 
 
 export type Address = {
-    city: string;
-    state: string;
-    country: string
+    city?: string
+    state?: string
+    country?: string
+    zipCode?: string
 }
 
 
 export interface SignUpResponseData {
-    id: string;
-    last_name: string;
-    first_name: string;
-    age: string;
-    address: Address;
+    id: string
+    last_name: string
+    first_name: string
+    age: string
+    address: Address
 }
+export interface ConsultationResponseData {
+    summary?: string
+    startTime: string
+    patientName: string
+    consultantName: string
+    consultationId: string
+    status: string
+    channel: string
+    patientData?: PatientData
+}
+
 export interface UserName {
-    fullname: string,
-    firstname: string,
-    lastname: string
+    full_name?: string
+    first_name?: string
+    last_name?: string
 }
 
 
 export interface SignUpResponse extends Response {
-    data: SignUpResponseData;
+    data: SignUpResponseData
+}
+export interface ConsultationResponse extends Response {
+    data: ConsultationResponseData
 }
 
 
 export interface AuthUserContext {
-    user_id?: string;
-    role?: string;
+    user_id?: string
+    role?: string
     userStage?: UserStage,
     userType?: UserType
 }
 export interface UserContext {
-    user_id: string;
-    role: string;
-    firstName: string;
-    lastName: string;
-    address: Address;
+    user_id: string
+    role: string
+    firstName: string
+    lastName: string
+    address: Address
     userStage: UserStage,
     userType: UserType
 }
@@ -85,66 +102,73 @@ export type BaseProfile = {
         last_name: string
         full_name: string
     }
+    profilePicture: {
+        name: string,
+        picture_url: string
+    }
     address: Address
     age: string
 }
 
-export type PatientProfile = BaseProfile | {}
-export type ConsultantProfile = BaseProfile | {}
+export type PatientProfile = BaseProfile & {}
+export type ConsultantProfile = BaseProfile & {
+    title: string,
+    specialization: string
+}
 export interface MedicalCategory {
     name: string,
     description: string
 }
 
 export interface MedicalCategoriesResponse extends Response {
-    data: MedicalCategory[];
+    data: MedicalCategory[]
 }
 
 
 export interface AdminCredentialResponse extends Response {
     data: {
-        email: string;
-        password: string;
+        email: string
+        password: string
     }
 }
 export interface AuthenticatedUserResponse {
     user: {
         userId: string
         role: string
-        user_type: UserType
-        user_stage: UserStage
+        userType: UserType
+        userStage: UserStage
     }
     profile: PatientProfile | ConsultantProfile
 }
 export interface CurrentUserInfo {
-    userId: string;
-    first_name: string;
-    last_name: string;
-    role: string;
-    address: Address;
+    userId: string
+    first_name: string
+    last_name: string
+    role: string
+    address: Address
     user_type: UserType
-    user_stage: UserStage;
+    user_stage: UserStage
 }
 export interface Response {
-    time: string;
-    code: number;
-    status: string;
-    message?: string;
-    exception?: string;
+    time: string
+    code: number
+    status: string
+    message?: string
+    exception?: string
 }
-interface ConsultantEducation {
-    degree: string;
-    institution: string;
-    year: number;
+export interface ConsultantEducation {
+    degree?: string
+    institution?: string
+    year?: string
 }
-interface ConsultantStats {
-    patientsHelped: number;
-    successRate: number;
-    responseTime: string;
-    followUpRate: number;
+export interface ConsultantStats {
+    patientsHelped: number
+    successRate: number
+    responseTime: string
+    followUpRate: number
 }
 export interface ConsultantTypeMinimal {
-    id: number,
+    id: string,
     name: string,
     specialty: string,
     rating: number,
@@ -152,39 +176,39 @@ export interface ConsultantTypeMinimal {
     experience: number,
     location: string,
     availability: string,
-    consultationFee: string,
+    fee: Fee,
     image: string,
     qualifications: string[],
     languages: string[],
     nextSlot: string
 }
 export interface ConsultantType {
-    id: number
-    name: string;
-    title: string;
-    rating: number;
-    verified: boolean;
-    experience: number;
-    totalReviews: number;
-    bio: string;
-    location: string;
-    image: string;
-    specialization?: string[];
-    languages?: string[];
-    consultationFee: number;
+    id: string
+    name: string
+    title: string
+    rating: number
+    verified: boolean
+    experience: number
+    totalReviews: number
+    bio: string
+    location: string
+    image: string
+    specialization?: string[]
+    languages?: string[]
+    consultationFee: number
     education?: ConsultantEducation[],
     stats?: ConsultantStats,
     reviews?: Review[],
     availableSlots?: Schedule[],
     nextAvailable: string
 }
-interface Review {
-    name: string;
-    rating: number;
-    comment: string;
-    date: string;
+export interface Review {
+    name: string
+    rating: number
+    comment: string
+    date: string
 }
-export type RecurrenceRuleFrequency = 'one-off' | 'daily' | 'weekly' | 'monthly';
+export type RecurrenceRuleFrequency = 'one-off' | 'daily' | 'weekly' | 'monthly'
 export type WeekDay = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday'
 export interface RecurrenceRule {
     frequency: RecurrenceRuleFrequency,
@@ -193,19 +217,49 @@ export interface RecurrenceRule {
     endDate?: string,
 }
 export interface Schedule {
-    id: number;
-    name: string;
-    startTime: string;
-    endTime: string;
-    isRecurring: boolean;
-    offset: string;
-    channels: string[];
-    recurrenceRule?: RecurrenceRule | null;
-    isActive: boolean;
-    createdAt: string;
+    id: string
+    name: string
+    startTime: string
+    endTime: string
+    offset: string
+    channels: string[]
+    recurrenceRule?: RecurrenceRule
+    isActive: boolean
+    createdAt: string
     upcomingSessions: number
+}
+
+export interface ScheduleWithAppointmentDetail {
+    schedule: Schedule,
+    appointmentDateAndTimes: string[]
+}
+export interface ConsultantSchedulesResponse extends Response {
+    data: {
+        schedules: ScheduleWithAppointmentDetail[]
+        profile: ConsultantScheduleData
+    }
 }
 
 export interface SVGProps {
     className: string
+}
+
+type Sort = {
+    empty: boolean,
+    sorted: boolean
+}
+
+export interface PagedResponse<T> extends Response{
+    data: {
+        content: T[],
+        totalPages: number,
+        totalElements: number,
+        last: boolean,
+        size: number,
+        pageNumber: number,
+        sort: Sort,
+        numberOfElements: number,
+        empty: boolean
+
+    }
 }

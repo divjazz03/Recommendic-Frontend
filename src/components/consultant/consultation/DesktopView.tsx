@@ -31,7 +31,7 @@ const DesktopView = (
     }: ConsultationInfoProps
 ) => {
     const [activeTab, setActiveTab] = useState('notes');
-    const messagesEndRef = useRef<MutableRefObject<HTMLDivElement> | null>(null)
+    const messagesEndRef = useRef<HTMLDivElement | null>(null)
 
     const PatientInfo = () => (
         <div className="bg-white border-b border-gray-200 p-4 rounded-t-lg">

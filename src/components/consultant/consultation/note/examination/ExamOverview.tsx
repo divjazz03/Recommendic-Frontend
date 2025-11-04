@@ -1,5 +1,5 @@
 
-import { ExamStage, usePatientExamStore } from '@/stores/PatientExamStore';
+import { ExamStage, usePatientExamStore } from '@/store/PatientExamStore';
 import { useShallow } from "zustand/react/shallow";
 import { Activity, CheckCircle, ChevronRight, Eye, Heart, Play, Square, Stethoscope, StopCircle} from 'lucide-react';
 import React from 'react'

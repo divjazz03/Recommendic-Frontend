@@ -4,7 +4,7 @@ import { Calendar, Clock, MapPin, Star, Stethoscope } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface ConsultantThumbnailProps {
-    id: number
+    id: string
     name: string;
     specialty: string;
     experience: number;
@@ -52,7 +52,7 @@ const ConsultantThumbnail: React.FC<ConsultantThumbnailProps> = ({
     nextSlot
 }) => {
     return (
-        <div key={id} className='bg-white rounded-lg border-light-3 p-6 hover:shadow-md transition-shadow'>
+        <div key={id} className='bg-white rounded-lg border-light-3 px-1 py-2 md:px-4 md:py-2 hover:shadow-md transition-shadow'>
             <div className='flex gap-4'>
                 {/* Profile Image*/}
                 <InitialsOrAvartar name={name} avatarUrl={avatarUrl} width='80' height='80' />
@@ -71,7 +71,7 @@ const ConsultantThumbnail: React.FC<ConsultantThumbnailProps> = ({
                             </div>
                         </div>
                         <div className='text-right'>
-                            <div className='text-lg font-semibold text-dark-4 '>{fee}</div>
+                            <div className='text-lg font-semibold text-dark-4 '>$&nbsp;{fee}</div>
                             <div className='text-sm text-dark-1'>per consultation</div>
                         </div>
                     </div>
@@ -98,8 +98,8 @@ const ConsultantThumbnail: React.FC<ConsultantThumbnailProps> = ({
                     </div>
                     {/* Bottom Row */}
                     <div className="flex justify-between items-center">
-                        <div className="hidden sm:flex items-center gap-4">
-                            <div className={`px-3 py-1 rounded-full text-xs font-medium ${getAvailabilityColor(availability)}`}>
+                        <div className="flex items-center gap-4">
+                            <div className={`px-3 py-1 rounded-full text-xs font-thin sm:text-sm ${getAvailabilityColor(availability)}`}>
                                 {availability}
                             </div>
                             {availability.includes('Today') && (
@@ -109,7 +109,7 @@ const ConsultantThumbnail: React.FC<ConsultantThumbnailProps> = ({
                                 </div>
                             )}
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 text-xs sm:text-sm">
                             <Link to={`profile`} state={{id: id}} className="px-2 py-2 sm:px-4 sm:py-2 text-main border border-main rounded-lg hover:bg-light-1 transition-colors">
                                 View&nbsp;Profile
                             </Link>

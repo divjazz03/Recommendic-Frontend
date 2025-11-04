@@ -1,4 +1,4 @@
-import { usePatientExamStore } from '@/stores/PatientExamStore';
+import { usePatientExamStore } from '@/store/PatientExamStore';
 import { ArrowLeft, Pause, Timer } from 'lucide-react';
 import React, { useEffect} from 'react'
 import { useShallow } from 'zustand/react/shallow';

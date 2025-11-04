@@ -47,7 +47,7 @@ const ConsultantOnboarding = () => {
                     specialty: selectedSpecialty,
                     userId: userContext.user_id
                 })
-                navigate('/overview');
+                navigate('/');
                 return toast({ title: 'Thanks for helping us serve you better' })
             } catch (error: any) {
                 return toast({ title: `Onboarding Failed: ${error.message}`, variant: 'destructive' })
@@ -70,7 +70,7 @@ const ConsultantOnboarding = () => {
                                 <MedicalCategoryCard
                                 key={index}
                                 categoryName={categoryName.name}
-                                categoryDescription='A very important person fidof df dofidfoi i fdofidofiekjflsk ekf lkaej afeldkslkdnsk '
+                                categoryDescription= {categoryName.description}
                                 selectActionHandler={handleSelectedSpecialtyChange}
                                 disabled={selectedSpecialty && selectedSpecialty !== categoryName.name}
                                 />

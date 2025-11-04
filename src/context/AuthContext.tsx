@@ -26,30 +26,30 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [userContext, setUserInContext] = useState<AuthUserContext>({});
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const navigate = useNavigate();
+    const whiteListedPaths = ['/sign-in','/sign-up','/welcome', '/confirm-email','/email-confirmation','/landing']
 
     const {data, error, isPending: authLoading} = useGetCurrentUser(
-        !location.pathname.includes('/sign-in') &&
-        !location.pathname.includes('/sign-up') &&
-        !location.pathname.includes('/welcome') &&
-        !location.pathname.includes('/confirm-email') &&
-        !location.pathname.includes('/email-confirmation/') &&
-        !location.pathname.includes('/landing')
+        !whiteListedPaths.includes(location.pathname)
     );
     useEffect(() => {
             if (error) {
-                // console.error(error)
-                // navigate('/sign-in');
+                navigate('/sign-in');
             } else if(data) {
                 console.log(data)
+                if (data.user.userStage === 'ONBOARDING') {
+                    navigate('/onboarding')
+                }
                 setUserInContext(() => {
                     return {
                         user_id: data.user.userId,
                         role: data.user.role,
-                        userStage: data.user.user_stage,
-                        userType: data.user.user_type
+                        userStage: data.user.userStage,
+                        userType: data.user.userType
                     } as AuthUserContext
                 });
                 setIsAuthenticated(true);
+            } else {
+                navigate('/sign-in')
             }
     }, [data, error])
 
@@ -58,7 +58,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         isAuthenticated,
         setUserInContext,
         isLoading: authLoading,
-        profileData: data?.user.user_type ==='CONSULTANT'? data.profile as ConsultantProfile : data?.profile as PatientProfile
+        profileData: data?.profile
     }
     return (
         <AuthContext.Provider value={value}>

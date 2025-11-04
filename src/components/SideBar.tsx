@@ -4,7 +4,8 @@ import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import InitialsOrAvartar from './shared/InitialsOrAvartar'
 import Logo from './svg/Logo'
-import { AuthUserContext } from '@/types'
+import { AuthUserContext, BaseProfile, ConsultantProfile } from '@/types'
+import { useUserContext } from '@/context/AuthContext'
 
 
 export interface NavLinksObject {
@@ -14,25 +15,18 @@ export interface NavLinksObject {
 }
 interface SideBarProps {
   navLinks: Record<string, NavLinksObject>
-  name: string
-  title?: string
-  specialization?: string
-  onClose?: () => void
   setAsideHidden?: (value: React.SetStateAction<boolean>) => void
   isHidden?: boolean
-  userContext?: AuthUserContext
 }
 const SideBar: React.FC<SideBarProps> = ({
   navLinks,
-  name,
-  title,
-  specialization,
-  onClose,
   isHidden,
-  setAsideHidden,
-  userContext
+  setAsideHidden
 }) => {
   const location = useLocation();
+  const { profileData, userContext } = useUserContext();
+  const baseProfileData = profileData as BaseProfile;
+  const consultantProfileData = profileData as ConsultantProfile;
   return (
     <nav
       className={clsx('border bg-white overflow-auto flex flex-col pr-3',
@@ -41,9 +35,8 @@ const SideBar: React.FC<SideBarProps> = ({
       <div className='flex flex-col gap-6'>
         <header className='py-4 items-center pl-4 gap-3'>
           <div className='flex justify-between gap-3'>
-            {/* <img src='/assets/svg/logo-no-background.svg' className='max-w-[32px]' /> */}
             <Logo className='w-8 h-8' />
-            <X className='w-8 h-8' onClick={() => setAsideHidden(true)}/>
+            <X className='w-8 h-8' onClick={() => setAsideHidden(true)} />
           </div>
 
         </header>
@@ -55,7 +48,7 @@ const SideBar: React.FC<SideBarProps> = ({
                   <div
                     className={clsx(
                       'flex flex-row gap-2 side-bar-icons side-bar-li',
-                      location.pathname.startsWith(nav.to) && 'bg-main text-light-4'
+                      location.pathname.startsWith(`${nav.to}/`) || location.pathname === nav.to && 'bg-main text-light-4'
                     )}
                   >
                     <nav.icon className='w-6 h-6' />
@@ -65,30 +58,18 @@ const SideBar: React.FC<SideBarProps> = ({
               </li>
 
             ))}
-            {userContext && userContext.userType === 'PATIENT' && <li>
-              <Link aria-hidden={isHidden} tabIndex={isHidden ? -1 : 0} to={'/consultant'}>
-                <div
-                  className={clsx(
-                    'flex flex-row gap-2 side-bar-icons side-bar-li',
-                    location.pathname.startsWith('/consultant') && 'bg-main text-light-4'
-                  )}
-                >
-                  <User2 className='w-6 h-6' />
-                  <p>Consultant</p>
-                </div>
-              </Link>
-            </li>}
+            
           </ul>
         </div>
       </div>
       <div>
         <hr className='pb-2' />
         <div className='flex flex-row gap-2 min-h-10 pl-5'>
-          <InitialsOrAvartar name={name} />
+          <InitialsOrAvartar name={baseProfileData.userName.full_name} avatarUrl={baseProfileData.profilePicture.picture_url} />
           <div className='flex flex-col gap-1'>
-            <p className='base-bold'>{title}</p>
-            <p className='tiny-thin'>{specialization}</p>
-          </div>
+            <p className='base-bold'>{baseProfileData.userName.full_name}</p>
+            {userContext.userType === 'CONSULTANT' &&<p className='tiny-thin'>{consultantProfileData.specialization}</p>}
+          </div> 
         </div>
       </div>
     </nav>

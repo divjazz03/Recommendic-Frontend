@@ -1,12 +1,7 @@
-import axios from "axios";
 import { clsx, type ClassValue } from "clsx"
 import { DateTime } from "luxon";
 import { twMerge } from "tailwind-merge"
 
-
-axios.defaults.withCredentials = true
-axios.defaults.baseURL = import.meta.env.VITE_BACKEND_BASE_URL;
-export const apiClient = axios;
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -41,4 +36,11 @@ export const handleDateTimeFormatting = (date: string): string => {
     } else {
         return dateOfChat.monthLong;
     }
+}
+
+export const handleError = (error: any) => {
+    if (apiClient.isAxiosError(error) && error.response?.status === 401) {
+            return null;
+    }
+    throw new Error(error)
 }

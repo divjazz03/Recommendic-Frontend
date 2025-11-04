@@ -1,5 +1,5 @@
-import { useMutation, useQuery } from "@tanstack/react-query"
-import { deleteSchedule, getMySchedules, getScheduleById, updateSchedule } from "../api/consultant_api"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { ConsultantProfileUpdateRequest, deleteSchedule, getMyProfileDetails, getMySchedules, getScheduleById, updateConsultantProfileDetails, updateSchedule } from "../api/consultant_api"
 import { ModifyingSchedule } from "@/components/consultant/ConsultantModifySchedule"
 
 export const useGetCurrentUserSchedules = () => {
@@ -32,5 +32,19 @@ export const useUpdateSchedule = () => {
 export const useDeleteSchedule = () => {
     return useMutation({
         mutationFn: (id: number) => deleteSchedule(id)
+    })
+}
+export const useGetMyConsultantProfiles = () => {
+    return useQuery({
+        queryKey: ['My profile'],
+        queryFn: getMyProfileDetails,
+        staleTime: 1000 * 3600
+    })
+}
+export const useUpdateConsultantProfile = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (consultantProfile: ConsultantProfileUpdateRequest) => updateConsultantProfileDetails(consultantProfile),
+        onSuccess: () => queryClient.invalidateQueries({queryKey: ['My profile']})
     })
 }

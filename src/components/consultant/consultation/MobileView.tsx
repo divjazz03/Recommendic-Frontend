@@ -1,6 +1,6 @@
-import { MessageCircle, User, FileText, Pill, Clock, CheckCircle, ExternalLink, Save, AlertCircle, Activity, Heart, Plus, Thermometer, X, Video } from 'lucide-react';
-import React, { MutableRefObject, useRef, useState } from 'react'
-import { ConsultationInfoProps, MedicalInfoProps, Message, PatientData } from './ConsultantConsultation';
+import { MessageCircle, User, FileText, Pill, Clock,Save, Video } from 'lucide-react';
+import React, {useRef, useState } from 'react'
+import { ConsultationInfoProps} from './ConsultantConsultation';
 import NotesView from './note/NotesView';
 import PatientView from './patient/PatientView';
 import PrescriptionView from './prescription/PrescriptionView';
@@ -10,7 +10,6 @@ const MobileView = (
     { message,
         setMessage,
         messages,
-        setMessages,
         clinicalNotes,
         setClinicalNotes,
         diagnosis,
@@ -22,7 +21,6 @@ const MobileView = (
         showPrescriptionForm,
         setShowPrescriptionForm,
         addPrescription,
-        videoStatus,
         consultationTime,
         patientData,
         sendMessage,

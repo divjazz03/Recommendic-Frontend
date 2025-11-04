@@ -5,7 +5,7 @@ import VitalSignsExam from './VitalSignsExam';
 import VisualInspectionExam from './VisualInspectionExam';
 import MovementAssessment from './MovementAssessment';
 import ExamOverview from './ExamOverview';
-import { usePatientExamStore } from '@/stores/PatientExamStore';
+import { usePatientExamStore } from '@/store/PatientExamStore';
 import { useShallow } from 'zustand/react/shallow';
 
 export interface PatientExaminationInterfaceProps {

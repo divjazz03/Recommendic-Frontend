@@ -11,6 +11,7 @@ import { useToast } from '@/hooks/use-toast'
 import { z } from 'zod'
 import { Loader } from 'lucide-react'
 import axios, { AxiosError } from 'axios'
+import { ApiError } from '@/lib/axios'
 
 
 const SigninForm = () => {
@@ -31,28 +32,27 @@ const SigninForm = () => {
     console.log("entered")
     try {
       const data = await signInUser({ email: formData.email, password: formData.password });
-      if (data) {
+      if (data && data.data) {
         console.log(data.data)
         if (data.data.userStage === 'ONBOARDING') {
           navigate('/onboarding');
         }
         else {
-          navigate('/overview');
+          navigate('/');
         }
+      } else {
+        navigate('/')
       }
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        const err = error as AxiosError;
+      if (error instanceof ApiError) {
+        const err = error as ApiError;
         form.reset()
         if (err.status === 404) {
           return toast({ title: `Sign in failed: You don't have an account please sign up`, variant: 'destructive' });
         }
         console.log(err)
-        return toast({ title: `Sign in failed: ${err.message}`, variant: 'destructive' });
+        return toast({ title: `Sign in failed: ${err.message}`, variant: 'destructive'});
       }
-      
-      console.error(error)
-      return toast({ title: `Sign in failed: Something went wrong`, variant: 'destructive' });
     }
 
   };

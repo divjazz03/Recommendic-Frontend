@@ -1,40 +1,55 @@
-import { Activity, AlertCircle, ArrowLeft, Brain, Calendar, CheckCircle, ChevronRight, Clock, Edit3, ExternalLink, Eye, FileText, Heart, LucideProps, MessageCircle, Paperclip, Pause, Pill, Play, Plus, Save, Send, Shield, Stethoscope, Target, Thermometer, Timer, User, Users, Video, X } from 'lucide-react';
-import React, { MutableRefObject, useEffect, useRef, useState } from 'react'
+import { LucideProps } from 'lucide-react';
+import React, { MutableRefObject, useEffect, useState } from 'react'
 import MobileView from './MobileView';
 import DesktopView from './DesktopView';
+import { useStartConsultation } from '@/lib/react-query/generalQueriesAndMutation';
+import { useLocation } from 'react-router-dom';
+import { useUserContext } from '@/context/AuthContext';
 
 const sampleMessages: Message[] = [
         {
             id: 1,
             sender: 'system',
+            consultationId: '2',
             content: 'Patient John Smith has joined the session.',
             timestamp: '2:30 PM',
-            type: 'system'
+            type: 'system',
+            delivered: false
         },
         {
             id: 2,
             sender: 'other',
+            consultationId: '2',
             content: 'Hello Doctor, I\'ve been experiencing chest pain for the past few days.',
             timestamp: '2:30 PM',
-            type: 'message'
+            type: 'message',
+            delivered: false
         },
         {
             id: 3,
             sender: 'me',
+            consultationId: '2',
             content: 'Hello John! Can you describe the type of chest pain you\'re experiencing?',
             timestamp: '2:31 PM',
-            type: 'message'
+            type: 'message',
+            delivered: false
         },
         {
             id: 4,
             sender: 'other',
+            consultationId: '2',
             content: 'It\'s a sharp pain that comes and goes, usually when I take deep breaths.',
             timestamp: '2:32 PM',
-            type: 'message'
+            type: 'message',
+            delivered: false
         }
     ]
 
 const ConsultantConsultation = () => {
+    const location = useLocation()
+    const userType = useUserContext().userContext.userType;
+    const appointmentId = location.state.appointmentId ?? 'dksdlnksdnokisjidbkusdkuj';
+    const [consultationId, setConsultationId] = useState<string>('')
     const [message, setMessage] = useState<string>("");
     const [clinicalNotes, setClinicalNotes] = useState('Patient reports chest pain for 3 days. Pain described as sharp, intermittent...')
     const [diagnosis, setDiagnosis] = useState('');
@@ -44,8 +59,7 @@ const ConsultantConsultation = () => {
     const [messages, setMessages] = useState<Message[]>(sampleMessages);
     const [videoStatus, setVideoStatus] = useState('connected');
     const [consultationTime, setConsultationTime] = useState('12:45');
-
-    const patientData: PatientData = {
+    const [patientData, setPatientData] = useState<PatientData | undefined>({
         name: 'John Smith',
         age: 45,
         gender: 'Male',
@@ -71,19 +85,33 @@ const ConsultantConsultation = () => {
             duration: '3 days',
             triggers: 'Deep breathing, movement'
         }
-    };
+    });
+    const {mutateAsync:startConsultation} = useStartConsultation()
+
+    useEffect(() => {
+        startConsultation(appointmentId)
+        .then(response => {
+            if(userType && userType === 'CONSULTANT') {
+                const patientData = response.data.patientData;
+                if(patientData) {
+                    setPatientData(patientData)
+                }
+            }
+            setConsultationId(response.data.consultationId)
+        });
+    } ,[])
+
     const scrollToBottom = (messagesEndRef: MutableRefObject<HTMLDivElement|null>) => {
         messagesEndRef?.current?.scrollIntoView()
     };
     const sendMessage = () => {
-
         if (message && message.trim()) {
             const newMessage: Message = {
-                id: messages.length + 1,
                 sender: 'me',
                 content: message,
-                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                type: 'message'
+                consultationId: consultationId,
+                type: 'message',
+                delivered: false
             };
             setMessages([...messages, newMessage]);
             setMessage('');
@@ -160,11 +188,13 @@ const ConsultantConsultation = () => {
     )
 }
 export interface Message {
-    id: number,
-    sender: ChatMessageSender,
-    content: string,
-    timestamp: string,
+    id?: number
+    consultationId: string
+    sender: ChatMessageSender
+    content: string
+    timestamp?: string
     type: ChatMessageType
+    delivered: boolean
 }
 interface Medication {
     name: string,
@@ -220,7 +250,7 @@ export interface ConsultationInfoProps {
     setShowPrescriptionForm: (value: React.SetStateAction<boolean>) => void
     videoStatus: string
     consultationTime: string
-    patientData: PatientData
+    patientData?: PatientData
     sendMessage: () => void
     addPrescription: () => void
     removePrescription: (id: number) => void
@@ -243,7 +273,7 @@ export interface MedicalInfoProps {
     removePrescription: (id: number) => void
 }
 export type ChatMessageType = "system" | "message"
-export type ChatMessageSender = "system" | "me" | "other"
+export type ChatMessageSender = "system" | "me" | string
 
 export interface ExamSection {
     id: string

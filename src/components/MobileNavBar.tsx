@@ -1,38 +1,20 @@
-import { Calendar1Icon, CalendarClock, LucideProps, Pill, User2 } from 'lucide-react'
 import React from 'react'
 import { NavLinksObject } from './SideBar'
 import { Link } from 'react-router-dom'
 import clsx from 'clsx'
 
-const navLinkObject: Record<string, NavLinksObject> = {
 
-  appointment: {
-    to: '/appointment',
-    icon: CalendarClock,
-    description: 'Appointment'
-  },
-  schedule: {
-    to: '/schedule',
-    icon: Calendar1Icon,
-    description: 'Schedule'
-  },
-  medication: {
-    to: '/medication',
-    icon: Pill,
-    description: 'Medication'
-  },
-  consultation: {
-    to: '/consultation',
-    icon: User2,
-    description: 'Consultation'
-  }
+interface MobileNavBarProps{
+  navLinkObject: Record<string, NavLinksObject>
 }
 
-const MobileNavBar = () => {
+const MobileNavBar:React.FC<MobileNavBarProps> = ({
+  navLinkObject
+}) => {
   return (
     <div className=''>
       <ul className='flex justify-around'>
-        {Object.entries(navLinkObject).map(([, nav], index) => (
+        {Object.entries(navLinkObject).filter(([,nav],_) => nav.description !== 'Notification').map(([, nav], index) => (
           <li key={index}>
             <Link to={nav.to}>
               <div

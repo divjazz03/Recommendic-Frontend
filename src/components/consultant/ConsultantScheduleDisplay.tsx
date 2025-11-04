@@ -57,13 +57,11 @@ const ConsultantScheduleDisplay = () => {
     }, [location.key])
 
     const channelOptions = {
-        'chat': { label: 'Chat', icon: MessageCircle, color: 'bg-blue-100 text-blue-600' },
-        'voice': { label: 'Voice', icon: Phone, color: 'bg-green-100 text-green-600' },
-        'video': { label: 'Video', icon: Video, color: 'bg-purple-100 text-purple-600' },
+        'online': { label: 'Online', icon: Video, color: 'bg-purple-100 text-purple-600' },
         'in_person': { label: 'In-Person', icon: Users, color: 'bg-orange-100 text-orange-600' }
     };
 
-    const handleModifySchedule = (scheduleId: number) => {
+    const handleModifySchedule = (scheduleId: string) => {
         // In your app, this would navigate to the schedule setup page with the schedule ID
         console.log('Modify schedule:', scheduleId);
         navigate('modify', { state: { scheduleId: scheduleId } })
@@ -177,7 +175,7 @@ const ConsultantScheduleDisplay = () => {
                                         </div>
 
                                         {/* Recurrence Info */}
-                                        {schedule.isRecurring && schedule.recurrenceRule && (
+                                        {schedule.recurrenceRule && (
                                             <div className="mb-4 p-3 bg-blue-50 rounded-lg">
                                                 <div className="flex items-center gap-2 text-sm text-blue-700">
                                                     <Calendar className="w-4 h-4" />
@@ -261,7 +259,7 @@ const ConsultantScheduleDisplay = () => {
                                         </div>
 
                                         {/* Recurrence Info */}
-                                        {schedule.isRecurring && schedule.recurrenceRule && (
+                                        {schedule.recurrenceRule && (
                                             <div className="mb-4 p-3 bg-gray-50 rounded-lg">
                                                 <div className="flex items-center gap-2 text-sm text-gray-600">
                                                     <Calendar className="w-4 h-4" />
