@@ -13,7 +13,8 @@ import {
    startNewConsultation,
    endConsultation,
    getMyNotificationSettings,
-   updateMyNotificationSettings} from "../api/general_api";
+   updateMyNotificationSettings,
+   logoutUser} from "../api/general_api";
 import { TypeOfUser } from "@/_auth/forms/SignupForm";
 import { createNewPatient, sendPatientOnboardingData } from "../api/patient_api";
 import { createNewConsultant, createNewSchedule, sendConsultantOnboardingData } from "../api/consultant_api";
@@ -50,7 +51,7 @@ import { ModifyingNotificationSetting } from "@/hooks/useNotificationSettings";
       queryKey: ['getCurrentUser'],
       queryFn: getCurrentUser,
       enabled: enabled,
-      retry: 3,
+      retry: 1,
    })
  }
 
@@ -66,7 +67,14 @@ import { ModifyingNotificationSetting } from "@/hooks/useNotificationSettings";
 
     return useMutation({
       mutationFn: (data: SigninUserData) => signinUser(data),
+      throwOnError: false
     })
+ }
+
+ export const useLogout = () => {
+   return useMutation({
+      mutationFn: () => logoutUser()
+   })
  }
 
  export const useResendEmailMutation= () => {

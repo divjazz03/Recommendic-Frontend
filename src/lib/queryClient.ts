@@ -7,13 +7,13 @@ const handleError = async (error: unknown) => {
     if (error instanceof ApiError) {
         switch (error.status) {
             case 401:
-                 if (window.location.pathname !== '/sign-in')
+                 if (window.location.pathname !== '/sign-in') {
                      window.location.pathname = '/sign-in'
-                return toast({title: 'Session expired. Please log in again',variant:'destructive'})
+                     return toast({title: 'Session expired. Please log in again',variant:'destructive'})
+                 }
+                 return toast({title: error.message, variant: 'destructive'});
             case 403:
                 return toast({title: "You don't have permission to perform this action", variant: 'destructive'})
-            case 422:
-                break;
             case 500:
                 return toast({title: 'Server error. please try again later.', variant: 'destructive'});
             default:

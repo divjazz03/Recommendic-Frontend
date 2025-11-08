@@ -86,12 +86,12 @@ export async function getMySchedules(): Promise<SchedulesResponse> {
         .then(response => response.data)
 }
 
-export async function getScheduleById(id: number): Promise<ScheduleResponse> {
+export async function getScheduleById(id: string): Promise<ScheduleResponse> {
     return apiClient.get(`${scheduleBasePath}/${id}`)
         .then(response => response.data)
 }
 
-export async function updateSchedule(id: number, schedule: ModifyingSchedule): Promise<ScheduleResponse> {
+export async function updateSchedule(id: string, schedule: ModifyingSchedule): Promise<ScheduleResponse> {
     return apiClient.patch(`${scheduleBasePath}/${id}`,
         schedule,
         {
@@ -101,7 +101,7 @@ export async function updateSchedule(id: number, schedule: ModifyingSchedule): P
         })
         .then((response) => response.data)
 }
-export async function deleteSchedule(id: number): Promise<Response> {
+export async function deleteSchedule(id: string): Promise<Response> {
     return apiClient.delete(`${scheduleBasePath}/${id}`)
         .then(response => response.data.data)
 }

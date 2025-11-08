@@ -177,7 +177,6 @@ const SignupForm: React.FC = () => {
                       render={({ field }) => (
                         <Select
                           onValueChange={field.onChange}
-                          defaultValue='Patient'
                           value={field.value} >
                           <SelectTrigger>
                             <SelectValue placeholder='Sign up as' />

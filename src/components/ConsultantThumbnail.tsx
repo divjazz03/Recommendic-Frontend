@@ -63,7 +63,7 @@ const ConsultantThumbnail: React.FC<ConsultantThumbnailProps> = ({
                             <h3 className='text-lg font-semibold text-dark-4'>{name}</h3>
                             <div className='flex items-center gap-2 text-sm text-dark-1'>
                                 <Stethoscope className='w-4 h-4' />
-                                <span>{specialty}</span>
+                                <span className='capitalize'>{specialty}</span>
                                 <span className='hidden sm:flex items-center gap-2'>
                                     <span>•</span>
                                     <span>{experience} years exp</span>
@@ -90,7 +90,7 @@ const ConsultantThumbnail: React.FC<ConsultantThumbnailProps> = ({
                     </div>
                     {/* Qualifications */}
                     <div className="flex items-center gap-2 mb-3">
-                        {qualifications.map(qual => (
+                        {qualifications?.map(qual => (
                             <span key={qual} className="px-2 py-1 bg-main text-light-5 text-xs rounded-full">
                                 {qual}
                             </span>

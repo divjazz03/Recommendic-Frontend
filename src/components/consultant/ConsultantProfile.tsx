@@ -1,11 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { User, Mail, Phone, MapPin, Calendar, Briefcase, GraduationCap, Award, Lock, Bell, Shield, Camera, Save, X, Check, Eye, EyeOff } from 'lucide-react';
+import { User, Mail, Phone, MapPin, Calendar, Briefcase, GraduationCap, Award, Lock, Bell, Shield, Camera, Save, X, Check, Eye, EyeOff, DoorOpen } from 'lucide-react';
 import { ConsultantNotificationSetting, useNotificationSettings } from '@/hooks/useNotificationSettings';
 import { useConsultantProfile } from '@/hooks/useProfile';
+import { useLogout } from '@/lib/react-query/generalQueriesAndMutation';
+import { useNavigate } from 'react-router-dom';
 import MultiSelect from '../ui/MultiSelect';
 
 const ConsultantProfile = () => {
     const [activeTab, setActiveTab] = useState('profile');
+    const {mutateAsync: logout, isPending: isLogginOut} = useLogout();
+    const navigate = useNavigate()
+    
+    const handleLogout = async () => {
+        await logout();
+        window.location.pathname = '/sign-in'
+    }
     
     const {
         handleNotificationChange,
@@ -90,6 +99,12 @@ const ConsultantProfile = () => {
                                         <span className="text-sm">{tab.label}</span>
                                     </button>
                                 ))}
+                                <button
+                                    onClick={handleLogout}
+                                    className='w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-gray-700 hover:bg-gray-50'>
+                                    <DoorOpen/>
+                                    <span className='text-sm'>Logout</span>
+                                </button>
                             </nav>
                         </div>
                     </div>

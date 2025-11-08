@@ -17,18 +17,21 @@ enum SelectAction {
 const PatientOnboarding = () => {
 
     const { error: errorGettingSupportedCategories, data: supportedCategories, isPending: isLoadingMedicalCategories } = useGetSupportedMedicalCategories();
+    const navigate = useNavigate();
     const { userContext } = useUserContext();
+    if (userContext.userStage === 'ACTIVE_USER') {
+        navigate('/')
+    }
     const [specialties, setSpecialties] = useState<MedicalCategory[]>([])
     const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
-    const { mutateAsync: updatePatientOnboardingInfo, isPending:isUpdating } = useUpdatePatientOnboardingInfo()
+    const { mutateAsync: updatePatientOnboardingInfo, isPending:isUpdating, isError, error } = useUpdatePatientOnboardingInfo()
     const { toast } = useToast();
-    const navigate = useNavigate();
 
     useEffect(() => {
         if (supportedCategories) {
             setSpecialties(supportedCategories.data)
         }
-    }, [supportedCategories]);
+    }, [supportedCategories?.data]);
     const handleSelectedInterestsChange = (interest: string, action: SelectAction) => {
         if (action === SelectAction.SELECT) {
             if (!selectedInterests.includes(interest)) {
@@ -42,18 +45,20 @@ const PatientOnboarding = () => {
 
         if (selectedInterests.length > 0) {
             console.log(selectedInterests)
-            try {
                 await updatePatientOnboardingInfo({
                     interests: selectedInterests.filter(interest => interest != " "),
                     userId: userContext.user_id
                 })
-                navigate('/');
-                return toast({ title: 'Thanks for helping us serve you better' })
-            } catch (error) {
-                return toast({ title: `Onboarding Failed: ${error.message}`, variant: 'destructive' })
+                if (!isUpdating) {
+                    if (!isError) {
+                        navigate('/');
+                        return toast({ title: 'Thanks for helping us serve you better' })
+                    }
+                    return toast({ title: `Onboarding Failed: ${error.message}`, variant: 'destructive' })
+                }
             }
 
-        } else {
+    else {
             return toast({ title: 'Please choose at least one', variant: 'destructive' });
         }
     }

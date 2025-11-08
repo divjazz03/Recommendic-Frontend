@@ -1,13 +1,20 @@
 import React, { useState } from 'react';
-import { User, Mail, Phone,  Calendar, Bell, Shield, Camera, Save, Check} from 'lucide-react';
+import { User, Mail, Phone,  Calendar, Bell, Shield, Camera, Save, Check, BotOff, DoorOpen} from 'lucide-react';
 import MedicalCategorySelect from '../ui/MedicalCategorySelect';
 import { PatientNotificationSetting, useNotificationSettings } from '@/hooks/useNotificationSettings';
 import { usePatientProfile } from '@/hooks/useProfile';
 import { useSecuritySetting } from '@/hooks/useSecuritySetting';
+import { useLogout } from '@/lib/react-query/generalQueriesAndMutation';
+import { useNavigate } from 'react-router-dom';
 
 
 const PatientProfile = () => {
     const [activeTab, setActiveTab] = useState('profile');
+    const {mutateAsync: logout, isPending: isLogginOut} = useLogout();
+    const handleLogout = async () => {
+        await logout();
+        window.location.pathname = '/sign-in'
+    }
     
     const {
         handleNotificationChange,
@@ -68,7 +75,8 @@ const PatientProfile = () => {
                                 {[
                                     { id: 'profile', label: 'Profile Information', icon: User },
                                     { id: 'notifications', label: 'Notifications', icon: Bell },
-                                    { id: 'security', label: 'Security & Privacy', icon: Shield }
+                                    { id: 'security', label: 'Security & Privacy', icon: Shield },
+                                    
                                 ].map((tab) => (
                                     <button
                                         key={tab.id}
@@ -82,6 +90,12 @@ const PatientProfile = () => {
                                         <span className="text-sm">{tab.label}</span>
                                     </button>
                                 ))}
+                                <button
+                                    onClick={handleLogout}
+                                    className='w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-gray-700 hover:bg-gray-50'>
+                                    <DoorOpen/>
+                                    <span className='text-sm'>Logout</span>
+                                </button>
                             </nav>
                         </div>
                     </div>

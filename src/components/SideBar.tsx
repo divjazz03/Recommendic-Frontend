@@ -1,10 +1,10 @@
 import clsx from 'clsx'
-import { HamIcon, LucideProps, Menu, User2, X } from 'lucide-react'
+import { LucideProps, X } from 'lucide-react'
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import InitialsOrAvartar from './shared/InitialsOrAvartar'
 import Logo from './svg/Logo'
-import { AuthUserContext, BaseProfile, ConsultantProfile } from '@/types'
+import { BaseProfile, ConsultantProfile } from '@/types'
 import { useUserContext } from '@/context/AuthContext'
 
 
@@ -15,7 +15,7 @@ export interface NavLinksObject {
 }
 interface SideBarProps {
   navLinks: Record<string, NavLinksObject>
-  setAsideHidden?: (value: React.SetStateAction<boolean>) => void
+  setAsideHidden: (value: React.SetStateAction<boolean>) => void
   isHidden?: boolean
 }
 const SideBar: React.FC<SideBarProps> = ({
@@ -58,18 +58,18 @@ const SideBar: React.FC<SideBarProps> = ({
               </li>
 
             ))}
-            
+
           </ul>
         </div>
       </div>
       <div>
         <hr className='pb-2' />
         <div className='flex flex-row gap-2 min-h-10 pl-5'>
-          <InitialsOrAvartar name={baseProfileData.userName.full_name} avatarUrl={baseProfileData.profilePicture.picture_url} />
+          <InitialsOrAvartar name={baseProfileData?.userName.full_name} avatarUrl={baseProfileData?.profilePicture.picture_url} />
           <div className='flex flex-col gap-1'>
-            <p className='base-bold'>{baseProfileData.userName.full_name}</p>
-            {userContext.userType === 'CONSULTANT' &&<p className='tiny-thin'>{consultantProfileData.specialization}</p>}
-          </div> 
+            <p className='base-bold'>{baseProfileData?.userName.full_name}</p>
+            {userContext.userType === 'CONSULTANT' && <p className='tiny-thin'>{consultantProfileData?.specialization}</p>}
+          </div>
         </div>
       </div>
     </nav>

@@ -1,5 +1,5 @@
 import { PatientData } from "@/components/consultant/consultation/ConsultantConsultation"
-import { ConsultantScheduleData, Fee } from "@/components/patient/PatientSchedule"
+import { ConsultantScheduleData, Fee } from "@/hooks/usePatientSchedules"
 import React, { ReactNode } from "react"
 
 export type UserType = 'PATIENT' | 'CONSULTANT' | 'ADMIN'

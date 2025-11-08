@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useGetConsultantFullProfileDetails } from '@/lib/react-query/patientQueryAndMutations';
 import { ConsultantEducation, Review } from '@/types';
 import Loader from '../shared/Loader';
+import { DateTime } from 'luxon';
 
 const exampleConsultant: ConsultantProfile = {
   id: "id",
@@ -128,7 +129,7 @@ const ConsultantScreen = () => {
             reviews: returnedDataResponse?.reviews,
             specializations: returnedDataResponse?.specializations,
             title: returnedDataResponse?.title,
-            totalReviews: returnedDataResponse?.totalReviews
+            totalReviews: returnedDataResponse?.totalReviews,
         })
     }, [data])
 
@@ -297,7 +298,7 @@ const ConsultantScreen = () => {
 
                         {/*Availabilty tab */}
                         {activeTab === 'availability' && (
-                            consultant?.availableSlots ? <div>Unavailable Today</div> 
+                            !consultant?.availableSlots ? <div>Unavailable Today</div> 
                             : 
                             <section className='space-y-6'>
                                 <div className='flex items-center justify-between '>
@@ -325,7 +326,7 @@ const ConsultantScreen = () => {
                                 <div className="p-4 bg-green-50 rounded-lg border border-green-200">
                                     <div className="flex items-center gap-2 text-green-800">
                                         <CheckCircle className="w-5 h-5" />
-                                        <span className="font-medium">Next available: {consultant?.nextAvailable}</span>
+                                        <span className="font-medium">Next available: {DateTime.fromISO(consultant?.nextAvailable).toLocaleString(DateTime)}</span>
                                     </div>
                                 </div>
                             </section>

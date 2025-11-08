@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { ConsultantProfileUpdateRequest, deleteSchedule, getMyProfileDetails, getMySchedules, getScheduleById, updateConsultantProfileDetails, updateSchedule } from "../api/consultant_api"
+import { ConsultantProfileUpdateRequest, createNewSchedule, deleteSchedule, getMyProfileDetails, getMySchedules, getScheduleById, updateConsultantProfileDetails, updateSchedule } from "../api/consultant_api"
 import { ModifyingSchedule } from "@/components/consultant/ConsultantModifySchedule"
+import { NewSchedule } from "@/components/consultant/ConsultantNewSchedule"
 
 export const useGetCurrentUserSchedules = () => {
     return useQuery({
@@ -11,7 +12,7 @@ export const useGetCurrentUserSchedules = () => {
     })
 }
 
-export const useGetScheduleWithUserId = (scheduleId: number) => {
+export const useGetScheduleWithUserId = (scheduleId: string) => {
     return useQuery({
         queryKey: ["Schedule", scheduleId],
         queryFn: () =>  getScheduleById(scheduleId),
@@ -20,8 +21,20 @@ export const useGetScheduleWithUserId = (scheduleId: number) => {
 }
 
 type ScheduleModificationProps = {
-    id: number,
+    id: string,
     schedule: ModifyingSchedule
+}
+
+export const useCreateNewSchedules = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (schedules: NewSchedule[]) => createNewSchedule(schedules),
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['My Schedules']
+            })
+        }
+    })
 }
 
 export const useUpdateSchedule = () => {

@@ -25,7 +25,7 @@ const InitialsOrAvartar: React.FC<InitialsOrAvartarProps> = ({
                 maxWidth: width ? `${width}px` : '60px',
             }}
         >
-            {avatarUrl && <img src={avatarUrl} className='rounded-full object-cover' alt="" />
+            {avatarUrl && <img src={avatarUrl} className='rounded-full object-cover' alt="Avatar" />
             }
             {!avatarUrl && <p className='text-white text-xl'>{extractInitialsFromName(name)}</p>}
         </div>

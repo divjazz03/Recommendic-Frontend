@@ -16,19 +16,22 @@ export enum SelectAction {
 
 const ConsultantOnboarding = () => {
 
-    const { data:supportedCategories, isPending: isLoadingMedicalCategories } = useGetSupportedMedicalCategories();
+    const { data: supportedCategories, isPending: isLoadingMedicalCategories } = useGetSupportedMedicalCategories();
     const { userContext } = useUserContext();
+    const navigate = useNavigate();
+    if (userContext.userStage === 'ACTIVE_USER') {
+        navigate('/')
+    }
     const [selectedSpecialty, setSelectedSpecialty] = useState('');
     const [specialties, setSpecialties] = useState<MedicalCategory[]>([])
-    const {toast} = useToast();
-    const navigate = useNavigate();
-    const {mutateAsync:updateConsultantOnboardingInfo, isPending: isUpdating} = useUpdateConsultantOnboardingInfo()
+    const { toast } = useToast();
+    const { mutateAsync: updateConsultantOnboardingInfo, isPending: isUpdating, isError, error } = useUpdateConsultantOnboardingInfo()
 
     useEffect(() => {
-        if(supportedCategories) {
+        if (supportedCategories) {
             setSpecialties(supportedCategories.data);
         }
-      }, [supportedCategories]);
+    }, [supportedCategories]);
 
     const handleSelectedSpecialtyChange = (specialty: string, action: SelectAction) => {
         console.log(action)
@@ -42,18 +45,21 @@ const ConsultantOnboarding = () => {
 
         if (selectedSpecialty.length > 0) {
             console.log(selectedSpecialty)
-            try {
-                await updateConsultantOnboardingInfo({
-                    specialty: selectedSpecialty,
-                    userId: userContext.user_id
-                })
-                navigate('/');
-                return toast({ title: 'Thanks for helping us serve you better' })
-            } catch (error: any) {
+
+            await updateConsultantOnboardingInfo({
+                specialty: selectedSpecialty,
+                userId: userContext.user_id
+            })
+            if (!isUpdating) {
+                if (!isError) {
+                    navigate('/');
+                    return toast({ title: 'Thanks for helping us serve you better' })
+                }
                 return toast({ title: `Onboarding Failed: ${error.message}`, variant: 'destructive' })
             }
-        } else {
-            return toast({title: 'Please choose one', variant: 'destructive'});
+        }
+        else {
+            return toast({ title: 'Please choose one', variant: 'destructive' });
         }
     }
     return (
@@ -61,28 +67,28 @@ const ConsultantOnboarding = () => {
             <main className=''>
                 <div className=''>
                     <header className='font-semibold text-3xl text-center'>Consultant&nbsp;Onboarding</header>
-                    {isLoadingMedicalCategories? <Loader/> : 
-                    <>
-                    <section className=' px-10 py-10 '>
-                        <div className={'flex flex-row flex-wrap justify-left gap-4'}>
-                            {
-                                specialties.map((categoryName, index) => (
-                                <MedicalCategoryCard
-                                key={index}
-                                categoryName={categoryName.name}
-                                categoryDescription= {categoryName.description}
-                                selectActionHandler={handleSelectedSpecialtyChange}
-                                disabled={selectedSpecialty && selectedSpecialty !== categoryName.name}
-                                />
-                            ))
-                            }
-                        </div>
-                    </section>
-                    <Button className='tracking-normal shad-button_primary' onClick={handleNext}>
-                        {isUpdating? <Loader/> :'Next'} 
-                    </Button>
-                    </>
-                    }       
+                    {isLoadingMedicalCategories ? <Loader /> :
+                        <>
+                            <section className=' px-10 py-10 '>
+                                <div className={'flex flex-row flex-wrap justify-left gap-4'}>
+                                    {
+                                        specialties.map((categoryName, index) => (
+                                            <MedicalCategoryCard
+                                                key={index}
+                                                categoryName={categoryName.name}
+                                                categoryDescription={categoryName.description}
+                                                selectActionHandler={handleSelectedSpecialtyChange}
+                                                disabled={selectedSpecialty && selectedSpecialty !== categoryName.name}
+                                            />
+                                        ))
+                                    }
+                                </div>
+                            </section>
+                            <Button className='tracking-normal shad-button_primary' onClick={handleNext}>
+                                {isUpdating ? <Loader /> : 'Next'}
+                            </Button>
+                        </>
+                    }
                 </div>
             </main>
         </>

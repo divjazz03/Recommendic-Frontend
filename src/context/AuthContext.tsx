@@ -1,4 +1,4 @@
-import { useGetCurrentUser} from '@/lib/react-query/generalQueriesAndMutation'
+import { useGetCurrentUser } from '@/lib/react-query/generalQueriesAndMutation'
 import { AuthUserContext, ConsultantProfile, PatientProfile, UserContext } from '@/types'
 import React, { Profiler } from 'react'
 import { createContext, useContext, useEffect, useState } from 'react'
@@ -16,7 +16,7 @@ const INITIAL_STATE: AuthContextState = {
     userContext: {},
     isAuthenticated: false,
     setUserInContext: () => { },
-    isLoading:false
+    isLoading: false
 }
 
 const AuthContext = createContext<AuthContextState>(INITIAL_STATE);
@@ -26,34 +26,31 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [userContext, setUserInContext] = useState<AuthUserContext>({});
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const navigate = useNavigate();
-    const whiteListedPaths = ['/sign-in','/sign-up','/welcome', '/confirm-email','/email-confirmation','/landing']
+    const whiteListedPaths = ['/sign-in', '/sign-up', '/welcome', '/confirm-email', '/email-confirmation', '/landing']
 
-    const {data, error, isPending: authLoading} = useGetCurrentUser(
+    const { data, error, isPending: authLoading } = useGetCurrentUser(
         !whiteListedPaths.includes(location.pathname)
     );
     useEffect(() => {
-            if (error) {
-                navigate('/sign-in');
-            } else if(data) {
-                console.log(data)
-                if (data.user.userStage === 'ONBOARDING') {
-                    navigate('/onboarding')
-                }
-                setUserInContext(() => {
-                    return {
-                        user_id: data.user.userId,
-                        role: data.user.role,
-                        userStage: data.user.userStage,
-                        userType: data.user.userType
-                    } as AuthUserContext
-                });
-                setIsAuthenticated(true);
-            } else {
-                navigate('/sign-in')
+        if (error) {
+            navigate('/sign-in');
+        } else if (data) {
+            if (data.user.userStage === 'ONBOARDING') {
+                navigate('/onboarding')
             }
+            setUserInContext(() => {
+                return {
+                    user_id: data.user.userId,
+                    role: data.user.role,
+                    userStage: data.user.userStage,
+                    userType: data.user.userType
+                } as AuthUserContext
+            });
+            setIsAuthenticated(true);
+        }
     }, [data, error])
 
-    const value:AuthContextState = {
+    const value: AuthContextState = {
         userContext,
         isAuthenticated,
         setUserInContext,

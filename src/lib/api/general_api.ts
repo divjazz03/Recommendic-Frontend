@@ -11,6 +11,7 @@ import { ModifyingNotificationSetting, NotificationSetting, PatientModifyingNoti
 import { apiClient } from "../axios";
 
 const userLoginPath = import.meta.env.VITE_APP_USER_LOGIN;
+const userLogoutPath = import.meta.env.VITE_APP_USER_LOGOUT;
 const userGetPath = import.meta.env.VITE_CURRENT_AUTH_USER;
 const medicalCategoriesPath = import.meta.env.VITE_GET_MEDICAL_CATEGORIES;
 const emailConfirmationPath = import.meta.env.VITE_EMAIL_CONFIRMATION;
@@ -27,6 +28,11 @@ export async function signinUser(userData: SigninUserData): Promise<SignInRespon
         .then((response) => response.data
         )
     return result;
+}
+
+export async function logoutUser() {
+    return apiClient.post(`${userLogoutPath}`)
+    .then((response) => response.data)
 }
 
 export async function getCurrentUser(): Promise<AuthenticatedUserResponse> {

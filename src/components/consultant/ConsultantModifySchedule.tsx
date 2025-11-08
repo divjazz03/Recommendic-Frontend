@@ -67,7 +67,7 @@ const ModificationSuccessModal = () => {
 const ConsultantModifySchedule = () => {
     const location = useLocation();
 
-    const [scheduleId, setScheduleId] = useState<number>(location.state.scheduleId);
+    const [scheduleId, setScheduleId] = useState<string>(location.state.scheduleId);
     const { data: scheduleResponse, isPending } = useGetScheduleWithUserId(scheduleId);
     const { mutateAsync: updateAsyncSchedule, isPending: isUpdating } = useUpdateSchedule()
     const { mutateAsync: deleteAsyncSchedule, isPending: isDeleting } = useDeleteSchedule();

@@ -128,7 +128,7 @@ const ConsultantList = () => {
                 {filteredConsultants?.map(consultant => (
                     <ConsultantThumbnail
                         experience={consultant.experience}
-                        fee={consultant.fee.inPerson+''}
+                        fee={consultant.fee.in_person+''}
                         id={consultant.id}
                         location={consultant.location}
                         name={consultant.name}

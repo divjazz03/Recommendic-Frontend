@@ -3,9 +3,9 @@ import GlobalSearch from '@/components/shared/GlobalSearch';
 import SideBar, { NavLinksObject } from '@/components/SideBar';
 import Logo from '@/components/svg/Logo';
 import { useUserContext } from '@/context/AuthContext';
-import { Bell, Calendar1Icon, CalendarClock, ChartLine, Home, Loader, Menu, Settings2, User, User2 } from 'lucide-react';
+import { Bell, Calendar1Icon, CalendarClock, ChartLine, Home, Loader, Menu, User, User2 } from 'lucide-react';
 import React, { MutableRefObject, useEffect, useRef, useState } from 'react'
-import { Link, Outlet, useLocation } from 'react-router-dom';
+import { Link, Outlet, useLocation} from 'react-router-dom';
 
 
 
@@ -16,6 +16,9 @@ const RootLayout = () => {
 	const location = useLocation();
 	const asideRef: MutableRefObject<HTMLDivElement | null> = useRef(null);
 	const { userContext: auth, profileData, isLoading } = useUserContext();
+
+	
+
 	const navLinkObject: Record<string, NavLinksObject> = auth.userType === 'CONSULTANT'? {
 		home: {
 			to: '/',
@@ -97,11 +100,6 @@ const RootLayout = () => {
 			icon: CalendarClock,
 			description: 'Appointment'
 		},
-		schedule: {
-			to: '/schedule',
-			icon: Calendar1Icon,
-			description: 'Schedule'
-		},
 		me: {
 			to: '/profile',
 			icon: User,
@@ -132,7 +130,7 @@ const RootLayout = () => {
 			document.removeEventListener('mousedown', handleClickOutside);
 			document.removeEventListener('keydown', handleEsc);
 		}
-	}, [])
+	}, [asideHidden])
 	return (
 		isLoading ? <div className='flex justify-center h-full items-center '><Loader className=' animate-spin' /></div>
 			:

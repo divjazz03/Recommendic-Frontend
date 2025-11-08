@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { Calendar, Clock, Video, Phone, MessageCircle, Users, Plus, Trash2, Save, ArrowLeft, VideoIcon } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Calendar, Clock, Video, Phone, MessageCircle, Users, Plus, Trash2, Save, ArrowLeft, VideoIcon, Loader, CheckCircle2 } from 'lucide-react';
 import { RecurrenceRule, Schedule, WeekDay} from '@/types';
-import { createNewSchedule } from '@/lib/api/consultant_api';
 import axios, { AxiosError } from 'axios';
 import { toast } from '@/hooks/use-toast';
+import { useCreateNewSchedules } from '@/lib/react-query/consultantQueryAndMutations';
+import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogHeader, AlertDialogTitle } from '../ui/alert-dialog';
 
 export interface NewSchedule {
     id: number,
@@ -19,11 +20,33 @@ const channelOptions = [
         { value: 'online', label: 'Online', icon: VideoIcon, color: 'bg-blue-100 text-blue-600' },
         { value: 'in_person', label: 'In-Person', icon: Users, color: 'bg-orange-100 text-orange-600' }
     ];
-const NewConsultantCreatedModal = () => {
-    return <div className='ab'>
 
-    </div>
-}
+    const NewConsultantCreatedModal = () => {
+    
+        useEffect(() => {
+            const timeout = setTimeout(() => {
+                window.history.back();
+            }, 2000)
+    
+            return () => clearTimeout(timeout);
+        }, [])
+        return (
+            <AlertDialog open={true} >
+                <AlertDialogContent className='max-w-md'>
+                    <AlertDialogHeader>
+                        <div className='flex items-center justify-center mb-4'>
+                            <CheckCircle2 className='h-12 w-12 text-green-500' />
+                        </div>
+                        <AlertDialogTitle className='text-center text-xl'>Successful</AlertDialogTitle>
+                        <AlertDialogDescription className='text-center'>
+                            <p className='mt-2'>Your schedule has been created successfully.</p>
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                </AlertDialogContent>
+            </AlertDialog>
+        )
+    }
+
 const ConsultantNewSchedule = () => {
     let id = 0
     const [schedules, setSchedules] = useState<NewSchedule[]>([{
@@ -40,9 +63,9 @@ const ConsultantNewSchedule = () => {
         channels: [],
         isActive: true
     }]);
-
+    const {mutateAsync: createNewSchedules, isError, error, isPending: isCreating} = useCreateNewSchedules();
     
-
+    const [createdModalOpen, setCreatedModalOpen] = useState(false)
     const weekDays = [
         { value: 'monday', label: 'Mon' },
         { value: 'tuesday', label: 'Tue' },
@@ -123,23 +146,23 @@ const ConsultantNewSchedule = () => {
         }))
     }
 
-    const saveSchedules = async () => {
-        console.log('Saving schedules:', schedules);
-        try {
-            const response = await createNewSchedule(schedules);
-            window.history.back()
-        } catch (error) {
-            if (axios.isAxiosError(error)) {
-                const err = error as AxiosError;
-                console.log(err)
-                return toast({ title: `Creating Schedule failed: ${err.response?.data?.message}`, variant: 'destructive' });
+    
+
+    const createSchedules = async () => {
+        console.log('creating schedules: ', schedules);
+
+        const result = await createNewSchedules(schedules);
+        if (!isCreating) {
+            if(!isError) {
+                setCreatedModalOpen(true)
+            }else{
+                if (result.code === 404){
+                    return toast({title: `Creating schedules failed: ${result.message}`})
+                }
             }
-
-            console.error(error)
-            return toast({ title: `Creating Schedule failed Something went wrong`, variant: 'destructive' });
         }
-
-    };
+        
+    }
 
     return (
         <div className="max-h-[800px] lg:max-h-screen overflow-auto bg-gray-50 p-6">
@@ -354,14 +377,22 @@ const ConsultantNewSchedule = () => {
                     </button>
 
                     <button
-                        onClick={saveSchedules}
+                        onClick={createSchedules}
+                        disabled={isCreating}
                         className="flex items-center gap-2 px-6 py-3 text-white bg-main-light hover:bg-main rounded-lg transition-colors font-medium"
                     >
+                        {isCreating ?<>
+                            <Loader/> Saving
+                        </>: 
+                        <>
                         <Save className="w-4 h-4" />
                         Save Schedules
+                        </>
+                        }
                     </button>
                 </div>
             </div>
+            {createdModalOpen && <NewConsultantCreatedModal/>}
         </div>
     );
 };

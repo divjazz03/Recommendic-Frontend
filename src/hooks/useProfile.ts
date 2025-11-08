@@ -29,7 +29,7 @@ export interface ModifyingProfileData {
 export const usePatientProfile = () => {
     const [profileData, setProfileData] = useState<PatientProfileData>();
     const { data: medicalCategoriesResponse} = useGetSupportedMedicalCategories();
-    const { data:myProfileResponse } = useGetMyProfiles();
+    const { data: myProfileResponse } = useGetMyProfiles();
     const [isEditing, setIsEditing] = useState(false);
 
     const [showSuccessMessage, setShowSuccessMessage] = useState(false);
@@ -47,8 +47,8 @@ export const usePatientProfile = () => {
             if (myProfileResponse) {
                 const data = myProfileResponse.data
                 setProfileData({
-                firstName: data.userName.first_name,
-                lastName: data.userName.last_name,
+                firstName: data.userName.first_name ?? 'undefined',
+                lastName: data.userName.last_name ?? 'undefined',
                 email: data.email,
                 phoneNumber: data.phoneNumber,
                 dateOfBirth: data.dateOfBirth,
