@@ -18,7 +18,7 @@ const SigninForm = () => {
 
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { isPending: isSigningIn, mutateAsync: signInUser, error,isError, } = useSignInUserMutation();
+  const { isPending: isSigningIn, mutateAsync: signInUser, isError, } = useSignInUserMutation();
 
   const form = useForm<z.infer<typeof signInValidation>>({
     resolver: zodResolver(signInValidation),
@@ -42,8 +42,6 @@ const SigninForm = () => {
       } else {
         if (code === 404) {
           return toast({title: "You don't have an account please sign up", variant: 'destructive'});
-        }else {
-            return toast({title: `Something went wrong: ${error.message}`})
         }
       }
     } 

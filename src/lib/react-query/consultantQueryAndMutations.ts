@@ -8,7 +8,7 @@ export const useGetCurrentUserSchedules = () => {
         queryKey: ["My Schedules"],
         queryFn: getMySchedules,
         staleTime: 3600 * 1000,
-        retry: false
+        retry: 1
     })
 }
 
@@ -44,7 +44,7 @@ export const useUpdateSchedule = () => {
 }
 export const useDeleteSchedule = () => {
     return useMutation({
-        mutationFn: (id: number) => deleteSchedule(id)
+        mutationFn: (id: string) => deleteSchedule(id)
     })
 }
 export const useGetMyConsultantProfiles = () => {

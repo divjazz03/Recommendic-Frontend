@@ -64,7 +64,7 @@ const ConsultantOnboarding = () => {
     }
     return (
         <>
-            <main className=''>
+            <main className='h-full overflow-y-auto'>
                 <div className=''>
                     <header className='font-semibold text-3xl text-center'>Consultant&nbsp;Onboarding</header>
                     {isLoadingMedicalCategories ? <Loader /> :

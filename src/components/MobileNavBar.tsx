@@ -8,9 +8,18 @@ interface MobileNavBarProps{
   navLinkObject: Record<string, NavLinksObject>
 }
 
+
 const MobileNavBar:React.FC<MobileNavBarProps> = ({
   navLinkObject
 }) => {
+
+  function getLinkColor(navLinkObject: NavLinksObject) {
+  if (navLinkObject.to === '/') {
+    return location.pathname === navLinkObject.to
+  } else {
+    return location.pathname.startsWith(navLinkObject.to)
+  }
+}
   return (
     <div className=''>
       <ul className='flex justify-around'>
@@ -19,7 +28,7 @@ const MobileNavBar:React.FC<MobileNavBarProps> = ({
             <Link to={nav.to}>
               <div
                 className={`
-                  flex flex-col py-1 px-2 gap-2 justify-center items-center ${location.pathname.startsWith(nav.to)? 'text-dark-3': 'text-gray-700'} `
+                  flex flex-col py-1 px-2 gap-2 justify-center items-center ${getLinkColor(nav)? 'text-dark-3': 'text-gray-700'} `
                 }
               >
                 <nav.icon className={clsx('w-6 h-6')}/>

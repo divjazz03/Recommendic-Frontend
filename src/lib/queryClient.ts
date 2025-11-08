@@ -17,7 +17,7 @@ const handleError = async (error: unknown) => {
             case 500:
                 return toast({title: 'Server error. please try again later.', variant: 'destructive'});
             default:
-                return toast({variant: 'destructive',title: error.message})
+                break;
         }
     } else {
         return toast({title: 'An unexpected error occurred.', variant: 'destructive'})

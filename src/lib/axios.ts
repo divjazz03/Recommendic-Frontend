@@ -19,7 +19,7 @@ apiClient.interceptors.response.use(
                 data?.message || 'An error occurred',
                 status,
                 data?.code,
-                data?.errors
+                data?.data
             )
         } else if (error.request) {
             // Request made but no response
@@ -36,7 +36,7 @@ export class ApiError extends Error {
         message: string,
         public status?: number,
         public code?: string,
-        public errors?: Record<string, string[]>
+        public data?: unknown
         
     ) {
         super(message);

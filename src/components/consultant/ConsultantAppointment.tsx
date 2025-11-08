@@ -501,8 +501,8 @@ const AppointmentModal = ({
                   <div className="flex items-start gap-3">
                     <Calendar className="w-5 h-5 text-blue-600 mt-1" />
                     <div>
-                      <p className="text-sm text-gray-600">Date</p>
-                      <p className="font-semibold">{formatDate(appointment.date)}</p>
+                      <p className="text-sm font-semibold text-gray-600">Date</p>
+                      <p className="">{formatDate(appointment.date)}</p>
                       <p className="text-sm text-blue-600">{daysUntil}</p>
                     </div>
                   </div>
@@ -510,8 +510,8 @@ const AppointmentModal = ({
                   <div className="flex items-start gap-3">
                     <Clock className="w-5 h-5 text-blue-600 mt-1" />
                     <div>
-                      <p className="text-sm text-gray-600">Time</p>
-                      <p className="font-semibold">{appointment.time}</p>
+                      <p className="text-sm font-semibold text-gray-600">Time</p>
+                      <p className="">{appointment.time}</p>
                       <p className="text-sm text-gray-600">Duration: {appointment.duration}</p>
                     </div>
                   </div>
@@ -523,8 +523,8 @@ const AppointmentModal = ({
                       <MapPin className="w-5 h-5 text-blue-600 mt-1" />
                     )}
                     <div>
-                      <p className="text-sm text-gray-600">Location</p>
-                      <p className="font-semibold">{appointment.location}</p>
+                      <p className="text-sm font-semibold text-gray-600">Location</p>
+                      <p className="">{appointment.location}</p>
                       <p className="text-sm text-gray-600 capitalize">{appointment.type} visit</p>
                     </div>
                   </div>
@@ -539,24 +539,24 @@ const AppointmentModal = ({
                   <div className="flex items-start gap-3">
                     <Phone className="w-5 h-5 text-blue-600 mt-1" />
                     <div>
-                      <p className="text-sm text-gray-600">Phone</p>
-                      <p className="font-semibold">{appointment.patientPhone}</p>
+                      <p className="text-sm font-semibold text-gray-600">Phone</p>
+                      <p className="">{appointment.patientPhone}</p>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-3">
                     <User className="w-5 h-5 text-blue-600 mt-1" />
                     <div>
-                      <p className="text-sm text-gray-600">Email</p>
-                      <p className="font-semibold">{appointment.patientEmail}</p>
+                      <p className="text-sm font-semibold text-gray-600">Email</p>
+                      <p className="">{appointment.patientEmail}</p>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-3">
                     <Calendar className="w-5 h-5 text-blue-600 mt-1" />
                     <div>
-                      <p className="text-sm text-gray-600">Request Date</p>
-                      <p className="font-semibold">{formatDate(appointment.requestedDate)}</p>
+                      <p className="text-sm font-semibold text-gray-600">Request Date</p>
+                      <p className="">{formatDate(appointment.requestedDate)}</p>
                     </div>
                   </div>
                 </div>
