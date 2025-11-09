@@ -496,7 +496,7 @@ const PatientMedication = () => {
 
 
   return (
-    <div className="max-h-[800px] lg:max-h-[800px] bg-gradient-to-br overflow-auto scroll-smooth from-blue-50 via-white to-green-50 p-4">
+    <div className="h-full bg-gradient-to-br overflow-y-auto scroll-smooth from-blue-50 via-white to-green-50 p-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">

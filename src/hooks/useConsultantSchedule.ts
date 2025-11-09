@@ -1,10 +1,10 @@
 import { ApiError } from "@/lib/axios";
-import { useCreateNewSchedules, useDeleteSchedule, useGetScheduleWithUserId, useUpdateSchedule } from "@/lib/react-query/consultantQueryAndMutations";
+import { useCreateNewSchedules, useDeleteSchedule, useGetCurrentUserSchedules, useGetScheduleWithUserId, useUpdateSchedule } from "@/lib/react-query/consultantQueryAndMutations";
 import { RecurrenceRule, Schedule, WeekDay } from "@/types";
-import { VideoIcon, Users } from "lucide-react";
+import { VideoIcon, Users, Video, LucideProps } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "./use-toast";
-import { Location } from "react-router-dom";
+import { Location, useNavigate } from "react-router-dom";
 import { ModifyingSchedule, ModifyingRecurrenceRule } from "@/components/consultant/ConsultantModifySchedule";
 
 export interface NewSchedule {
@@ -31,6 +31,13 @@ export const channelOptions = [
     { value: 'online', label: 'Online', icon: VideoIcon, color: 'bg-blue-100 text-blue-600' },
     { value: 'in_person', label: 'In-Person', icon: Users, color: 'bg-orange-100 text-orange-600' }
 ];
+
+export const ChannelOptions = {
+    online: {
+        value: 'online', label: 'Online', icon: VideoIcon, color: 'bg-blue-100 text-blue-600'
+    },
+    in_person: {value: 'in_person', label: 'In-Person', icon: Users, color: 'bg-orange-100 text-orange-600'}
+}
 
 export const useCreateSchedule = () => {
     let id = 0
@@ -187,8 +194,16 @@ export const useModifySchedule = (location: Location) => {
     }, [scheduleResponse]);
 
     const removeSchedule = async () => {
-        await deleteAsyncSchedule(scheduleId);
-        window.history.back();
+        try {
+            await deleteAsyncSchedule(scheduleId);
+        } catch (error) {
+            const apiError = error as ApiError
+            if (apiError.status === 404) {
+                return toast({title: apiError.message, variant: 'destructive'})
+            }
+        } finally {
+            window.history.back();
+        }
     };
 
     const updateSchedule = (field: keyof ModifyingSchedule, value: unknown) => {
@@ -259,5 +274,69 @@ export const useModifySchedule = (location: Location) => {
         schedule,
         modifiedSchedule
 
+    }
+}
+
+export const formatTime = (time: string) => {
+    const [hours, minutes] = time.split(':');
+    const hour = parseInt(hours);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const displayHour = hour % 12 || 12;
+    return `${displayHour}:${minutes} ${ampm}`;
+};
+
+export const formatDays = (days: string[]) => {
+    const dayNames = {
+        monday: 'Mondays', tuesday: 'Tuesdays', wednesday: 'Wednesdays', thursday: 'Thursdays',
+        friday: 'Fridays', saturday: 'Saturdays', sunday: 'Sundays'
+    };
+    return days.map(day => dayNames[day as keyof typeof dayNames]).join(', ');
+};
+
+export const formatRecurrence = (rule: RecurrenceRule) => {
+    if (rule.frequency === 'weekly') {
+        const interval = rule.interval > 1 ? `every ${rule.interval} weeks` : 'weekly';
+        return `${interval} on ${formatDays(rule.weekDays)}`;
+    }
+    return rule.frequency;
+};
+export const useScheduleDisplay = () => {
+
+
+    const navigate = useNavigate();
+    const [schedules, setSchedules] = useState<Schedule[]>([]);
+
+    const { data: schedulesResponse, isPending: isUserSchedulesLoading } = useGetCurrentUserSchedules();
+
+    useEffect(() => {
+        if (schedulesResponse) {
+            setSchedules(schedulesResponse.data)
+        }
+    }, [schedulesResponse])
+
+    
+
+    const handleModifySchedule = (scheduleId: string) => {
+        // In your app, this would navigate to the schedule setup page with the schedule ID
+        console.log('Modify schedule:', scheduleId);
+        navigate('modify', { state: { scheduleId: scheduleId } })
+    };
+
+    const handleCreateNewSchedule = () => {
+        // In your app, this would navigate to the schedule setup page
+        console.log('Create new schedule');
+        navigate("new");
+    };
+
+    const activeSchedules = schedules.filter(s => s.isActive);
+    const inactiveSchedules = schedules.filter(s => !s.isActive);
+
+    return {
+        inactiveSchedules,
+        activeSchedules,
+        handleCreateNewSchedule,
+        handleModifySchedule,
+        schedules,
+        isUserSchedulesLoading
     }
 }

@@ -1,72 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { Calendar, Clock, Video, Phone, MessageCircle, Users, Edit, Plus, Eye, EyeOff, Settings, LucideProps } from 'lucide-react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { RecurrenceRule, Schedule } from '@/types';
-import { useGetCurrentUserSchedules } from '@/lib/react-query/consultantQueryAndMutations';
+import React from 'react';
+import { Calendar, Clock, Edit, Plus, Eye, EyeOff, Settings, LucideProps } from 'lucide-react';
 import Loader from '@/components/shared/Loader';
+import { ChannelOptions, channelOptions, formatRecurrence, formatTime, useScheduleDisplay } from '@/hooks/useConsultantSchedule';
 
-interface ChannelInfo {
-    label: string
-    icon: React.ForwardRefExoticComponent<Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>>;
-    color: string;
-}
-
-const formatTime = (time: string) => {
-    const [hours, minutes] = time.split(':');
-    const hour = parseInt(hours);
-    const ampm = hour >= 12 ? 'PM' : 'AM';
-    const displayHour = hour % 12 || 12;
-    return `${displayHour}:${minutes} ${ampm}`;
-};
-
-const formatDays = (days: string[]) => {
-    const dayNames = {
-        monday: 'Mondays', tuesday: 'Tuesdays', wednesday: 'Wednesdays', thursday: 'Thursdays',
-        friday: 'Fridays', saturday: 'Saturdays', sunday: 'Sundays'
-    };
-    return days.map(day => dayNames[day as keyof typeof dayNames]).join(', ');
-};
-
-const formatRecurrence = (rule: RecurrenceRule) => {
-    if (rule.frequency === 'weekly') {
-        const interval = rule.interval > 1 ? `every ${rule.interval} weeks` : 'weekly';
-        return `${interval} on ${formatDays(rule.weekDays)}`;
-    }
-    return rule.frequency;
-};
 
 const ConsultantScheduleDisplay = () => {
     // Sample schedule data - in your app, this would come from your backend
-    const navigate = useNavigate();
-    const [schedules, setSchedules] = useState<Schedule[]>([]);
-
-    const { data: schedulesResponse, isPending: isUserSchedulesLoading} = useGetCurrentUserSchedules();
-
-    useEffect(() => {
-        if (schedulesResponse) {
-            setSchedules(schedulesResponse.data)
-        }
-    }, [schedulesResponse])
-
-    const channelOptions = {
-        'online': { label: 'Online', icon: Video, color: 'bg-purple-100 text-purple-600' },
-        'in_person': { label: 'In-Person', icon: Users, color: 'bg-orange-100 text-orange-600' }
-    };
-
-    const handleModifySchedule = (scheduleId: string) => {
-        // In your app, this would navigate to the schedule setup page with the schedule ID
-        console.log('Modify schedule:', scheduleId);
-        navigate('modify', { state: { scheduleId: scheduleId } })
-    };
-
-    const handleCreateNewSchedule = () => {
-        // In your app, this would navigate to the schedule setup page
-        console.log('Create new schedule');
-        navigate("new");
-    };
-
-    const activeSchedules = schedules.filter(s => s.isActive);
-    const inactiveSchedules = schedules.filter(s => !s.isActive);
+    const {
+        activeSchedules,
+        handleCreateNewSchedule,
+        handleModifySchedule,
+        inactiveSchedules,
+        isUserSchedulesLoading,
+        schedules
+    } = useScheduleDisplay()
     return (
         <div className="h-full overflow-y-auto bg-gray-50 p-6">
             <div className="max-w-7xl mx-auto">
@@ -85,7 +32,7 @@ const ConsultantScheduleDisplay = () => {
                     </button>
                 </div>
 
-                {/* Stats Cards */}
+                {/*Stats Cards*/}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                     <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                         <div className="flex items-center gap-3 mb-2">
@@ -139,7 +86,7 @@ const ConsultantScheduleDisplay = () => {
                 </div>
 
                 {isUserSchedulesLoading ? <Loader /> : <>
-                    {/* Active Schedules */}
+                {/* Active Schedules*/}
                     {activeSchedules.length > 0 && (
                         <div className="mb-8">
                             <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
@@ -167,7 +114,7 @@ const ConsultantScheduleDisplay = () => {
                                         </div>
 
                                         {/* Recurrence Info */}
-                                        {schedule.recurrenceRule && (
+                                     {schedule.recurrenceRule && (
                                             <div className="mb-4 p-3 bg-gray-50 rounded-lg">
                                                 <div className="flex items-center gap-2 text-sm text-main">
                                                     <Calendar className="w-4 h-4" />
@@ -182,33 +129,33 @@ const ConsultantScheduleDisplay = () => {
                                             </div>
                                         )}
 
-                                        {/* Channels */}
-                                        <div className="mb-4">
-                                            <div className="text-sm text-gray-600 mb-2">Available Channels:</div>
-                                            <div className="flex flex-wrap gap-2">
-                                                {schedule.channels.map(channel => {
-                                                    const channelInfo: ChannelInfo = channelOptions[channel.toLowerCase() as keyof typeof channelOptions];
-                                                    const Icon = channelInfo.icon;
+                                         {/* Channels */}
+                                         <div className="mb-4">
+                                             <div className="text-sm text-gray-600 mb-2">Available Channels:</div>
+                                             <div className="flex flex-wrap gap-2">
+                                                 {schedule.channels.map(channel => {
+                                                    const channelOption = ChannelOptions[channel.toLowerCase() as keyof typeof ChannelOptions]
+                                                    const Icon = channelOption?.icon;
                                                     return (
                                                         <div
                                                             key={channel}
-                                                            className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium ${channelInfo.color}`}
+                                                            className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium ${channelOption?.color}`}
                                                         >
-                                                            <Icon className="w-3 h-3" />
-                                                            {channelInfo.label}
+                                                            {Icon && <Icon className="w-3 h-3" />}
+                                                            {channelOption?.label}
                                                         </div>
                                                     );
                                                 })}
                                             </div>
                                         </div>
 
-                                        {/* Stats & Actions */}
-                                        <div className="flex items-center justify-between pt-4 border-t border-gray-200">
-                                            <div className="text-sm text-gray-600">
-                                                {schedule.upcomingSessions} upcoming sessions
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <button
+                                         {/* Stats & Actions */}
+                                         <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+                                             <div className="text-sm text-gray-600">
+                                                 {schedule.upcomingSessions} upcoming sessions
+                                             </div>
+                                             <div className="flex items-center gap-2">
+                                                 <button
                                                     onClick={() => handleModifySchedule(schedule.id)}
                                                     className="flex items-center gap-1 px-3 py-1 text-main bg-gray-50 rounded-lg hover:bg-main hover:text-white transition-colors text-sm font-medium"
                                                 >
@@ -218,6 +165,7 @@ const ConsultantScheduleDisplay = () => {
                                             </div>
                                         </div>
                                     </div>
+                                    
                                 ))}
                             </div>
                         </div>
@@ -263,18 +211,18 @@ const ConsultantScheduleDisplay = () => {
 
                                         {/* Channels */}
                                         <div className="mb-4">
-                                            <div className="text-sm text-gray-600 mb-2">Available Channels:</div>
+                                            <div className="text-sm text-gray-600 mb-2">Available Channels: </div>
                                             <div className="flex flex-wrap gap-2">
                                                 {schedule.channels.map(channel => {
-                                                    const channelInfo: ChannelInfo = channelOptions[channel.toLowerCase() as keyof typeof channelOptions];
-                                                    const Icon = channelInfo.icon;
+                                                    const channelOption = ChannelOptions[channel.toLowerCase() as keyof typeof ChannelOptions]
+                                                    const Icon = channelOption?.icon;
                                                     return (
                                                         <div
                                                             key={channel}
                                                             className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium bg-gray-100 text-gray-600"
                                                         >
                                                             {Icon && <Icon className="w-3 h-3" />}
-                                                            {channelInfo.label}
+                                                            {channelOption?.label}
                                                         </div>
                                                     );
                                                 })}

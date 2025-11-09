@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import { LucideProps, X } from 'lucide-react'
 import React from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import InitialsOrAvartar from './shared/InitialsOrAvartar'
 import Logo from './svg/Logo'
 import { BaseProfile, ConsultantProfile } from '@/types'
@@ -27,6 +27,7 @@ const SideBar: React.FC<SideBarProps> = ({
   const { profileData, userContext } = useUserContext();
   const baseProfileData = profileData as BaseProfile;
   const consultantProfileData = profileData as ConsultantProfile;
+  const navigate = useNavigate();
   return (
     <nav
       className={clsx('border bg-white overflow-auto flex flex-col pr-3',
@@ -64,8 +65,11 @@ const SideBar: React.FC<SideBarProps> = ({
       </div>
       <div>
         <hr className='pb-2' />
-        <div className='flex flex-row gap-2 min-h-10 pl-5'>
-          <InitialsOrAvartar name={baseProfileData?.userName.full_name} avatarUrl={baseProfileData?.profilePicture.picture_url} />
+        <div
+          onClick={() => navigate('profile')}
+          className='flex flex-row gap-2 min-h-10 pl-5 cursor-pointer'>
+          <InitialsOrAvartar
+            name={baseProfileData?.userName.full_name} avatarUrl={baseProfileData?.profilePicture.picture_url} />
           <div className='flex flex-col gap-1'>
             <p className='base-bold'>{baseProfileData?.userName.full_name}</p>
             {userContext.userType === 'CONSULTANT' && <p className='tiny-thin'>{consultantProfileData?.specialization}</p>}

@@ -18,7 +18,7 @@ const SigninForm = () => {
 
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { isPending: isSigningIn, mutateAsync: signInUser, isError, } = useSignInUserMutation();
+  const { isPending: isSigningIn, mutateAsync: signInUser } = useSignInUserMutation();
 
   const form = useForm<z.infer<typeof signInValidation>>({
     resolver: zodResolver(signInValidation),
@@ -30,21 +30,22 @@ const SigninForm = () => {
 
   const onSubmit = async (formData: z.infer<typeof signInValidation>) => {
     console.log("entered")
-    const { data,code } = await signInUser({ email: formData.email, password: formData.password });
-    if (!isSigningIn) {
-      if (!isError) {
-        console.log(data.user_id)
-        if (data.userStage === 'ONBOARDING') {
-          navigate('/onboarding')
-        }else {
-          navigate('/')
-        }
-      } else {
-        if (code === 404) {
-          return toast({title: "You don't have an account please sign up", variant: 'destructive'});
-        }
+    try {
+      const {data} = await signInUser({ email: formData.email, password: formData.password });
+      if(data && data.userStage === 'ONBOARDING') {
+        navigate('/onboarding');
+      }else {
+        navigate('/')
       }
-    } 
+    } catch(error) {
+      const apiError = error as ApiError;
+      if (apiError.status === 404) {
+        return toast({title: 'You do not have an account please sign up', variant: 'destructive'})
+      } else if (apiError.status === 401) {
+        return toast({title: apiError.message, variant: 'destructive'})
+      } 
+    }
+  
   }
 
 return (

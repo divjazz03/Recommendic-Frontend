@@ -43,8 +43,14 @@ export const useUpdateSchedule = () => {
     })
 }
 export const useDeleteSchedule = () => {
+    const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (id: string) => deleteSchedule(id)
+        mutationFn: (id: string) => deleteSchedule(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['My Schedules']
+            })
+        }
     })
 }
 export const useGetMyConsultantProfiles = () => {

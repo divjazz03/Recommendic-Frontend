@@ -17,7 +17,9 @@ const InitialsOrAvartar: React.FC<InitialsOrAvartarProps> = ({
 
 
     return (
-        <div className={` ${avatarUrl ? 'bg-white' : 'bg-main'} flex flex-shrink flex-row justify-center items-center p-2 rounded-full`}
+        <div 
+            
+        className={` ${avatarUrl ? 'bg-white' : 'bg-main'} flex flex-shrink flex-row justify-center items-center p-2 rounded-full`}
             style={{
                 minHeight: height ? `${height}px` : '60px',
                 maxHeight: height ? `${height}px` : '60px',

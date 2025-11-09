@@ -179,7 +179,7 @@ export const usePatientAppointment = () => {
   });
 
   const upcomingAppointments = filteredAppointments.filter(apt =>
-    new Date(apt.date) >= new Date() && apt.status !== 'cancelled' && apt.status !== 'completed'
+    new Date(apt.date) >= new Date() && apt.status !== 'cancelled' && apt.status !== 'completed' && apt.status !== 'pending'
   );
 
   const pastAppointments = filteredAppointments.filter(apt =>

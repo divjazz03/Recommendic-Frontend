@@ -34,10 +34,10 @@ const ConsultantAppointment = () => {
     setRescheduleTime
   } = useConsultantAppointment();
   return (
-    <main className='h-full mx-auto max-w-7xl p-4 md:p-8'>
+    <main className='h-full mx-auto overflow-y-auto max-w-7xl p-4 md:p-8'>
       <header className='mb-8'>
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">Appointment Management</h1>
-        <p className="text-gray-600">Review and manage patient appointment requests</p>
+        <h1 className="text-2xl sm:text-4xl font-bold text-gray-900 mb-2">Appointment Management</h1>
+        <p className="text-gray-600 text-sm sm:text-base">Review and manage patient appointment requests</p>
       </header>
 
        {/* Stats Cards */}
@@ -88,7 +88,7 @@ const ConsultantAppointment = () => {
         {/* Tabs and Search */}
         <section className="bg-white rounded-lg border-2 border-gray-200 p-4 mb-6">
           <div className="flex flex-col md:flex-row gap-4 mb-4">
-            <div className="flex gap-2">
+            <div className="flex gap-2 overflow-x-auto scrollbar-hide scrollbar-hide:-webkit-scrollbar">
               <button
                 onClick={() => setActiveTab('pending')}
                 className={`px-4 py-2 rounded-lg font-medium transition flex items-center gap-2 ${

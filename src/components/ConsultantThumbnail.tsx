@@ -52,13 +52,13 @@ const ConsultantThumbnail: React.FC<ConsultantThumbnailProps> = ({
     nextSlot
 }) => {
     return (
-        <div key={id} className='bg-white rounded-lg border-light-3 px-1 py-2 md:px-4 md:py-2 hover:shadow-md transition-shadow'>
+        <div key={id} className='bg-white rounded-lg border-light-3 px-1 py-2 md:px-4 md:py-4 hover:shadow-md transition-shadow'>
             <div className='flex gap-4'>
                 {/* Profile Image*/}
                 <InitialsOrAvartar name={name} avatarUrl={avatarUrl} width='80' height='80' />
                 {/* Main  Content*/}
-                <div className='flex-1'>
-                    <div className='flex justify-between items-center mb-2'>
+                <div className='flex-1 space-y-3'>
+                    <div className='flex justify-between items-center'>
                         <div>
                             <h3 className='text-lg font-semibold text-dark-4'>{name}</h3>
                             <div className='flex items-center gap-2 text-sm text-dark-1'>
