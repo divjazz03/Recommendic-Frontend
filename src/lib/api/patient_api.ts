@@ -126,7 +126,8 @@ export interface AppointmentCreationRequest {
     consultantId: string,
     scheduleId: string,
     channel: string,
-    date: string
+    date: string,
+    reason: string
 }
 
 export async function createAnAppointment(appointmentCreationRequest: AppointmentCreationRequest) {

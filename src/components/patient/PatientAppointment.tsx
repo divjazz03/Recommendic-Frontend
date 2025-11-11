@@ -1,4 +1,5 @@
 import {  PatientAppointmentType, usePatientAppointment } from '@/hooks/useAppointment'
+import { formatDate } from '@/lib/utils/utils';
 import { AlertCircle, Calendar, CheckCircle, Clock, FileText, LucideProps, MapPin, Phone, Plus, Search, User, Video, XCircle } from 'lucide-react';
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
@@ -283,6 +284,17 @@ const PatientAppointmentCard = ({
           </div>
         )}
       </div>
+
+      {appointment.status === 'confirmed' && new Date(appointment.date) >= new Date() && (
+            <div className="flex gap-3 pt-4">
+              <button className="flex-1 bg-main-light text-white py-3 rounded-lg font-semibold hover:bg-main transition">
+                Add to Calendar
+              </button>
+              <button className="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-300 transition">
+                Reschedule
+              </button>
+            </div>
+          )}
     
   </main>
 )
@@ -394,22 +406,99 @@ const AppointmentModal = ({
             </div>
           )}
 
-          {appointment.status === 'confirmed' && new Date(appointment.date) >= new Date() && (
-            <div className="flex gap-3 pt-4">
-              <button className="flex-1 bg-main-light text-white py-3 rounded-lg font-semibold hover:bg-main transition">
-                Add to Calendar
-              </button>
-              <button className="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-300 transition">
-                Reschedule
-              </button>
-              <button 
-              onClick={() => onClose()}
-              className="px-6 bg-red-100 text-red-700 py-3 rounded-lg font-semibold hover:bg-red-200 transition">
-                Cancel
-              </button>
-            </div>
-          )}
+          
         </div>
       </div>
     </div>
   );
+
+  interface RescheduleModalProps {
+    appointment: PatientAppointmentType
+    handleCancel: () => void
+    handleReschedule: (id: string) => void
+    setRescheduleDate: (value: React.SetStateAction<string>) => void
+    setRescheduleTime: (value: React.SetStateAction<string>) => void
+    rescheduleDate: string
+    rescheduleTime: string
+    setActionReason: (value: React.SetStateAction<string>) => void
+    actionReason: string
+  }
+
+  const RecheduleModal = ({
+  appointment,
+  handleCancel,
+  handleReschedule,
+  setRescheduleDate,
+  setRescheduleTime,
+  rescheduleDate,
+  rescheduleTime,
+  setActionReason,
+  actionReason
+}: RescheduleModalProps) => {
+  if (!appointment) return null;
+
+  return (
+    <main className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div className="bg-white rounded-xl max-w-lg w-full p-6">
+        <h3 className="text-xl font-bold text-gray-900 mb-4">
+          Reschedule Appointment
+        </h3>
+
+        <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+          <p className="font-semibold text-gray-900">{appointment.doctorName}</p>
+          <p className="text-sm text-gray-600">{appointment.reason}</p>
+          <p className="text-sm text-gray-600">{formatDate(appointment.date)} at {appointment.time}</p>
+        </div>
+          <div className="space-y-4 mb-4">
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">New Date</label>
+              <input
+                type="date"
+                value={rescheduleDate}
+                onChange={(e) => setRescheduleDate(e.target.value)}
+                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+                min={new Date().toISOString().split('T')[0]}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">New Time</label>
+              <input
+                type="time"
+                value={rescheduleTime}
+                onChange={(e) => setRescheduleTime(e.target.value)}
+                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+              />
+            </div>
+          </div>
+        
+
+        <div className="mb-4">
+          <label className="block text-sm font-semibold text-gray-700 mb-2">
+            Reason for Rescheduling (Optional)
+          </label>
+          <textarea
+            value={actionReason}
+            onChange={(e) => setActionReason(e.target.value)}
+            placeholder={"e.g., Schedule conflict, emergency case priority..."}
+            className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none h-24 resize-none"
+          />
+        </div>
+
+        <div className="flex gap-3">
+          <button
+            onClick={handleCancel}
+            className="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-300 transition"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() => handleReschedule(appointment.id)}
+            className={'flex-1 py-2 rounded-lg font-semibold transition bg-blue-600 text-white hover:bg-blue-700'}
+          >
+            Confirm Reschedule
+          </button>
+        </div>
+      </div>
+    </main>
+  );
+};

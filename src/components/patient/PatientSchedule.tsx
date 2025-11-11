@@ -1,13 +1,12 @@
 import CustomCalender from '@/components/shared/CustomCalender';
 import InitialsOrAvartar from '@/components/shared/InitialsOrAvartar';
-import { useGetConsultantSchedules } from '@/lib/react-query/patientQueryAndMutations';
 import { ArrowLeft, Calendar, CheckCircle, CreditCard, Info, LucideProps, Shield, Star, User, Video } from 'lucide-react';
 import React, { useCallback, useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom';
 import Loader from '../shared/Loader';
-import { Schedule, ScheduleWithAppointmentDetail, WeekDay } from '@/types';
 import { DateTime } from 'luxon';
-import { ConsultationChannel, ConsultationType, formatDate, TimeSlot, usePatientSchedule } from '@/hooks/usePatientSchedules';
+import { ConsultationChannel, ConsultationType,TimeSlot, usePatientSchedule } from '@/hooks/usePatientSchedules';
+import { formatDate } from '@/lib/utils/utils';
 
 export const PatientSchedule = () => {
   const location = useLocation();
@@ -26,15 +25,16 @@ export const PatientSchedule = () => {
     setSelectedDate,
     setSelectedTime,
     setConsultationType,
-    isTimeSlotAvailable,
     handleFinalBooking,
     isCreating,
     setSelectedScheduleId,
-    selectedScheduleId
+    selectedScheduleId,
+    reason,
+    setReason
   } = usePatientSchedule(consultantId);
-  
 
-  
+
+
 
   const consultationTypes: ConsultationType[] = [
     {
@@ -43,7 +43,7 @@ export const PatientSchedule = () => {
       description: 'In-person consultation',
       duration: '1 hour',
       icon: User,
-      fee: consultantScheduleData?.fee.in_person ?? 0,
+      fee: consultantScheduleData?.fee?.in_person ?? 0,
       recommended: true
     }
     ,
@@ -53,11 +53,11 @@ export const PatientSchedule = () => {
       icon: Video,
       description: 'Face-to-face consultation via video',
       duration: '30 mins',
-      fee: consultantScheduleData?.fee.online ?? 0
+      fee: consultantScheduleData?.fee?.online ?? 0
     },
   ];
 
-  
+
 
   const nextMonth = () => {
     setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1));
@@ -186,36 +186,30 @@ export const PatientSchedule = () => {
                   <p className='text-dark-2 mb-6'>{formatDate(selectedDate)}</p>
 
                   {consultantScheduleData && Object.entries(consultantScheduleData.timeSlots)
-                    .filter(([period,slots]: [string, TimeSlot[]]) => period !== 'unavailableSlots' && period !== 'bookedSlots' && slots.length > 0)
+                    .filter(([period, slots]: [string, TimeSlot[]]) => period !== 'unavailableSlots' && period !== 'bookedSlots' && slots.length > 0)
                     .map(([period, slots]: [string, TimeSlot[]]) => (
                       <div key={period} className='mb-6'>
                         <h3 className='text-lg font-medium text-dark-2 mb-3 capitalize'>{period}</h3>
                         <div className='grid grid-cols-3 sm:grid-cols-6 gap-3'>
-                          {slots.map((slot: TimeSlot) => {
-                            const available = isTimeSlotAvailable(slot.time);
-                            const booked = consultantScheduleData.timeSlots.bookedSlots
-                              .map(slot => slot.time).includes(slot.time);
+                          {slots.map((slot: TimeSlot, index) => {
+                            const slotTime = DateTime.fromISO(slot.dateTime).toFormat('hh:mm a')
                             return (
+                              slot &&
                               <button
-                                key={slot.time}
+                                key={index}
                                 onClick={() => {
-                                  setSelectedTime(slot.time)
-                                  setSelectedScheduleId(slot.scheduleId)}}
-                                disabled={!available}
+                                  setSelectedTime(slot.dateTime)
+                                  setSelectedScheduleId(slot.scheduleId)
+                                }}
                                 className={`
                               p-3 rounded-lg text-sm font-medium transition-all duration-100
-                              ${!available
-                                    ? booked
-                                      ? 'bg-red-100 text-red-400 cursor-not-allowed'
-                                      : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                    : selectedTime === slot.time
-                                      ? 'bg-main text-white shadow-lg'
-                                      : 'bg-gray-50 text-dark-2 hover:bg-main-light hover:text-white'
+                              ${selectedTime === slot.dateTime
+                                    ? 'bg-main text-white shadow-lg'
+                                    : 'bg-gray-50 text-dark-2 hover:bg-main-light hover:text-white'
                                   }
                               `}
-                              >{}
-                                {DateTime.fromISO(slot.time).toFormat('HH:MM a ZZZZ')}
-                                {booked && <div className='text-xs mt-1'>Booked</div>}
+                              >
+                                {slotTime}
                               </button>
                             );
                           })}
@@ -224,6 +218,16 @@ export const PatientSchedule = () => {
                     ))}
                 </div>
               )}
+            </div>
+
+            <div className='bg-white rounded-2xl shadow-lg p-6'>
+              <h2>Reason</h2>
+              <textarea
+                onChange={(e) => setReason(e.target.value)}
+                value={reason}
+                rows={4}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light  outline-none disabled:bg-gray-50 resize-none"
+              />
             </div>
 
             {/* Booking summary */}
@@ -272,7 +276,7 @@ export const PatientSchedule = () => {
               </div>
 
               {/*Still under summary */}
-              {selectedDate && selectedTime && selectedScheduleId && (
+              {selectedDate && selectedTime && selectedScheduleId && reason &&(
                 <section className='bg-white rounded-2xl shadow-lg p-6'>
                   <h2 className='text-xl font-semibold text-dark-3 mb-4'>Booking Summary</h2>
                   <div className='space-y-4'>
@@ -341,7 +345,7 @@ export const PatientSchedule = () => {
 
 
 
-  
+
 
 
 

@@ -322,13 +322,13 @@ const ConsultantScreen = () => {
                                         </div>
                                     ))}
                                 </div>
-
-                                <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                                {consultant?.nextAvailable? <div className="p-4 bg-green-50 rounded-lg border border-green-200">
                                     <div className="flex items-center gap-2 text-green-800">
                                         <CheckCircle className="w-5 h-5" />
-                                        <span className="font-medium">Next available: {DateTime.fromISO(consultant?.nextAvailable).toLocaleString(DateTime)}</span>
+                                        <span className="font-medium">Next available: {DateTime.fromISO(consultant?.nextAvailable).toLocaleString(DateTime.TIME_SIMPLE)}</span>
                                     </div>
-                                </div>
+                                </div> : <p>Not Available Today</p>}
+                                
                             </section>
                         )}
                         {/*Reviews Tab */}

@@ -57,7 +57,7 @@ const App = () => {
             <Route path='profile' element={<ConsultantScreen />} />
           </Route>
           <Route path='/schedule' element={<Schedule />} >
-            {userContext.userType === 'PATIENT'
+            {userContext && userContext.userType === 'PATIENT'
               ? <Route index element={<PatientSchedule />} />
               : <Route element={<ConsultantSchedule />}>
                 <Route index element={<ConsultantScheduleDisplay />} />

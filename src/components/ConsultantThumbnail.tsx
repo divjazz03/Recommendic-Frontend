@@ -28,13 +28,15 @@ const renderStats = (rating: number) => {
     ));
 };
 const getAvailabilityColor = (availability: string) => {
-    if (availability.includes('Today')) {
-        return 'text-green-600 bg-green-50'
+    if (availability) {
+        if (availability.includes('Today')) {
+            return 'text-green-600 bg-green-50'
+        }
+        if (availability.includes('Tomorrow')) {
+            return 'text-blue-600 bg-blue-50'
+        }
+        return 'text-orange-600 bg-orange-50'
     }
-    if (availability.includes('Tomorrow')) {
-        return 'text-blue-600 bg-blue-50'
-    }
-    return 'text-orange-600 bg-orange-50'
 }
 
 const ConsultantThumbnail: React.FC<ConsultantThumbnailProps> = ({
@@ -102,7 +104,7 @@ const ConsultantThumbnail: React.FC<ConsultantThumbnailProps> = ({
                             <div className={`px-3 py-1 rounded-full text-xs font-thin sm:text-sm ${getAvailabilityColor(availability)}`}>
                                 {availability}
                             </div>
-                            {availability.includes('Today') && (
+                            {availability && availability.includes('Today') && (
                                 <div className="hidden sm:flex items-center gap-1 text-sm text-gray-600">
                                     <Clock className="w-4 h-4" />
                                     <span>Next: {nextSlot}</span>

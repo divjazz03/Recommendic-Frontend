@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { AppointmentCreationRequest, createAnAppointment, getConsultantFullProfileDetails, getConsultantSchedules, getMyProfileDetails, getRecommendedConsultants, updateProfileData } from "../api/patient_api"
-import { getMyNotificationSettings } from "../api/general_api"
 import { ModifyingProfileData } from "@/hooks/useProfile"
 
 

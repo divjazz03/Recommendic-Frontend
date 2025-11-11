@@ -3,13 +3,11 @@ import { User, Mail, Phone, MapPin, Calendar, Briefcase, GraduationCap, Award, L
 import { ConsultantNotificationSetting, useNotificationSettings } from '@/hooks/useNotificationSettings';
 import { useConsultantProfile } from '@/hooks/useProfile';
 import { useLogout } from '@/lib/react-query/generalQueriesAndMutation';
-import { useNavigate } from 'react-router-dom';
 import MultiSelect from '../ui/MultiSelect';
 
 const ConsultantProfile = () => {
     const [activeTab, setActiveTab] = useState('profile');
     const {mutateAsync: logout, isPending: isLogginOut} = useLogout();
-    const navigate = useNavigate()
     
     const handleLogout = async () => {
         await logout();

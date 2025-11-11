@@ -1,5 +1,5 @@
 import { PatientData } from "@/components/consultant/consultation/ConsultantConsultation"
-import { ConsultantScheduleData, Fee } from "@/hooks/usePatientSchedules"
+import { ConsultantScheduleData, Fee, TimeSlot } from "@/hooks/usePatientSchedules"
 import React, { ReactNode } from "react"
 
 export type UserType = 'PATIENT' | 'CONSULTANT' | 'ADMIN'
@@ -229,13 +229,9 @@ export interface Schedule {
     upcomingSessions: number
 }
 
-export interface ScheduleWithAppointmentDetail {
-    schedule: Schedule,
-    appointmentDateAndTimes: string[]
-}
 export interface ConsultantSchedulesResponse extends Response {
     data: {
-        schedules: ScheduleWithAppointmentDetail[]
+        scheduleSlots: TimeSlot[]
         profile: ConsultantScheduleData
     }
 }

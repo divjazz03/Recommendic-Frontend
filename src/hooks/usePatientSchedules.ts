@@ -1,7 +1,8 @@
 import { useCreateAppointment, useGetConsultantSchedules } from "@/lib/react-query/patientQueryAndMutations";
-import { ScheduleWithAppointmentDetail } from "@/types";
 import { LucideProps } from "lucide-react";
+import { DateTime } from "luxon";
 import { useCallback, useEffect, useState } from "react"
+import { formatTime } from "./useConsultantSchedule";
 
 
 
@@ -9,6 +10,7 @@ export const usePatientSchedule = (consultantId: string) => {
     const [selectedScheduleId, setSelectedScheduleId] = useState<string>();
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [selectedTime, setSelectedTime] = useState<string | null>(null);
+    const [reason, setReason] = useState<string>()
     const { data, isPending } = useGetConsultantSchedules(consultantId, selectedDate.toISOString().split("T")[0]);
     const [consultationType, setConsultationType] = useState<ConsultationChannel>('in_person');
     const [currentStep, setCurrentStep] = useState(1);
@@ -16,22 +18,23 @@ export const usePatientSchedule = (consultantId: string) => {
     const [consultantScheduleData, setConsultantScheduleData] = useState<ConsultantScheduleData>();
     const callBackSchedulesToTimeSlots = useCallback(schedulesToTimeSlots, [data?.data, selectedDate])
     const {mutateAsync: createAnAppointment, isPending: isCreating} = useCreateAppointment()
+    
     useEffect(() => {
         const scheduleData = data?.data
         scheduleData && setConsultantScheduleData({
-            fullName: scheduleData.profile.fullName,
-            fee: scheduleData.profile.fee,
-            image: scheduleData.profile.image,
-            location: scheduleData.profile.location,
-            rating: scheduleData.profile.rating,
-            title: scheduleData.profile.title,
-            timeSlots: callBackSchedulesToTimeSlots(scheduleData.schedules, selectedDate)
+            fullName: scheduleData.profile?.fullName,
+            fee: scheduleData.profile?.fee,
+            image: scheduleData.profile?.image,
+            location: scheduleData.profile?.location,
+            rating: scheduleData.profile?.rating,
+            title: scheduleData.profile?.title,
+            timeSlots: callBackSchedulesToTimeSlots(scheduleData.scheduleSlots)
         })
     }, [data?.data, selectedDate])
 
     const isTimeSlotAvailable = (time: string): boolean => {
-        return !consultantScheduleData?.timeSlots.unavailableSlots.map((slot) => slot.time).includes(time) &&
-            !consultantScheduleData?.timeSlots.bookedSlots.map((slot) => slot.time).includes(time);
+        return !consultantScheduleData?.timeSlots.unavailableSlots.map((slot) => slot.dateTime).includes(time) &&
+            !consultantScheduleData?.timeSlots.bookedSlots.map((slot) => slot.dateTime).includes(time);
     }
 
     const handleFinalBooking = async () => {
@@ -42,6 +45,7 @@ export const usePatientSchedule = (consultantId: string) => {
                 consultantId: consultantId,
                 date: selectedDate.toISOString().split("T")[0],
                 scheduleId: selectedScheduleId,
+                reason: reason
             });
         }
     }
@@ -65,62 +69,49 @@ export const usePatientSchedule = (consultantId: string) => {
         handleFinalBooking,
         isCreating,
         setSelectedScheduleId,
-        selectedScheduleId
+        selectedScheduleId,
+        reason,
+        setReason
     }
 }
 
-const schedulesToTimeSlots = (schedules: ScheduleWithAppointmentDetail[], selectedDate: Date): TimeSlots => {
-    const weekdays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+const schedulesToTimeSlots = (schedules: TimeSlot[]): TimeSlots => {
     const morning: TimeSlot[] = []
     const afternoon: TimeSlot[] = []
     const evening: TimeSlot[] = []
     const unavailableSlots: TimeSlot[] = []
     const bookedSlots: TimeSlot[] = []
 
-    schedules?.filter(schedule => {
-        if (schedule.schedule.recurrenceRule?.frequency === 'weekly') {
-            return schedule.schedule.recurrenceRule.weekDays.includes(weekdays[selectedDate.getDay()] as WeekDay)
-        } else {
-            return true
-        }
-    })
-        .forEach(schedule => {
+        schedules?.forEach(schedule => {
             function toSeconds(timeStr: string) {
                 const [h, m, s = 0] = timeStr.split(':').map(Number)
-                return h * 3600 + m * 60 + s;
+                const offsetInMinutes = new Date().getTimezoneOffset()*60
+                return h * 3600 + m * 60 + s + offsetInMinutes;
             }
-            const morningTime = toSeconds('9:00')
-            const afternoonTime = toSeconds('12:00');
-            const eveningTime = toSeconds("17:00")
-            const scheduleTime = toSeconds(schedule.schedule.startTime)
+            const morningTime = toSeconds('8:00')
+            const afternoonTime = toSeconds('11:00');
+            const eveningTime = toSeconds("16:00")
+            const formattedTime: string = DateTime.fromISO(schedule.dateTime, {zone: 'utc'}).toFormat('hh:mm')
+            const scheduleTime = toSeconds(formattedTime)
+            console.log(morningTime / 3600);
+            console.log(schedule.dateTime)
+            console.log(formattedTime)
             const scheduleTimeIsMorning = scheduleTime >= morningTime && scheduleTime < afternoonTime;
             const scheduleTimeIsAfternoon = scheduleTime >= afternoonTime && scheduleTime < eveningTime;
             const scheduleTimeIsEvening = scheduleTime >= eveningTime;
-            const scheduleIsAvailable = schedule.schedule.isActive;
-            const scheduleSlotIsBooked = schedule.schedule.recurrenceRule?.frequency === 'one-off' && schedule.appointmentDateAndTimes.length !== 0
             if (scheduleTimeIsMorning) {
                 morning.push({
-                    scheduleId: schedule.schedule.id, time: schedule.schedule.startTime
+                    scheduleId: schedule.scheduleId, dateTime: schedule.dateTime
                 })
             }
             if (scheduleTimeIsAfternoon) {
                 afternoon.push({
-                    scheduleId: schedule.schedule.id, time: schedule.schedule.startTime
+                    scheduleId: schedule.scheduleId, dateTime: schedule.dateTime
                 })
             }
             if (scheduleTimeIsEvening) {
                 evening.push({
-                    scheduleId: schedule.schedule.id, time: schedule.schedule.startTime
-                })
-            }
-            if (!scheduleIsAvailable) {
-                unavailableSlots.push({
-                    scheduleId: schedule.schedule.id, time: schedule.schedule.startTime
-                })
-            }
-            if (scheduleSlotIsBooked) {
-                bookedSlots.push({
-                    scheduleId: schedule.schedule.id, time: schedule.schedule.startTime
+                    scheduleId: schedule.scheduleId, dateTime: schedule.dateTime
                 })
             }
         })
@@ -132,14 +123,7 @@ const schedulesToTimeSlots = (schedules: ScheduleWithAppointmentDetail[], select
         unavailableSlots: unavailableSlots
     }
 }
-export const formatDate = (date: Date): string => {
-    return date.toLocaleDateString('en-US', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    })
-}
+
 
 export type ConsultationChannel = "in_person" | "online"
 export type ConsultationType = {
@@ -164,7 +148,7 @@ export interface Fee {
 }
 export interface TimeSlot {
     scheduleId: string,
-    time: string
+    dateTime: string
 }
 export interface TimeSlots {
     morning: TimeSlot[]

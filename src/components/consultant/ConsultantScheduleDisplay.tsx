@@ -5,7 +5,7 @@ import { ChannelOptions, channelOptions, formatRecurrence, formatTime, useSchedu
 
 
 const ConsultantScheduleDisplay = () => {
-    // Sample schedule data - in your app, this would come from your backend
+    
     const {
         activeSchedules,
         handleCreateNewSchedule,

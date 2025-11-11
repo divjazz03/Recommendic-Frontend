@@ -38,9 +38,18 @@ export const handleDateTimeFormatting = (date: string): string => {
     }
 }
 
-export const handleError = (error: any) => {
-    if (apiClient.isAxiosError(error) && error.response?.status === 401) {
-            return null;
+export const formatDate = (date: Date | string): string => {
+    if (date as string) {
+        const stringDate = date as string
+        return DateTime.fromISO(stringDate).toLocaleString(DateTime.DATETIME_FULL)
+    }else{
+        const dateType = date as Date
+        return dateType.toLocaleDateString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        })
+
     }
-    throw new Error(error)
 }

@@ -13,9 +13,8 @@ export interface NewSchedule {
     startTime: string,
     endTime: string,
     recurrenceRule?: RecurrenceRule,
-    zoneOffset: string,
     channels: string[],
-    isActive: boolean
+    isActive: boolean,
 }
 export const weekDays = [
     { value: 'monday', label: 'Mon' },
@@ -51,7 +50,7 @@ export const useCreateSchedule = () => {
             weekDays: ['monday'],
             interval: 1
         },
-        zoneOffset: "+01:00",
+    
         channels: [],
         isActive: true
     }]);
@@ -65,7 +64,6 @@ export const useCreateSchedule = () => {
             name: '',
             startTime: '09:00',
             endTime: '17:00',
-            zoneOffset: "+01:00",
             recurrenceRule: {
                 frequency: 'weekly',
                 weekDays: ['monday'],
@@ -161,7 +159,7 @@ export const useCreateSchedule = () => {
 }
 
 export const useModifySchedule = (location: Location) => {
-    const [scheduleId, setScheduleId] = useState<string>(location.state.scheduleId);
+    const [scheduleId] = useState<string>(location.state.scheduleId);
     const { data: scheduleResponse, isPending } = useGetScheduleWithUserId(scheduleId);
     const { mutateAsync: updateAsyncSchedule, isPending: isUpdating } = useUpdateSchedule()
     const { mutateAsync: deleteAsyncSchedule, isPending: isDeleting } = useDeleteSchedule();
@@ -209,11 +207,6 @@ export const useModifySchedule = (location: Location) => {
     const updateSchedule = (field: keyof ModifyingSchedule, value: unknown) => {
         setModifiedSchedule(schedule => ({ ...schedule, [field]: value }));
     };
-
-    const toggleRecurrence = (isRecurring: boolean) => {
-        isRecurring ? setModifiedSchedule(schedule => ({ ...schedule, isRecurring: true, recurrenceRule: {} }))
-            : setModifiedSchedule(schedule => ({ ...schedule, isRecurring: false, recurrenceRule: undefined }))
-    }
 
     const updateRecurrenceRule = (field: keyof ModifyingRecurrenceRule, value: unknown) => {
         setModifiedSchedule(schedule => ({ ...schedule, recurrenceRule: { ...schedule?.recurrenceRule, [field]: value } })

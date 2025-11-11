@@ -1,7 +1,8 @@
 import { Address, ConsultantEducation, NewUser, RecurrenceRule, Response, Schedule, SignUpResponse, UserName } from "@/types";
-import { NewSchedule } from "@/components/consultant/ConsultantNewSchedule";
 import { ModifyingSchedule } from "@/components/consultant/ConsultantModifySchedule";
 import { apiClient } from "../axios";
+import { NewSchedule } from "@/hooks/useConsultantSchedule";
+import { DateTime } from "luxon";
 
 
 const consultantBasePath = import.meta.env.VITE_CONSULTANT_BASE;
@@ -19,6 +20,16 @@ interface ScheduleCreationResponse extends Response {
         isActive: boolean;
         createdAt: string;
     }
+}
+
+export interface NewScheduleRequest {
+    name: string,
+    startTime: string,
+    endTime: string,
+    recurrenceRule?: RecurrenceRule,
+    channels: string[],
+    isActive: boolean,
+    zoneOffset: string
 }
 
 export interface SchedulesResponse extends Response {
@@ -73,11 +84,53 @@ export async function createNewConsultant(
 }
 
 export async function createNewSchedule(schedules: NewSchedule[]): Promise<ScheduleCreationResponse> {
-    return apiClient.post(`${scheduleBasePath}`, schedules, {
+    const scheduleRequests: NewScheduleRequest[] = schedules.map(schedule => {
+        const formattedEndTime = formatToUTCTime(schedule.endTime);
+        const formattedStartTime = formatToUTCTime(schedule.startTime);
+        const offset = getCurrentTimeOffset()
+        return {
+            channels: schedule.channels,
+            endTime: formattedEndTime,
+            startTime: formattedStartTime,
+            zoneOffset: offset,
+            isActive:schedule.isActive,
+            name: schedule.name,
+            recurrenceRule: schedule.recurrenceRule    
+    }
+    })
+    return apiClient.post(`${scheduleBasePath}`, scheduleRequests, {
         headers: {
             'Content-Type': 'application/json'
         }
     }).then(response => response.data)
+
+}
+function getCurrentTimeOffset() {
+        const date = new Date();
+        // getTimezoneOffset() returns the difference in minutes from UTC, 
+        // where positive values are West of GMT, so we invert the sign.
+        const offsetMinutes = -date.getTimezoneOffset();
+
+        const sign = offsetMinutes >= 0 ? '+' : '-';
+        const absOffsetMinutes = Math.abs(offsetMinutes);
+        const hours = Math.floor(absOffsetMinutes / 60);
+        const minutes = absOffsetMinutes % 60;
+
+        // Pad hours and minutes with leading zeros if necessary
+        const formattedHours = String(hours).padStart(2, '0');
+        const formattedMinutes = String(minutes).padStart(2, '0');
+
+        return `${sign}${formattedHours}:${formattedMinutes}`;
+    }
+const formatToUTCTime = (time: string) => {
+
+    const mockDate = '2019-12-02'
+    const date = new Date(`${mockDate}T${time}`)
+    const hour = date.getUTCHours();
+    const minutes = date.getUTCMinutes();
+    const seconds = date.getUTCSeconds();
+    const formattedTime = `${String(hour).padStart(2,'0')}:${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`
+    return formattedTime;
 
 }
 
@@ -152,6 +205,6 @@ export interface ConsultantProfileUpdateRequest {
 }
 
 export async function updateConsultantProfileDetails(consultantProfile: ConsultantProfileUpdateRequest): Promise<ProfileDetailsResponse> {
-    return apiClient.patch(`${consultantBasePath}/profiles`,consultantProfile )
-    .then(response => response.data);
+    return apiClient.patch(`${consultantBasePath}/profiles`, consultantProfile)
+        .then(response => response.data);
 }
