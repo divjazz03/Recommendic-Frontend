@@ -2,7 +2,8 @@ import { NewUser, SigninUserData } from "@/types";
 import { 
     useQuery,
     useMutation,
-    useQueryClient
+    useQueryClient,
+    UseQueryResult
  } from "@tanstack/react-query";
 import {
    signinUser,
@@ -14,12 +15,15 @@ import {
    endConsultation,
    getMyNotificationSettings,
    updateMyNotificationSettings,
-   logoutUser} from "../api/general_api";
+   logoutUser,
+   getConsultantTimeSlots} from "../api/general_api";
 import { TypeOfUser } from "@/_auth/forms/SignupForm";
 import { createNewPatient, sendPatientOnboardingData } from "../api/patient_api";
 import { createNewConsultant, createNewSchedule, sendConsultantOnboardingData } from "../api/consultant_api";
-import { NewSchedule } from "@/components/consultant/ConsultantNewSchedule";
 import { ModifyingNotificationSetting } from "@/hooks/useNotificationSettings";
+import { NewSchedule } from "@/hooks/useConsultantSchedule";
+import { TimeSlot } from "@/hooks/usePatientSchedules";
+import { boolean } from "zod";
 
  type UserCreateMutionProps = {
     typeOfUser: TypeOfUser,
@@ -131,4 +135,15 @@ export const useUpdateNotificationSettings = () => {
          client.invalidateQueries({queryKey: ['getNotificationSettings']})
       }
    });
+}
+
+export const useGetConsultantTimeSlots = (consultantId: string, date: string, enabled: boolean = true) => {
+
+   return useQuery({
+      queryKey: ["Consultant timeSlots", consultantId, date],
+      queryFn: () => getConsultantTimeSlots(consultantId, date),
+      staleTime: 1000 * 3600,
+      enabled: enabled,
+      retry: 1
+   })
 }

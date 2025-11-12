@@ -2,11 +2,11 @@ import MedicalCategoryCard from '@/components/MedicalCategoryCard';
 import Loader from '@/components/shared/Loader';
 import { Button } from '@/components/ui/button';
 import { useUserContext } from '@/context/AuthContext';
-import { useToast } from '@/hooks/use-toast';
 import { useGetSupportedMedicalCategories, useUpdatePatientOnboardingInfo } from '@/lib/react-query/generalQueriesAndMutation';
 import { MedicalCategory } from '@/types';
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 enum SelectAction {
     UNSELECT = "UNSELECT",
@@ -25,7 +25,6 @@ const PatientOnboarding = () => {
     const [specialties, setSpecialties] = useState<MedicalCategory[]>([])
     const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
     const { mutateAsync: updatePatientOnboardingInfo, isPending:isUpdating, isError, error } = useUpdatePatientOnboardingInfo()
-    const { toast } = useToast();
 
     useEffect(() => {
         if (supportedCategories) {
@@ -52,14 +51,14 @@ const PatientOnboarding = () => {
                 if (!isUpdating) {
                     if (!isError) {
                         navigate('/');
-                        return toast({ title: 'Thanks for helping us serve you better' })
+                        return toast('Thanks for helping us serve you better')
                     }
-                    return toast({ title: `Onboarding Failed: ${error.message}`, variant: 'destructive' })
+                    return toast.error(`Onboarding Failed: ${error.message}`)
                 }
             }
 
     else {
-            return toast({ title: 'Please choose at least one', variant: 'destructive' });
+            return toast.error('Please choose at least one option');
         }
     }
     return (

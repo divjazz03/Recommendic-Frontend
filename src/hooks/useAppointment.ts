@@ -8,6 +8,7 @@ export type AppointmentPriority = 'low' | 'medium' | 'high'
 
 export interface PatientAppointmentType {
   id: string,
+  consultantId:string,
   doctorName: string,
   specialty: string,
   date: string,
@@ -53,6 +54,7 @@ const getPriorityColor = (priority: AppointmentPriority) => {
 const samplePatientAppointments: PatientAppointmentType[] = [
   {
     id: "1",
+    consultantId: "21",
     doctorName: 'Dr. Sarah Johnson',
     specialty: 'Cardiologist',
     date: '2025-11-08',
@@ -68,6 +70,7 @@ const samplePatientAppointments: PatientAppointmentType[] = [
   },
   {
     id: "2",
+    consultantId: "21",
     doctorName: 'Dr. Michael Chen',
     specialty: 'Dermatologist',
     date: '2025-11-12',
@@ -83,6 +86,7 @@ const samplePatientAppointments: PatientAppointmentType[] = [
   },
   {
     id: "3",
+    consultantId: "21",
     doctorName: 'Dr. Emily Rodriguez',
     specialty: 'General Practitioner',
     date: '2025-11-15',
@@ -98,6 +102,7 @@ const samplePatientAppointments: PatientAppointmentType[] = [
   },
   {
     id: "4",
+    consultantId: "21",
     doctorName: 'Dr. James Wilson',
     specialty: 'Orthopedic Surgeon',
     date: '2025-11-20',
@@ -113,6 +118,7 @@ const samplePatientAppointments: PatientAppointmentType[] = [
   },
   {
     id: "5",
+    consultantId: "21",
     doctorName: 'Dr. Lisa Anderson',
     specialty: 'Psychiatrist',
     date: '2025-10-28',
@@ -128,6 +134,7 @@ const samplePatientAppointments: PatientAppointmentType[] = [
   },
   {
     id: "6",
+    consultantId: "21",
     doctorName: 'Dr. Robert Martinez',
     specialty: 'Endocrinologist',
     date: '2025-11-05',
@@ -142,12 +149,6 @@ const samplePatientAppointments: PatientAppointmentType[] = [
     preparation: 'Bring glucose monitor logs'
   }
 ];
-
-const formatDate = (dateStr: string) => {
-  const date = new Date(dateStr);
-  const options: DateTimeFormatOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-  return date.toLocaleDateString('en-US', options);
-};
 
 const getDaysUntil = (dateStr: string) => {
   const today = new Date();
@@ -167,7 +168,7 @@ export const usePatientAppointment = () => {
   const [appointments, setAppointments] = useState<PatientAppointmentType[]>(samplePatientAppointments);
   const [filterStatus, setFilterStatus] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
-  const [viewMode, setViewMode] = useState('list');
+  const [rescheduleModalOpen, setRescheduleModalOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState<PatientAppointmentType>();
 
   const filteredAppointments = appointments.filter(apt => {
@@ -200,14 +201,13 @@ export const usePatientAppointment = () => {
     setFilterStatus,
     searchTerm,
     setSearchTerm,
-    viewMode,
-    setViewMode,
+    rescheduleModalOpen,
+    setRescheduleModalOpen,
     selectedAppointment,
     setSelectedAppointment,
     getStatusColor,
     getDaysUntil,
     getStatusIcon,
-    formatDate,
     pastAppointments,
     upcomingAppointments,
     filteredAppointments
@@ -406,59 +406,10 @@ export const useConsultantAppointment = () => {
   const [activeTab, setActiveTab] = useState('pending');
   const [actionModal, setActionModal] = useState<ActionModalType | null>(null);
   const [actionReason, setActionReason] = useState('');
-  const [rescheduleDate, setRescheduleDate] = useState('');
+  const [rescheduleDate, setRescheduleDate] = useState<Date>(new Date());
   const [rescheduleTime, setRescheduleTime] = useState('');
 
-  const handleApprove = (appointmentId: string) => {
-    setAppointments(appointments.map(apt =>
-      apt.id === appointmentId ? { ...apt, status: 'confirmed' } : apt
-    ));
-    setActionModal(null);
-    setActionReason('');
-  };
-
-  const handleDecline = (appointmentId: string) => {
-    if (!actionReason.trim()) {
-      alert('Please provide a reason for declining');
-      return;
-    }
-    setAppointments(appointments.map(apt =>
-      apt.id === appointmentId
-        ? { ...apt, status: 'cancelled', cancellationReason: actionReason }
-        : apt
-    ));
-    setActionModal(null);
-    setActionReason('');
-  };
-
-  const handleCancel = () => {
-    setActionModal(null);
-    setActionReason('');
-    setRescheduleDate('');
-    setRescheduleTime('');
-  }
-
-  const handleReschedule = (appointmentId: string) => {
-    if (!rescheduleDate || !rescheduleTime) {
-      alert('Please select a new date and time');
-      return;
-    }
-    setAppointments(appointments.map(apt =>
-      apt.id === appointmentId
-        ? {
-          ...apt,
-          date: rescheduleDate,
-          time: rescheduleTime,
-          status: 'confirmed',
-          rescheduleReason: actionReason
-        }
-        : apt
-    ));
-    setActionModal(null);
-    setActionReason('');
-    setRescheduleDate('');
-    setRescheduleTime('');
-  };
+  
 
   const filteredAppointments = appointments.filter(apt => {
     const matchesTab =
@@ -480,15 +431,17 @@ export const useConsultantAppointment = () => {
     (a.status === 'confirmed' || a.status === 'pending')
   ).length;
 
-
+  const handleApprove = (appointmentId: string) => {
+    setAppointments(appointments.map(apt =>
+      apt.id === appointmentId ? { ...apt, status: 'confirmed' } : apt
+    ));
+    setActionModal(null);
+  };
 
   return {
     pendingCount,
     todayCount,
     filteredAppointments,
-    handleReschedule,
-    handleDecline,
-    handleApprove,
     getDaysUntil,
     getStatusColor,
     getStatusIcon,
@@ -500,8 +453,6 @@ export const useConsultantAppointment = () => {
     actionModal,
     setSelectedAppointment,
     appointments,
-    formatDate,
-    handleCancel,
     getPriorityColor,
     activeTab,
     searchTerm,
@@ -509,7 +460,9 @@ export const useConsultantAppointment = () => {
     rescheduleDate,
     rescheduleTime,
     setRescheduleDate,
-    setRescheduleTime
+    setRescheduleTime,
+    handleApprove,
+    setAppointments
   }
 
 

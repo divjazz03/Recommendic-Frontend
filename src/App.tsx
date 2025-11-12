@@ -4,7 +4,7 @@ import SigninForm from './_auth/forms/SigninForm';
 import SignupForm from './_auth/forms/SignupForm';
 import AuthLayout from './_auth/AuthLayout';
 import Welcome from './_public/Welcome';
-import { Toaster } from './components/ui/toaster';
+import { Toaster } from './components/ui/sonner';
 import Landing from './_public/Landing';
 import ConfirmEmail from './_auth/forms/ConfirmEmail';
 import EmailConfirmation from './_auth/forms/EmailConfirmation';

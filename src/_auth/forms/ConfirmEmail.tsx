@@ -1,13 +1,12 @@
 import Loader from "@/components/shared/Loader";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
 import { useResendEmailMutation } from "@/lib/react-query/generalQueriesAndMutation";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom"
+import { toast } from "sonner";
 
 const ConfirmEmail = () => {
 
-    const { toast } = useToast();
     const location = useLocation();
     const [countDown, setCountDown] = useState(60);
     const [canResend, setCanResend] = useState(false);
@@ -26,7 +25,7 @@ const ConfirmEmail = () => {
         setCountDown(60);
         const result = await resendConfirmationEmail(email);
         if (!result) {
-            return toast({ title: "Failed to resend email, try again", variant: "destructive" })
+            toast.error('couldn\\\'t resend email')
         }
     }
 

@@ -1,7 +1,6 @@
 import { Button } from '@/components/ui/button'
 import React, { useState } from 'react'
 import SignupSuccessModal from '@/components/SignupSuccessModal'
-import { useToast } from '@/hooks/use-toast'
 import { useCreateUserMutation } from '@/lib/react-query/generalQueriesAndMutation'
 import { Link, useNavigate } from 'react-router-dom'
 import { FormWrapper } from './FormWrapper'
@@ -19,6 +18,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import axios, { AxiosError } from 'axios'
 import { Progress } from '@/components/ui/progress'
 import { Gender } from '@/types'
+import { toast } from 'sonner'
+import { ApiError } from '@/lib/axios'
 export type TypeOfUser = "Patient" | "Consultant";
 
 type SignUpFormData = {
@@ -37,7 +38,6 @@ type SignUpFormData = {
 const SignupForm: React.FC = () => {
 
   const navigate = useNavigate();
-  const { toast } = useToast();
   const { mutateAsync: createNewUser, isPending: isCreatingUser } = useCreateUserMutation();
   const [formData, setFormData] = useState<SignUpFormData>({
     firstName: "",
@@ -126,13 +126,13 @@ const SignupForm: React.FC = () => {
             break;
         }
         console.log(fullFormData)
-        toast({ title: `Sign up success` })
+        toast.success(`Sign up success`)
         setSuccessfulSignup(true);
       } catch (error) {
-        if (axios.isAxiosError(error)) {
-          const err = error as AxiosError;
-          console.log(error);
-          return toast({ title: `Sign up failed: ${err.message}`, variant: 'destructive' })
+        if (error instanceof ApiError) {
+          const err = error as ApiError;
+          console.log(error)
+          toast.error(`Sign up failed: ${err.message}`)
         }
       }
 

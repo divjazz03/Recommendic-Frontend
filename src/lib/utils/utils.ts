@@ -39,7 +39,7 @@ export const handleDateTimeFormatting = (date: string): string => {
 }
 
 export const formatDate = (date: Date | string): string => {
-    if (date as string) {
+    if (typeof date  === 'string') {
         const stringDate = date as string
         return DateTime.fromISO(stringDate).toLocaleString(DateTime.DATETIME_FULL)
     }else{

@@ -1,11 +1,10 @@
 import EmailConfirmSuccessModal from "@/components/EmailConfirmSuccessModal";
 import Loader from "@/components/shared/Loader";
 import { Button } from "@/components/ui/button";
-import { toast } from "@/hooks/use-toast";
 import { useVerifyTokenMutation } from "@/lib/react-query/generalQueriesAndMutation";
-import axios, { AxiosError } from "axios";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
+import { toast } from "sonner";
 
 
 const EmailConfirmation = () => {
@@ -19,12 +18,11 @@ const EmailConfirmation = () => {
         setSuccessfulConfirmation(true);
     }
     } catch (error) {
-        if (axios.isAxiosError(error)) {
-          const err = error as AxiosError;
-          return toast({title: `Couldn't confirm email: ${err.message}`});
+        
+          toast.error(`Couldn't confirm email: ${error}`)
         }
     }
-  }
+  
   return (
     <>
       <main className="shadow p-10 rounded-sm">

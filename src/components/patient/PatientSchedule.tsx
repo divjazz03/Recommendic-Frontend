@@ -1,12 +1,13 @@
 import CustomCalender from '@/components/shared/CustomCalender';
 import InitialsOrAvartar from '@/components/shared/InitialsOrAvartar';
-import { ArrowLeft, Calendar, CheckCircle, CreditCard, Info, LucideProps, Shield, Star, User, Video } from 'lucide-react';
-import React, { useCallback, useEffect, useState } from 'react'
+import { ArrowLeft, Calendar, CheckCircle, CreditCard, Info, Shield, Star, User, Video } from 'lucide-react';
+import React from 'react'
 import { useLocation } from 'react-router-dom';
 import Loader from '../shared/Loader';
 import { DateTime } from 'luxon';
-import { ConsultationChannel, ConsultationType,TimeSlot, usePatientSchedule } from '@/hooks/usePatientSchedules';
+import { ConsultationChannel, ConsultationType,  usePatientSchedule } from '@/hooks/usePatientSchedules';
 import { formatDate } from '@/lib/utils/utils';
+import ConsultantTimeSlots from '../ConsultantTimeSlots';
 
 export const PatientSchedule = () => {
   const location = useLocation();
@@ -185,37 +186,13 @@ export const PatientSchedule = () => {
                   <h2 className='text-xl font-semibold text-dark-3 mb-4'>Available Times</h2>
                   <p className='text-dark-2 mb-6'>{formatDate(selectedDate)}</p>
 
-                  {consultantScheduleData && Object.entries(consultantScheduleData.timeSlots)
-                    .filter(([period, slots]: [string, TimeSlot[]]) => period !== 'unavailableSlots' && period !== 'bookedSlots' && slots.length > 0)
-                    .map(([period, slots]: [string, TimeSlot[]]) => (
-                      <div key={period} className='mb-6'>
-                        <h3 className='text-lg font-medium text-dark-2 mb-3 capitalize'>{period}</h3>
-                        <div className='grid grid-cols-3 sm:grid-cols-6 gap-3'>
-                          {slots.map((slot: TimeSlot, index) => {
-                            const slotTime = DateTime.fromISO(slot.dateTime).toFormat('hh:mm a')
-                            return (
-                              slot &&
-                              <button
-                                key={index}
-                                onClick={() => {
-                                  setSelectedTime(slot.dateTime)
-                                  setSelectedScheduleId(slot.scheduleId)
-                                }}
-                                className={`
-                              p-3 rounded-lg text-sm font-medium transition-all duration-100
-                              ${selectedTime === slot.dateTime
-                                    ? 'bg-main text-white shadow-lg'
-                                    : 'bg-gray-50 text-dark-2 hover:bg-main-light hover:text-white'
-                                  }
-                              `}
-                              >
-                                {slotTime}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    ))}
+                  {consultantScheduleData &&
+                    <ConsultantTimeSlots
+                      selectedTime={selectedTime ?? ''}
+                      setSelectedScheduleId={setSelectedScheduleId}
+                      setSelectedTime={setSelectedTime}
+                      timeSlots={consultantScheduleData.timeSlots} />
+                  }
                 </div>
               )}
             </div>
@@ -276,7 +253,7 @@ export const PatientSchedule = () => {
               </div>
 
               {/*Still under summary */}
-              {selectedDate && selectedTime && selectedScheduleId && reason &&(
+              {selectedDate && selectedTime && selectedScheduleId && reason && (
                 <section className='bg-white rounded-2xl shadow-lg p-6'>
                   <h2 className='text-xl font-semibold text-dark-3 mb-4'>Booking Summary</h2>
                   <div className='space-y-4'>

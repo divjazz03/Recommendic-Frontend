@@ -7,16 +7,14 @@ import { FormWrapper } from './FormWrapper'
 import { Button } from '@/components/ui/button'
 import { Link, useNavigate } from 'react-router-dom'
 import { useSignInUserMutation } from '@/lib/react-query/generalQueriesAndMutation'
-import { useToast } from '@/hooks/use-toast'
 import { z } from 'zod'
 import { Loader } from 'lucide-react'
 import axios, { AxiosError } from 'axios'
 import { apiClient, ApiError } from '@/lib/axios'
+import { toast } from 'sonner'
 
 
 const SigninForm = () => {
-
-  const { toast } = useToast();
   const navigate = useNavigate();
   const { isPending: isSigningIn, mutateAsync: signInUser } = useSignInUserMutation();
 
@@ -40,10 +38,8 @@ const SigninForm = () => {
     } catch(error) {
       const apiError = error as ApiError;
       if (apiError.status === 404) {
-        return toast({title: 'You do not have an account please sign up', variant: 'destructive'})
-      } else if (apiError.status === 401) {
-        return toast({title: apiError.message, variant: 'destructive'})
-      } 
+        toast.error('You do not have an account please sign up')
+      }
     }
   
   }

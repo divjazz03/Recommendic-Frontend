@@ -1,8 +1,11 @@
-import {  PatientAppointmentType, usePatientAppointment } from '@/hooks/useAppointment'
+import { PatientAppointmentType, usePatientAppointment } from '@/hooks/useAppointment'
 import { formatDate } from '@/lib/utils/utils';
 import { AlertCircle, Calendar, CheckCircle, Clock, FileText, LucideProps, MapPin, Phone, Plus, Search, User, Video, XCircle } from 'lucide-react';
-import React from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import CustomCalender from '../shared/CustomCalender';
+import { usePatientReschedule } from '@/hooks/useReschedule';
+import ConsultantTimeSlots from '../ConsultantTimeSlots';
 
 
 
@@ -18,15 +21,14 @@ const PatientAppointment = () => {
     setFilterStatus,
     setSearchTerm,
     setSelectedAppointment,
-    setViewMode,
-    viewMode,
-    formatDate,
+    setRescheduleModalOpen,
+    rescheduleModalOpen,
     getDaysUntil,
     getStatusColor,
     getStatusIcon,
     pastAppointments,
     upcomingAppointments,
-    filteredAppointments
+    filteredAppointments,
   } = usePatientAppointment();
 
   return (
@@ -38,173 +40,183 @@ const PatientAppointment = () => {
         </header>
 
         {/* Stats Cards */}
-          <section className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-            <div className="bg-white rounded-lg border-2 border-blue-200 p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-600 text-sm">Upcoming</p>
-                  <p className="text-3xl font-bold text-main-light">{upcomingAppointments.length}</p>
-                </div>
-                <Calendar className="w-10 h-10 text-main-light" />
-              </div>
-            </div>
-            
-            <div className="bg-white rounded-lg border-2 border-green-200 p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-600 text-sm">Confirmed</p>
-                  <p className="text-3xl font-bold text-green-600">
-                    {appointments.filter(a => a.status === 'confirmed').length}
-                  </p>
-                </div>
-                <CheckCircle className="w-10 h-10 text-green-600" />
-              </div>
-            </div>
-
-            <div className="bg-white rounded-lg border-2 border-yellow-200 p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-600 text-sm">Pending</p>
-                  <p className="text-3xl font-bold text-yellow-600">
-                    {appointments.filter(a => a.status === 'pending').length}
-                  </p>
-                </div>
-                <AlertCircle className="w-10 h-10 text-yellow-600" />
-              </div>
-            </div>
-
-            <div className="bg-white rounded-lg border-2 border-purple-200 p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-600 text-sm">Total</p>
-                  <p className="text-3xl font-bold text-purple-600">{appointments.length}</p>
-                </div>
-                <FileText className="w-10 h-10 text-purple-600" />
-              </div>
-            </div>
-          </section>
-
-          {/* Filters and Search */}
-          <section className="bg-white rounded-lg border-2 border-gray-200 p-4 mb-6">
-            <div className="flex flex-col md:flex-row gap-4">
-              <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                <input
-                  type="text"
-                  placeholder="Search by doctor, specialty, or reason..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border-2 border-gray-300 rounded-lg focus:border-main-light focus:outline-none"
-                />
-              </div>
-
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setFilterStatus('all')}
-                  className={`px-4 py-2 rounded-lg font-medium transition ${
-                    filterStatus === 'all' 
-                      ? 'bg-main-light text-white' 
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  All
-                </button>
-                <button
-                  onClick={() => setFilterStatus('confirmed')}
-                  className={`px-4 py-2 rounded-lg font-medium transition ${
-                    filterStatus === 'confirmed' 
-                      ? 'bg-green-600 text-white' 
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  Confirmed
-                </button>
-                <button
-                  onClick={() => setFilterStatus('pending')}
-                  className={`px-4 py-2 rounded-lg font-medium transition ${
-                    filterStatus === 'pending' 
-                      ? 'bg-yellow-600 text-white' 
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  Pending
-                </button>
-              </div>
-
-              <button 
-                onClick={() => navigate('/consultants')}
-                className="bg-main-light text-white px-6 py-2 rounded-lg font-semibold hover:bg-main transition flex items-center gap-2">
-                <Plus className="w-5 h-5" />
-                New Appointment
-              </button>
-            </div>
-          </section>
-
-          <div className='flex flex-col gap-10'>
-            {/* Upcoming Appointments */}
-            {upcomingAppointments.length > 0 && (
+        <section className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+          <div className="bg-white rounded-lg border-2 border-blue-200 p-4">
+            <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">Upcoming Appointments</h2>
-                <div className="grid gap-4">
-                  {upcomingAppointments.map(appointment => (
-                    <PatientAppointmentCard 
-                    key={appointment.id} 
-                    appointment={appointment}
-                    StatusIcon={getStatusIcon(appointment.status)}
-                    date={appointment.date}
-                    daysUntil={getDaysUntil(appointment.date)}
-                    setSelectedAppointment={setSelectedAppointment}
-                    statusColor={getStatusColor(appointment.status)}
-                    />
-                  ))}
-                </div>
+                <p className="text-gray-600 text-sm">Upcoming</p>
+                <p className="text-3xl font-bold text-main-light">{upcomingAppointments.length}</p>
               </div>
-            )}
-
-            {/* Past Appointments */}
-            {pastAppointments.length > 0 && (
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">Past Appointments</h2>
-                <div className="grid gap-4">
-                  {pastAppointments.map(appointment => (
-                    <PatientAppointmentCard 
-                    key={appointment.id} 
-                    appointment={appointment}
-                    StatusIcon={getStatusIcon(appointment.status)}
-                    date={appointment.date}
-                    daysUntil={getDaysUntil(appointment.date)}
-                    setSelectedAppointment={setSelectedAppointment}
-                    statusColor={getStatusColor(appointment.status)}
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* No Results */}
-            {filteredAppointments.length === 0 && (
-              <div className="bg-white rounded-lg border-2 border-gray-200 p-12 text-center">
-                <Calendar className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">No appointments found</h3>
-                <p className="text-gray-600">Try adjusting your filters or search terms</p>
-              </div>
-            )}
+              <Calendar className="w-10 h-10 text-main-light" />
+            </div>
           </div>
 
+          <div className="bg-white rounded-lg border-2 border-green-200 p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 text-sm">Confirmed</p>
+                <p className="text-3xl font-bold text-green-600">
+                  {appointments.filter(a => a.status === 'confirmed').length}
+                </p>
+              </div>
+              <CheckCircle className="w-10 h-10 text-green-600" />
+            </div>
+          </div>
 
-          {/* Appointment Detail Modal */}
-          {selectedAppointment && (
-            <AppointmentModal 
+          <div className="bg-white rounded-lg border-2 border-yellow-200 p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 text-sm">Pending</p>
+                <p className="text-3xl font-bold text-yellow-600">
+                  {appointments.filter(a => a.status === 'pending').length}
+                </p>
+              </div>
+              <AlertCircle className="w-10 h-10 text-yellow-600" />
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg border-2 border-purple-200 p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 text-sm">Total</p>
+                <p className="text-3xl font-bold text-purple-600">{appointments.length}</p>
+              </div>
+              <FileText className="w-10 h-10 text-purple-600" />
+            </div>
+          </div>
+        </section>
+
+        {/* Filters and Search */}
+        <section className="bg-white rounded-lg border-2 border-gray-200 p-4 mb-6">
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <input
+                type="text"
+                placeholder="Search by doctor, specialty, or reason..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border-2 border-gray-300 rounded-lg focus:border-main-light focus:outline-none"
+              />
+            </div>
+
+            <div className="flex gap-2">
+              <button
+                onClick={() => setFilterStatus('all')}
+                className={`px-4 py-2 rounded-lg font-medium transition ${filterStatus === 'all'
+                  ? 'bg-main-light text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+              >
+                All
+              </button>
+              <button
+                onClick={() => setFilterStatus('confirmed')}
+                className={`px-4 py-2 rounded-lg font-medium transition ${filterStatus === 'confirmed'
+                  ? 'bg-green-600 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+              >
+                Confirmed
+              </button>
+              <button
+                onClick={() => setFilterStatus('pending')}
+                className={`px-4 py-2 rounded-lg font-medium transition ${filterStatus === 'pending'
+                  ? 'bg-yellow-600 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+              >
+                Pending
+              </button>
+            </div>
+
+            <button
+              onClick={() => navigate('/consultants')}
+              className="bg-main-light text-white px-6 py-2 rounded-lg font-semibold hover:bg-main transition flex items-center gap-2">
+              <Plus className="w-5 h-5" />
+              New Appointment
+            </button>
+          </div>
+        </section>
+
+        <div className='flex flex-col gap-10'>
+          {/* Upcoming Appointments */}
+          {upcomingAppointments.length > 0 && (
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Upcoming Appointments</h2>
+              <div className="grid gap-4">
+                {upcomingAppointments.map(appointment => (
+                  <PatientAppointmentCard
+                    key={appointment.id}
+                    appointment={appointment}
+                    StatusIcon={getStatusIcon(appointment.status)}
+                    date={appointment.date}
+                    daysUntil={getDaysUntil(appointment.date)}
+                    setSelectedAppointment={setSelectedAppointment}
+                    statusColor={getStatusColor(appointment.status)}
+                    setRecheduleModalOpen={setRescheduleModalOpen}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Past Appointments */}
+          {pastAppointments.length > 0 && (
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Past Appointments</h2>
+              <div className="grid gap-4">
+                {pastAppointments.map(appointment => (
+                  <PatientAppointmentCard
+                    key={appointment.id}
+                    appointment={appointment}
+                    StatusIcon={getStatusIcon(appointment.status)}
+                    date={appointment.date}
+                    daysUntil={getDaysUntil(appointment.date)}
+                    setSelectedAppointment={setSelectedAppointment}
+                    statusColor={getStatusColor(appointment.status)}
+                    setRecheduleModalOpen={setRescheduleModalOpen}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* No Results */}
+          {filteredAppointments.length === 0 && (
+            <div className="bg-white rounded-lg border-2 border-gray-200 p-12 text-center">
+              <Calendar className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">No appointments found</h3>
+              <p className="text-gray-600">Try adjusting your filters or search terms</p>
+            </div>
+          )}
+        </div>
+
+
+        {/* Appointment Detail Modal */}
+        {selectedAppointment && !rescheduleModalOpen && (
+          <AppointmentModal
             appointment={selectedAppointment}
             onClose={() => setSelectedAppointment(undefined)}
             statusColor={getStatusColor(selectedAppointment.status)} StatusIcon={getStatusIcon(selectedAppointment.status)}
             date={selectedAppointment.date}
-            daysUntil={selectedAppointment.date}/>
-          )}
+            daysUntil={selectedAppointment.date} />
+        )}
+
+        {
+          rescheduleModalOpen && selectedAppointment && (
+            <RescheduleModal
+              appointment={selectedAppointment}
+              handleCancel={() => {
+                setRescheduleModalOpen(false)
+                setSelectedAppointment(undefined)
+              }} />
+          )
+        }
       </div>
     </main>
 
-    
+
   )
 }
 
@@ -214,88 +226,92 @@ export default PatientAppointment
 
 
 export interface PatientAppointmentCardProps {
-  appointment : PatientAppointmentType,
-  setSelectedAppointment: (value: React.SetStateAction<PatientAppointmentType|undefined>)=> void,
+  appointment: PatientAppointmentType,
+  setSelectedAppointment: (value: React.SetStateAction<PatientAppointmentType | undefined>) => void,
   statusColor: string,
   StatusIcon: React.ForwardRefExoticComponent<Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>>,
   date: string,
-  daysUntil: string
+  daysUntil: string,
+  setRecheduleModalOpen: (value: React.SetStateAction<boolean>) => void
 }
 const PatientAppointmentCard = ({
-  appointment, 
+  appointment,
   setSelectedAppointment,
   statusColor,
   StatusIcon,
   date,
-  daysUntil
-}: PatientAppointmentCardProps ) => (
+  daysUntil,
+  setRecheduleModalOpen
+}: PatientAppointmentCardProps) => (
   <main className='bg-white rounded-lg border-2 border-gray-200 p-6 hover:shadow-lg transition-all cursor-pointer'
-  onClick={() => setSelectedAppointment(appointment)}
+    onClick={() => setSelectedAppointment(appointment)}
   >
     <div className="flex justify-between items-start mb-4">
-        <div className="flex-1">
-          <div className="flex items-center gap-2 mb-2">
-            <User className="w-5 h-5 text-blue-600" />
-            <h3 className="text-xl font-semibold text-gray-900">{appointment.doctorName}</h3>
-          </div>
-          <p className="text-gray-600 ml-7">{appointment.specialty}</p>
+      <div className="flex-1">
+        <div className="flex items-center gap-2 mb-2">
+          <User className="w-5 h-5 text-blue-600" />
+          <h3 className="text-xl font-semibold text-gray-900">{appointment.doctorName}</h3>
         </div>
-        <div className={`flex items-center gap-1 px-3 py-1 rounded-full border ${statusColor}`}>
-          <StatusIcon className='h-6 w-6' />
-          <span className="text-sm font-medium capitalize">{appointment.status}</span>
-        </div>
+        <p className="text-gray-600 ml-7">{appointment.specialty}</p>
+      </div>
+      <div className={`flex items-center gap-1 px-3 py-1 rounded-full border ${statusColor}`}>
+        <StatusIcon className='h-6 w-6' />
+        <span className="text-sm font-medium capitalize">{appointment.status}</span>
+      </div>
+    </div>
+
+    <div className="space-y-3 ml-7">
+      <div className="flex items-center gap-2 text-gray-700">
+        <Calendar className="w-4 h-4 text-gray-500" />
+        <span className="font-medium">{date}</span>
+        <span className="px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded-full font-semibold">
+          {daysUntil}
+        </span>
       </div>
 
-       <div className="space-y-3 ml-7">
-        <div className="flex items-center gap-2 text-gray-700">
-          <Calendar className="w-4 h-4 text-gray-500" />
-          <span className="font-medium">{date}</span>
-          <span className="px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded-full font-semibold">
-            {daysUntil}
-          </span>
-        </div>
-        
-        <div className="flex items-center gap-2 text-gray-700">
-          <Clock className="w-4 h-4 text-gray-500" />
-          <span>{appointment.time} ({appointment.duration})</span>
-        </div>
+      <div className="flex items-center gap-2 text-gray-700">
+        <Clock className="w-4 h-4 text-gray-500" />
+        <span>{appointment.time} ({appointment.duration})</span>
+      </div>
 
-        <div className="flex items-center gap-2 text-gray-700">
-          {appointment.type === 'online' ? (
-            <Video className="w-4 h-4 text-gray-500" />
-          ) : (
-            <MapPin className="w-4 h-4 text-gray-500" />
-          )}
-          <span>{appointment.location}</span>
-        </div>
-
-        <div className="flex items-center gap-2 text-gray-700">
-          <FileText className="w-4 h-4 text-gray-500" />
-          <span className="font-medium">Reason:</span>
-          <span>{appointment.reason}</span>
-        </div>
-
-        {appointment.preparation && (
-          <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-            <p className="text-sm text-amber-900">
-              <span className="font-semibold">Preparation: </span>
-              {appointment.preparation}
-            </p>
-          </div>
+      <div className="flex items-center gap-2 text-gray-700">
+        {appointment.type === 'online' ? (
+          <Video className="w-4 h-4 text-gray-500" />
+        ) : (
+          <MapPin className="w-4 h-4 text-gray-500" />
         )}
+        <span>{appointment.location}</span>
       </div>
 
-      {appointment.status === 'confirmed' && new Date(appointment.date) >= new Date() && (
-            <div className="flex gap-3 pt-4">
-              <button className="flex-1 bg-main-light text-white py-3 rounded-lg font-semibold hover:bg-main transition">
-                Add to Calendar
-              </button>
-              <button className="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-300 transition">
-                Reschedule
-              </button>
-            </div>
-          )}
-    
+      <div className="flex items-center gap-2 text-gray-700">
+        <FileText className="w-4 h-4 text-gray-500" />
+        <span className="font-medium">Reason:</span>
+        <span>{appointment.reason}</span>
+      </div>
+
+      {appointment.preparation && (
+        <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+          <p className="text-sm text-amber-900">
+            <span className="font-semibold">Preparation: </span>
+            {appointment.preparation}
+          </p>
+        </div>
+      )}
+    </div>
+
+    {appointment.status === 'confirmed' && new Date(appointment.date) >= new Date() && (
+      <div className="flex gap-3 pt-4">
+        <button className="flex-1 bg-main-light text-white py-3 rounded-lg font-semibold hover:bg-main transition">
+          Add to Calendar
+        </button>
+        <button className="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-300 transition"
+          onClick={() => setRecheduleModalOpen(true)}
+        >
+          Reschedule
+        </button>
+      </div>
+    )}
+
   </main>
 )
 
@@ -308,7 +324,7 @@ interface AppointmentModalProps {
   daysUntil: string
 }
 
-const AppointmentModal = ({ 
+const AppointmentModal = ({
   appointment,
   onClose,
   StatusIcon,
@@ -316,130 +332,137 @@ const AppointmentModal = ({
   daysUntil,
   statusColor,
 }: AppointmentModalProps) => (
-    <div className="fixed inset-0 bg-black backdrop-blur-sm bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-white border-b p-6 flex justify-between items-start">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900">{appointment.doctorName}</h2>
-            <p className="text-gray-600">{appointment.specialty}</p>
-          </div>
-          <button 
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600"
-          >
-            <XCircle className="w-6 h-6" />
-          </button>
+  <div className="fixed inset-0 bg-black backdrop-blur-sm bg-opacity-50 flex items-center justify-center p-4 z-50">
+    <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="sticky top-0 bg-white border-b p-6 flex justify-between items-start">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">{appointment.doctorName}</h2>
+          <p className="text-gray-600">{appointment.specialty}</p>
+        </div>
+        <button
+          onClick={onClose}
+          className="text-gray-400 hover:text-gray-600"
+        >
+          <XCircle className="w-6 h-6" />
+        </button>
+      </div>
+
+      <div className="p-6 space-y-6">
+        <div className={`flex items-center gap-2 px-4 py-2 rounded-lg border ${statusColor}`}>
+          <StatusIcon className='h-6 w-6' />
+          <span className="font-semibold capitalize">{appointment.status}</span>
         </div>
 
-        <div className="p-6 space-y-6">
-          <div className={`flex items-center gap-2 px-4 py-2 rounded-lg border ${statusColor}`}>
-            <StatusIcon className='h-6 w-6'/>
-            <span className="font-semibold capitalize">{appointment.status}</span>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="space-y-3">
-              <div className="flex items-start gap-3">
-                <Calendar className="w-5 h-5 text-main-light mt-1" />
-                <div>
-                  <p className="text-sm text-gray-600">Date</p>
-                  <p className="font-semibold">{date}</p>
-                  <p className="text-sm text-main-light">{daysUntil}</p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3">
-                <Clock className="w-5 h-5 text-main-light mt-1" />
-                <div>
-                  <p className="text-sm text-gray-600">Time</p>
-                  <p className="font-semibold">{appointment.time}</p>
-                  <p className="text-sm text-gray-600">Duration: {appointment.duration}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <div className="flex items-start gap-3">
-                {appointment.type === 'online' ? (
-                  <Video className="w-5 h-5 text-main-light mt-1" />
-                ) : (
-                  <MapPin className="w-5 h-5 text-main-light mt-1" />
-                )}
-                <div>
-                  <p className="text-sm text-gray-600">Location</p>
-                  <p className="font-semibold">{appointment.location}</p>
-                  <p className="text-sm text-gray-600 capitalize">{appointment.type} visit</p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3">
-                <Phone className="w-5 h-5 text-main-light mt-1" />
-                <div>
-                  <p className="text-sm text-gray-600">Contact</p>
-                  <p className="font-semibold">{appointment.phone}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="border-t pt-4">
+        <div className="grid md:grid-cols-2 gap-4">
+          <div className="space-y-3">
             <div className="flex items-start gap-3">
-              <FileText className="w-5 h-5 text-main-light mt-1" />
-              <div className="flex-1">
-                <p className="text-sm text-gray-600">Reason for Visit</p>
-                <p className="font-semibold text-gray-900">{appointment.reason}</p>
+              <Calendar className="w-5 h-5 text-main-light mt-1" />
+              <div>
+                <p className="text-sm text-gray-600">Date</p>
+                <p className="font-semibold">{date}</p>
+                <p className="text-sm text-main-light">{daysUntil}</p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <Clock className="w-5 h-5 text-main-light mt-1" />
+              <div>
+                <p className="text-sm text-gray-600">Time</p>
+                <p className="font-semibold">{appointment.time}</p>
+                <p className="text-sm text-gray-600">Duration: {appointment.duration}</p>
               </div>
             </div>
           </div>
 
-          {appointment.preparation && (
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-              <p className="font-semibold text-amber-900 mb-2">Preparation Required</p>
-              <p className="text-amber-900">{appointment.preparation}</p>
+          <div className="space-y-3">
+            <div className="flex items-start gap-3">
+              {appointment.type === 'online' ? (
+                <Video className="w-5 h-5 text-main-light mt-1" />
+              ) : (
+                <MapPin className="w-5 h-5 text-main-light mt-1" />
+              )}
+              <div>
+                <p className="text-sm text-gray-600">Location</p>
+                <p className="font-semibold">{appointment.location}</p>
+                <p className="text-sm text-gray-600 capitalize">{appointment.type} visit</p>
+              </div>
             </div>
-          )}
 
-          {appointment.notes && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <p className="font-semibold text-blue-900 mb-2">Additional Notes</p>
-              <p className="text-blue-900">{appointment.notes}</p>
+            <div className="flex items-start gap-3">
+              <Phone className="w-5 h-5 text-main-light mt-1" />
+              <div>
+                <p className="text-sm text-gray-600">Contact</p>
+                <p className="font-semibold">{appointment.phone}</p>
+              </div>
             </div>
-          )}
-
-          
+          </div>
         </div>
+
+        <div className="border-t pt-4">
+          <div className="flex items-start gap-3">
+            <FileText className="w-5 h-5 text-main-light mt-1" />
+            <div className="flex-1">
+              <p className="text-sm text-gray-600">Reason for Visit</p>
+              <p className="font-semibold text-gray-900">{appointment.reason}</p>
+            </div>
+          </div>
+        </div>
+
+        {appointment.preparation && (
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+            <p className="font-semibold text-amber-900 mb-2">Preparation Required</p>
+            <p className="text-amber-900">{appointment.preparation}</p>
+          </div>
+        )}
+
+        {appointment.notes && (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <p className="font-semibold text-blue-900 mb-2">Additional Notes</p>
+            <p className="text-blue-900">{appointment.notes}</p>
+          </div>
+        )}
+
+
       </div>
     </div>
-  );
+  </div>
+);
 
-  interface RescheduleModalProps {
-    appointment: PatientAppointmentType
-    handleCancel: () => void
-    handleReschedule: (id: string) => void
-    setRescheduleDate: (value: React.SetStateAction<string>) => void
-    setRescheduleTime: (value: React.SetStateAction<string>) => void
-    rescheduleDate: string
-    rescheduleTime: string
-    setActionReason: (value: React.SetStateAction<string>) => void
-    actionReason: string
-  }
+interface RescheduleModalProps {
+  appointment: PatientAppointmentType
+  handleCancel: () => void
+}
 
-  const RecheduleModal = ({
+const RescheduleModal = ({
   appointment,
-  handleCancel,
-  handleReschedule,
-  setRescheduleDate,
-  setRescheduleTime,
-  rescheduleDate,
-  rescheduleTime,
-  setActionReason,
-  actionReason
+  handleCancel
 }: RescheduleModalProps) => {
   if (!appointment) return null;
 
+  const { reason,
+    rescheduleTime,
+    setReason,
+    setRescheduleDate,
+    setRescheduleTime,
+    rescheduleDate,
+    timeSlotsMem,
+    setSelectedScheduleId,
+    handleReschedule} = usePatientReschedule(appointment.consultantId)
+
+
+
+  const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
+
+  const nextMonth = () => {
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1));
+  };
+  const previousMonth = () => {
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));
+  }
+
   return (
-    <main className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-xl max-w-lg w-full p-6">
+    <main className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center h-full p-4 z-50">
+      <div className="bg-white rounded-xl max-w-lg w-full p-6 h-full overflow-y-auto">
         <h3 className="text-xl font-bold text-gray-900 mb-4">
           Reschedule Appointment
         </h3>
@@ -449,36 +472,39 @@ const AppointmentModal = ({
           <p className="text-sm text-gray-600">{appointment.reason}</p>
           <p className="text-sm text-gray-600">{formatDate(appointment.date)} at {appointment.time}</p>
         </div>
-          <div className="space-y-4 mb-4">
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">New Date</label>
-              <input
-                type="date"
-                value={rescheduleDate}
-                onChange={(e) => setRescheduleDate(e.target.value)}
-                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
-                min={new Date().toISOString().split('T')[0]}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">New Time</label>
-              <input
-                type="time"
-                value={rescheduleTime}
-                onChange={(e) => setRescheduleTime(e.target.value)}
-                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
-              />
-            </div>
+        <div className="space-y-4 mb-4">
+          <CustomCalender
+            currentMonth={currentMonth}
+            selectedDate={rescheduleDate}
+            setSelectedDate={setRescheduleDate}
+            toNextMonth={nextMonth}
+            toPreviousMonth={previousMonth}
+          />
+        </div>
+        {/* Time slots */}
+        {rescheduleDate && (
+          <div className='bg-white rounded-2xl shadow-lg p-6 mb-4'>
+            <h2 className='text-xl font-semibold text-dark-3 mb-2'>Available Times</h2>
+            <p className='text-dark-2 mb-6'>{formatDate(rescheduleDate)}</p>
+
+            {timeSlotsMem &&
+              <ConsultantTimeSlots
+                selectedTime={rescheduleTime ?? ''}
+                setSelectedScheduleId={setSelectedScheduleId}
+                setSelectedTime={setRescheduleTime}
+                timeSlots={timeSlotsMem} />
+            }
           </div>
-        
+        )}
+
 
         <div className="mb-4">
           <label className="block text-sm font-semibold text-gray-700 mb-2">
             Reason for Rescheduling (Optional)
           </label>
           <textarea
-            value={actionReason}
-            onChange={(e) => setActionReason(e.target.value)}
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
             placeholder={"e.g., Schedule conflict, emergency case priority..."}
             className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none h-24 resize-none"
           />

@@ -2,8 +2,8 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 import React from 'react'
 
 interface CustomCalendarProps {
-  currentMonth: Date,
-  selectedDate: Date,
+  currentMonth: Date | null,
+  selectedDate: Date | null,
   setSelectedDate: (date: Date) => void
   toPreviousMonth: () => void;
   toNextMonth: () => void;
@@ -40,11 +40,11 @@ const isDateAvailable = (date: Date): boolean => {
 
 const CustomCalender: React.FC<CustomCalendarProps> = (
   {
-    currentMonth,
+    currentMonth = new Date(),
     toPreviousMonth,
     toNextMonth,
     setSelectedDate,
-    selectedDate
+    selectedDate = new Date()
   }
 ) => {
   return (
@@ -57,7 +57,7 @@ const CustomCalender: React.FC<CustomCalendarProps> = (
               <ChevronLeft className='w-5 h-5 text-dark-1' />
             </button>
             <span className='font-medium text-dark-3 min-w-[120px] text-center'>
-              {currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+              {currentMonth?.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
             </span>
             <button onClick={() => toNextMonth()} className='p-2 hover:bg-light-3 rounded-lg'>
               <ChevronRight className='w-5 h-5 text-dark-1' />

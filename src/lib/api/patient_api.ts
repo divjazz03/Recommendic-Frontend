@@ -1,6 +1,7 @@
 import { Address, ConsultantEducation, ConsultantSchedulesResponse, ConsultantStats, ConsultantTypeMinimal, NewUser, PagedResponse, Response, Review, Schedule, SignUpResponse, UserName } from "@/types";
 import { apiClient } from "../axios";
 import { ModifyingProfileData } from "@/hooks/useProfile";
+import { SlotResponse } from "./general_api";
 
 const patientPath = import.meta.env.VITE_PATIENT_BASE;
 const schedulesPath = import.meta.env.VITE_SCHEDULE_BASE;
@@ -90,10 +91,7 @@ export async function updateProfileData(patientProfileData: ModifyingProfileData
     return apiClient.patch(`${patientPath}/profiles`, patientProfileData)
         .then(response => response.data)
 }
-interface SlotResponse{
-    scheduleId: string,
-    dateTime: string
-}
+
 export interface ConsultantFullProfileDetails {
     id: string,
     name: string,
@@ -121,6 +119,7 @@ export async function getConsultantFullProfileDetails(consultantId: string): Pro
     return apiClient.get(`${patientPath}/profiles/consultants/details/${consultantId}`)
     .then(response => response.data)
 }
+
 
 export interface AppointmentCreationRequest {
     consultantId: string,

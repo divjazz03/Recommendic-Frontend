@@ -5,10 +5,10 @@ import {
     SignInResponse,
     SigninUserData,
 } from "@/types";
-import {handleError } from "../utils/utils";
 import { SearchResult } from "@/hooks/useSearchResults";
-import { ModifyingNotificationSetting, NotificationSetting, PatientModifyingNotificationSetting, PatientNotificationSetting } from "@/hooks/useNotificationSettings";
+import { ModifyingNotificationSetting, NotificationSetting} from "@/hooks/useNotificationSettings";
 import { apiClient } from "../axios";
+import { TimeSlot } from "@/hooks/usePatientSchedules";
 
 const userLoginPath = import.meta.env.VITE_APP_USER_LOGIN;
 const userLogoutPath = import.meta.env.VITE_APP_USER_LOGOUT;
@@ -18,6 +18,7 @@ const emailConfirmationPath = import.meta.env.VITE_EMAIL_CONFIRMATION;
 const retryEmail = import.meta.env.VITE_RETRY_EMAIL;
 const consultationPath = import.meta.env.VITE_CONSULTATION_BASE;
 const notificationPath = import.meta.env.VITE_NOTIFICATION_BASE;
+const appointmentsPath = import.meta.env.VITE_APPOINTMENT_BASE;
 
 
 
@@ -96,6 +97,19 @@ export async function updateMyNotificationSettings(modifiedNotification: Modifyi
     .then(response => response.data)
 }
 
+interface ScheduleSlotResponse extends Response {
+    data: TimeSlot[]
+}
+
+
+export async function getConsultantTimeSlots(consultantId: string, date: string | undefined): Promise<ScheduleSlotResponse> {
+    if (!date) {
+        return Promise.reject("No date specified")
+    }
+    return apiClient.get(`${appointmentsPath}/timeslots/${consultantId}`, {params: {date: date}}
+    )
+    .then(response => response.data)
+}
 
 
 

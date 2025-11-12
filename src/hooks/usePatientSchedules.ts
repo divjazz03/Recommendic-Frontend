@@ -9,7 +9,7 @@ import { formatTime } from "./useConsultantSchedule";
 export const usePatientSchedule = (consultantId: string) => {
     const [selectedScheduleId, setSelectedScheduleId] = useState<string>();
     const [selectedDate, setSelectedDate] = useState(new Date());
-    const [selectedTime, setSelectedTime] = useState<string | null>(null);
+    const [selectedTime, setSelectedTime] = useState<string | undefined>();
     const [reason, setReason] = useState<string>()
     const { data, isPending } = useGetConsultantSchedules(consultantId, selectedDate.toISOString().split("T")[0]);
     const [consultationType, setConsultationType] = useState<ConsultationChannel>('in_person');
@@ -75,7 +75,7 @@ export const usePatientSchedule = (consultantId: string) => {
     }
 }
 
-const schedulesToTimeSlots = (schedules: TimeSlot[]): TimeSlots => {
+export const schedulesToTimeSlots = (schedules: TimeSlot[]): TimeSlots => {
     const morning: TimeSlot[] = []
     const afternoon: TimeSlot[] = []
     const evening: TimeSlot[] = []

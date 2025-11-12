@@ -3,9 +3,9 @@ import { useCreateNewSchedules, useDeleteSchedule, useGetCurrentUserSchedules, u
 import { RecurrenceRule, Schedule, WeekDay } from "@/types";
 import { VideoIcon, Users, Video, LucideProps } from "lucide-react";
 import { useEffect, useState } from "react";
-import { toast } from "./use-toast";
 import { Location, useNavigate } from "react-router-dom";
 import { ModifyingSchedule, ModifyingRecurrenceRule } from "@/components/consultant/ConsultantModifySchedule";
+import { toast } from "sonner";
 
 export interface NewSchedule {
     id: number,
@@ -137,7 +137,7 @@ export const useCreateSchedule = () => {
             setCreatedModalOpen(true)
         } catch (error) {
             const apiError = error as ApiError;
-            return toast({ title: `Could not create schedule - ${apiError.message}:  ${apiError?.data}` })
+            return toast.error(`Could not create schedule - ${apiError.message}:  ${apiError?.data}`)
         }
 
     }
@@ -197,7 +197,7 @@ export const useModifySchedule = (location: Location) => {
         } catch (error) {
             const apiError = error as ApiError
             if (apiError.status === 404) {
-                return toast({title: apiError.message, variant: 'destructive'})
+                return toast.error(apiError.message)
             }
         } finally {
             window.history.back();

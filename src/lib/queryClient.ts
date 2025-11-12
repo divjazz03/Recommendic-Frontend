@@ -1,4 +1,4 @@
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { ApiError } from "./axios"
 import { MutationCache, QueryCache, QueryClient } from "@tanstack/react-query";
 
@@ -9,18 +9,18 @@ const handleError = async (error: unknown) => {
             case 401:
                  if (window.location.pathname !== '/sign-in') {
                      window.location.pathname = '/sign-in'
-                     return toast({title: 'Session expired. Please log in again',variant:'destructive'})
+                     return toast.error('Session expired. Please log in again')
                  }
-                 return toast({title: error.message, variant: 'destructive'});
+                 return toast.error(error.message);
             case 403:
-                return toast({title: "You don't have permission to perform this action", variant: 'destructive'})
+                return toast.error("You don't have permission to perform this action")
             case 500:
-                return toast({title: 'Server error. please try again later.', variant: 'destructive'});
+                return toast.error('Server error. please try again later.');
             default:
                 break;
         }
     } else {
-        return toast({title: 'An unexpected error occurred.', variant: 'destructive'})
+        return toast.error('An unexpected error occurred.')
     }
 };
 

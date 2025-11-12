@@ -1,7 +1,7 @@
-import { Button } from '@/components/ui/button';
-import { toast } from '@/hooks/use-toast';
+
 import { ArrowLeft, BellDot, BellOff, Calendar, CheckCircle, Clock, Download, Eye, Pill, Plus, Share2, Shield, User } from 'lucide-react';
 import React, { useEffect, useState } from 'react'
+import { toast } from 'sonner';
 
 interface Medication {
   id: number;
@@ -170,13 +170,13 @@ const PatientMedication = () => {
 
   const handleMedication = (medicationForm: MedicationFormType) => {
     if (medicationForm.dosage < 0) {
-      return toast({ title: `Dosage can't be negative`, variant: "destructive" })
+      return toast.error(`Dosage can't be negative`)
     }
     if (medicationForm.medicationName.trim().length == 0) {
-      return toast({ title: `name can't be left blank`, variant: 'destructive' })
+      return toast.error(`name can't be left blank`)
     }
     if (medicationForm.purpose.trim().length == 0) {
-      return toast({ title: `Purpose/condition can't be left blank`, variant: 'destructive' })
+      return toast.error(`Purpose/condition can't be left blank`)
     }
     const medication: Medication = {
       dosage: medicationForm.dosage + '' + 'mg',
@@ -243,7 +243,7 @@ const PatientMedication = () => {
       
     setUpcomingDoses(prev => ([...prev, ...upcomingDoses]))
     setShowAddForm(false)
-    return toast({ title: `Medication was added successfully` })
+    return toast.success(`Medication was added successfully` )
   }
 
 
