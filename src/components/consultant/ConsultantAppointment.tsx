@@ -62,7 +62,7 @@ const ConsultantAppointment = () => {
             <div>
               <p className="text-gray-600 text-sm">Confirmed</p>
               <p className="text-3xl font-bold text-green-600">
-                {appointments.filter(a => a.status === 'confirmed').length}
+                {appointments?.filter(a => a.status === 'confirmed').length}
               </p>
             </div>
             <CheckCircle className="w-10 h-10 text-green-600" />
@@ -73,7 +73,7 @@ const ConsultantAppointment = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-600 text-sm">Total Patients</p>
-              <p className="text-3xl font-bold text-purple-600">{appointments.length}</p>
+              <p className="text-3xl font-bold text-purple-600">{appointments?.length}</p>
             </div>
             <Users className="w-10 h-10 text-purple-600" />
           </div>
@@ -144,7 +144,7 @@ const ConsultantAppointment = () => {
       </section>
 
       {/* Appointments List */}
-      {filteredAppointments.length > 0 ? (
+      {filteredAppointments?.length > 0 ? (
         <div className="grid gap-4">
           {filteredAppointments.map(appointment => (
             <ConsultantAppointmentCard
@@ -275,7 +275,7 @@ const ConsultantAppointmentCard = ({
       <div className="space-y-2">
         <div className="flex items-start gap-2">
           <FileText className="w-4 h-4 text-gray-500 mt-0.5" />
-          <div>
+          <div className='space-y-2'>
             <p className="text-sm font-semibold text-gray-900">{appointment.reason}</p>
             <p className="text-sm text-gray-600">{appointment.symptoms}</p>
           </div>
@@ -592,24 +592,24 @@ const AppointmentModal = ({
         )}
 
         {appointment.status === 'pending' && (
-          <div className="flex gap-3 pt-4 border-t">
+          <div className="flex justify-between gap-3 pt-4 border-t">
             <button
               onClick={() => handleApprove(appointment.id)}
-              className="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition flex items-center justify-center gap-2"
+              className="flex-1 bg-green-600 text-white py-3 rounded-lg  min-w-32 text-xs sm:text-base font-semibold hover:bg-green-700 transition flex items-center justify-center gap-2"
             >
               <Check className="w-5 h-5" />
-              Approve Appointment
+              Approve
             </button>
             <button
               onClick={() => setActionModal({ type: 'reschedule', appointment })}
-              className="flex-1 bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition flex items-center justify-center gap-2"
+              className="flex-1 bg-blue-600 text-white py-3 rounded-lg  min-w-32 text-xs sm:text-base font-semibold hover:bg-blue-700 transition flex items-center justify-center gap-2"
             >
               <Edit className="w-5 h-5" />
               Reschedule
             </button>
             <button
               onClick={() => setActionModal({ type: 'decline', appointment })}
-              className="px-6 bg-red-600 text-white py-3 rounded-lg font-semibold hover:bg-red-700 transition flex items-center justify-center gap-2"
+              className="px-6 bg-red-600 text-white py-3 rounded-lg min-w-32 max-w-32 text-xs sm:text-base font-semibold  hover:bg-red-700 transition flex items-center justify-center gap-2"
             >
               <X className="w-5 h-5" />
               Decline

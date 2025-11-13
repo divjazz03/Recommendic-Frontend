@@ -2,6 +2,8 @@ import { ReactNode, useEffect, useState } from "react";
 import { ConsultationChannel } from "./usePatientSchedules";
 import { AlertCircle, CheckCircle, LucideProps, XCircle } from 'lucide-react'
 import { DateTimeFormatOptions } from "luxon";
+import { useGetAppointments } from "@/lib/react-query/generalQueriesAndMutation";
+import { data } from "react-router-dom";
 
 export type AppointmentStatus = 'confirmed' | 'pending' | 'completed' | 'cancelled'
 export type AppointmentPriority = 'low' | 'medium' | 'high'
@@ -164,14 +166,14 @@ const getDaysUntil = (dateStr: string) => {
   return `${Math.abs(diffDays)} days ago`;
 };
 export const usePatientAppointment = () => {
-
-  const [appointments, setAppointments] = useState<PatientAppointmentType[]>(samplePatientAppointments);
+  const {data: appointmentsResponse} = useGetAppointments()
+  const [appointments, setAppointments] = useState<PatientAppointmentType[]>([]);
   const [filterStatus, setFilterStatus] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [rescheduleModalOpen, setRescheduleModalOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState<PatientAppointmentType>();
 
-  const filteredAppointments = appointments.filter(apt => {
+  const filteredAppointments = appointments?.filter(apt => {
     const matchesStatus = filterStatus === 'all' || apt.status === filterStatus;
     const matchesSearch = apt.doctorName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       apt.specialty.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -179,11 +181,11 @@ export const usePatientAppointment = () => {
     return matchesStatus && matchesSearch;
   });
 
-  const upcomingAppointments = filteredAppointments.filter(apt =>
+  const upcomingAppointments = filteredAppointments?.filter(apt =>
     new Date(apt.date) >= new Date() && apt.status !== 'cancelled' && apt.status !== 'completed' && apt.status !== 'pending'
   );
 
-  const pastAppointments = filteredAppointments.filter(apt =>
+  const pastAppointments = filteredAppointments?.filter(apt =>
     new Date(apt.date) < new Date() || apt.status === 'completed' || apt.status === 'cancelled'
   );
 
@@ -192,8 +194,10 @@ export const usePatientAppointment = () => {
 
 
   useEffect(() => {
-    setAppointments(samplePatientAppointments)
+    const appointments = appointmentsResponse?.data.content as PatientAppointmentType[]
+    setAppointments(appointments)
   }, [])
+  console.log(filteredAppointments)
 
   return {
     appointments,
@@ -399,7 +403,8 @@ export interface ActionModalType {
 }
 
 export const useConsultantAppointment = () => {
-  const [appointments, setAppointments] = useState<ConsultantAppointmentType[]>(sampleConsultantAppointments);
+  const {data: appointmentsResponse} = useGetAppointments()
+  const [appointments, setAppointments] = useState<ConsultantAppointmentType[]>([]);
   const [filterStatus, setFilterStatus] = useState<'all' | AppointmentStatus>('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedAppointment, setSelectedAppointment] = useState<ConsultantAppointmentType | null>(null);
@@ -409,9 +414,14 @@ export const useConsultantAppointment = () => {
   const [rescheduleDate, setRescheduleDate] = useState<Date>(new Date());
   const [rescheduleTime, setRescheduleTime] = useState('');
 
+
+  useEffect(() => {
+    const appointments = appointmentsResponse?.data.content as ConsultantAppointmentType[]
+    setAppointments(appointments);
+  }, [appointmentsResponse])
   
 
-  const filteredAppointments = appointments.filter(apt => {
+  const filteredAppointments = appointments?.filter(apt => {
     const matchesTab =
       (activeTab === 'pending' && apt.status === 'pending') ||
       (activeTab === 'confirmed' && apt.status === 'confirmed') ||
@@ -425,8 +435,8 @@ export const useConsultantAppointment = () => {
     return matchesTab && matchesSearch;
   });
 
-  const pendingCount = appointments.filter(a => a.status === 'pending').length;
-  const todayCount = appointments.filter(a =>
+  const pendingCount = appointments?.filter(a => a.status === 'pending').length;
+  const todayCount = appointments?.filter(a =>
     a.date === new Date().toISOString().split('T')[0] &&
     (a.status === 'confirmed' || a.status === 'pending')
   ).length;

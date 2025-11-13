@@ -140,6 +140,27 @@ const PatientAppointment = () => {
         </section>
 
         <div className='flex flex-col gap-10'>
+
+          {/* Filtered Appointments */}
+          {filteredAppointments.length > 0 && (
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">All Appointments</h2>
+              <div className="grid gap-4">
+                {filteredAppointments.map(appointment => (
+                  <PatientAppointmentCard
+                    key={appointment.id}
+                    appointment={appointment}
+                    StatusIcon={getStatusIcon(appointment.status)}
+                    date={appointment.date}
+                    daysUntil={getDaysUntil(appointment.date)}
+                    setSelectedAppointment={setSelectedAppointment}
+                    statusColor={getStatusColor(appointment.status)}
+                    setRecheduleModalOpen={setRescheduleModalOpen}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
           {/* Upcoming Appointments */}
           {upcomingAppointments.length > 0 && (
             <div>
@@ -181,6 +202,8 @@ const PatientAppointment = () => {
               </div>
             </div>
           )}
+
+
 
           {/* No Results */}
           {filteredAppointments.length === 0 && (

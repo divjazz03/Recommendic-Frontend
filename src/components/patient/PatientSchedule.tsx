@@ -264,7 +264,7 @@ export const PatientSchedule = () => {
                         <div className="font-medium text-dark-3">
                           {selectedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                         </div>
-                        <div className="text-sm text-gray-600">{selectedTime}</div>
+                        <div className="text-sm text-gray-600">{DateTime.fromISO(selectedTime).toFormat("hh:mm a")}</div>
                       </div>
                     </div>
 

@@ -54,10 +54,10 @@ const ConsultantThumbnail: React.FC<ConsultantThumbnailProps> = ({
     nextSlot
 }) => {
     return (
-        <div key={id} className='bg-white rounded-lg border-light-3 px-1 py-2 md:px-4 md:py-4 hover:shadow-md transition-shadow'>
+        <div key={id} className='bg-white rounded-lg border-light-3 px-2 py-2 md:px-4 md:py-4 hover:shadow-md transition-shadow'>
             <div className='flex gap-4'>
                 {/* Profile Image*/}
-                <InitialsOrAvartar name={name} avatarUrl={avatarUrl} width='80' height='80' />
+                <InitialsOrAvartar name={name} avatarUrl={avatarUrl} width='90' height='90' />
                 {/* Main  Content*/}
                 <div className='flex-1 space-y-3'>
                     <div className='flex justify-between items-center'>

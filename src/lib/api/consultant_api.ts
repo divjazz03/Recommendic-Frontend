@@ -1,4 +1,4 @@
-import { Address, ConsultantEducation, NewUser, RecurrenceRule, Response, Schedule, SignUpResponse, UserName } from "@/types";
+import { Address, ConsultantEducation, NewUser, PagedResponse, RecurrenceRule, Response, Schedule, SignUpResponse, UserName } from "@/types";
 import { ModifyingSchedule } from "@/components/consultant/ConsultantModifySchedule";
 import { apiClient } from "../axios";
 import { NewSchedule } from "@/hooks/useConsultantSchedule";
@@ -32,9 +32,7 @@ export interface NewScheduleRequest {
     zoneOffset: string
 }
 
-export interface SchedulesResponse extends Response {
-    data: Schedule[]
-}
+
 interface ScheduleResponse extends Response {
     data: Schedule;
 }
@@ -134,7 +132,7 @@ const formatToUTCTime = (time: string) => {
 
 }
 
-export async function getMySchedules(): Promise<SchedulesResponse> {
+export async function getMySchedules(): Promise<PagedResponse<Schedule>> {
     return apiClient.get(`${scheduleBasePath}/me`)
         .then(response => response.data)
 }

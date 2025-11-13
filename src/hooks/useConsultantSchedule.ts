@@ -303,7 +303,7 @@ export const useScheduleDisplay = () => {
 
     useEffect(() => {
         if (schedulesResponse) {
-            setSchedules(schedulesResponse.data)
+            setSchedules(schedulesResponse.data.content)
         }
     }, [schedulesResponse])
 

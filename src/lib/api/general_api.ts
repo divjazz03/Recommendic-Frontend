@@ -2,6 +2,7 @@ import {
     AuthenticatedUserResponse,
     ConsultationResponse,
     MedicalCategoriesResponse,
+    PagedResponse,
     SignInResponse,
     SigninUserData,
 } from "@/types";
@@ -9,6 +10,7 @@ import { SearchResult } from "@/hooks/useSearchResults";
 import { ModifyingNotificationSetting, NotificationSetting} from "@/hooks/useNotificationSettings";
 import { apiClient } from "../axios";
 import { TimeSlot } from "@/hooks/usePatientSchedules";
+import { ConsultantAppointmentType, PatientAppointmentType } from "@/hooks/useAppointment";
 
 const userLoginPath = import.meta.env.VITE_APP_USER_LOGIN;
 const userLogoutPath = import.meta.env.VITE_APP_USER_LOGOUT;
@@ -108,6 +110,11 @@ export async function getConsultantTimeSlots(consultantId: string, date: string 
     }
     return apiClient.get(`${appointmentsPath}/timeslots/${consultantId}`, {params: {date: date}}
     )
+    .then(response => response.data)
+}
+
+export async function getAppointments():PagedResponse<ConsultantAppointmentType | PatientAppointmentType> {
+    return apiClient.get(`${appointmentsPath}`)
     .then(response => response.data)
 }
 

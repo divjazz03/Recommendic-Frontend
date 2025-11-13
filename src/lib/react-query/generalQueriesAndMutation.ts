@@ -16,7 +16,8 @@ import {
    getMyNotificationSettings,
    updateMyNotificationSettings,
    logoutUser,
-   getConsultantTimeSlots} from "../api/general_api";
+   getConsultantTimeSlots,
+   getAppointments} from "../api/general_api";
 import { TypeOfUser } from "@/_auth/forms/SignupForm";
 import { createNewPatient, sendPatientOnboardingData } from "../api/patient_api";
 import { createNewConsultant, createNewSchedule, sendConsultantOnboardingData } from "../api/consultant_api";
@@ -145,5 +146,13 @@ export const useGetConsultantTimeSlots = (consultantId: string, date: string, en
       staleTime: 1000 * 3600,
       enabled: enabled,
       retry: 1
+   })
+}
+
+export const useGetAppointments = () => {
+   return useQuery({
+      queryKey: ["Appointments"],
+      queryFn: getAppointments,
+      staleTime: 1000 * 3600,
    })
 }
