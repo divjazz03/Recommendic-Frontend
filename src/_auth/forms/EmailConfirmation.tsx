@@ -1,4 +1,4 @@
-import EmailConfirmSuccessModal from "@/components/EmailConfirmSuccessModal";
+import EmailConfirmSuccessModal from "@/components/shared/EmailConfirmSuccessModal";
 import Loader from "@/components/shared/Loader";
 import { Button } from "@/components/ui/button";
 import { useVerifyTokenMutation } from "@/lib/react-query/generalQueriesAndMutation";

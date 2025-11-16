@@ -26,7 +26,7 @@ import Settings from '@/_root/pages/Settings';
 import Appointment from './_root/pages/Appointment';
 import Consultation from './_root/pages/Consultation';
 import Profile from './_root/pages/Profile';
-import { ErrorBoundary } from './components/ErrorBoundary';
+import { ErrorBoundary } from './components/shared/ErrorBoundary';
 import ConsultantScreen from './components/patient/ConsultantScreen';
 
 

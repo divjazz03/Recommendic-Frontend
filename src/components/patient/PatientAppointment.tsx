@@ -5,7 +5,7 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import CustomCalender from '../shared/CustomCalender';
 import { usePatientReschedule } from '@/hooks/useReschedule';
-import ConsultantTimeSlots from '../ConsultantTimeSlots';
+import ConsultantTimeSlots from '../shared/ConsultantTimeSlots';
 
 
 
@@ -14,7 +14,6 @@ const PatientAppointment = () => {
   const navigate = useNavigate();
 
   const {
-    appointments,
     filterStatus,
     searchTerm,
     selectedAppointment,
@@ -29,6 +28,10 @@ const PatientAppointment = () => {
     pastAppointments,
     upcomingAppointments,
     filteredAppointments,
+    confirmedAppointmentCount,
+    pendingAppointmentCount,
+    upcomingAppointmentCount,
+    appointmentCount
   } = usePatientAppointment();
 
   return (
@@ -45,7 +48,7 @@ const PatientAppointment = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-600 text-sm">Upcoming</p>
-                <p className="text-3xl font-bold text-main-light">{upcomingAppointments.length}</p>
+                <p className="text-3xl font-bold text-main-light">{upcomingAppointmentCount}</p>
               </div>
               <Calendar className="w-10 h-10 text-main-light" />
             </div>
@@ -56,7 +59,7 @@ const PatientAppointment = () => {
               <div>
                 <p className="text-gray-600 text-sm">Confirmed</p>
                 <p className="text-3xl font-bold text-green-600">
-                  {appointments.filter(a => a.status === 'confirmed').length}
+                  {confirmedAppointmentCount}
                 </p>
               </div>
               <CheckCircle className="w-10 h-10 text-green-600" />
@@ -68,7 +71,7 @@ const PatientAppointment = () => {
               <div>
                 <p className="text-gray-600 text-sm">Pending</p>
                 <p className="text-3xl font-bold text-yellow-600">
-                  {appointments.filter(a => a.status === 'pending').length}
+                  {pendingAppointmentCount}
                 </p>
               </div>
               <AlertCircle className="w-10 h-10 text-yellow-600" />
@@ -79,7 +82,7 @@ const PatientAppointment = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-600 text-sm">Total</p>
-                <p className="text-3xl font-bold text-purple-600">{appointments.length}</p>
+                <p className="text-3xl font-bold text-purple-600">{appointmentCount}</p>
               </div>
               <FileText className="w-10 h-10 text-purple-600" />
             </div>
@@ -140,29 +143,8 @@ const PatientAppointment = () => {
         </section>
 
         <div className='flex flex-col gap-10'>
-
-          {/* Filtered Appointments */}
-          {filteredAppointments.length > 0 && (
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">All Appointments</h2>
-              <div className="grid gap-4">
-                {filteredAppointments.map(appointment => (
-                  <PatientAppointmentCard
-                    key={appointment.id}
-                    appointment={appointment}
-                    StatusIcon={getStatusIcon(appointment.status)}
-                    date={appointment.date}
-                    daysUntil={getDaysUntil(appointment.date)}
-                    setSelectedAppointment={setSelectedAppointment}
-                    statusColor={getStatusColor(appointment.status)}
-                    setRecheduleModalOpen={setRescheduleModalOpen}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
           {/* Upcoming Appointments */}
-          {upcomingAppointments.length > 0 && (
+          {upcomingAppointments?.length > 0 && (
             <div>
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Upcoming Appointments</h2>
               <div className="grid gap-4">
@@ -183,11 +165,11 @@ const PatientAppointment = () => {
           )}
 
           {/* Past Appointments */}
-          {pastAppointments.length > 0 && (
+          {pastAppointments?.length > 0 && (
             <div>
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Past Appointments</h2>
               <div className="grid gap-4">
-                {pastAppointments.map(appointment => (
+                {pastAppointments?.map(appointment => (
                   <PatientAppointmentCard
                     key={appointment.id}
                     appointment={appointment}
@@ -206,11 +188,16 @@ const PatientAppointment = () => {
 
 
           {/* No Results */}
-          {filteredAppointments.length === 0 && (
+          {filteredAppointments?.length === 0 && (
             <div className="bg-white rounded-lg border-2 border-gray-200 p-12 text-center">
               <Calendar className="w-16 h-16 text-gray-400 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-gray-900 mb-2">No appointments found</h3>
-              <p className="text-gray-600">Try adjusting your filters or search terms</p>
+              <p className="text-gray-600">
+            {filterStatus === 'pending' && 'No pending requests'}
+            {filterStatus === 'confirmed' && 'No confirmed appointments'}
+            {filterStatus === 'completed' && 'No completed appointments'}
+            {filterStatus === 'all' && 'Try adjusting your search terms'}
+          </p>
             </div>
           )}
         </div>

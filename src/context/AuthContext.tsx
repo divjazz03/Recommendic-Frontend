@@ -43,7 +43,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                     user_id: data.user.userId,
                     role: data.user.role,
                     userStage: data.user.userStage,
-                    userType: data.user.userType
+                    userType: data.user.userType,
                 } as AuthUserContext
             });
             setIsAuthenticated(true);

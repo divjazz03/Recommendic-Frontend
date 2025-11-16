@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
     AlertDialog,
     AlertDialogContent,
     AlertDialogDescription,
     AlertDialogHeader,
     AlertDialogTitle
-} from './ui/alert-dialog'
+} from '../ui/alert-dialog'
 import { CheckCircle2 } from 'lucide-react';
 
 interface EmailConfirmSuccessProps {

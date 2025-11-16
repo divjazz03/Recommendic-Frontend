@@ -1,11 +1,11 @@
 import { ReactNode, useEffect, useState } from "react";
 import { ConsultationChannel } from "./usePatientSchedules";
 import { AlertCircle, CheckCircle, LucideProps, XCircle } from 'lucide-react'
-import { DateTimeFormatOptions } from "luxon";
+import { DateTime, DateTimeFormatOptions } from "luxon";
 import { useGetAppointments } from "@/lib/react-query/generalQueriesAndMutation";
-import { data } from "react-router-dom";
+import { useConfirmAppointment } from "@/lib/react-query/consultantQueryAndMutations";
 
-export type AppointmentStatus = 'confirmed' | 'pending' | 'completed' | 'cancelled'
+export type AppointmentStatus = 'confirmed' | 'pending' | 'completed' | 'cancelled' | 'resheduled'
 export type AppointmentPriority = 'low' | 'medium' | 'high'
 
 export interface PatientAppointmentType {
@@ -153,18 +153,21 @@ const samplePatientAppointments: PatientAppointmentType[] = [
 ];
 
 const getDaysUntil = (dateStr: string) => {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  console.log(dateStr)
   const appointmentDate = new Date(dateStr);
   appointmentDate.setHours(0, 0, 0, 0);
-  const diffTime = appointmentDate.getUTCSeconds() - today.getUTCSeconds();
-  const diffDays = Math.ceil(diffTime / (60 * 60 * 24));
+  const diffTime = DateTime.fromJSDate(appointmentDate).diffNow('days', {conversionAccuracy:'longterm'}).days
+  console.log(DateTime.fromJSDate(appointmentDate))
+  console.log(diffTime)
+  const diffDays = Math.ceil(diffTime);
 
   if (diffDays === 0) return 'Today';
   if (diffDays === 1) return 'Tomorrow';
   if (diffDays > 1) return `In ${diffDays} days`;
   return `${Math.abs(diffDays)} days ago`;
 };
+
+
 export const usePatientAppointment = () => {
   const {data: appointmentsResponse} = useGetAppointments()
   const [appointments, setAppointments] = useState<PatientAppointmentType[]>([]);
@@ -179,15 +182,26 @@ export const usePatientAppointment = () => {
       apt.specialty.toLowerCase().includes(searchTerm.toLowerCase()) ||
       apt.reason.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesStatus && matchesSearch;
-  });
+  }) ?? [];
 
   const upcomingAppointments = filteredAppointments?.filter(apt =>
-    new Date(apt.date) >= new Date() && apt.status !== 'cancelled' && apt.status !== 'completed' && apt.status !== 'pending'
+    new Date(apt.date) >= new Date() && apt.status !== 'cancelled' && apt.status !== 'completed'
   );
+  const upcomingAppointmentCount = appointments?.filter(apt => 
+      new Date(apt.date) >= new Date() && apt.status !== 'cancelled' && apt.status !== 'completed'
+  ).length
+  const confirmedAppointmentCount = appointments?.filter(apt => 
+    apt.status === 'confirmed'
+  ).length
+  const pendingAppointmentCount = appointments?.filter(apt => 
+    apt.status === 'pending'
+  ).length
 
   const pastAppointments = filteredAppointments?.filter(apt =>
     new Date(apt.date) < new Date() || apt.status === 'completed' || apt.status === 'cancelled'
   );
+
+  const appointmentCount = appointments?.length
 
 
 
@@ -196,11 +210,9 @@ export const usePatientAppointment = () => {
   useEffect(() => {
     const appointments = appointmentsResponse?.data.content as PatientAppointmentType[]
     setAppointments(appointments)
-  }, [])
-  console.log(filteredAppointments)
+  }, [appointmentsResponse])
 
   return {
-    appointments,
     filterStatus,
     setFilterStatus,
     searchTerm,
@@ -214,7 +226,11 @@ export const usePatientAppointment = () => {
     getStatusIcon,
     pastAppointments,
     upcomingAppointments,
-    filteredAppointments
+    filteredAppointments,
+    upcomingAppointmentCount,
+    confirmedAppointmentCount,
+    pendingAppointmentCount,
+    appointmentCount
   }
 }
 
@@ -237,7 +253,7 @@ export interface ConsultantAppointmentType {
   medicalHistory: string,
   requestedDate: string,
   priority: 'high' | 'medium' | 'low',
-  notes: string,
+  notes?: string,
   cancellationReason?: string
 }
 
@@ -398,7 +414,7 @@ const sampleConsultantAppointments: ConsultantAppointmentType[] = [
 ];
 
 export interface ActionModalType {
-  type: 'reschedule' | 'decline',
+  type: 'reschedule' | 'decline' | 'approve',
   appointment: ConsultantAppointmentType
 }
 
@@ -433,20 +449,16 @@ export const useConsultantAppointment = () => {
       apt.symptoms.toLowerCase().includes(searchTerm.toLowerCase());
 
     return matchesTab && matchesSearch;
-  });
-
+  }) ?? [];
+  const totalCount = appointments?.length;
   const pendingCount = appointments?.filter(a => a.status === 'pending').length;
+  const confirmedCount = appointments?.filter(a => a.status === 'confirmed').length;
   const todayCount = appointments?.filter(a =>
     a.date === new Date().toISOString().split('T')[0] &&
     (a.status === 'confirmed' || a.status === 'pending')
   ).length;
 
-  const handleApprove = (appointmentId: string) => {
-    setAppointments(appointments.map(apt =>
-      apt.id === appointmentId ? { ...apt, status: 'confirmed' } : apt
-    ));
-    setActionModal(null);
-  };
+  
 
   return {
     pendingCount,
@@ -471,8 +483,9 @@ export const useConsultantAppointment = () => {
     rescheduleTime,
     setRescheduleDate,
     setRescheduleTime,
-    handleApprove,
-    setAppointments
+    setAppointments,
+    confirmedCount,
+    totalCount
   }
 
 

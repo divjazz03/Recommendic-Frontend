@@ -1,5 +1,5 @@
 import React from 'react'
-import InitialsOrAvartar from './shared/InitialsOrAvartar'
+import InitialsOrAvartar from './InitialsOrAvartar'
 import { Calendar, Clock, MapPin, Star, Stethoscope } from 'lucide-react';
 import { Link } from 'react-router-dom';
 

@@ -1,5 +1,5 @@
-import { Key, Paperclip, Send } from 'lucide-react';
-import React, { MutableRefObject, useEffect, useRef, useState } from 'react'
+import { Paperclip, Send } from 'lucide-react';
+import React, { MutableRefObject, useEffect, useRef } from 'react'
 
 interface ChatInputAreaProps {
     message: string

@@ -1,5 +1,5 @@
 import { useSearchResults } from '@/hooks/useSearchResults';
-import Loader from './shared/Loader';
+import Loader from './Loader';
 
 
 

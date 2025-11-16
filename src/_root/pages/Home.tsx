@@ -1,10 +1,19 @@
 
-import React from 'react'
+import ConsultantHome from '@/components/consultant/ConsultantHome';
+import PatientHome from '@/components/patient/PatientHome';
+import { useUserContext } from '@/context/AuthContext';
 
 const Home = () => {
-  return (
-    <p>Home</p>
-  )
+  const { userContext } = useUserContext();
+    return (
+        <>
+            {
+                userContext.role === 'ROLE_PATIENT' 
+                ? <PatientHome />
+                : <ConsultantHome />
+            }
+        </>
+    )
 }
 
 export default Home

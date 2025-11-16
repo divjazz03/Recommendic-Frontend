@@ -7,6 +7,7 @@ import { DateTime } from "luxon";
 
 const consultantBasePath = import.meta.env.VITE_CONSULTANT_BASE;
 const scheduleBasePath = import.meta.env.VITE_SCHEDULE_BASE;
+const appointmentBasePath = import.meta.env.VITE_APPOINTMENT_BASE;
 
 interface ScheduleCreationResponse extends Response {
     data: {
@@ -169,7 +170,8 @@ export interface ProfileDetails {
         specialty: string,
         experience: string,
         languages: string[]
-        bio: string
+        bio: string,
+        profileImgUrl?: string
     }
     education: ConsultantEducation
 }
@@ -195,7 +197,8 @@ export interface ConsultantProfile {
     specialty?: string,
     experience?: string,
     bio?: string,
-    languages?: string[]
+    languages?: string[],
+    profileImgUrl?: string
 }
 export interface ConsultantProfileUpdateRequest {
     education?: ConsultantEducation
@@ -205,4 +208,11 @@ export interface ConsultantProfileUpdateRequest {
 export async function updateConsultantProfileDetails(consultantProfile: ConsultantProfileUpdateRequest): Promise<ProfileDetailsResponse> {
     return apiClient.patch(`${consultantBasePath}/profiles`, consultantProfile)
         .then(response => response.data);
+}
+
+export async function confirmAppointment(appointmentId: string, note: string) {
+    return apiClient.post(`${appointmentBasePath}/confirm`, {
+        appointmentId: appointmentId,
+        note: note
+    })
 }

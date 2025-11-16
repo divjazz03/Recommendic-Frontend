@@ -1,4 +1,4 @@
-import MedicalCategoryCard from '@/components/MedicalCategoryCard';
+import MedicalCategoryCard from '@/components/shared/MedicalCategoryCard';
 import Loader from '@/components/shared/Loader';
 import { Button } from '@/components/ui/button';
 import { useUserContext } from '@/context/AuthContext';

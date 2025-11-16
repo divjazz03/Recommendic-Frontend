@@ -1,4 +1,4 @@
-import ChatInputArea from '@/components/ChatInputArea';
+import ChatInputArea from '@/components/shared/ChatInputArea';
 import { AlertCircle } from 'lucide-react';
 import React from 'react'
 import { ChatViewProps } from './ChatView';

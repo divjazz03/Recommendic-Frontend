@@ -1,5 +1,5 @@
 import React from 'react'
-import { Input } from './ui/input'
+import { Input } from '../ui/input'
 import { Search } from 'lucide-react';
 
 interface LocalSearchProps {

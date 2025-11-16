@@ -4,7 +4,7 @@ import { useGetMyProfiles, useUpdatePatientData } from "@/lib/react-query/patien
 import { Address, ConsultantEducation, MedicalCategory } from "@/types";
 import { useEffect, useState } from "react";
 
-interface PatientProfileData {
+export interface PatientProfileData {
     firstName: string
     lastName: string
     email: string
@@ -12,7 +12,8 @@ interface PatientProfileData {
     dateOfBirth: string
     gender: string
     address?: Address
-    interests: string[]
+    interests: string[],
+    profileImgUrl?: string
 
 }
 
@@ -23,6 +24,7 @@ export interface ModifyingProfileData {
     dateOfBirth?: string
     address?: Address
     interests?: string[]
+    profileImgUrl?: string
 }
 
 
@@ -59,7 +61,8 @@ export const usePatientProfile = () => {
                     state: data?.address?.state,
                     zipCode: '200033'
                 },
-                interests: data.interests
+                interests: data.interests,
+                profileImgUrl: data.profileImgUrl
             })
             if(medicalCategoriesResponse && medicalCategoriesResponse.data) {
                 setSelectedCategories([...medicalCategoriesResponse.data.filter(category => data.interests.includes(category.name))])
@@ -131,7 +134,7 @@ export const usePatientProfile = () => {
 
 }
 
-interface ConsultantProfileData {
+export interface ConsultantProfileData {
     firstName?: string
     lastName?: string
     email: string
@@ -153,6 +156,7 @@ interface ConsultantProfileData {
     department?: string
     languages?: string[]
     bio?: string
+    profileImgUrl?: string
 }
 
 export interface ModifyingConsultantProfileData {
@@ -174,7 +178,8 @@ export interface ModifyingConsultantProfileData {
     hospital?: string
     department?: string
     languages?: string[]
-    bio?: string
+    bio?: string,
+    profileImgUrl?: string
 }
 export const useConsultantProfile = () => {
     const { data: myProfileResponse } = useGetMyConsultantProfiles()
@@ -224,7 +229,9 @@ export const useConsultantProfile = () => {
                 userName: {
                     first_name: modifyingProfileData?.firstName,
                     last_name: modifyingProfileData?.lastName
-                }
+                },
+                profileImgUrl: modifyingProfileData?.profileImgUrl
+
             }
         })
         setShowSuccessMessage(true);
@@ -269,7 +276,8 @@ export const useConsultantProfile = () => {
                         hospital: data.profile?.location,
                         department: data.profile?.specialty,
                         bio: data.profile?.bio,
-                        languages: data.profile?.languages
+                        languages: data.profile?.languages,
+                        profileImgUrl: data.profile?.profileImgUrl
                     }
                 )
     

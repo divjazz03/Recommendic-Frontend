@@ -4,7 +4,7 @@ import { AlertCircle, Bell, Calendar, Check, CheckCircle, ClipboardList, Clock, 
 import React, { useState } from 'react'
 import CustomCalender from '../shared/CustomCalender';
 import { useConsultantAction } from '@/hooks/useReschedule';
-import ConsultantTimeSlots from '../ConsultantTimeSlots';
+import ConsultantTimeSlots from '../shared/ConsultantTimeSlots';
 
 const ConsultantAppointment = () => {
 
@@ -25,8 +25,9 @@ const ConsultantAppointment = () => {
     getPriorityColor,
     activeTab,
     searchTerm,
-    handleApprove,
-    setAppointments
+    setAppointments,
+    confirmedCount,
+    totalCount
   } = useConsultantAppointment();
   return (
     <main className='h-full mx-auto overflow-y-auto max-w-7xl p-4 md:p-8'>
@@ -62,7 +63,7 @@ const ConsultantAppointment = () => {
             <div>
               <p className="text-gray-600 text-sm">Confirmed</p>
               <p className="text-3xl font-bold text-green-600">
-                {appointments?.filter(a => a.status === 'confirmed').length}
+                {confirmedCount}
               </p>
             </div>
             <CheckCircle className="w-10 h-10 text-green-600" />
@@ -73,7 +74,7 @@ const ConsultantAppointment = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-600 text-sm">Total Patients</p>
-              <p className="text-3xl font-bold text-purple-600">{appointments?.length}</p>
+              <p className="text-3xl font-bold text-purple-600">{todayCount}</p>
             </div>
             <Users className="w-10 h-10 text-purple-600" />
           </div>
@@ -153,7 +154,6 @@ const ConsultantAppointment = () => {
               StatusIcon={getStatusIcon(appointment.status)}
               daysUntil={getDaysUntil(appointment.date)}
               formatDate={formatDate}
-              handleApprove={handleApprove}
               priorityColor={getPriorityColor(appointment.priority)}
               setActionModal={setActionModal}
               setSelectedAppointment={setSelectedAppointment}
@@ -184,8 +184,7 @@ const ConsultantAppointment = () => {
           priorityColor={getPriorityColor(selectedAppointment.priority)}
           setActionModal={setActionModal}
           statusColor={getStatusColor(selectedAppointment.status)}
-          handleApprove={handleApprove}
-          />
+        />
       )}
 
       <ActionModal
@@ -205,7 +204,6 @@ interface ConsultantAppointmentCardProps {
   StatusIcon: React.ForwardRefExoticComponent<Omit<LucideProps, 'ref'>> & React.RefAttributes<SVGSVGElement>
   daysUntil: string
   formatDate: (value: string) => string
-  handleApprove: (appointmentId: string) => void
   setActionModal: (value: React.SetStateAction<ActionModalType | null>) => void
   statusColor: string
   priorityColor: string
@@ -216,7 +214,6 @@ const ConsultantAppointmentCard = ({
   StatusIcon,
   appointment,
   daysUntil,
-  handleApprove,
   setActionModal,
   setSelectedAppointment,
   statusColor,
@@ -286,7 +283,7 @@ const ConsultantAppointmentCard = ({
     {appointment.status === 'pending' && (
       <div className="flex gap-2 pt-3 border-t" onClick={(e) => e.stopPropagation()}>
         <button
-          onClick={() => handleApprove(appointment.id)}
+          onClick={() => setActionModal({ type: "approve", appointment })}
           className="flex-1 bg-green-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-green-700 transition flex items-center justify-center gap-2"
         >
           <Check className="w-4 h-4" />
@@ -342,7 +339,10 @@ const ActionModal = ({
     actionReason,
     setActionReason,
     timeSlotsMem,
-    setSelectedScheduleId
+    setSelectedScheduleId,
+    handleApprove,
+    notes,
+    setNotes
   } = useConsultantAction(actionModal, setAppointments, setActionModal)
 
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
@@ -358,7 +358,9 @@ const ActionModal = ({
     <main className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-xl max-w-lg w-full p-6">
         <h3 className="text-xl font-bold text-gray-900 mb-4">
-          {type === 'decline' ? 'Decline Appointment' : 'Reschedule Appointment'}
+          {type === 'decline' ? 'Decline Appointment' :
+            type === 'reschedule' ?
+              'Reschedule Appointment' : 'Approve Appointment'}
         </h3>
 
         <div className="mb-4 p-3 bg-gray-50 rounded-lg">
@@ -398,19 +400,37 @@ const ActionModal = ({
 
         )}
 
-        <div className="mb-4">
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
-            {type === 'decline' ? 'Reason for Declining (Required)' : 'Reason for Rescheduling (Optional)'}
-          </label>
-          <textarea
-            value={actionReason}
-            onChange={(e) => setActionReason(e.target.value)}
-            placeholder={type === 'decline'
-              ? "e.g., No availability, outside specialty, duplicate booking..."
-              : "e.g., Schedule conflict, emergency case priority..."}
-            className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none h-24 resize-none"
-          />
-        </div>
+        {
+          type !== 'approve' &&
+          <div className="mb-4">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              {type === 'decline' ? 'Reason for Declining (Required)' : 'Reason for Rescheduling (Optional)'}
+            </label>
+            <textarea
+              value={actionReason}
+              onChange={(e) => setActionReason(e.target.value)}
+              placeholder={type === 'decline'
+                ? "e.g., No availability, outside specialty, duplicate booking..."
+                : "e.g., Schedule conflict, emergency case priority..."}
+              className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-main focus:outline-none h-24 resize-none"
+            />
+          </div>
+        }
+        {
+          type === 'approve' && 
+          <div className='mb-4'>
+            <label className='block text-sm font-semibold text-gray-700 nb-2'>
+              Notes
+            </label>
+            <textarea
+              value = {notes}
+              onChange = {(e) => setNotes(e.target.value)}
+              placeholder='Any additional information or instruction for the patient before the time'
+              className='w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-main focus:outline-none h-24 resize-none'
+              />
+          </div>
+        }
+
 
         <div className="flex gap-3">
           <button
@@ -422,15 +442,21 @@ const ActionModal = ({
           <button
             onClick={() => type === 'decline'
               ? handleDecline(appointment.id)
-              : handleReschedule(appointment.id)
+              : type === 'reschedule'? handleReschedule(appointment.id)
+              : handleApprove(appointment.id)
             }
-            disabled={type === 'decline'? !actionReason.trim: false || !rescheduleTime}
+            disabled={
+              type === 'approve'? false :
+              type === 'decline'? !actionReason.trim() : false
+            }
             className={`flex-1 py-2 rounded-lg font-semibold transition disabled:bg-gray-500 ${type === 'decline'
               ? 'bg-red-600 text-white hover:bg-red-700'
               : 'bg-blue-600 text-white hover:bg-blue-700'
               }`}
           >
-            {type === 'decline' ? 'Confirm Decline' : 'Confirm Reschedule'}
+            {type === 'decline' ? 'Confirm Decline' :
+            type === 'reschedule'?
+            'Confirm Reschedule': 'Approve'}
           </button>
         </div>
       </div>
@@ -443,7 +469,6 @@ interface AppointmentModalProps {
   onClose: () => void,
   StatusIcon: React.ForwardRefExoticComponent<Omit<LucideProps, 'ref'>> & React.RefAttributes<SVGSVGElement>
   daysUntil: string
-  handleApprove: (id: string) => void
   setActionModal: (value: React.SetStateAction<ActionModalType | null>) => void
   priorityColor: string
   statusColor: string
@@ -454,7 +479,6 @@ const AppointmentModal = ({
   onClose,
   StatusIcon,
   daysUntil,
-  handleApprove,
   setActionModal,
   priorityColor,
   statusColor
@@ -518,7 +542,7 @@ const AppointmentModal = ({
                   <div>
                     <p className="text-sm font-semibold text-gray-600">Location</p>
                     <p className="">{appointment.location}</p>
-                    <p className="text-sm text-gray-600 capitalize">{appointment.type} visit</p>
+                    <p className="text-sm text-gray-600 capitalize">{appointment.type.replace("_","-").toLowerCase()} visit</p>
                   </div>
                 </div>
               </div>
@@ -594,7 +618,7 @@ const AppointmentModal = ({
         {appointment.status === 'pending' && (
           <div className="flex justify-between gap-3 pt-4 border-t">
             <button
-              onClick={() => handleApprove(appointment.id)}
+              onClick={() => setActionModal({ type: 'approve', appointment })}
               className="flex-1 bg-green-600 text-white py-3 rounded-lg  min-w-32 text-xs sm:text-base font-semibold hover:bg-green-700 transition flex items-center justify-center gap-2"
             >
               <Check className="w-5 h-5" />

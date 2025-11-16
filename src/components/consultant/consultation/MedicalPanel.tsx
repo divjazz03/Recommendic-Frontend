@@ -1,4 +1,4 @@
-import ChatInputArea from '@/components/ChatInputArea';
+import ChatInputArea from '@/components/shared/ChatInputArea';
 import { AlertCircle, Save } from 'lucide-react';
 import React from 'react'
 import { MedicalInfoProps } from './ConsultantConsultation';

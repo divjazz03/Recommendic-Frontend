@@ -1,4 +1,4 @@
-import ChatInputArea from '@/components/ChatInputArea';
+import ChatInputArea from '@/components/shared/ChatInputArea';
 import React, { MutableRefObject } from 'react'
 import { Message } from '../ConsultantConsultation';
 import { AlertCircle } from 'lucide-react';

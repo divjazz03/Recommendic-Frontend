@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import LocalSearch from '../LocalSearch'
+import LocalSearch from '../shared/LocalSearch'
 import { ChevronDown, Filter, Loader, Stethoscope } from 'lucide-react'
 import { Label } from '../ui/label'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '../ui/select';
-import ConsultantThumbnail from '../ConsultantThumbnail';
+import ConsultantThumbnail from '../shared/ConsultantThumbnail';
 import { ConsultantTypeMinimal } from '@/types';
 import { useGetRecommendedConsultants } from '@/lib/react-query/patientQueryAndMutations';
 

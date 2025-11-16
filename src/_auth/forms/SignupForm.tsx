@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button'
 import React, { useState } from 'react'
-import SignupSuccessModal from '@/components/SignupSuccessModal'
+import SignupSuccessModal from '@/components/shared/SignupSuccessModal'
 import { useCreateUserMutation } from '@/lib/react-query/generalQueriesAndMutation'
 import { Link, useNavigate } from 'react-router-dom'
 import { FormWrapper } from './FormWrapper'

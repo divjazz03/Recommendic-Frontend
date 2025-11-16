@@ -74,6 +74,7 @@ interface PatientProfile {
         location: string,
         address: Address,
         interests: string[],
+        profileImgUrl?: string
 }
 
 export interface PatientProfileDetailsResponse extends Response {
@@ -108,7 +109,8 @@ export interface ConsultantFullProfileDetails {
     educations?: ConsultantEducation[],
     stats?: ConsultantStats,
     availableSlots?: SlotResponse[],
-    reviews?: Review[]
+    reviews?: Review[],
+    profileImgUrl?: string
 }
 interface ConsultantFullProfileDetailsResponse extends Response{
     data: ConsultantFullProfileDetails

@@ -4,6 +4,7 @@ import { toast } from "./use-toast";
 import { schedulesToTimeSlots } from "./usePatientSchedules";
 import { ActionModalType, ConsultantAppointmentType } from "./useAppointment";
 import { useUserContext } from "@/context/AuthContext";
+import { useConfirmAppointment } from "@/lib/react-query/consultantQueryAndMutations";
 
 
 
@@ -45,10 +46,10 @@ export const useConsultantAction = (action: ActionModalType,
   const {userContext} = useUserContext()
   const { data: timeSlots, isError, error } = useGetConsultantTimeSlots(userContext.user_id !!, rescheduleDate?.toISOString().split('T')[0], action.type === 'reschedule')
   const [selectedScheduleId, setSelectedScheduleId] = useState<string | undefined>();
+  const [notes, setNotes] = useState<string>()
   const timeSlotsMem = useMemo(() => schedulesToTimeSlots(timeSlots? timeSlots.data : []), [timeSlots])
 
-
-
+  const {mutateAsync: confirmAppointment} = useConfirmAppointment()
 
   const handleDecline = (appointmentId: string) => {
     if (!actionReason.trim()) {
@@ -82,7 +83,7 @@ export const useConsultantAction = (action: ActionModalType,
           ...apt,
           date: rescheduleDate.toUTCString(),
           time: rescheduleTime,
-          status: 'confirmed',
+          status: 'resheduled',
           rescheduleReason: actionReason
         }
         : apt
@@ -93,9 +94,29 @@ export const useConsultantAction = (action: ActionModalType,
     setRescheduleTime('');
   };
 
+  const handleApprove = async (appointmentId: string) => {
+    await confirmAppointment({appointmentId: appointmentId, note: notes})
+    setAppointments(appointments => appointments.map(apt => 
+      apt.id === appointmentId ?
+       {
+      ...apt,
+      status: 'confirmed',
+      notes: notes
+      
+    }: apt));
+    setActionModal(null);
+    setActionReason('');
+    setRescheduleDate(null);
+    setRescheduleTime('');
+  }
+  
+
   return {
     handleCancel,
     handleDecline,
+    handleApprove,
+    notes,
+    setNotes,
     handleReschedule,
     rescheduleDate,
     rescheduleTime,

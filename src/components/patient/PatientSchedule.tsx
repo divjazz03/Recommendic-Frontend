@@ -7,7 +7,7 @@ import Loader from '../shared/Loader';
 import { DateTime } from 'luxon';
 import { ConsultationChannel, ConsultationType,  usePatientSchedule } from '@/hooks/usePatientSchedules';
 import { formatDate } from '@/lib/utils/utils';
-import ConsultantTimeSlots from '../ConsultantTimeSlots';
+import ConsultantTimeSlots from '../shared/ConsultantTimeSlots';
 
 export const PatientSchedule = () => {
   const location = useLocation();

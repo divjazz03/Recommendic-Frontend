@@ -11,6 +11,7 @@ import { ModifyingNotificationSetting, NotificationSetting} from "@/hooks/useNot
 import { apiClient } from "../axios";
 import { TimeSlot } from "@/hooks/usePatientSchedules";
 import { ConsultantAppointmentType, PatientAppointmentType } from "@/hooks/useAppointment";
+import axios from "axios";
 
 const userLoginPath = import.meta.env.VITE_APP_USER_LOGIN;
 const userLogoutPath = import.meta.env.VITE_APP_USER_LOGOUT;
@@ -113,11 +114,23 @@ export async function getConsultantTimeSlots(consultantId: string, date: string 
     .then(response => response.data)
 }
 
-export async function getAppointments():PagedResponse<ConsultantAppointmentType | PatientAppointmentType> {
+export async function getAppointments(): Promise<PagedResponse<ConsultantAppointmentType | PatientAppointmentType>> {
     return apiClient.get(`${appointmentsPath}`)
     .then(response => response.data)
 }
 
+interface ImageUploadSignature {
+    timeStamp: number,
+    signature: string,
+    apiKey: string,
+    publicId: string,
+    cloudName: string,
+    folder: string
+}
+export async function getUploadSignature() :Promise<ImageUploadSignature> {
+    return apiClient.get('/cloudinary/signature')
+    .then(response => response.data)
+}
 
 
 

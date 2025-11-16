@@ -5,7 +5,7 @@ import {
     AlertDialogDescription,
     AlertDialogHeader,
     AlertDialogTitle
-} from './ui/alert-dialog'
+} from '../ui/alert-dialog'
 import { CheckCircle2 } from 'lucide-react';
 
 interface SignupSuccessModalProps {

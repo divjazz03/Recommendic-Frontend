@@ -5,8 +5,9 @@ import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Command, CommandGroup, CommandList } from '../ui/command';
 import { useGlobalSearchContext } from '@/context/GlobalSearchContext';
 import { useDebouncedValue } from '@/hooks/useDebouncedValue';
-import { Loader, Search } from 'lucide-react';
+import { Loader, Search, SearchIcon } from 'lucide-react';
 import { useSearchResults } from '@/hooks/useSearchResults';
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '../ui/input-group';
 
 const GlobalSearch = () => {
     const { setQuery } = useGlobalSearchContext();
@@ -27,17 +28,20 @@ const GlobalSearch = () => {
 
     return (
         <>
-            <Popover open={popoverOpen} onOpenChange={setPopOverOpen}>
-                <PopoverTrigger asChild>
-                    <div className='flex flex-row items-center justify-between gap-2 pr-1'>
-                        <p className='text-lg'>Search</p>
-                        <div className='flex flex-col justify-center items-center min-w-8 max-w-10'>
-                            <Search className='w-6 h-6' />
-                        </div>
-                    </div>
+            <Popover open={popoverOpen && !!searchText} onOpenChange={setPopOverOpen} modal={false}>
+                <PopoverTrigger className='w-full'>
+                        <InputGroup tabIndex={0} className='w-full'>
+                            <InputGroupInput onChange={(e) => {
+                                e.preventDefault()
+                                setSearchText(e.target.value)}} placeholder='Search...' />
+                            <InputGroupAddon>
+                                <SearchIcon />
+                            </InputGroupAddon>
+                        </InputGroup>
                 </PopoverTrigger>
                 <PopoverContent
-                    className='w-[30rem] py-1 px-1 flex flex-col' sideOffset={8}
+                    className='w-screen min-h-full py-1 px-1 flex flex-col' sideOffset={8}
+                    onOpenAutoFocus={(e) => e.preventDefault()}
                     onInteractOutside={(e) => {
                         if (triggerRef.current && triggerRef.current.contains(e.target as Node)) {
                             e.preventDefault();
@@ -46,16 +50,12 @@ const GlobalSearch = () => {
                         }
                     }}
                 >
-                    <Input type='search'
-                        value={searchText}
-                        onChange={e => setSearchText(e.target.value)}
-                        className='border h-full w-full  focus-visible:ring-offset-0 focus-visible:ring-transparent '
-                        placeholder='Global Search' />
+                    
                     <Command>
                         <CommandList>
                             <CommandGroup heading="Results">
                                 {isLoading && (<Loader />)}
-                                {isError && !isLoading && (<p>Error loading results.</p>)}
+                                {isError && !isLoading && searchText && (<p>Error loading results.</p>)}
                                 {(!data || data.length < 1 ) && !isLoading && !isError && (<p>Wow Such Empty</p>)}
                                 {!isLoading && !isError && data && (<ul className='mt-2 space-x-1'>
                                     {data?.map((item) => (
