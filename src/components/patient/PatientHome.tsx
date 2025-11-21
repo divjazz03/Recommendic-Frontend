@@ -71,36 +71,6 @@ const medications: Medication[] = [
     }
 ];
 
-const vitalSigns: VitalSign[] = [
-    {
-        label: 'Blood Pressure',
-        value: '118/76',
-        unit: 'mmHg',
-        status: 'normal',
-        icon: <Heart className="w-5 h-5" />
-    },
-    {
-        label: 'Heart Rate',
-        value: '72',
-        unit: 'bpm',
-        status: 'normal',
-        icon: <Activity className="w-5 h-5" />
-    },
-    {
-        label: 'Blood Glucose',
-        value: '95',
-        unit: 'mg/dL',
-        status: 'normal',
-        icon: <TrendingUp className="w-5 h-5" />
-    },
-    {
-        label: 'Weight',
-        value: '68.5',
-        unit: 'kg',
-        status: 'normal',
-        icon: <User className="w-5 h-5" />
-    }
-];
 
 const recentActivity = [
     { id: '1', action: 'Lab results uploaded', time: '2 hours ago', icon: <FileText className="w-4 h-4" /> },
@@ -151,30 +121,6 @@ const PatientHome = () => {
                 <section className='grid grid-cols-1 lg:grid-cols-3 gap-8 p-2 lg:p-0'>
                     {/* Left column - Main content */}
                     <section className='lg:col-span-2 space-y-10'>
-                        {/** Vital signs */}
-                        <section className=''>
-                            <h2 className="text-lg sm:text-xl  font-semibold text-gray-900 mb-4">Vital Signs</h2>
-                            <div className="grid grid-cols-2 gap-4">
-                                {vitalSigns.map((vital, index) => (
-                                    <div
-                                        key={index}
-                                        className={`p-4 rounded-lg border ${getStatusColor(vital.status)} transition hover:shadow-md`}
-                                    >
-                                        <div className="flex items-center justify-between mb-2">
-                                            <span className="text-sm font-medium">{vital.label}</span>
-                                            {vital.icon}
-                                        </div>
-                                        <div className="flex items-baseline gap-1">
-                                            <span className="text-2xl font-bold">{vital.value}</span>
-                                            <span className="text-sm opacity-75">{vital.unit}</span>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                            <button className="mt-4 text-sm text-blue-600 hover:text-blue-700 font-medium">
-                                View detailed health metrics →
-                            </button>
-                        </section>
 
                         {/** Upcoming Appointments */}
                         <section>
@@ -192,7 +138,7 @@ const PatientHome = () => {
                                     >
                                         <div className="flex items-start justify-between">
                                             <div className="flex-1">
-                                                <h3 className="font-semibold text-gray-900">{apt.doctor}</h3>
+                                                <h3 className="font-semibold text-gray-900">{apt.doctorName}</h3>
                                                 <p className="text-sm text-gray-600">{apt.specialty}</p>
                                                 <div className="flex items-center gap-4 mt-2 text-sm text-gray-500">
                                                     <span className="flex items-center gap-1">

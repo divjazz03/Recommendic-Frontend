@@ -103,6 +103,12 @@ interface MedicationFormType {
   dosage: number;
   notes?: string;
 }
+
+interface UpcomingDosesState {
+  medication:string,
+  time:string, 
+  taken:boolean
+}
 const PatientMedication = () => {
 
   const [activeTab, setActiveTab] = useState('current');
@@ -110,7 +116,7 @@ const PatientMedication = () => {
   const [selectedMedication, setSelectedMedication] = useState<Medication|null>();
   const [reminderEnabled, setReminderEnabled] = useState(true);
   const [currentMedications, setCurrentMedications] = useState<Medication[]>([...prescribedMedications, ...currentMedicationList])
-  const [upcomingDosesState, setUpcomingDoses] = useState<{medication:string,time:string, taken:boolean}[]>(currentMedications.filter(medication => medication.status !== 'completed').flatMap(medication => {
+  const [upcomingDosesState, setUpcomingDoses] = useState<UpcomingDosesState[]>(currentMedications.filter(medication => medication.status !== 'completed').flatMap(medication => {
     if (medication.frequency === 'Once Daily') {
       return [{
         medication: medication.name,
@@ -496,7 +502,7 @@ const PatientMedication = () => {
 
 
   return (
-    <div className="h-full bg-gradient-to-br overflow-y-auto scroll-smooth from-blue-50 via-white to-green-50 p-4">
+    <div className="h-full bg-white overflow-y-auto scroll-smooth from-blue-50 via-white to-green-50 p-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
@@ -508,24 +514,25 @@ const PatientMedication = () => {
               <ArrowLeft className="w-6 h-6 text-gray-600" />
             </button>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">My Medications</h1>
-              <p className="text-gray-600">Track your current medications and prescriptions</p>
+              <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900">My Medications</h1>
+              <p className="text-sm sm:text-base text-gray-600">Track your current medications and prescriptions</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
             <button
               onClick={() => setReminderEnabled(!reminderEnabled)}
-              className={`p-3 rounded-xl transition-colors duration-300 ${reminderEnabled ? 'bg-blue-50 text-main-light' : 'bg-gray-100 text-gray-600'
+              className={`p-2 rounded-xl transition-colors duration-300 ${reminderEnabled ? 'bg-blue-50 text-main-light' : 'bg-gray-100 text-gray-600'
                 }`}
             >
               {reminderEnabled ? <BellDot className="w-5 h-5" /> : <BellOff className="w-5 h-5" />}
             </button>
             <button
               onClick={() => setShowAddForm(true)}
-              className="px-4 py-3 bg-main-light text-white rounded-xl hover:bg-main transition-colors duration-300 flex items-center gap-2"
+              className="px-2 py-1 w-32 bg-main-light text-white rounded-lg hover:bg-main transition-colors duration-300 flex items-center gap-2"
             >
               <Plus className="w-5 h-5" />
-              Add Medication
+              <p className=' text-xs sm:text-sm'>Add Medication</p>
+              
             </button>
           </div>
         </div>
@@ -564,7 +571,7 @@ const PatientMedication = () => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-6 py-4 font-medium transition-all duration-300 ${activeTab === tab.id
+                className={`flex items-center gap-2 px-3 py-4 font-medium transition-all duration-300 ${activeTab === tab.id
                   ? 'text-main-light border-b-2 border-main-light bg-blue-50'
                   : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                   }`}
@@ -578,7 +585,7 @@ const PatientMedication = () => {
             ))}
           </div>
 
-          <div className="p-6">
+          <div className="p-3 sm:p-6">
             {activeTab === 'current' && (
               <div>
                 {currentMedications.length > 0 ? (

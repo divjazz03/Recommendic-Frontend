@@ -155,23 +155,24 @@ const RootLayout = () => {
 				<div className='lg:flex lg:flex-row h-full'>
 					{/* Main content */}
 					<section className='relative w-full h-full flex-1 flex flex-col '>
-						<div ref={asideRef} className={`absolute transition-all duration-200 h-full w-[20em] top-0 z-50 ${asideHidden ? '-left-[20em]' : 'left-0'}`}>
+						<aside ref={asideRef} className={`absolute transition-all ease-out duration-300 h-full w-[20em] top-0 z-50 ${asideHidden ? '-left-[20em]' : 'left-0'}`}>
 							<SideBar
 								navLinks={navLinkObject}
 								isHidden={asideHidden}
 								setAsideHidden={setAsideHidden}
 							/>
-						</div>
+						</aside>
 
 						{/* Mobile Header */}
 						<header className='lg:hidden bg-white'>
 							<div className='flex flex-row gap-4 h-20 items-center justify-between w-full border py-4 px-3'>
 								<div className='flex flex-row justify-start gap-4 items-center'>
 									<Logo className='w-8 h-8' />
-									<p className='font-berkshire text-main font-bold text-3xl'>{location.pathname.split('/')[1] || ''}</p>
+									{/* <p className='font-berkshire text-main font-semibold text-3xl'>{location.pathname.split('/')[1] || ''}</p> */}
 								</div>
-
-								<GlobalSearch />
+								<div className='w-64'>
+									<GlobalSearch />
+								</div>
 								<Link to={mobileNavLinks.notification.to}>
 									<div className={`relative p-2 hover:bg-main-light hover:text-white rounded-lg ${location.pathname === mobileNavLinks.notification.to || location.pathname.startsWith(`${mobileNavLinks.notification.to}/`) ? 'text-white bg-main' : ''}`}>
 										<mobileNavLinks.notification.icon />
@@ -190,7 +191,9 @@ const RootLayout = () => {
 								<Logo className='w-8 h-8' />
 								<p className='font-berkshire text-main font-bold text-3xl'>Recommendic</p>
 							</div>
-							<GlobalSearch />
+							<div className='w-96'>
+								<GlobalSearch />
+							</div>
 							<Link to={mobileNavLinks.notification.to}>
 								<div className={`relative p-2 hover:bg-main-light hover:text-white rounded-lg ${location.pathname === mobileNavLinks.notification.to || location.pathname.startsWith(`${mobileNavLinks.notification.to}/`) ? 'text-white bg-main' : ''}`}>
 									<mobileNavLinks.notification.icon />

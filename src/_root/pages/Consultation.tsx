@@ -5,6 +5,9 @@ import { useUserContext } from '@/context/AuthContext';
 const Consultation = () => {
 
   const {userContext} = useUserContext()
+  if(!userContext.userType) {
+    return null
+  }
   return (
     <>
       <p>{userContext.userType}</p>

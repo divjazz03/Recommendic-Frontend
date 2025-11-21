@@ -5,6 +5,9 @@ import { useUserContext } from '@/context/AuthContext';
 
 const Home = () => {
   const { userContext } = useUserContext();
+  if (!userContext.role) {
+    return null
+  }
     return (
         <>
             {

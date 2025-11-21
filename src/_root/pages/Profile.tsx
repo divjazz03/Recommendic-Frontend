@@ -6,6 +6,9 @@ import React from 'react'
 
 const Profile = () => {
     const {userContext} = useUserContext()
+    if (!userContext.userType) {
+      return null
+    }
   return (
     <>{userContext.userType === 'CONSULTANT'? <ConsultantProfile />: <PatientProfile/>}
     

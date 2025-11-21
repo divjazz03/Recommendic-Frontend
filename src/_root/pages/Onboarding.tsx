@@ -5,7 +5,9 @@ import React from 'react'
 
 const Onboarding = () => {
     const {userContext} = useUserContext();
-
+    if (!userContext.role) {
+      return null
+    }
   return (
     <>
     {userContext.role === 'ROLE_PATIENT'? 

@@ -5,6 +5,10 @@ import React from 'react'
 
 const Appointment = () => {
     const {userContext} = useUserContext();
+
+    if (!userContext.role) {
+      return null
+    }
   return (
     <>
     {userContext.role === 'ROLE_PATIENT'

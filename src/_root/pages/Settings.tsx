@@ -5,6 +5,9 @@ import React from 'react'
 
 const Settings = () => {
     const {userContext} = useUserContext();
+    if (!userContext.role) {
+      return null;
+    }
   return (
     <>
     {userContext.role === 'ROLE_PATIENT'

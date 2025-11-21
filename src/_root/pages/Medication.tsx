@@ -4,6 +4,10 @@ import { useUserContext } from '@/context/AuthContext';
 
 const Medication = () => {
     const { userContext } = useUserContext();
+
+    if (!userContext.role) {
+        return null
+    }
     return (
         <>
             {

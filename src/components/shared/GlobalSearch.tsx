@@ -1,13 +1,13 @@
 
-import React, { useEffect, useRef, useState } from 'react'
-import { Input } from '../ui/input'
+import { useEffect, useRef, useState } from 'react'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Command, CommandGroup, CommandList } from '../ui/command';
 import { useGlobalSearchContext } from '@/context/GlobalSearchContext';
 import { useDebouncedValue } from '@/hooks/useDebouncedValue';
-import { Loader, Search, SearchIcon } from 'lucide-react';
+import { Loader, SearchIcon } from 'lucide-react';
 import { useSearchResults } from '@/hooks/useSearchResults';
-import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '../ui/input-group';
+import { InputGroup, InputGroupAddon, InputGroupInput } from '../ui/input-group';
+import { Separator } from '../ui/separator';
 
 const GlobalSearch = () => {
     const { setQuery } = useGlobalSearchContext();
@@ -28,16 +28,27 @@ const GlobalSearch = () => {
 
     return (
         <>
-            <Popover open={popoverOpen && !!searchText} onOpenChange={setPopOverOpen} modal={false}>
+            <Popover open={popoverOpen && !!searchText.trim()} onOpenChange={setPopOverOpen} modal={false}>
                 <PopoverTrigger className='w-full'>
-                        <InputGroup tabIndex={0} className='w-full'>
-                            <InputGroupInput onChange={(e) => {
+                        {/* <InputGroup tabIndex={0}>
+                            <InputGroupInput className='w-full' onChange={(e) => {
                                 e.preventDefault()
                                 setSearchText(e.target.value)}} placeholder='Search...' />
                             <InputGroupAddon>
                                 <SearchIcon />
                             </InputGroupAddon>
-                        </InputGroup>
+                        </InputGroup> */}
+                        <div className='w-full flex gap-1 items-center rounded-md p-1 border border-gray-300 outline-none'>
+                            <SearchIcon className='text-gray-500'/>
+                            <input
+                                onChange={(e) => {
+                                    e.stopPropagation()
+                                    setSearchText(e.target.value)
+                                }} 
+                                type="text"
+                                placeholder='Search...'
+                                className='p-1 rounded-sm outline-none'/>
+                        </div>
                 </PopoverTrigger>
                 <PopoverContent
                     className='w-screen min-h-full py-1 px-1 flex flex-col' sideOffset={8}

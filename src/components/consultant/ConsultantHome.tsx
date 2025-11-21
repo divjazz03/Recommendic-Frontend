@@ -1,6 +1,6 @@
 import { useUserContext } from "@/context/AuthContext";
 import { ConsultantProfile } from "@/types";
-import { Activity, AlertCircle, Calendar, CheckCircle, ChevronRight, Clock, FileText, MessageSquare, Stethoscope, TrendingUp, Users, Video } from "lucide-react";
+import { Activity, AlertCircle, Calendar, CheckCircle, Clock, FileText, MessageSquare, Stethoscope, TrendingUp, Users, Video } from "lucide-react";
 import { DateTime } from "luxon";
 
 interface Appointment {
@@ -8,7 +8,8 @@ interface Appointment {
     patientName: string;
     patientAge: number;
     time: string;
-    type: 'in-person' | 'online' | 'Follow-up';
+    channel: 'in-person' | 'online';
+    history: 'new' | 'follow-up'
     status: 'upcoming' | 'in-progress' | 'completed';
     reason: string;
 }
@@ -27,7 +28,8 @@ const todayAppointments: Appointment[] = [
         patientName: 'Sarah Johnson',
         patientAge: 45,
         time: '09:00 AM',
-        type: 'Follow-up',
+        channel: 'in-person',
+        history: 'follow-up',
         status: 'completed',
         reason: 'Hypertension checkup'
     },
@@ -36,7 +38,8 @@ const todayAppointments: Appointment[] = [
         patientName: 'James Miller',
         patientAge: 62,
         time: '10:30 AM',
-        type: 'in-person',
+        channel: 'in-person',
+        history: 'follow-up',
         status: 'in-progress',
         reason: 'Chest pain evaluation'
     },
@@ -45,7 +48,8 @@ const todayAppointments: Appointment[] = [
         patientName: 'Emily Rodriguez',
         patientAge: 38,
         time: '11:45 AM',
-        type: 'online',
+        channel: 'online',
+        history: 'follow-up',
         status: 'upcoming',
         reason: 'Medication review'
     },
@@ -54,7 +58,8 @@ const todayAppointments: Appointment[] = [
         patientName: 'Robert Chen',
         patientAge: 55,
         time: '02:00 PM',
-        type: 'in-person',
+        channel: 'in-person',
+        history: 'follow-up',
         status: 'upcoming',
         reason: 'Post-surgery follow-up'
     },
@@ -63,7 +68,8 @@ const todayAppointments: Appointment[] = [
         patientName: 'Maria Garcia',
         patientAge: 71,
         time: '03:30 PM',
-        type: 'Follow-up',
+        channel: 'online',
+        history: 'new',
         status: 'upcoming',
         reason: 'Diabetes management'
     }
@@ -262,12 +268,8 @@ const ConsultantHome = () => {
                     <section className="lg:col-span-2 space-y-10">
                         {/** Today's Schedule */}
                         <section>
-                            <header className="flex items-center justify-between mb-5">
+                            <header className="mb-5">
                                 <h2 className="text-lg font-semibold text-gray-900">Today's Schedule</h2>
-                                <button className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1">
-                                    View Calendar
-                                    <ChevronRight className="w-4 h-4" />
-                                </button>
                             </header>
 
                             <div className="space-y-3">
@@ -296,18 +298,22 @@ const ConsultantHome = () => {
                                                             <Clock className="w-3 h-3" />
                                                             {apt.time}
                                                         </span>
-                                                        <span className={`px-2 py-1 rounded-full ${apt.type === 'Telemedicine'
+                                                        <span className={`px-2 py-1 rounded-full ${apt.history === 'new'
                                                             ? 'bg-purple-100 text-purple-700'
-                                                            : apt.type === 'Follow-up'
+                                                                : 'bg-blue-100 text-blue-700'
+                                                            }`}>
+                                                            {apt.history}
+                                                        </span>
+                                                        <span className={`px-2 py-1 rounded-full ${apt.channel === 'online'
                                                                 ? 'bg-green-100 text-green-700'
                                                                 : 'bg-blue-100 text-blue-700'
                                                             }`}>
-                                                            {apt.type}
+                                                            {apt.channel}
                                                         </span>
                                                     </div>
                                                 </div>
                                                 {apt.status === 'upcoming' && (
-                                                    <button className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition">
+                                                    <button className="px-4 py-2 bg-main-light text-white text-sm rounded-lg hover:bg-main transition">
                                                         Start
                                                     </button>
                                                 )}
@@ -336,7 +342,7 @@ const ConsultantHome = () => {
                                         key={task.id}
                                         className={`p-4 border rounded-lg flex items-start gap-3 ${getPriorityColor(task.priority)}`}
                                     >
-                                        <input type="checkbox" className="mt-1 w-4 h-4 rounded border-gray-300" />
+                                        <input type="checkbox" className="mt-1 w-4 h-4 rounded border-gray-300 " />
                                         <div className="flex-1">
                                             <p className="text-sm font-medium">{task.title}</p>
                                             <p className="text-xs opacity-75 mt-1">Due: {task.dueTime}</p>
@@ -384,9 +390,9 @@ const ConsultantHome = () => {
                         <section>
                             <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
                             <div className="space-y-2">
-                                <button className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-left text-sm font-medium transition flex items-center gap-2">
+                                <button className="w-full py-3 px-4 bg-main-light hover:bg-main text-white rounded-lg text-left text-sm font-medium transition flex items-center gap-2">
                                     <Video className="w-4 h-4" />
-                                    Start Telemedicine
+                                    Start Consultation
                                 </button>
                                 <button className="w-full py-3 px-4 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-left text-sm font-medium text-gray-900 transition flex items-center gap-2">
                                     <Stethoscope className="w-4 h-4" />
