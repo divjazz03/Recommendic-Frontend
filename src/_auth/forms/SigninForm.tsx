@@ -8,10 +8,11 @@ import { Button } from '@/components/ui/button'
 import { Link, useNavigate } from 'react-router-dom'
 import { useSignInUserMutation } from '@/lib/react-query/generalQueriesAndMutation'
 import { z } from 'zod'
-import { Loader } from 'lucide-react'
+import { Loader, Lock, MailIcon } from 'lucide-react'
 import axios, { AxiosError } from 'axios'
 import { apiClient, ApiError } from '@/lib/axios'
 import { toast } from 'sonner'
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
 
 
 const SigninForm = () => {
@@ -45,13 +46,12 @@ const SigninForm = () => {
   }
 
 return (
-  <div className='flex flex-col gap-2'>
-    <FormWrapper >
+  <div className='flex md:w-1/2 items-center justify-center md:border-r border-slate-300/30 p-8'>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className='flex flex-col items-center gap-4 w-full'>
           <div className='flex flex-col justify-center gap-5'>
             <header className='mb-5'>
-              <p className='font-bold text-2xl text-dark-2 text-center'>Welcome to Recommendic</p>
+              <p className='font-bold text-2xl text-dark-2 text-center'>Welcome Back</p>
               <p className='text-sm text-center text-dark-1 pt-2'>Lets get you logged in</p>
             </header>
             <FormField
@@ -61,7 +61,12 @@ return (
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input {...form.register("email")} type="email" {...field} />
+                    <InputGroup>
+                    <InputGroupInput {...form.register("email")} type="email" {...field} />
+                    <InputGroupAddon>
+                      <MailIcon />
+                    </InputGroupAddon>
+                    </InputGroup>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -75,7 +80,12 @@ return (
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input {...form.register("password")} type='password' {...field} />
+                  <InputGroup>
+                    <InputGroupInput {...form.register("password")} type="password" {...field} />
+                    <InputGroupAddon>
+                      <Lock />
+                    </InputGroupAddon>
+                    </InputGroup>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -89,7 +99,6 @@ return (
         </form>
 
       </Form>
-    </FormWrapper>
   </div>
 
 )

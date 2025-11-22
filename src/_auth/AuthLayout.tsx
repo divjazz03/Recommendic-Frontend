@@ -1,10 +1,11 @@
 import { useUserContext } from '@/context/AuthContext';
 import React from 'react'
 import { Outlet, Navigate } from 'react-router-dom'
+import { FormWrapper } from './forms/FormWrapper';
 
 const AuthLayout = () => {
 
-  const {isAuthenticated} = useUserContext()
+  const { isAuthenticated } = useUserContext()
 
 
 
@@ -15,26 +16,20 @@ const AuthLayout = () => {
         isAuthenticated ? (<Navigate to="/" />) :
 
           (
-            <>
-              <div className='flex flex-row h-full'>
-                <div className='flex flex-col gap-4 w-full h-full'>
-                  <header className='py-4 w-full flex flex-row pl-3 gap-3'>
-                    <div className='flex justify-start gap-2'>
-                      <img src='/assets/svg/logo-no-background.svg' className='max-w-10' />
-                      <p className='font-berkshire text-main font-bold text-4xl'>Recommendic</p>
+            <div className=' w-full h-full flex items-center justify-center p-4 bg-gray-50'>
+              <div className=' w-full max-w-6xl md:h-[800px] h-[650px] bg-white'>
+                <FormWrapper>
+                  <div className='w-full flex flex-col md:flex-row'>
+                    <Outlet />
+                    {/*Illustration */}
+                    <div className='hidden md:w-1/2 md:flex flex-col justify-center items-center'>
+                      <img src='/assets/svg/login.svg' className='w-full' alt='A hanging stethoscope'/>
+                      <p className=' bottom-32 font-semibold text-2xl text-center text-main'>Expert guidance for every medical need</p>
                     </div>
-                  </header>
-                  <div className='w-full flex flex-col h-full justify-center items-center'>
-                    <section className='flex flex-1 justify-center items-center flex-col '>
-                      <Outlet />
-                    </section>
                   </div>
-                </div>
-                <img src='/assets/images/loginSmall.jpg'
-                  alt='logo'
-                  className='hidden xl:block h-full w-1/2 rounded-tl-[30rem] rounded-bl-[30rem] bg-right-top bg-no-repeat opacity-95' />
+                </FormWrapper>
               </div>
-            </>
+            </div>
           )
       }
     </>

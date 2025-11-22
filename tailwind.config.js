@@ -47,6 +47,7 @@ export default {
 				'light-2': '#d9d9d9',
 				'light-1': '#c9c9c9'
 			},
+			
 			screens: {
 				xs: '480px',
 				large: '1560px'
@@ -62,26 +63,12 @@ export default {
 				]
 			},
 			keyframes: {
-				'accordion-down': {
-					from: {
-						height: 0
-					},
-					to: {
-						height: 'var(--radix-accordion-content-height)'
-					}
-				},
-				'accordion-up': {
-					from: {
-						height: 'var(--radix-accordion-content-height)'
-					},
-					to: {
-						height: 0
-					}
+				border: {
+					to: {"--border-angle": "360deg"}
 				}
 			},
 			animation: {
-				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				border: "border 4s linear infinite"
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

@@ -31,7 +31,8 @@ const Chat = () => {
                         {selectedChat ? <ChatSection
                             scrollToBottom={scrollToBottom}
                             selectedChat={selectedChat}
-                            setSelectedChat={setSelectedChat} /> : <div className='flex justify-center items-center h-full'>
+                            setSelectedChat={setSelectedChat} /> 
+                            : <div className='flex justify-center items-center h-full '>
                             <p>Please choose a chat</p>
                         </div>}
                     </div>

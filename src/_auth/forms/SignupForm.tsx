@@ -142,7 +142,6 @@ const SignupForm: React.FC = () => {
 
     return (
       <Form {...accountForm}>
-
         <form onSubmit={accountForm.handleSubmit(handleAccountFormSubmit)}>
           <div className="flex flex-col gap-3 justify-center">
             <div>
@@ -342,13 +341,12 @@ const SignupForm: React.FC = () => {
   }
   return (
     <>
-      <div className='flex-col flex-center'>
+      <div className='flex flex-col p-8 md:w-1/2 items-center justify-center md:border-r border-slate-300/30 gap-2'>
         <header className='mb-5'>
           <p className='text-2xl font-bold text-dark-1 text-center'>Create your account</p>
           <p className='pt-2 text-gray-800 text-center'>Lets get you started with recommendic</p>
         </header>
-        <FormWrapper >
-          <div className='flex flex-row justify-between w-full mb-3'>
+          <div className='flex flex-row justify-between w-60 mb-3'>
             <Progress className='h-2' value={step / 2 * 100} />
           </div>
           <div className=' flex-center flex-col'>
@@ -361,12 +359,12 @@ const SignupForm: React.FC = () => {
           </div>
 
           <p className='text-sm font-semibold text-center mt-4'>Already have an account? <span className='mx-1 text-gray-500 hover:text-dark-1'><Link to='/sign-in' className='subtle-semibold hover:no-underline underline'>Sign In</Link></span></p>
-        </FormWrapper>
+          <SignupSuccessModal
+            isOpen={isSuccessfulSignUp}
+            redirectDelay={3000}
+            onRedirect={() => navigate("/confirm-email", { state: { formData } })} />
+
       </div>
-      <SignupSuccessModal
-        isOpen={isSuccessfulSignUp}
-        redirectDelay={3000}
-        onRedirect={() => navigate("/confirm-email", { state: { formData } })} />
     </>
   )
 }
