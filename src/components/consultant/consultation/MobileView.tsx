@@ -4,13 +4,9 @@ import { ConsultationInfoProps} from './ConsultantConsultation';
 import NotesView from './note/NotesView';
 import PatientView from './patient/PatientView';
 import PrescriptionView from './prescription/PrescriptionView';
-import ChatView from './chat/ChatView';
 
 const MobileView = (
-    { message,
-        setMessage,
-        messages,
-        clinicalNotes,
+    { clinicalNotes,
         setClinicalNotes,
         diagnosis,
         setDiagnosis,
@@ -23,15 +19,12 @@ const MobileView = (
         addPrescription,
         consultationTime,
         patientData,
-        sendMessage,
-        removePrescription,
-        scrollToBottom
+        removePrescription
     }: ConsultationInfoProps
 
 ) => {
 
     const [currentView, setCurrentView] = useState('chat');
-    const messagesEndRef = useRef<HTMLDivElement | null>(null)
     const NavigationBar = () => (
         <div className="bg-white px-2 pt-2 ">
             <div className="flex justify-around">
@@ -90,7 +83,7 @@ const MobileView = (
                     <div className="flex items-center gap-2">
                         <h3 className="font-semibold text-gray-900 truncate">{patientData.name}</h3>
                         <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full shrink-0">
-                            {patientData.age}y
+                            {patientData?.age}y
                         </span>
                     </div>
                     <div className="flex items-center gap-2 text-sm text-gray-600">
@@ -165,15 +158,7 @@ const MobileView = (
 
     const renderCurrentView = () => {
         switch (currentView) {
-            case 'chat':
-                return <ChatView
-                    message={message}
-                    messagesEndRef={messagesEndRef}
-                    messages={messages}
-                    sendMessage={sendMessage}
-                    setMessage={setMessage}
-                    scrollToBottom={scrollToBottom}
-                />;
+            case 'chat': return <div></div>
             case 'patient':
                 return <PatientView
                     patientData={patientData}
@@ -204,13 +189,7 @@ const MobileView = (
             case 'history':
                 return <HistoryView />;
             default:
-                return <ChatView
-                    message={message}
-                    messagesEndRef={messagesEndRef}
-                    messages={messages}
-                    sendMessage={sendMessage}
-                    scrollToBottom={scrollToBottom}
-                    setMessage={setMessage} />;
+                return <div></div>
         }
     };
 

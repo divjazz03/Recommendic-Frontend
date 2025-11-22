@@ -1,17 +1,13 @@
 import { CheckCircle, Clock, ExternalLink, Shield, Square} from 'lucide-react';
 import React, { MutableRefObject, useRef, useState } from 'react'
 import { ConsultationInfoProps} from './ConsultantConsultation';
-import ChatSection from './chat/ChatSection';
+import ChatSection from '../../chat/ChatSection';
 import MedicalPanel from './MedicalPanel';
 
 
 
 const DesktopView = (
-    { message,
-        setMessage,
-        messages,
-        setMessages,
-        clinicalNotes,
+    { clinicalNotes,
         setClinicalNotes,
         diagnosis,
         setDiagnosis,
@@ -25,13 +21,10 @@ const DesktopView = (
         videoStatus,
         consultationTime,
         patientData,
-        sendMessage,
-        removePrescription,
-        scrollToBottom
+        removePrescription
     }: ConsultationInfoProps
 ) => {
     const [activeTab, setActiveTab] = useState('notes');
-    const messagesEndRef = useRef<HTMLDivElement | null>(null)
 
     const PatientInfo = () => (
         <div className="bg-white border-b border-gray-200 p-4 rounded-t-lg">
@@ -45,7 +38,7 @@ const DesktopView = (
                     <div className="flex items-center gap-3">
                         <h3 className="font-semibold text-gray-900">{patientData.name}</h3>
                         <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
-                            {patientData.age}y,&nbsp;{patientData.gender}
+                            {patientData?.age}y,&nbsp;{patientData?.gender}
                         </span>
                     </div>
                     <p className="text-sm text-gray-600">Last visit: {patientData.lastVisit} • {patientData.insurance}</p>
@@ -141,16 +134,7 @@ const DesktopView = (
                 {activeTab === '' ? 
                 <div className="flex-1 flex flex-col h-full max-w-[60em] min-w-[60em]">
                     <VideoCallSection />
-                    <div className='flex-1 overflow-auto'>
-                        <ChatSection
-                            message={message}
-                            messages={messages}
-                            messagesEndRef={messagesEndRef}
-                            scrollToBottom={scrollToBottom}
-                            sendMessage={sendMessage}
-                            setMessage={setMessage}
-                        />
-                    </div>
+                    
                 </div> 
                 : 
                 /* Medical Panel */
@@ -178,7 +162,7 @@ const DesktopView = (
                 <div className="flex items-center gap-4">
                     <span>Session ID: #CS-2024-0189</span>
                     <span>•</span>
-                    <span>Patient ID: {patientData.name.replace(' ', '').toLowerCase()}001</span>
+                    <span>Patient ID: {patientData?.name.replace(' ', '').toLowerCase()}001</span>
                 </div>
                 <div className="flex items-center gap-2">
                     <Shield className="w-4 h-4 text-main-light" />

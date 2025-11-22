@@ -6,57 +6,17 @@ import { useStartConsultation } from '@/lib/react-query/generalQueriesAndMutatio
 import { useLocation } from 'react-router-dom';
 import { useUserContext } from '@/context/AuthContext';
 
-const sampleMessages: Message[] = [
-        {
-            id: 1,
-            sender: 'system',
-            consultationId: '2',
-            content: 'Patient John Smith has joined the session.',
-            timestamp: '2:30 PM',
-            type: 'system',
-            delivered: false
-        },
-        {
-            id: 2,
-            sender: 'other',
-            consultationId: '2',
-            content: 'Hello Doctor, I\'ve been experiencing chest pain for the past few days.',
-            timestamp: '2:30 PM',
-            type: 'message',
-            delivered: false
-        },
-        {
-            id: 3,
-            sender: 'me',
-            consultationId: '2',
-            content: 'Hello John! Can you describe the type of chest pain you\'re experiencing?',
-            timestamp: '2:31 PM',
-            type: 'message',
-            delivered: false
-        },
-        {
-            id: 4,
-            sender: 'other',
-            consultationId: '2',
-            content: 'It\'s a sharp pain that comes and goes, usually when I take deep breaths.',
-            timestamp: '2:32 PM',
-            type: 'message',
-            delivered: false
-        }
-    ]
-
 const ConsultantConsultation = () => {
     const location = useLocation()
     const userType = useUserContext().userContext.userType;
-    const appointmentId = location.state.appointmentId ?? 'dksdlnksdnokisjidbkusdkuj';
-    const [consultationId, setConsultationId] = useState<string>('')
-    const [message, setMessage] = useState<string>("");
+    const appointmentId = location.state?.appointmentId ?? 'dksdlnksdnokisjidbkusdkuj';
+    const [consultationId, setConsultationId] = useState<string>('')    
     const [clinicalNotes, setClinicalNotes] = useState('Patient reports chest pain for 3 days. Pain described as sharp, intermittent...')
     const [diagnosis, setDiagnosis] = useState('');
     const [prescription, setPrescription] = useState<Prescription[]>([]);
     const [newMedication, setNewMedication] = useState<Medication>({ name: '', dosage: '', frequency: '', duration: '' });
     const [showPrescriptionForm, setShowPrescriptionForm] = useState(false);
-    const [messages, setMessages] = useState<Message[]>(sampleMessages);
+    
     const [videoStatus, setVideoStatus] = useState('connected');
     const [consultationTime, setConsultationTime] = useState('12:45');
     const [patientData, setPatientData] = useState<PatientData | undefined>({
@@ -101,22 +61,8 @@ const ConsultantConsultation = () => {
         });
     } ,[])
 
-    const scrollToBottom = (messagesEndRef: MutableRefObject<HTMLDivElement|null>) => {
-        messagesEndRef?.current?.scrollIntoView()
-    };
-    const sendMessage = () => {
-        if (message && message.trim()) {
-            const newMessage: Message = {
-                sender: 'me',
-                content: message,
-                consultationId: consultationId,
-                type: 'message',
-                delivered: false
-            };
-            setMessages([...messages, newMessage]);
-            setMessage('');
-        }
-    };
+    
+    
     const addPrescription = () => {
         if (newMedication.name && newMedication.dosage) {
             setPrescription([...prescription, { ...newMedication, id: prescription.length + 1 }])
@@ -142,60 +88,40 @@ const ConsultantConsultation = () => {
                 clinicalNotes={clinicalNotes}
                 consultationTime={consultationTime}
                 diagnosis={diagnosis}
-                message={message ?? ''}
-                messages={messages}
                 newMedication={newMedication}
                 patientData={patientData}
                 prescription={prescription}
                 removePrescription={removePrescription}
-                sendMessage={sendMessage}
                 setClinicalNotes={setClinicalNotes}
                 setDiagnosis={setDiagnosis}
-                setMessage={setMessage}
-                setMessages={setMessages}
                 setNewMedication={setNewMedication}
                 setPrescription={setPrescription}
                 setShowPrescriptionForm={setShowPrescriptionForm}
                 showPrescriptionForm={showPrescriptionForm}
                 videoStatus={videoStatus}
-                scrollToBottom={scrollToBottom}
             />
             <DesktopView
                 addPrescription={addPrescription}
                 clinicalNotes={clinicalNotes}
                 consultationTime={consultationTime}
                 diagnosis={diagnosis}
-                message={message ?? ''}
-                messages={messages}
                 newMedication={newMedication}
                 patientData={patientData}
                 prescription={prescription}
                 removePrescription={removePrescription}
-                sendMessage={sendMessage}
                 setClinicalNotes={setClinicalNotes}
                 setDiagnosis={setDiagnosis}
-                setMessage={setMessage}
-                setMessages={setMessages}
                 setNewMedication={setNewMedication}
                 setPrescription={setPrescription}
                 setShowPrescriptionForm={setShowPrescriptionForm}
                 showPrescriptionForm={showPrescriptionForm}
                 videoStatus={videoStatus}
-                scrollToBottom={scrollToBottom}
             />
 
         </main>
     )
 }
-export interface Message {
-    id?: number
-    consultationId: string
-    sender: ChatMessageSender
-    content: string
-    timestamp?: string
-    type: ChatMessageType
-    delivered: boolean
-}
+
 interface Medication {
     name: string,
     dosage: string,
@@ -234,10 +160,6 @@ export interface PatientData {
 
 }
 export interface ConsultationInfoProps {
-    message: string,
-    setMessage: (value: React.SetStateAction<string>) => void
-    messages: Message[]
-    setMessages: (values: React.SetStateAction<Message[]>) => void
     clinicalNotes: string
     setClinicalNotes: (value: React.SetStateAction<string>) => void
     diagnosis: string
@@ -251,10 +173,8 @@ export interface ConsultationInfoProps {
     videoStatus: string
     consultationTime: string
     patientData?: PatientData
-    sendMessage: () => void
     addPrescription: () => void
     removePrescription: (id: number) => void
-    scrollToBottom?: (ref: MutableRefObject<HTMLDivElement|null>) => void
 }
 
 export interface MedicalInfoProps {
@@ -272,8 +192,7 @@ export interface MedicalInfoProps {
     addPrescription: () => void
     removePrescription: (id: number) => void
 }
-export type ChatMessageType = "system" | "message"
-export type ChatMessageSender = "system" | "me" | string
+
 
 export interface ExamSection {
     id: string

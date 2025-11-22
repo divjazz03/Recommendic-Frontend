@@ -29,7 +29,7 @@ const InitialsOrAvartar: React.FC<InitialsOrAvartarProps> = ({
         >
             {avatarUrl && <img src={avatarUrl} className='rounded-full object-cover' alt="Avatar" />
             }
-            {!avatarUrl && <p className='text-white text-xl'>{extractInitialsFromName(name)}</p>}
+            {!avatarUrl && name && <p className='text-white text-xl'>{extractInitialsFromName(name)}</p>}
         </div>
     )
 }

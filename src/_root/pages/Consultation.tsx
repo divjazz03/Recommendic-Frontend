@@ -10,7 +10,6 @@ const Consultation = () => {
   }
   return (
     <>
-      <p>{userContext.userType}</p>
       {userContext.userType === 'CONSULTANT'? 
       <ConsultantConsultation /> : <PatientConsultation />}
     </>

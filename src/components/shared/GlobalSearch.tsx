@@ -30,14 +30,6 @@ const GlobalSearch = () => {
         <>
             <Popover open={popoverOpen && !!searchText.trim()} onOpenChange={setPopOverOpen} modal={false}>
                 <PopoverTrigger className='w-full'>
-                        {/* <InputGroup tabIndex={0}>
-                            <InputGroupInput className='w-full' onChange={(e) => {
-                                e.preventDefault()
-                                setSearchText(e.target.value)}} placeholder='Search...' />
-                            <InputGroupAddon>
-                                <SearchIcon />
-                            </InputGroupAddon>
-                        </InputGroup> */}
                         <div className='w-full flex gap-1 items-center rounded-md p-1 border border-gray-300 outline-none'>
                             <SearchIcon className='text-gray-500'/>
                             <input

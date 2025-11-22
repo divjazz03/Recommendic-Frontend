@@ -11,7 +11,7 @@ interface LocalSearchProps {
 const LocalSearch: React.FC<LocalSearchProps> = ({ placeholder, setSearchValue, handleEnterKeyPress}) => {
     return (
         <>
-            <div  className= 'relative w-full max-h-10 px-2 flex flex-row justify-center items-center gap-2'>
+            <div  className= 'relative w-full max-h-10 flex flex-row justify-center items-center gap-2'>
                 <Search className='absolute left-4 top-1/2 transform -translate-y-1/2 text-dark-1 w-5 h-5'/>
                 <Input
                     placeholder={placeholder}

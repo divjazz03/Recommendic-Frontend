@@ -28,6 +28,7 @@ import Consultation from './_root/pages/Consultation';
 import Profile from './_root/pages/Profile';
 import { ErrorBoundary } from './components/shared/ErrorBoundary';
 import ConsultantScreen from './components/patient/ConsultantScreen';
+import Chat from './_root/pages/Chat';
 
 
 const App = () => {
@@ -52,6 +53,7 @@ const App = () => {
           <Route path='/onboarding' element={<Onboarding />} />
           <Route index element={<Home />} />
           <Route path='/profile' element={<Profile/>}/>
+          <Route path='/chat' element={<Chat/>}/>
           <Route path='/consultants' element={<Consultant/>}>
             <Route index element={<ConsultantList />} />
             <Route path='profile' element={<ConsultantScreen />} />
@@ -72,9 +74,8 @@ const App = () => {
           <Route path='/consultation' element={<Consultation />} />
         </Route>
       </Routes>
-      <Toaster />
       </ErrorBoundary>
-      
+      <Toaster />
     </main>
   )
 }

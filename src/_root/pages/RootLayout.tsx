@@ -165,12 +165,12 @@ const RootLayout = () => {
 
 						{/* Mobile Header */}
 						<header className='lg:hidden bg-white'>
-							<div className='flex flex-row gap-4 h-20 items-center justify-between w-full border py-4 px-3'>
+							<div className='flex flex-row gap-4 h-20 items-center justify-between w-full py-4 px-3 '>
 								<div className='flex flex-row justify-start gap-4 items-center'>
 									<Logo className='w-8 h-8' />
 									{/* <p className='font-berkshire text-main font-semibold text-3xl'>{location.pathname.split('/')[1] || ''}</p> */}
 								</div>
-								<div className='w-64'>
+								<div className='w-60'>
 									<GlobalSearch />
 								</div>
 								<Link to={mobileNavLinks.notification.to}>
@@ -185,7 +185,7 @@ const RootLayout = () => {
 							</div>
 						</header>
 						{/* Laptop header */}
-						<header className='hidden lg:flex flex-row items-center gap-20 bg-white w-full border-b py-2 px-2 justify-between'>
+						<header className='hidden lg:flex flex-row items-center gap-20 bg-white w-full py-2 px-2 justify-between'>
 							<div className='flex justify-start gap-3'>
 								<Menu className='w-8 h-8' onClick={() => setAsideHidden(false)} />
 								<Logo className='w-8 h-8' />
@@ -203,7 +203,7 @@ const RootLayout = () => {
 
 
 						</header>
-						<div className='flex-1 h-full border-gray-950 bg-white overflow-auto'>
+						<div className='flex-1 h-full bg-white overflow-auto'>
 							<Outlet />
 						</div>
 						<div className='lg:hidden h-20 flex flex-col justify-center bg-white shadow-lg'>
