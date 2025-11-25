@@ -22,7 +22,7 @@ const MobileNavBar:React.FC<MobileNavBarProps> = ({
 }
   return (
     <div className=''>
-      <ul className='flex justify-around px-2'>
+      <ul className='flex justify-around'>
         {Object.entries(navLinkObject).filter(([,nav],_) => nav.description !== 'Notification').map(([, nav], index) => (
           <li key={index}>
             <Link to={nav.to}>
@@ -32,7 +32,7 @@ const MobileNavBar:React.FC<MobileNavBarProps> = ({
                 }
               >
                 <nav.icon className={clsx('w-5 h-5 sm:w-6 sm:h-6')}/>
-                <p className='text-xs sm:text-sm font-normal sm:font-semibold'>{nav.description}</p>
+                <p className='text-[8px] xs:text-sm font-thin sm:font-semibold'>{nav.description}</p>
               </div>
             </Link>
           </li>

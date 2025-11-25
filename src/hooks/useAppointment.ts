@@ -153,12 +153,11 @@ const samplePatientAppointments: PatientAppointmentType[] = [
 ];
 
 const getDaysUntil = (dateStr: string) => {
-  console.log(dateStr)
+
   const appointmentDate = new Date(dateStr);
   appointmentDate.setHours(0, 0, 0, 0);
   const diffTime = DateTime.fromJSDate(appointmentDate).diffNow('days', {conversionAccuracy:'longterm'}).days
-  console.log(DateTime.fromJSDate(appointmentDate))
-  console.log(diffTime)
+
   const diffDays = Math.ceil(diffTime);
 
   if (diffDays === 0) return 'Today';
@@ -170,7 +169,7 @@ const getDaysUntil = (dateStr: string) => {
 
 export const usePatientAppointment = () => {
   const {data: appointmentsResponse} = useGetAppointments()
-  const [appointments, setAppointments] = useState<PatientAppointmentType[]>([]);
+  const [appointments, setAppointments] = useState<PatientAppointmentType[]>(samplePatientAppointments);
   const [filterStatus, setFilterStatus] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [rescheduleModalOpen, setRescheduleModalOpen] = useState(false);
@@ -197,8 +196,11 @@ export const usePatientAppointment = () => {
     apt.status === 'pending'
   ).length
 
-  const pastAppointments = filteredAppointments?.filter(apt =>
-    new Date(apt.date) < new Date() || apt.status === 'completed' || apt.status === 'cancelled'
+  const pastAppointments = filteredAppointments?.filter(apt => {
+    console.log(Date.parse(`${apt.date}T${apt.time}`) > Date.now())
+    return Date.parse(`${apt.date}T${apt.time}`) > Date.now() ||  apt.status === 'completed' || apt.status === 'cancelled'
+  }
+    
   );
 
   const appointmentCount = appointments?.length
@@ -208,8 +210,8 @@ export const usePatientAppointment = () => {
 
 
   useEffect(() => {
-    const appointments = appointmentsResponse?.data.content as PatientAppointmentType[]
-    setAppointments(appointments)
+    const localAppointments = appointmentsResponse?.data.content as PatientAppointmentType[]
+    setAppointments(localAppointments)
   }, [appointmentsResponse])
 
   return {
@@ -420,7 +422,7 @@ export interface ActionModalType {
 
 export const useConsultantAppointment = () => {
   const {data: appointmentsResponse} = useGetAppointments()
-  const [appointments, setAppointments] = useState<ConsultantAppointmentType[]>([]);
+  const [appointments, setAppointments] = useState<ConsultantAppointmentType[]>(sampleConsultantAppointments);
   const [filterStatus, setFilterStatus] = useState<'all' | AppointmentStatus>('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedAppointment, setSelectedAppointment] = useState<ConsultantAppointmentType | null>(null);
@@ -432,8 +434,8 @@ export const useConsultantAppointment = () => {
 
 
   useEffect(() => {
-    const appointments = appointmentsResponse?.data.content as ConsultantAppointmentType[]
-    setAppointments(appointments);
+    const localAppointments = appointmentsResponse?.data.content as ConsultantAppointmentType[]
+    setAppointments([...localAppointments]);
   }, [appointmentsResponse])
   
 

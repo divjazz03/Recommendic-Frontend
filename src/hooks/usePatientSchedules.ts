@@ -91,14 +91,15 @@ export const schedulesToTimeSlots = (schedules: TimeSlot[]): TimeSlots => {
             const morningTime = toSeconds('8:00')
             const afternoonTime = toSeconds('11:00');
             const eveningTime = toSeconds("16:00")
-            const formattedTime: string = DateTime.fromISO(schedule.dateTime, {zone: 'utc'}).toFormat('hh:mm')
+            const formattedTime: string = DateTime.fromISO(schedule.dateTime, {zone: 'utc'}).toFormat('HH:mm')
             const scheduleTime = toSeconds(formattedTime)
-            console.log(morningTime / 3600);
+            console.log(afternoonTime);
             console.log(schedule.dateTime)
             console.log(formattedTime)
             const scheduleTimeIsMorning = scheduleTime >= morningTime && scheduleTime < afternoonTime;
             const scheduleTimeIsAfternoon = scheduleTime >= afternoonTime && scheduleTime < eveningTime;
             const scheduleTimeIsEvening = scheduleTime >= eveningTime;
+            console.log(scheduleTimeIsAfternoon)
             if (scheduleTimeIsMorning) {
                 morning.push({
                     scheduleId: schedule.scheduleId, dateTime: schedule.dateTime

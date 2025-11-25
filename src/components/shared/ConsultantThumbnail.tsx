@@ -57,7 +57,7 @@ const ConsultantThumbnail: React.FC<ConsultantThumbnailProps> = ({
         <div key={id} className='bg-white rounded-lg border-light-3 px-2 py-2 md:px-4 md:py-4 hover:shadow-md transition-shadow'>
             <div className='flex gap-4'>
                 {/* Profile Image*/}
-                <InitialsOrAvartar name={name} avatarUrl={avatarUrl} width='90' height='90' />
+                <InitialsOrAvartar name={name} avatarUrl={avatarUrl} />
                 {/* Main  Content*/}
                 <div className='flex-1 space-y-3'>
                     <div className='flex justify-between items-center'>
@@ -101,7 +101,7 @@ const ConsultantThumbnail: React.FC<ConsultantThumbnailProps> = ({
                     {/* Bottom Row */}
                     <div className="flex justify-between items-center">
                         <div className="flex items-center gap-4">
-                            <div className={`px-3 py-1 rounded-full text-xs font-thin sm:text-sm ${getAvailabilityColor(availability)}`}>
+                            <div className={`px-1 sm:px-3 py-1 rounded-sm text-xs font-thin sm:text-sm ${getAvailabilityColor(availability)}`}>
                                 {availability}
                             </div>
                             {availability && availability.includes('Today') && (
@@ -111,8 +111,8 @@ const ConsultantThumbnail: React.FC<ConsultantThumbnailProps> = ({
                                 </div>
                             )}
                         </div>
-                        <div className="flex items-center gap-2 text-xs sm:text-sm">
-                            <Link to={`profile`} state={{id: id}} className="px-2 py-2 sm:px-4 sm:py-2 text-main border border-main rounded-lg hover:bg-light-1 transition-colors">
+                        <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+                            <Link to={`profile`} state={{id: id}} className="px-2 py-2 sm:px-4 sm:py-2 text-main border border-main rounded-lg hover:bg-main/20 transition-colors">
                                 View&nbsp;Profile
                             </Link>
                             <Link to={`/schedule`} state={{id: id}} className="px-2 py-2 sm:px-4 sm:py-2 bg-main text-white rounded-lg hover:bg-main transition-colors flex items-center gap-2">

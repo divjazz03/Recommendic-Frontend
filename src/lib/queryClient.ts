@@ -4,25 +4,33 @@ import { MutationCache, QueryCache, QueryClient } from "@tanstack/react-query";
 
 
 const handleError = async (error: unknown) => {
+
     if (error instanceof ApiError) {
-        switch (error.status) {
+        const apiError = error as ApiError
+        console.log(apiError.status)
+        switch (apiError.status) {
             case 401:
-                 if (window.location.pathname !== '/sign-in') {
-                     window.location.pathname = '/sign-in'
-                     return toast.error('Session expired. Please log in again')
-                 }
-                 return toast.error(error.message);
+                if (window.location.pathname !== '/sign-in') {
+                    window.location.pathname = '/sign-in'
+                    toast.error('Session expired. Please log in again')
+                } else {
+                    toast.error(apiError.message);
+                }
+                break
             case 403:
-                return toast.error("You don't have permission to perform this action")
+                toast.error("You don't have permission to perform this action")
+                break
             case 500:
-                return toast.error('Server error. please try again later.');
+                toast.error('Server error. please try again later.');
+                break
             default:
+                toast.error(error.message)
                 break;
         }
     } else {
-        return toast.error('An unexpected error occurred.')
+        toast.error(`somthing happened: ${error}`)
     }
-};
+}
 
 export const queryClient = new QueryClient({
     defaultOptions: {
@@ -41,6 +49,6 @@ export const queryClient = new QueryClient({
             retry: false
         },
     },
-    queryCache: new QueryCache({onError: (error) => handleError(error)}),
-    mutationCache: new MutationCache({onError: (error) => handleError(error)})
+    queryCache: new QueryCache({ onError: (error) => handleError(error) }),
+    mutationCache: new MutationCache({ onError: (error) => handleError(error) })
 })

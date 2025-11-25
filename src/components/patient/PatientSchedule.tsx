@@ -37,6 +37,7 @@ export const PatientSchedule = () => {
 
 
 
+
   const consultationTypes: ConsultationType[] = [
     {
       id: 'in_person',
@@ -132,11 +133,11 @@ export const PatientSchedule = () => {
 
 
   return (
-    <section className='bg-gray-50 h-full p-4 '>
+    <section className='h-full p-4 '>
       <div className='flex flex-col h-full max-w-3xl mx-auto overflow-auto scroll-smooth
        [&::-webkit-scrollbar]:hidden [scrollbar-width:none] [-ms-overflow-style:none]'>
 
-        <header className='flex items-center gap-4 mb-4'>
+        <header className='flex items-center gap-4 mb-4 sticky top-0 bg-transparent backdrop-blur-[2px]'>
           <button
             onClick={() => window.history.back()}
             className='p-2 hover:bg-white rounded-xl transition-colors duration-100'
@@ -149,7 +150,7 @@ export const PatientSchedule = () => {
           </div>
         </header>
 
-        {isPending ? <Loader /> : <section className=' bg-white rounded-2xl shadow-lg p-6 mb-6'>
+        {isPending ? <Loader /> : <section className=' bg-white rounded-2xl border shadow-sm p-6 mb-6'>
           <div className='flex items-center gap-4'>
             <InitialsOrAvartar name={consultantScheduleData?.fullName} avatarUrl={consultantScheduleData?.image} />
             <div className='flex-1'>
@@ -182,7 +183,7 @@ export const PatientSchedule = () => {
 
               {/* Time slots */}
               {selectedDate && (
-                <div className='bg-white rounded-2xl shadow-lg p-6'>
+                <div className='bg-white rounded-2xl shadow-sm border p-6'>
                   <h2 className='text-xl font-semibold text-dark-3 mb-4'>Available Times</h2>
                   <p className='text-dark-2 mb-6'>{formatDate(selectedDate)}</p>
 
@@ -197,7 +198,7 @@ export const PatientSchedule = () => {
               )}
             </div>
 
-            <div className='bg-white rounded-2xl shadow-lg p-6'>
+            <div className='bg-white rounded-2xl shadow-sm border p-6'>
               <h2>Reason</h2>
               <textarea
                 onChange={(e) => setReason(e.target.value)}

@@ -40,9 +40,9 @@ const ConsultantList = () => {
 
     return (
         <div ref={thisRef} className='max-w-7xl h-full mx-auto p-4 gap-2 lg:p-6 overflow-y-auto flex flex-col'>
-            <header className='px-2'>
-                <h1 className='font-bold xs:text-3xl sm:text-3xl text-dark-4'>Find Medical Consultants</h1>
-                <p className='text-gray-600 xs:text-md sm:text-lg'>Connect with qualified healthcare professionals</p>
+            <header className='px-2 mb-2'>
+                <h1 className='font-semibold text-2xl sm:text-3xl text-dark-4'>Find Medical Consultants</h1>
+                <p className='text-gray-600 text-sm sm:text-lg'>Connect with qualified healthcare professionals</p>
             </header>
             <LocalSearch placeholder='Search by name or specialty' setSearchValue={setSearchValue} />
             <section className='px-2'>

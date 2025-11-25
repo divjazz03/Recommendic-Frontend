@@ -155,12 +155,12 @@ const ConsultantScreen = () => {
         <section ref={thisRef} className='h-full overflow-auto p-4'>
             <div className='max-w-6xl mx-auto'>
                 {/* Header section */}
-                <section className='bg-light-5 rounded-2xl shadow-md p-8 mb-6 relative overflow-hidden'>
-                    <div className='absolute top-0 right-0 w-32 h-32  bg-main rounded-full translate-x-16 -translate-y-16 opacity-10'></div>
+                <section className='bg-light-5 rounded-2xl border p-8 mb-6 relative overflow-hidden'>
+                    <div className='absolute top-0 right-0 w-32 h-32 bg-main rounded-full translate-x-16 -translate-y-16 opacity-10'></div>
                     <div className='relative z-10'>
                         <div className='flex flex-row lg-flex-col items-start gap-6'>
                             <div className='relative items-start'>
-                                <InitialsOrAvartar name={consultant?.name} avatarUrl={consultant?.image} width='100' height='100' />
+                                <InitialsOrAvartar name={consultant?.name} avatarUrl={consultant?.image} />
                                 <div className={`absolute -bottom-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center ${consultant?.isVisible ? 'bg-green-500' : 'bg-gray-400'}`}>
                                     <div className='w-3 h-3 bg-white rounded-full'></div>
                                 </div>
@@ -168,7 +168,7 @@ const ConsultantScreen = () => {
                             </div>
                             <div className='flex-1 flex-row'>
                                 <div className='flex items-center gap-3 mb-2'>
-                                    <h1 className='text-3xl font-bold text-main'>{consultant?.name}</h1>
+                                    <h1 className='text-2xl sm:text-3xl font-semibold sm:font-bold text-main'>{consultant?.name}</h1>
                                     <Shield className='w-6 h-6 text-main' />
                                 </div>
                                 <p className='text-xl text-dark-3 mb-3'>{consultant?.title}</p>
@@ -203,7 +203,9 @@ const ConsultantScreen = () => {
                                             <Video className="w-5 h-5" />
                                             Book Consultation
                                         </button>
-                                        <button className="px-6 py-3 border-2 border-main text-main rounded-xl font-semibold hover:bg-light-2 transition-all duration-300 flex items-center gap-2">
+                                        <button 
+                                            onClick={() => navigate('/chat', {state: {id: consultant?.id}})}
+                                            className="px-6 py-3 border-2 border-main text-main rounded-xl font-semibold hover:bg-light-2 transition-all duration-300 flex items-center gap-2">
                                             <MessageCircle className="w-5 h-5" />
                                             Send Message
                                         </button>
@@ -221,7 +223,7 @@ const ConsultantScreen = () => {
                         { icon: Clock, label: "Response Time", value: consultant?.stats?.responseTime, color: 'purple' },
                         { icon: Heart, label: "Follow-up Rate", value: `${consultant?.stats?.followUpRate}%`, color: 'red' }
                     ].map((stat, index) => (
-                        <div key={index} className='bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all duration-100'>
+                        <div key={index} className='bg-white rounded-2xl p-4 sm:p-6 hover:shadow-sm border transition-all duration-100'>
                             <div className={`w-12 h-12 rounded-xl flex items-center ${bgColors[stat.color]} justify-center mb-3`}
                             >
                                 <stat.icon className={`w-6 h-6 ${textColors[stat.color]}`} />
@@ -233,7 +235,7 @@ const ConsultantScreen = () => {
                 </section>
 
                 {/*Tab navigation */}
-                <div className='bg-white rounded-xl shadow-lg mb-6 '>
+                <div className='bg-white rounded-xl shadow-sm mb-6 px-2'>
                     <div className='flex justify-around border-b border-light-3'>
                         {[
                             { id: 'overview', label: 'Overview', icon: BookOpen },
@@ -243,7 +245,7 @@ const ConsultantScreen = () => {
                             <button
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
-                                className={`flex items-center gap-2 px-4 py-4 font-medium transition-all duration-100 ${activeTab === tab.id
+                                className={`flex items-center gap-2 px-2 py-2 sm:px-4 sm:py-4 font-medium transition-all duration-100 ${activeTab === tab.id
                                     ? 'text-main  border-b-2 border-main '
                                     : 'text-dark-1 hover:text-dark-1 hover:bg-light-3'
                                     }`}

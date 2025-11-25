@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { User, Mail, Phone, MapPin, Calendar, Briefcase, GraduationCap, Award, Lock, Bell, Shield, Camera, Save, X, Check, Eye, EyeOff, DoorOpen } from 'lucide-react';
+import { User, Mail, Phone, MapPin, Calendar, Briefcase, GraduationCap, Award, Lock, Bell, Shield, Camera, Save, X, Check, Eye, EyeOff, DoorOpen, ArrowLeft } from 'lucide-react';
 import { ConsultantNotificationSetting, useNotificationSettings } from '@/hooks/useNotificationSettings';
 import { ConsultantProfileData, ModifyingConsultantProfileData, useConsultantProfile } from '@/hooks/useProfile';
 import { useLogout } from '@/lib/react-query/generalQueriesAndMutation';
@@ -11,7 +11,7 @@ import InitialsOrAvartar from '../shared/InitialsOrAvartar';
 import ProfilePictureModal from '../shared/ProfilePictureModal';
 
 const ConsultantProfile = () => {
-    const [activeTab, setActiveTab] = useState('profile');
+    const [activeTab, setActiveTab] = useState('');
     const { mutateAsync: logout, isPending: isLogginOut } = useLogout();
 
     const handleLogout = async () => {
@@ -46,15 +46,19 @@ const ConsultantProfile = () => {
         securitySettings
     } = useSecuritySetting()
 
+    if (!activeTab) {
+        return (<ConsultantProfileNavigation activeTab={activeTab} handleLogout={handleLogout} profileData={profileData} setActiveTab={setActiveTab} />)
+    }
+
 
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen ">
             {/* Header */}
-            <div className="bg-white shadow-sm border-b">
+            <div className="bg-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="py-4">
-                        <h1 className="text-2xl font-bold text-gray-900">Settings & Profile</h1>
+                        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Settings & Profile</h1>
                         <p className="text-sm text-gray-600 mt-1">Manage your account settings and personal information</p>
                     </div>
                 </div>
@@ -72,37 +76,7 @@ const ConsultantProfile = () => {
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                    {/* Sidebar Navigation */}
-                    <div className="lg:col-span-1">
-                        <div className="bg-white rounded-lg shadow-sm p-4">
-                            <nav className="space-y-1">
-                                {[
-                                    { id: 'profile', label: 'Profile Information', icon: User },
-                                    { id: 'professional', label: 'Professional Details', icon: Briefcase },
-                                    { id: 'notifications', label: 'Notifications', icon: Bell },
-                                    { id: 'security', label: 'Security & Privacy', icon: Shield }
-                                ].map((tab) => (
-                                    <button
-                                        key={tab.id}
-                                        onClick={() => setActiveTab(tab.id)}
-                                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${activeTab === tab.id
-                                            ? 'bg-blue-50 text-main font-medium'
-                                            : 'text-gray-700 hover:bg-gray-50'
-                                            }`}
-                                    >
-                                        <tab.icon className="w-5 h-5" />
-                                        <span className="text-sm">{tab.label}</span>
-                                    </button>
-                                ))}
-                                <button
-                                    onClick={handleLogout}
-                                    className='w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-gray-700 hover:bg-gray-50'>
-                                    <DoorOpen />
-                                    <span className='text-sm'>Logout</span>
-                                </button>
-                            </nav>
-                        </div>
-                    </div>
+
 
                     {/* Main Content */}
                     <div className="lg:col-span-3">
@@ -116,6 +90,7 @@ const ConsultantProfile = () => {
                                     handleStartEdit={handleStartEdit}
                                     isEditing={isEditing}
                                     profileData={profileData}
+                                    setActiveTab={setActiveTab}
                                 />
                         )}
 
@@ -130,16 +105,18 @@ const ConsultantProfile = () => {
                                     handleSaveProfile={handleSaveProfile}
                                     isEditing={isEditing}
                                     profileData={profileData}
+                                    setActiveTab={setActiveTab}
                                 />
                         )}
 
                         {/* Notifications Tab */}
                         {activeTab === 'notifications' && (
-                            <NotificationPreference 
+                            <NotificationPreference
                                 consultantNotificationSettings={consultantNotificationSettings}
                                 handleNotificationChange={handleNotificationChange}
                                 handleSaveNotificationSetting={handleSaveNotificationSetting}
                                 notificationSettingsHasBeenModified={notificationSettingsHasBeenModified}
+                                setActiveTab={setActiveTab}
                             />
                         )}
                         {/* Privacy Settings */}
@@ -147,6 +124,7 @@ const ConsultantProfile = () => {
                             <SecurityAndPrivacy
                                 handleSettingChange={handleSettingChange}
                                 securitySettings={securitySettings}
+                                setActiveTab={setActiveTab}
                             />
                         )
 
@@ -158,6 +136,68 @@ const ConsultantProfile = () => {
     );
 };
 
+interface ConsultantProfileNavigationProps {
+    setActiveTab: (value: React.SetStateAction<string>) => void
+    handleLogout: () => void
+    activeTab: string
+    profileData: ConsultantProfileData
+}
+
+const ConsultantProfileNavigation = (
+    {
+        profileData,
+        activeTab,
+        handleLogout,
+        setActiveTab
+    }: ConsultantProfileNavigationProps
+) => (
+    <main className='h-full'>
+        {/* Sidebar Navigation */}
+        <div className="flex flex-col max-h-7xl mx-auto">
+            <div className="flex items-center gap-4">
+
+                <div className="relative">
+                    <InitialsOrAvartar name={`${profileData?.lastName} ${profileData?.firstName}`} avatarUrl={profileData?.profileImgUrl} className='w-24 h-24'/>
+                </div>
+                <div>
+                    <h2 className="text-2xl font-bold text-gray-900">
+                        {profileData?.firstName} {profileData?.lastName}
+                    </h2>
+                    <p>{profileData?.specialty}</p>
+                </div>
+            </div>
+            <div className="bg-white rounded-lg shadow-sm p-4">
+                <nav className="space-y-1">
+                    {[
+                        { id: 'profile', label: 'Profile Information', icon: User },
+                        { id: 'professional', label: 'Professional Details', icon: Briefcase },
+                        { id: 'notifications', label: 'Notifications', icon: Bell },
+                        { id: 'security', label: 'Security & Privacy', icon: Shield }
+                    ].map((tab) => (
+                        <button
+                            key={tab.id}
+                            onClick={() => setActiveTab(tab.id)}
+                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${activeTab === tab.id
+                                ? 'bg-blue-50 text-main font-medium'
+                                : 'text-gray-700 hover:bg-gray-50'
+                                }`}
+                        >
+                            <tab.icon className="w-5 h-5" />
+                            <span className="text-sm">{tab.label}</span>
+                        </button>
+                    ))}
+                    <button
+                        onClick={handleLogout}
+                        className='w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-gray-700 hover:bg-gray-50'>
+                        <DoorOpen />
+                        <span className='text-sm'>Logout</span>
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </main>
+)
+
 interface ProfileInformationProps {
     profileData: ConsultantProfileData,
     isEditing: boolean
@@ -165,6 +205,7 @@ interface ProfileInformationProps {
     handleCancelEdit: () => void
     handleSaveProfile: () => void
     handleInputChange: (field: keyof ModifyingConsultantProfileData, value: string) => void
+    setActiveTab: (value: React.SetStateAction<string>) => void
 }
 const ProfileInformation: React.FC<ProfileInformationProps> = (
     {
@@ -173,7 +214,8 @@ const ProfileInformation: React.FC<ProfileInformationProps> = (
         handleSaveProfile,
         handleStartEdit,
         isEditing,
-        profileData
+        profileData,
+        setActiveTab
     }
 ) => {
     const [imageUpdateModalOpen, setImageUpdateModalOpen] = useState(false)
@@ -182,14 +224,14 @@ const ProfileInformation: React.FC<ProfileInformationProps> = (
             {/* Profile Header */}
             <div className="p-6 border-b">
                 <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2">
+                        <div className='p-2 rounded-sm hover:bg-main/15' onClick={() => setActiveTab("")}>
+                            <ArrowLeft />
+                        </div>
                         <div className="relative">
-                            {/* <div className="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center">
-                                <User className="w-12 h-12 text-main" />
-                            </div> */}
-                            <InitialsOrAvartar name={`${profileData?.lastName} ${profileData?.firstName}`} avatarUrl={profileData?.profileImgUrl} height='90' width='90'/>
+                            <InitialsOrAvartar name={`${profileData?.lastName} ${profileData?.firstName}`} avatarUrl={profileData?.profileImgUrl} className='w-20 h-20' />
                             <button
-                                disabled= {!isEditing}
+                                disabled={!isEditing}
                                 onClick={() => setImageUpdateModalOpen(true)}
                                 className="absolute bottom-0 right-0 bg-main-light disabled:bg-gray-600 disabled:hover:bg-gray-600 text-white p-2 rounded-full hover:bg-main transition-colors">
                                 <Camera className="w-4 h-4" />
@@ -199,14 +241,14 @@ const ProfileInformation: React.FC<ProfileInformationProps> = (
                             <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
                                 Dr. {profileData?.firstName} {profileData?.lastName}
                             </h2>
-                            <p className="text-gray-600 capitalize">{profileData?.specialty}</p>
-                            <p className="text-sm text-gray-500">{profileData?.hospital}</p>
+                            <p className="text-gray-600 capitalize text-sm sm:text-base">{profileData?.specialty}</p>
+                            <p className="text-xs sm:text-sm font-thin text-gray-500">{profileData?.hospital}</p>
                         </div>
                     </div>
                     {!isEditing ? (
                         <button
                             onClick={() => handleStartEdit()}
-                            className="px-4 py-2 bg-main-light text-white rounded-lg hover:bg-main transition-colors"
+                            className="px-2 py-1 sm:px-4 sm:py-2 text-sm bg-main-light text-white rounded-lg hover:bg-main transition-colors"
                         >
                             Edit Profile
                         </button>
@@ -214,13 +256,13 @@ const ProfileInformation: React.FC<ProfileInformationProps> = (
                         <div className="flex gap-2">
                             <button
                                 onClick={handleCancelEdit}
-                                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                                className="px-2 py-1 sm:px-4 sm:py-2 border text-sm border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={handleSaveProfile}
-                                className="px-4 py-2 bg-main-light text-white rounded-lg hover:bg-main transition-colors flex items-center gap-2"
+                                className="px-2 py-1 sm:px-4 sm:py-2 bg-main-light text-sm text-white rounded-lg hover:bg-main transition-colors flex items-center gap-2"
                             >
                                 <Save className="w-4 h-4" />
                                 Save Changes
@@ -243,7 +285,7 @@ const ProfileInformation: React.FC<ProfileInformationProps> = (
                             value={profileData?.firstName}
                             onChange={(e) => handleInputChange('firstName', e.target.value)}
                             disabled={!isEditing}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
                         />
                     </div>
 
@@ -256,7 +298,7 @@ const ProfileInformation: React.FC<ProfileInformationProps> = (
                             value={profileData?.lastName}
                             onChange={(e) => handleInputChange('lastName', e.target.value)}
                             disabled={!isEditing}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
                         />
                     </div>
 
@@ -269,7 +311,7 @@ const ProfileInformation: React.FC<ProfileInformationProps> = (
                             type="email"
                             value={profileData?.email}
                             disabled={true}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
                         />
                     </div>
 
@@ -283,7 +325,7 @@ const ProfileInformation: React.FC<ProfileInformationProps> = (
                             value={profileData?.phone}
                             onChange={(e) => handleInputChange('phone', e.target.value)}
                             disabled={!isEditing}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
                         />
                     </div>
 
@@ -297,18 +339,19 @@ const ProfileInformation: React.FC<ProfileInformationProps> = (
                             value={profileData?.dateOfBirth}
                             onChange={(e) => handleInputChange('dateOfBirth', e.target.value)}
                             disabled={!isEditing}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
                         />
                     </div>
 
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <User className='w-4 h-4 inline mr-1' />
                             Gender
                         </label>
                         <select
                             value={profileData?.gender}
                             disabled={true}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
                         >
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
@@ -329,18 +372,20 @@ const ProfileInformation: React.FC<ProfileInformationProps> = (
                             value={profileData?.address}
                             onChange={(e) => handleInputChange('address', e.target.value)}
                             disabled={!isEditing}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">City</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            City
+                        </label>
                         <input
                             type="text"
                             value={profileData?.city}
                             onChange={(e) => handleInputChange('city', e.target.value)}
                             disabled={!isEditing}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
                         />
                     </div>
 
@@ -351,7 +396,7 @@ const ProfileInformation: React.FC<ProfileInformationProps> = (
                             value={profileData?.state}
                             onChange={(e) => handleInputChange('state', e.target.value)}
                             disabled={!isEditing}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
                         />
                     </div>
 
@@ -362,7 +407,7 @@ const ProfileInformation: React.FC<ProfileInformationProps> = (
                             value={profileData?.zipCode}
                             onChange={(e) => handleInputChange('zipCode', e.target.value)}
                             disabled={!isEditing}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
                         />
                     </div>
 
@@ -373,14 +418,14 @@ const ProfileInformation: React.FC<ProfileInformationProps> = (
                             value={profileData?.country}
                             onChange={(e) => handleInputChange('country', e.target.value)}
                             disabled={!isEditing}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
                         />
                     </div>
                 </div>
             </div>
             {imageUpdateModalOpen && <ProfilePictureModal
-                        setImageUpdateModalOpen={setImageUpdateModalOpen}
-                        handleSetProfileImgPicture={(url) => { handleInputChange('profileImgUrl', url) }} />}
+                setImageUpdateModalOpen={setImageUpdateModalOpen}
+                handleSetProfileImgPicture={(url) => { handleInputChange('profileImgUrl', url) }} />}
         </div>
     )
 }
@@ -393,6 +438,7 @@ interface ProfessionalInformationProps {
     handleInputChange: (field: keyof ModifyingConsultantProfileData, value: string) => void
     handleEducationChange: (field: keyof ConsultantEducation, value: unknown) => void
     handleLanguagesChange: (languages: string[]) => void
+    setActiveTab: (value: React.SetStateAction<string>) => void
 }
 
 const ProfessionalInformation = (
@@ -403,14 +449,20 @@ const ProfessionalInformation = (
         isEditing,
         profileData,
         handleEducationChange,
-        handleLanguagesChange
+        handleLanguagesChange,
+        setActiveTab
     }: ProfessionalInformationProps
 ) => (
     <div className="bg-white rounded-lg shadow-sm p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-6">Professional Information</h3>
+        <header className='flex items-center justify-start gap-2 pb-4 mb-3 border-b'>
+            <div className='p-2 rounded-sm hover:bg-main/15' onClick={() => setActiveTab("")}>
+                <ArrowLeft />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900">Professional Information</h3>
+        </header>
 
         <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex flex-col gap-6">
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                         <Briefcase className="w-4 h-4 inline mr-1" />
@@ -421,7 +473,7 @@ const ProfessionalInformation = (
                         value={profileData?.specialty}
                         onChange={(e) => handleInputChange('specialty', e.target.value)}
                         disabled={!isEditing}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
+                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
                     />
                 </div>
 
@@ -434,7 +486,7 @@ const ProfessionalInformation = (
                         value={profileData?.subSpecialty}
                         onChange={(e) => handleInputChange('subSpecialty', e.target.value)}
                         disabled={!isEditing}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
+                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
                     />
                 </div>
 
@@ -447,7 +499,7 @@ const ProfessionalInformation = (
                         value={profileData?.licenseNumber}
                         onChange={(e) => handleInputChange('licenseNumber', e.target.value)}
                         disabled={!isEditing}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
+                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
                     />
                 </div>
 
@@ -460,7 +512,7 @@ const ProfessionalInformation = (
                         value={profileData?.yearsOfExperience}
                         onChange={(e) => handleInputChange('yearsOfExperience', e.target.value)}
                         disabled={!isEditing}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
+                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
                     />
                 </div>
 
@@ -476,7 +528,7 @@ const ProfessionalInformation = (
                             value={profileData?.education?.year}
                             onChange={(e) => handleEducationChange('year', e.target.value)}
                             disabled={!isEditing}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
                         />
                         <input
                             type="text"
@@ -484,14 +536,14 @@ const ProfessionalInformation = (
                             value={profileData?.education?.institution}
                             onChange={(e) => handleEducationChange('institution', e.target.value)}
                             disabled={!isEditing}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
                         /><input
                             type="text"
                             placeholder='degree'
                             value={profileData?.education?.degree}
                             onChange={(e) => handleEducationChange('degree', e.target.value)}
                             disabled={!isEditing}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
                         />
                     </div>
 
@@ -507,7 +559,7 @@ const ProfessionalInformation = (
                         value={profileData?.boardCertification}
                         onChange={(e) => handleInputChange('boardCertification', e.target.value)}
                         disabled={!isEditing}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
+                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
                     />
                 </div>
 
@@ -520,7 +572,7 @@ const ProfessionalInformation = (
                         value={profileData?.address}
                         onChange={(e) => handleInputChange('address', e.target.value)}
                         disabled={!isEditing}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
+                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
                     />
                 </div>
 
@@ -532,7 +584,7 @@ const ProfessionalInformation = (
                         type="text"
                         value={profileData?.department}
                         disabled={true}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
+                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
                     />
                 </div>
 
@@ -550,7 +602,7 @@ const ProfessionalInformation = (
                         onChange={(e) => handleInputChange('bio', e.target.value)}
                         disabled={!isEditing}
                         rows={4}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500 resize-none"
+                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500 resize-none"
                     />
                 </div>
             </div>
@@ -582,6 +634,8 @@ interface NotificationPreferenceProps {
     consultantNotificationSettings: ConsultantNotificationSetting
     notificationSettingsHasBeenModified: () => boolean
     handleSaveNotificationSetting: () => void
+    setActiveTab: (value: React.SetStateAction<string>) => void
+
 }
 
 const NotificationPreference = (
@@ -589,11 +643,17 @@ const NotificationPreference = (
         handleNotificationChange,
         handleSaveNotificationSetting,
         notificationSettingsHasBeenModified,
-        consultantNotificationSettings
+        consultantNotificationSettings,
+        setActiveTab
     }: NotificationPreferenceProps
 ) => (
     <div className="bg-white rounded-lg shadow-sm p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-6">Notification Preferences</h3>
+        <header className='flex gap-2 items-center justify-start pb-4 mb-2 border-b'>
+            <div className='p-2 rounded-sm hover:bg-main/15' onClick={() => setActiveTab("")}>
+                <ArrowLeft />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900">Notification Preferences</h3>
+        </header>
 
         <div className="space-y-6">
             <div className="space-y-4">

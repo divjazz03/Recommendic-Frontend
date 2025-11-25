@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, Mail, Phone, Calendar, Bell, Shield, Camera, Save, Check, DoorOpen } from 'lucide-react';
+import { User, Mail, Phone, Calendar, Bell, Shield, Camera, Save, Check, DoorOpen, ArrowLeft } from 'lucide-react';
 import MedicalCategorySelect from '../ui/MedicalCategorySelect';
 import { PatientNotificationSetting, useNotificationSettings } from '@/hooks/useNotificationSettings';
 import { PatientProfileData, usePatientProfile } from '@/hooks/useProfile';
@@ -14,7 +14,7 @@ import SecurityAndPrivacy from '../shared/SecurityAndPrivacy';
 
 
 const PatientProfile = () => {
-    const [activeTab, setActiveTab] = useState('profile');
+    const [activeTab, setActiveTab] = useState('');
     const { mutateAsync: logout, isPending: isLogginOut } = useLogout();
     const handleLogout = async () => {
         await logout();
@@ -49,14 +49,21 @@ const PatientProfile = () => {
         securitySettings
     } = useSecuritySetting();
 
+    if (!activeTab) {
+        return <ProfileNavigation activeTab={activeTab} handleLogout={handleLogout} setActiveTab={setActiveTab} profileData={profileData} />
+    }
+
+
+
+
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="h-full">
             {/* Header */}
-            <div className="bg-white shadow-sm border-b">
+            <div className="bg-white ">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="py-4">
-                        <h1 className="text-2xl font-bold text-gray-900">Settings & Profile</h1>
-                        <p className="text-sm text-gray-600 mt-1">Manage your account settings and personal information</p>
+                    <div className="py-2 sm:py-4">
+                        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Settings & Profile</h1>
+                        <p className="text-xs sm:text-sm text-gray-600 mt-1">Manage your account settings and personal information</p>
                     </div>
                 </div>
             </div>
@@ -72,9 +79,8 @@ const PatientProfile = () => {
             )}
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                    {/* Sidebar Navigation */}
-                    <ProfileNavigation activeTab={activeTab} handleLogout={handleLogout} setActiveTab={setActiveTab} />
+                <div className="flex flex-col">
+
                     {/* Main Content */}
                     <div className="lg:col-span-3">
                         {/* Profile Information Tab */}
@@ -90,6 +96,7 @@ const PatientProfile = () => {
                                 profileData={profileData}
                                 selectedCategories={selectedCategories}
                                 handleInterestsChange={handleInterestsChange}
+                                setActiveTab={setActiveTab}
                             />
                         )}
                         {/* Notifications Tab */}
@@ -99,6 +106,7 @@ const PatientProfile = () => {
                                 handleSaveNotificationSetting={handleSaveNotificationSetting}
                                 notificationSettingsHasBeenModified={notificationSettingsHasBeenModified}
                                 patientNotificationSettings={patientNotificationSettings}
+                                setActiveTab={setActiveTab}
                             />
                         )}
                         {/* Privacy Settings */}
@@ -106,6 +114,7 @@ const PatientProfile = () => {
                             <SecurityAndPrivacy
                                 handleSettingChange={handleSettingChange}
                                 securitySettings={securitySettings}
+                                setActiveTab={setActiveTab}
                             />
                         )
 
@@ -125,13 +134,26 @@ interface ProfileNavigationProps {
     setActiveTab: (value: React.SetStateAction<string>) => void
     handleLogout: () => void
     activeTab: string
+    profileData: PatientProfileData
 }
 const ProfileNavigation = ({
     setActiveTab,
     activeTab,
-    handleLogout }: ProfileNavigationProps) => (<>
-        <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-sm p-4">
+    handleLogout, profileData }: ProfileNavigationProps) => (<>
+    <main className='h-full'>
+        <div className="max-w-7xl mx-auto flex flex-col h-full">
+            <div className="flex items-center gap-4">
+
+                <div className="relative">
+                    <InitialsOrAvartar name={`${profileData?.lastName} ${profileData?.firstName}`} avatarUrl={profileData?.profileImgUrl} className='w-24 h-24' />
+                </div>
+                <div>
+                    <h2 className="text-2xl font-bold text-gray-900">
+                        {profileData?.firstName} {profileData?.lastName}
+                    </h2>
+                </div>
+            </div>
+            <div className="bg-white flex-1 rounded-lg shadow-sm p-4">
                 <nav className="space-y-1">
                     {[
                         { id: 'profile', label: 'Profile Information', icon: User },
@@ -160,6 +182,8 @@ const ProfileNavigation = ({
                 </nav>
             </div>
         </div>
+        
+    </main>
     </>)
 
 
@@ -174,6 +198,7 @@ interface ProfileInformationProps {
     handleInterestsChange: (values: string[]) => void
     medicalCategories: MedicalCategory[] | undefined
     selectedCategories: MedicalCategory[] | undefined
+    setActiveTab: (value: React.SetStateAction<string>) => void
 }
 
 const ProfileInformation: React.FC<ProfileInformationProps> = (
@@ -187,7 +212,8 @@ const ProfileInformation: React.FC<ProfileInformationProps> = (
         isEditing,
         medicalCategories,
         selectedCategories,
-        handleInterestsChange
+        handleInterestsChange,
+        setActiveTab
     }
 ) => {
 
@@ -196,10 +222,13 @@ const ProfileInformation: React.FC<ProfileInformationProps> = (
         <div className="bg-white rounded-lg shadow-sm">
             {/* Profile Header */}
             <div className="p-6 border-b">
-                <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-4">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 sm:gap-4">
+                        <div className='p-2 rounded-sm hover:bg-main/15' onClick={() => setActiveTab("")}>
+                            <ArrowLeft />
+                        </div>
                         <div className="relative">
-                            <InitialsOrAvartar name={`${profileData?.lastName} ${profileData?.firstName}`} avatarUrl={profileData?.profileImgUrl} width='90' height='90' />
+                            <InitialsOrAvartar name={`${profileData?.lastName} ${profileData?.firstName}`} avatarUrl={profileData?.profileImgUrl} />
                             <button
                                 className="absolute bottom-0 right-0 bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors"
                                 disabled={!isEditing}
@@ -217,7 +246,7 @@ const ProfileInformation: React.FC<ProfileInformationProps> = (
                     {!isEditing ? (
                         <button
                             onClick={handleStartEdit}
-                            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                            className="px-2 sm:px-4 py-1 sm:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                         >
                             Edit Profile
                         </button>
@@ -225,13 +254,13 @@ const ProfileInformation: React.FC<ProfileInformationProps> = (
                         <div className="flex gap-2">
                             <button
                                 onClick={handleCancelEdit}
-                                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                                className="px-2 py-1 sm:px-4 sm:py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={handleSaveProfile}
-                                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+                                className="px-2 py-1 sm:px-4 sm:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
                             >
                                 <Save className="w-4 h-4" />
                                 Save Changes
@@ -254,7 +283,7 @@ const ProfileInformation: React.FC<ProfileInformationProps> = (
                             value={profileData?.firstName}
                             onChange={(e) => handleInputChange('firstName', e.target.value)}
                             disabled={!isEditing}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none disabled:bg-gray-50 disabled:text-gray-500"
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none disabled:bg-gray-50 disabled:text-gray-500"
                         />
                     </div>
 
@@ -267,7 +296,7 @@ const ProfileInformation: React.FC<ProfileInformationProps> = (
                             value={profileData?.lastName}
                             onChange={(e) => handleInputChange('lastName', e.target.value)}
                             disabled={!isEditing}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none disabled:bg-gray-50 disabled:text-gray-500"
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none disabled:bg-gray-50 disabled:text-gray-500"
                         />
                     </div>
 
@@ -281,7 +310,7 @@ const ProfileInformation: React.FC<ProfileInformationProps> = (
                             value={profileData?.email}
                             onChange={(e) => handleInputChange('email', e.target.value)}
                             disabled={true}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none disabled:bg-gray-50 disabled:text-gray-500"
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none disabled:bg-gray-50 disabled:text-gray-500"
                         />
                     </div>
 
@@ -295,7 +324,7 @@ const ProfileInformation: React.FC<ProfileInformationProps> = (
                             value={profileData?.phoneNumber}
                             onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
                             disabled={!isEditing}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none disabled:bg-gray-50 disabled:text-gray-500"
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none disabled:bg-gray-50 disabled:text-gray-500"
                         />
                     </div>
 
@@ -309,7 +338,7 @@ const ProfileInformation: React.FC<ProfileInformationProps> = (
                             value={profileData?.dateOfBirth}
                             onChange={(e) => handleInputChange('dateOfBirth', e.target.value)}
                             disabled={!isEditing}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none disabled:bg-gray-50 disabled:text-gray-500"
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none disabled:bg-gray-50 disabled:text-gray-500"
                         />
                     </div>
 
@@ -321,7 +350,7 @@ const ProfileInformation: React.FC<ProfileInformationProps> = (
                             value={profileData?.gender}
                             onChange={(e) => handleInputChange('gender', e.target.value)}
                             disabled={true}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none disabled:bg-gray-50 disabled:text-gray-500"
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none disabled:bg-gray-50 disabled:text-gray-500"
                         >
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
@@ -340,7 +369,7 @@ const ProfileInformation: React.FC<ProfileInformationProps> = (
                             value={profileData?.address?.city}
                             onChange={(e) => handleAddressChange('city', e.target.value)}
                             disabled={!isEditing}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none disabled:bg-gray-50 disabled:text-gray-500"
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none disabled:bg-gray-50 disabled:text-gray-500"
                         />
                     </div>
 
@@ -351,7 +380,7 @@ const ProfileInformation: React.FC<ProfileInformationProps> = (
                             value={profileData?.address?.state}
                             onChange={(e) => handleAddressChange('state', e.target.value)}
                             disabled={!isEditing}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none disabled:bg-gray-50 disabled:text-gray-500"
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none disabled:bg-gray-50 disabled:text-gray-500"
                         />
                     </div>
 
@@ -362,7 +391,7 @@ const ProfileInformation: React.FC<ProfileInformationProps> = (
                             value={profileData?.address?.zipCode}
                             onChange={(e) => handleAddressChange('zipCode', e.target.value)}
                             disabled={!isEditing}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none disabled:bg-gray-50 disabled:text-gray-500"
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none disabled:bg-gray-50 disabled:text-gray-500"
                         />
                     </div>
 
@@ -373,7 +402,7 @@ const ProfileInformation: React.FC<ProfileInformationProps> = (
                             value={profileData?.address?.country}
                             onChange={(e) => handleAddressChange('country', e.target.value)}
                             disabled={!isEditing}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none disabled:bg-gray-50 disabled:text-gray-500"
+                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none disabled:bg-gray-50 disabled:text-gray-500"
                         />
                     </div>
 
@@ -396,6 +425,7 @@ interface NotificationPreferencesProps {
     patientNotificationSettings: PatientNotificationSetting
     notificationSettingsHasBeenModified: () => boolean
     handleSaveNotificationSetting: () => void
+    setActiveTab: (value: React.SetStateAction<string>) => void
 }
 
 const NotificationPreferences = (
@@ -403,11 +433,17 @@ const NotificationPreferences = (
         handleNotificationChange,
         patientNotificationSettings,
         notificationSettingsHasBeenModified,
-        handleSaveNotificationSetting
+        handleSaveNotificationSetting,
+        setActiveTab
     }: NotificationPreferencesProps
 ) => (
     <div className="bg-white rounded-lg shadow-sm p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-6">Notification Preferences</h3>
+        <header className='flex items-center justify-start gap-2 border-b pb-6'>
+            <div className='p-2 rounded-sm hover:bg-main/15' onClick={() => setActiveTab("")}>
+                <ArrowLeft />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900">Notification Preferences</h3>
+        </header>
 
         <div className="space-y-6">
             <div className="space-y-4">
@@ -420,10 +456,10 @@ const NotificationPreferences = (
                     { key: 'marketingEmailsEnabled', label: 'Marketing Emails', description: 'Receive promotional and marketing content' }
                 ].map((setting) => (
 
-                    <div key={setting.key} className="flex items-center justify-between py-3 border-b last:border-b-0">
+                    <div key={setting.key} className="flex items-center justify-between py-3 ">
                         <div>
-                            <p className="font-medium text-gray-900">{setting.label}</p>
-                            <p className="text-sm text-gray-500">{setting.description}</p>
+                            <p className="font-medium text-sm sm:text-base text-gray-900">{setting.label}</p>
+                            <p className="text-xs sm:text-sm text-gray-500">{setting.description}</p>
                         </div>
                         <button
                             onClick={() => handleNotificationChange(setting.key as keyof PatientNotificationSetting)}
@@ -435,7 +471,7 @@ const NotificationPreferences = (
                     </div>
                 ))}
             </div>
-            <div className="flex justify-end pt-4 border-t">
+            <div className="flex justify-end pt-4 ">
                 <button
                     disabled={!notificationSettingsHasBeenModified()}
                     onClick={() => handleSaveNotificationSetting()}

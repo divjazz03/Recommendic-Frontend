@@ -13,6 +13,7 @@ import axios, { AxiosError } from 'axios'
 import { apiClient, ApiError } from '@/lib/axios'
 import { toast } from 'sonner'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
+import TextInputWithIcon from '@/components/shared/TextInputWithIcon'
 
 
 const SigninForm = () => {
@@ -61,12 +62,7 @@ return (
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <InputGroup>
-                    <InputGroupInput {...form.register("email")} type="email" {...field} />
-                    <InputGroupAddon>
-                      <MailIcon />
-                    </InputGroupAddon>
-                    </InputGroup>
+                    <TextInputWithIcon formRegister={form.register("email")} icon={<MailIcon className='text-gray-400 h-4 w-4' />} type="email" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -80,12 +76,7 @@ return (
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                  <InputGroup>
-                    <InputGroupInput {...form.register("password")} type="password" {...field} />
-                    <InputGroupAddon>
-                      <Lock />
-                    </InputGroupAddon>
-                    </InputGroup>
+                    <TextInputWithIcon formRegister={form.register("password")} icon={<Lock className='text-gray-400 h-4 w-4' />} type="password" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -95,7 +86,7 @@ return (
               {isSigningIn ? <Loader /> : 'Sign In'}
             </Button>
           </div>
-          <p className='text-sm font-semibold mt-4'>New to Recommendic? <span className='font-normal'><Link to={'/sign-up'} className='subtle-semibold text-dark-1 underline hover:no-underline transition-all'>Create new account</Link></span></p>
+          <p className='text-sm font-semibold mt-4'>New to Recommendic? <span className='font-normal'><Link to={'/sign-up'} className='text-dark-1 underline hover:no-underline hover:font-semibold transition-all'>Create new account</Link></span></p>
         </form>
 
       </Form>

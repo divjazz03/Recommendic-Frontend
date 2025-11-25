@@ -7,6 +7,7 @@ import { Bell, Calendar1Icon, CalendarClock, ChartLine, Home,  Menu, PillBottle,
 import React, { MutableRefObject, useEffect, useRef, useState } from 'react'
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import Loader from '@/components/shared/Loader';
+import InitialsOrAvartar from '@/components/shared/InitialsOrAvartar';
 
 
 
@@ -39,7 +40,7 @@ const RootLayout = () => {
 		medicine: {
 			to: '/medication',
 			icon: PillBottle,
-			description: 'Medication'
+			description: 'Prescription'
 		},
 	} : {
 		home: {
@@ -60,7 +61,7 @@ const RootLayout = () => {
 		medication: {
 			to: '/medication',
 			icon: PillBottle,
-			description: 'Prescription'
+			description: 'Medication'
 		}
 	}
 
@@ -173,12 +174,17 @@ const RootLayout = () => {
 								<div className='w-60'>
 									<GlobalSearch />
 								</div>
-								<Link to={mobileNavLinks.notification.to}>
-									<div className={`relative p-2 hover:bg-main-light hover:text-white rounded-lg ${location.pathname === mobileNavLinks.notification.to || location.pathname.startsWith(`${mobileNavLinks.notification.to}/`) ? 'text-white bg-main' : ''}`}>
-										<mobileNavLinks.notification.icon />
-										<div className='absolute top-0 right-0 rounded-full bg-red-500 w-2 h-2'></div>
+								<div className='flex items-center justify-end gap-2'>
+									<Link to={mobileNavLinks.notification.to}>
+										<div className={`relative p-2 hover:bg-main-light hover:text-white rounded-lg ${location.pathname === mobileNavLinks.notification.to || location.pathname.startsWith(`${mobileNavLinks.notification.to}/`) ? 'text-white bg-main' : ''}`}>
+											<mobileNavLinks.notification.icon />
+											<div className='absolute top-0 right-0 rounded-full bg-red-500 w-2 h-2'></div>
+										</div>
+									</Link>
+									<div>
+										<InitialsOrAvartar name={profileData?.userName.full_name} avatarUrl={profileData?.profilePicture.picture_url} className='w-10 h-10 border'/>
 									</div>
-								</Link>
+								</div>
 
 
 

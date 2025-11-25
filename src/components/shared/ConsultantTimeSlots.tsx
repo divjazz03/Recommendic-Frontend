@@ -23,7 +23,9 @@ const ConsultantTimeSlots: React.FC<ConsultantTimeSlotsProps> = ({
                                 <h3 className='text-lg font-medium text-dark-2 mb-3 capitalize'>{period}</h3>
                                 <div className='grid grid-cols-3 sm:grid-cols-6 gap-3'>
                                   {slots.map((slot: TimeSlot, index) => {
-                                    const slotTime = DateTime.fromISO(slot.dateTime).toFormat('hh:mm a')
+                                    const slotTime = DateTime.fromISO(slot.dateTime, {zone: 'utc'})
+                                    .setZone(DateTime.local().zone)
+                                    .toFormat('hh:mm a')
                                     return (
                                       slot &&
                                       <button

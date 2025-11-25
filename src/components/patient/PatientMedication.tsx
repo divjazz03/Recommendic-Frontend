@@ -528,18 +528,17 @@ const PatientMedication = () => {
             </button>
             <button
               onClick={() => setShowAddForm(true)}
-              className="px-2 py-1 w-32 bg-main-light text-white rounded-lg hover:bg-main transition-colors duration-300 flex items-center gap-2"
+              className="sm:px-2 sm:py-1 w-fit h-fit p-2  bg-main-light text-white rounded-lg hover:bg-main transition-colors duration-300 flex items-center gap-2"
             >
               <Plus className="w-5 h-5" />
-              <p className=' text-xs sm:text-sm'>Add Medication</p>
-              
+              <p className='hidden sm:inline text-xs sm:text-sm'>Add Medication</p>
             </button>
           </div>
         </div>
 
         {/* Today's Reminders */}
         {reminderEnabled && (
-          <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
+          <div className="bg-white rounded-2xl shadow-sm p-6 mb-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
               <Clock className="w-5 h-5 text-main" />
               Today's Schedule
@@ -562,8 +561,8 @@ const PatientMedication = () => {
         )}
 
         {/* Tab Navigation */}
-        <div className="bg-white rounded-xl shadow-lg mb-6">
-          <div className="flex border-b border-gray-200">
+        <div className="bg-white rounded-xl shadow-sm mb-6">
+          <div className="flex border-b border-gray-200 pt-2">
             {[
               { id: 'current', label: 'Current Medications', count: currentMedications.filter(medication => medication.prescriptionId == null).length },
               { id: 'prescribed', label: 'App Prescriptions', count: prescribedMedications.filter(medication => medication.prescriptionId != null).length }
@@ -571,7 +570,7 @@ const PatientMedication = () => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-3 py-4 font-medium transition-all duration-300 ${activeTab === tab.id
+                className={`flex items-center gap-2 px-1 sm:px-2 py-2 sm:py-3 font-medium transition-all duration-300 ${activeTab === tab.id
                   ? 'text-main-light border-b-2 border-main-light bg-blue-50'
                   : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                   }`}

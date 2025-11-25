@@ -8,6 +8,7 @@ import { Loader, SearchIcon } from 'lucide-react';
 import { useSearchResults } from '@/hooks/useSearchResults';
 import { InputGroup, InputGroupAddon, InputGroupInput } from '../ui/input-group';
 import { Separator } from '../ui/separator';
+import TextInputWithIcon from './TextInputWithIcon';
 
 const GlobalSearch = () => {
     const { setQuery } = useGlobalSearchContext();
@@ -30,17 +31,9 @@ const GlobalSearch = () => {
         <>
             <Popover open={popoverOpen && !!searchText.trim()} onOpenChange={setPopOverOpen} modal={false}>
                 <PopoverTrigger className='w-full'>
-                        <div className='w-full flex gap-1 items-center rounded-md p-1 border border-gray-300 outline-none'>
-                            <SearchIcon className='text-gray-500'/>
-                            <input
-                                onChange={(e) => {
-                                    e.stopPropagation()
-                                    setSearchText(e.target.value)
-                                }} 
-                                type="text"
-                                placeholder='Search...'
-                                className='p-1 rounded-sm outline-none'/>
-                        </div>
+                            <TextInputWithIcon 
+                            icon={<SearchIcon className='w-5 h-5' />} 
+                            inputSetState={setSearchText} />
                 </PopoverTrigger>
                 <PopoverContent
                     className='w-screen min-h-full py-1 px-1 flex flex-col' sideOffset={8}

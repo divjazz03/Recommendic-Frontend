@@ -144,11 +144,10 @@ const PatientAppointment = () => {
 
         <div className='flex flex-col gap-10'>
           {/* Upcoming Appointments */}
-          {upcomingAppointments?.length > 0 && (
+          {filteredAppointments.length > 0 && (
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Upcoming Appointments</h2>
               <div className="grid gap-4">
-                {upcomingAppointments.map(appointment => (
+                {filteredAppointments.map(appointment => (
                   <PatientAppointmentCard
                     key={appointment.id}
                     appointment={appointment}
@@ -163,29 +162,6 @@ const PatientAppointment = () => {
               </div>
             </div>
           )}
-
-          {/* Past Appointments */}
-          {pastAppointments?.length > 0 && (
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Past Appointments</h2>
-              <div className="grid gap-4">
-                {pastAppointments?.map(appointment => (
-                  <PatientAppointmentCard
-                    key={appointment.id}
-                    appointment={appointment}
-                    StatusIcon={getStatusIcon(appointment.status)}
-                    date={appointment.date}
-                    daysUntil={getDaysUntil(appointment.date)}
-                    setSelectedAppointment={setSelectedAppointment}
-                    statusColor={getStatusColor(appointment.status)}
-                    setRecheduleModalOpen={setRescheduleModalOpen}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-
-
 
           {/* No Results */}
           {filteredAppointments?.length === 0 && (
@@ -257,8 +233,8 @@ const PatientAppointmentCard = ({
     onClick={() => setSelectedAppointment(appointment)}
   >
     <div className="flex justify-between items-start mb-4">
-      <div className="flex-1">
-        <div className="flex items-center gap-2 mb-2">
+      <div className="flex-1 flex flex-col ">
+        <div className="flex items-center gap-2">
           <User className="w-5 h-5 text-blue-600" />
           <h3 className="text-xl font-semibold text-gray-900">{appointment.doctorName}</h3>
         </div>
@@ -296,7 +272,7 @@ const PatientAppointmentCard = ({
       <div className="flex items-center gap-2 text-gray-700">
         <FileText className="w-4 h-4 text-gray-500" />
         <span className="font-medium">Reason:</span>
-        <span>{appointment.reason}</span>
+        <p className=''>{appointment.reason}</p>
       </div>
 
       {appointment.preparation && (
