@@ -41,7 +41,7 @@ export default {
 				'dark-3': '#121214',
 				'dark-2': '#1c1c1f',
 				'dark-1': '#222226',
-				'light-5': '#ffffff',
+				'light-5': '#FEFEFE',
 				'light-4': '#f9f9f9',
 				'light-3': '#e9e9e9',
 				'light-2': '#d9d9d9',
@@ -77,6 +77,6 @@ export default {
 			}
 		}
 	},
-	plugins: [import('tailwindcss-animate'), require("tailwindcss-animate")],
+	plugins: [require("tailwindcss-animate")],
 }
 

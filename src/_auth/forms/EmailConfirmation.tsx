@@ -1,7 +1,7 @@
 import EmailConfirmSuccessModal from "@/components/shared/EmailConfirmSuccessModal";
 import Loader from "@/components/shared/Loader";
 import { Button } from "@/components/ui/button";
-import { useVerifyTokenMutation } from "@/lib/react-query/generalQueriesAndMutation";
+import { useVerifyTokenMutation } from "@/lib/actions/generalQueriesAndMutation";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -9,7 +9,7 @@ import { toast } from "sonner";
 
 const EmailConfirmation = () => {
   const [isSuccessfulConfirmation, setSuccessfulConfirmation] = useState<boolean>(false);
-  const { token } = useParams()
+  const { token = '' } = useParams()
   const {isPending: isConfirmingEmail, mutateAsync:confirmEmail} = useVerifyTokenMutation();
   const onVerifyEmailHandler = async () => {
     try {

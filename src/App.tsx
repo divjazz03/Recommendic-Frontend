@@ -49,8 +49,8 @@ const App = () => {
         </Route>
 
         {/* Private Routes*/}
+        <Route path='/onboarding' element={<Onboarding />} />
         <Route element={<RootLayout/>}>
-          <Route path='/onboarding' element={<Onboarding />} />
           <Route index element={<Home />} />
           <Route path='/profile' element={<Profile/>}/>
           <Route path='/chat' element={<Chat/>}/>

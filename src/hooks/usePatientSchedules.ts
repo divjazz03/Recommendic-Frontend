@@ -1,8 +1,7 @@
-import { useCreateAppointment, useGetConsultantSchedules } from "@/lib/react-query/patientQueryAndMutations";
+import { useCreateAppointment, useGetConsultantSchedules } from "@/lib/actions/patientQueryAndMutations";
 import { LucideProps } from "lucide-react";
 import { DateTime } from "luxon";
 import { useCallback, useEffect, useState } from "react"
-import { formatTime } from "./useConsultantSchedule";
 
 
 

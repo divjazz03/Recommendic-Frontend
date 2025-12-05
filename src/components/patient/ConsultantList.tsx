@@ -5,7 +5,7 @@ import { Label } from '../ui/label'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '../ui/select';
 import ConsultantThumbnail from '../shared/ConsultantThumbnail';
 import { ConsultantTypeMinimal } from '@/types';
-import { useGetRecommendedConsultants } from '@/lib/react-query/patientQueryAndMutations';
+import { useGetRecommendedConsultants } from '@/lib/actions/patientQueryAndMutations';
 
 const ConsultantList = () => {
     const specialties = ['all', 'Cardiology', 'Neurology', 'Pediatrics', 'Orthopedics', 'Dermatology', 'Psychiatry'];

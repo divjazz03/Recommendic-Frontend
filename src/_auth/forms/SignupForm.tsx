@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button'
 import React, { useState } from 'react'
 import SignupSuccessModal from '@/components/shared/SignupSuccessModal'
-import { useCreateUserMutation } from '@/lib/react-query/generalQueriesAndMutation'
+import { useCreateUserMutation } from '@/lib/actions/generalQueriesAndMutation'
 import { Link, useNavigate } from 'react-router-dom'
 import { FormWrapper } from './FormWrapper'
 import Loader from '@/components/shared/Loader'
@@ -12,10 +12,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 
 import { Input } from '@/components/ui/input'
-import { PhoneInput } from 'react-international-phone'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
-import axios, { AxiosError } from 'axios'
 import { Progress } from '@/components/ui/progress'
 import { Gender } from '@/types'
 import { toast } from 'sonner'
@@ -341,10 +339,10 @@ const SignupForm: React.FC = () => {
   }
   return (
     <>
-      <div className='flex flex-col p-8 md:w-1/2 items-center justify-center md:border-r border-slate-300/30 gap-2'>
+      <div className='flex flex-col p-8 items-center justify-center w-full'>
         <header className='mb-5'>
-          <p className='text-2xl font-bold text-dark-1 text-center'>Create your account</p>
-          <p className='pt-2 text-gray-800 text-center'>Lets get you started with recommendic</p>
+          <p className='text-3xl font-bold text-gray-900 text-center'>Create your account</p>
+          <p className=' text-sm text-gray-600 text-center'>Lets get you started with recommendic</p>
         </header>
           <div className='flex flex-row justify-between w-60 mb-3'>
             <Progress className='h-2' value={step / 2 * 100} />

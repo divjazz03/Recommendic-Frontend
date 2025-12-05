@@ -1,6 +1,6 @@
-import { useGetMyConsultantProfiles, useUpdateConsultantProfile } from "@/lib/react-query/consultantQueryAndMutations";
-import { useGetSupportedMedicalCategories } from "@/lib/react-query/generalQueriesAndMutation";
-import { useGetMyProfiles, useUpdatePatientData } from "@/lib/react-query/patientQueryAndMutations";
+import { useGetMyConsultantProfiles, useUpdateConsultantProfile } from "@/lib/actions/consultantQueryAndMutations";
+import { useGetSupportedMedicalCategories } from "@/lib/actions/generalQueriesAndMutation";
+import { useGetMyProfiles, useUpdatePatientData } from "@/lib/actions/patientQueryAndMutations";
 import { Address, ConsultantEducation, MedicalCategory } from "@/types";
 import { useEffect, useState } from "react";
 
@@ -159,28 +159,9 @@ export interface ConsultantProfileData {
     profileImgUrl?: string
 }
 
-export interface ModifyingConsultantProfileData {
-    firstName?: string
-    lastName?: string
-    phone?: string
-    dateOfBirth?: string
-    address?: string
-    city?: string
-    state?: string
-    zipCode?: string
-    country?: string
-    specialty?: string
-    subSpecialty?: string
-    licenseNumber?: string
-    yearsOfExperience?: string
-    education?: ConsultantEducation
-    boardCertification?: string
-    hospital?: string
-    department?: string
-    languages?: string[]
-    bio?: string,
-    profileImgUrl?: string
-}
+type ModifyingConsultantProfileData = Partial<ConsultantProfileData>
+
+
 export const useConsultantProfile = () => {
     const { data: myProfileResponse } = useGetMyConsultantProfiles()
     const {mutateAsync: updateConsultantProfileDetails} = useUpdateConsultantProfile();

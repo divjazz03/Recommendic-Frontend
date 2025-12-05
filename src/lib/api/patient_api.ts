@@ -1,7 +1,8 @@
 import { Address, ConsultantEducation, ConsultantSchedulesResponse, ConsultantStats, ConsultantTypeMinimal, NewUser, PagedResponse, Response, Review, Schedule, SignUpResponse, UserName } from "@/types";
 import { apiClient } from "../axios";
 import { ModifyingProfileData } from "@/hooks/useProfile";
-import { SlotResponse } from "./general_api";
+import { PatientOnboardingData } from "@/components/patient/PatientOnboarding";
+import { TimeSlot } from "@/hooks/usePatientSchedules";
 
 const patientPath = import.meta.env.VITE_PATIENT_BASE;
 const schedulesPath = import.meta.env.VITE_SCHEDULE_BASE;
@@ -41,10 +42,9 @@ export async function deletePatient(patientId: string): Promise<Response> {
 }
 
 
-export async function sendPatientOnboardingData(medicalCategories: string[], userId: string): Promise<Response> {
+export async function sendPatientOnboardingData(data: PatientOnboardingData, userId: string): Promise<Response> {
     let result = await apiClient.post(
-        `${patientPath}/${userId}/onboard`,
-        { medicalCategories: medicalCategories },)
+        `${patientPath}/${userId}/onboard`,data)
         .then(response => response.data)
     return result;
 
@@ -108,7 +108,7 @@ export interface ConsultantFullProfileDetails {
     fee?: number,
     educations?: ConsultantEducation[],
     stats?: ConsultantStats,
-    availableSlots?: SlotResponse[],
+    availableSlots?: TimeSlot[],
     reviews?: Review[],
     profileImgUrl?: string
 }

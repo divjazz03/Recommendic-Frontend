@@ -184,11 +184,11 @@ const ConsultantHome = () => {
     const { profileData } = useUserContext()
     const consultantProfile = profileData as ConsultantProfile
     return (
-        <main className="flex flex-col gap-4 h-full max-w-7xl mx-auto overflow-y-auto bg-white px-2">
-            <header className='w-full bg-white rounded-t-lg'>
+        <main className="flex flex-col gap-4 h-full max-w-7xl mx-auto overflow-y-auto px-2">
+            <header className='w-full  rounded-t-lg'>
                 <div className='flex flex-col gap-3 p-3'>
                     <h1 className='font-semibold text-3xl text-gray-800'>
-                        Welcome back,Dr. {consultantProfile?.userName.full_name}
+                        Welcome back, Dr. {consultantProfile?.userName.full_name}
                     </h1>
                     <p className='text-sm text-gray-500'>{DateTime.now().toLocaleString(
                         { weekday: 'long', month: 'long', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: true }

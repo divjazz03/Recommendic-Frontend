@@ -37,6 +37,7 @@ const SideBar: React.FC<SideBarProps> = ({
         <header className='py-4 items-center pl-4 gap-3'>
           <div className='flex justify-between gap-3'>
             <Logo className='w-8 h-8' />
+            <p className='font-berkshire text-main font-bold text-3xl'>Recommendic</p>
             <X className='w-8 h-8' onClick={() => setAsideHidden(true)} />
           </div>
 
@@ -67,7 +68,8 @@ const SideBar: React.FC<SideBarProps> = ({
         <hr className='pb-2' />
         <div
           onClick={() => navigate('profile')}
-          className='flex flex-row gap-2 min-h-10 pl-5 cursor-pointer'>
+          className='flex flex-row gap-2 h-16 pl-5 items-center cursor-pointer'>
+          
           <InitialsOrAvartar
             name={baseProfileData?.userName.full_name} avatarUrl={baseProfileData?.profilePicture.picture_url} />
           <div className='flex flex-col gap-1'>

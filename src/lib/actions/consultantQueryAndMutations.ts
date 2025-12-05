@@ -1,7 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { confirmAppointment, ConsultantProfileUpdateRequest, createNewSchedule, deleteSchedule, getMyProfileDetails, getMySchedules, getScheduleById, updateConsultantProfileDetails, updateSchedule } from "../api/consultant_api"
+import { confirmAppointment, ConsultantProfileUpdateRequest, createNewSchedule, deleteSchedule, getMyProfileDetails, getMySchedules, getScheduleById, sendConsultantOnboardingData, updateConsultantProfileDetails, updateSchedule } from "../api/consultant_api"
 import { ModifyingSchedule } from "@/components/consultant/ConsultantModifySchedule"
 import { NewSchedule } from "@/hooks/useConsultantSchedule"
+import { ConsultantOnboardingData } from "@/components/consultant/ConsultantOnboarding"
 
 export const useGetCurrentUserSchedules = () => {
     return useQuery({
@@ -67,6 +68,16 @@ export const useUpdateConsultantProfile = () => {
         onSuccess: () => queryClient.invalidateQueries({queryKey: ['My profile']})
     })
 }
+
+ type ConsultantOnboardingMutionProps = {
+    data: ConsultantOnboardingData,
+    userId: string
+ }
+export const useUpdateConsultantOnboardingInfo = () => {
+   return useMutation({
+      mutationFn: (props: ConsultantOnboardingMutionProps) => sendConsultantOnboardingData(props.data, props.userId),
+   })
+ }
 
 interface ConfirmAppointmentProp {
     appointmentId: string,

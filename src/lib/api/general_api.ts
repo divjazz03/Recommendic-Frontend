@@ -127,8 +127,8 @@ interface ImageUploadSignature {
     cloudName: string,
     folder: string
 }
-export async function getUploadSignature() :Promise<ImageUploadSignature> {
-    return apiClient.get('/cloudinary/signature')
+export async function getUploadSignature(count?: number) :Promise<ImageUploadSignature[]> {
+    return apiClient.get(`/cloudinary/signature`,{params:{count: count || 1}})
     .then(response => response.data)
 }
 

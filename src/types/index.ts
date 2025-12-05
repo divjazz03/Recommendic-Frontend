@@ -117,7 +117,10 @@ export type ConsultantProfile = BaseProfile & {
 }
 export interface MedicalCategory {
     name: string,
-    description: string
+    id: string,
+    icon: string,
+    description: string,
+
 }
 
 export interface MedicalCategoriesResponse extends Response {

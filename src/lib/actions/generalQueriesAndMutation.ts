@@ -23,21 +23,18 @@ import { createNewPatient, sendPatientOnboardingData } from "../api/patient_api"
 import { createNewConsultant, createNewSchedule, sendConsultantOnboardingData } from "../api/consultant_api";
 import { ModifyingNotificationSetting } from "@/hooks/useNotificationSettings";
 import { NewSchedule } from "@/hooks/useConsultantSchedule";
-import { TimeSlot } from "@/hooks/usePatientSchedules";
-import { boolean } from "zod";
+import { PatientOnboardingData } from "@/components/patient/PatientOnboarding";
+import { ConsultantOnboardingData } from "@/components/consultant/ConsultantOnboarding";
 
  type UserCreateMutionProps = {
     typeOfUser: TypeOfUser,
     userData: NewUser
  }
  type PatientOnboardingMutionProps = {
-    interests: string[],
+    data: PatientOnboardingData,
     userId: string
  }
- type ConsultantOnboardingMutionProps = {
-    specialty: string,
-    userId: string
- }
+
  export const useCreateUserMutation = () => {
     
     return useMutation({
@@ -89,14 +86,10 @@ import { boolean } from "zod";
  }
  export const useUpdatePatientOnboardingInfo = () => {
    return useMutation({
-      mutationFn: (props: PatientOnboardingMutionProps) => sendPatientOnboardingData(props.interests, props.userId),
+      mutationFn: (props: PatientOnboardingMutionProps) => sendPatientOnboardingData(props.data, props.userId),
    })
  }
- export const useUpdateConsultantOnboardingInfo = () => {
-   return useMutation({
-      mutationFn: (props: ConsultantOnboardingMutionProps) => sendConsultantOnboardingData(props.specialty, props.userId),
-   })
- }
+ 
  export const useVerifyTokenMutation = () => {
    return useMutation({
       mutationFn: (token: string) => verifyEmail(token)

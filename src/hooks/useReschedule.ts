@@ -1,10 +1,10 @@
-import { useGetConsultantTimeSlots } from "@/lib/react-query/generalQueriesAndMutation";
+import { useGetConsultantTimeSlots } from "@/lib/actions/generalQueriesAndMutation";
 import React, { useMemo, useState } from "react";
 import { toast } from "./use-toast";
 import { schedulesToTimeSlots } from "./usePatientSchedules";
 import { ActionModalType, ConsultantAppointmentType } from "./useAppointment";
 import { useUserContext } from "@/context/AuthContext";
-import { useConfirmAppointment } from "@/lib/react-query/consultantQueryAndMutations";
+import { useConfirmAppointment } from "@/lib/actions/consultantQueryAndMutations";
 
 
 

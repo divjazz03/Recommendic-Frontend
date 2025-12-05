@@ -4,7 +4,7 @@ import MedicalCategorySelect from '../ui/MedicalCategorySelect';
 import { PatientNotificationSetting, useNotificationSettings } from '@/hooks/useNotificationSettings';
 import { PatientProfileData, usePatientProfile } from '@/hooks/useProfile';
 import { useSecuritySetting } from '@/hooks/useSecuritySetting';
-import { useLogout } from '@/lib/react-query/generalQueriesAndMutation';
+import { useLogout } from '@/lib/actions/generalQueriesAndMutation';
 import InitialsOrAvartar from '../shared/InitialsOrAvartar';
 
 import { Address, MedicalCategory } from '@/types';

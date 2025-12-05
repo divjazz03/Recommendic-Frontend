@@ -3,6 +3,7 @@ import { ModifyingSchedule } from "@/components/consultant/ConsultantModifySched
 import { apiClient } from "../axios";
 import { NewSchedule } from "@/hooks/useConsultantSchedule";
 import { DateTime } from "luxon";
+import { ConsultantOnboardingData } from "@/components/consultant/ConsultantOnboarding";
 
 
 const consultantBasePath = import.meta.env.VITE_CONSULTANT_BASE;
@@ -38,8 +39,8 @@ interface ScheduleResponse extends Response {
     data: Schedule;
 }
 
-export async function sendConsultantOnboardingData(medicalSpecialization: string, userId: string) {
-    let result = await apiClient.post(`${consultantBasePath}/${userId}/onboard`, { medicalSpecialization: medicalSpecialization })
+export async function sendConsultantOnboardingData(data: ConsultantOnboardingData, userId: string) {
+    let result = await apiClient.post(`${consultantBasePath}/${userId}/onboard`,data)
         .then(response => response.data)
     return result;
 

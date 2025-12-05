@@ -5,12 +5,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@property --border-angle {
-  inherits: false;
-  initial-value: 0deg;
-  syntax: "<angle>";
-}
-
 
 @layer base {
 
@@ -49,7 +43,7 @@
   }
 
   .shad-button_secondary {
-    @apply border border-main bg-light-4 text-dark-1 hover:border-2 flex gap-2 min-w-44 !important;
+    @apply border border-main bg-white  text-dark-1 hover:border-2 flex gap-2 min-w-44 !important;
   }
 
   .shad-button_ghost {

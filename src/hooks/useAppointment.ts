@@ -2,8 +2,8 @@ import { ReactNode, useEffect, useState } from "react";
 import { ConsultationChannel } from "./usePatientSchedules";
 import { AlertCircle, CheckCircle, LucideProps, XCircle } from 'lucide-react'
 import { DateTime, DateTimeFormatOptions } from "luxon";
-import { useGetAppointments } from "@/lib/react-query/generalQueriesAndMutation";
-import { useConfirmAppointment } from "@/lib/react-query/consultantQueryAndMutations";
+import { useGetAppointments } from "@/lib/actions/generalQueriesAndMutation";
+import { useConfirmAppointment } from "@/lib/actions/consultantQueryAndMutations";
 
 export type AppointmentStatus = 'confirmed' | 'pending' | 'completed' | 'cancelled' | 'resheduled'
 export type AppointmentPriority = 'low' | 'medium' | 'high'
@@ -434,7 +434,7 @@ export const useConsultantAppointment = () => {
 
 
   useEffect(() => {
-    const localAppointments = appointmentsResponse?.data.content as ConsultantAppointmentType[]
+    const localAppointments = appointmentsResponse?.data.content as ConsultantAppointmentType[] || []
     setAppointments([...localAppointments]);
   }, [appointmentsResponse])
   
@@ -451,7 +451,7 @@ export const useConsultantAppointment = () => {
       apt.symptoms.toLowerCase().includes(searchTerm.toLowerCase());
 
     return matchesTab && matchesSearch;
-  }) ?? [];
+  }) || [];
   const totalCount = appointments?.length;
   const pendingCount = appointments?.filter(a => a.status === 'pending').length;
   const confirmedCount = appointments?.filter(a => a.status === 'confirmed').length;

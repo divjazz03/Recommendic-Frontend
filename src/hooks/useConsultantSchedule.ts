@@ -1,5 +1,5 @@
 import { ApiError } from "@/lib/axios";
-import { useCreateNewSchedules, useDeleteSchedule, useGetCurrentUserSchedules, useGetScheduleWithUserId, useUpdateSchedule } from "@/lib/react-query/consultantQueryAndMutations";
+import { useCreateNewSchedules, useDeleteSchedule, useGetCurrentUserSchedules, useGetScheduleWithUserId, useUpdateSchedule } from "@/lib/actions/consultantQueryAndMutations";
 import { RecurrenceRule, Schedule, WeekDay } from "@/types";
 import { VideoIcon, Users, Video, LucideProps } from "lucide-react";
 import { useEffect, useState } from "react";

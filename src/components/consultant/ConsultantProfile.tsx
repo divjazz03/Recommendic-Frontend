@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { User, Mail, Phone, MapPin, Calendar, Briefcase, GraduationCap, Award, Lock, Bell, Shield, Camera, Save, X, Check, Eye, EyeOff, DoorOpen, ArrowLeft } from 'lucide-react';
 import { ConsultantNotificationSetting, useNotificationSettings } from '@/hooks/useNotificationSettings';
 import { ConsultantProfileData, ModifyingConsultantProfileData, useConsultantProfile } from '@/hooks/useProfile';
-import { useLogout } from '@/lib/react-query/generalQueriesAndMutation';
+import { useLogout } from '@/lib/actions/generalQueriesAndMutation';
 import MultiSelect from '../ui/MultiSelect';
 import { ConsultantEducation } from '@/types';
 import SecurityAndPrivacy from '../shared/SecurityAndPrivacy';
@@ -151,13 +151,13 @@ const ConsultantProfileNavigation = (
         setActiveTab
     }: ConsultantProfileNavigationProps
 ) => (
-    <main className='h-full'>
+    <main className='h-full p-6'>
         {/* Sidebar Navigation */}
-        <div className="flex flex-col max-h-7xl mx-auto">
+        <div className="flex flex-col gap-6 max-h-7xl mx-auto">
             <div className="flex items-center gap-4">
 
                 <div className="relative">
-                    <InitialsOrAvartar name={`${profileData?.lastName} ${profileData?.firstName}`} avatarUrl={profileData?.profileImgUrl} className='w-24 h-24'/>
+                    <InitialsOrAvartar name={`${profileData?.lastName} ${profileData?.firstName}`} avatarUrl={profileData?.profileImgUrl} className='w-16 h-16'/>
                 </div>
                 <div>
                     <h2 className="text-2xl font-bold text-gray-900">
@@ -166,7 +166,7 @@ const ConsultantProfileNavigation = (
                     <p>{profileData?.specialty}</p>
                 </div>
             </div>
-            <div className="bg-white rounded-lg shadow-sm p-4">
+            <div className="rounded-lg shadow-sm p-4">
                 <nav className="space-y-1">
                     {[
                         { id: 'profile', label: 'Profile Information', icon: User },
@@ -229,11 +229,11 @@ const ProfileInformation: React.FC<ProfileInformationProps> = (
                             <ArrowLeft />
                         </div>
                         <div className="relative">
-                            <InitialsOrAvartar name={`${profileData?.lastName} ${profileData?.firstName}`} avatarUrl={profileData?.profileImgUrl} className='w-20 h-20' />
+                            <InitialsOrAvartar name={`${profileData?.lastName} ${profileData?.firstName}`} avatarUrl={profileData?.profileImgUrl} className='w-16 h-16' />
                             <button
                                 disabled={!isEditing}
                                 onClick={() => setImageUpdateModalOpen(true)}
-                                className="absolute bottom-0 right-0 bg-main-light disabled:bg-gray-600 disabled:hover:bg-gray-600 text-white p-2 rounded-full hover:bg-main transition-colors">
+                                className="absolute bottom-0 right-0 bg-main-light disabled:bg-gray-600 disabled:hover:bg-gray-600 text-white p-1 rounded-full hover:bg-main transition-colors">
                                 <Camera className="w-4 h-4" />
                             </button>
                         </div>

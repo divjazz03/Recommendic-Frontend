@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import InitialsOrAvartar from '../shared/InitialsOrAvartar';
 import { Award, BookOpen, Calendar, CheckCircle, Clock, Heart, MapPin, MessageCircle, Shield, Star, TrendingUp, Users, Video } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useGetConsultantFullProfileDetails } from '@/lib/react-query/patientQueryAndMutations';
+import { useGetConsultantFullProfileDetails } from '@/lib/actions/patientQueryAndMutations';
 import { ConsultantEducation, Review } from '@/types';
 import Loader from '../shared/Loader';
 import { DateTime } from 'luxon';

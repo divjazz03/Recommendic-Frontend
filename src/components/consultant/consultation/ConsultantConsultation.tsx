@@ -2,7 +2,7 @@ import { LucideProps } from 'lucide-react';
 import React, { MutableRefObject, useEffect, useState } from 'react'
 import MobileView from './MobileView';
 import DesktopView from './DesktopView';
-import { useStartConsultation } from '@/lib/react-query/generalQueriesAndMutation';
+import { useStartConsultation } from '@/lib/actions/generalQueriesAndMutation';
 import { useLocation } from 'react-router-dom';
 import { useUserContext } from '@/context/AuthContext';
 

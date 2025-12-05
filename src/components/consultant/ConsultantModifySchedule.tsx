@@ -5,7 +5,7 @@ import { RecurrenceRuleFrequency, Schedule, WeekDay } from '@/types';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useDeleteSchedule, useGetScheduleWithUserId, useUpdateSchedule } from '@/lib/react-query/consultantQueryAndMutations';
+import { useDeleteSchedule, useGetScheduleWithUserId, useUpdateSchedule } from '@/lib/actions/consultantQueryAndMutations';
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { useModifySchedule } from '@/hooks/useConsultantSchedule';
 export interface ModifyingRecurrenceRule {

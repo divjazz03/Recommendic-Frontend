@@ -23,6 +23,9 @@ const handleError = async (error: unknown) => {
             case 500:
                 toast.error('Server error. please try again later.');
                 break
+            case 400:
+                toast.error("Bad request");
+                break
             default:
                 toast.error(error.message)
                 break;

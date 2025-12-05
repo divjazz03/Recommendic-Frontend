@@ -1,6 +1,6 @@
 import { useUserContext } from "@/context/AuthContext";
 import { updateMyNotificationSettings } from "@/lib/api/general_api";
-import { useGetNotificationSettings } from "@/lib/react-query/generalQueriesAndMutation";
+import { useGetNotificationSettings } from "@/lib/actions/generalQueriesAndMutation";
 import { UserType } from "@/types";
 import { useEffect, useState } from "react";
 
