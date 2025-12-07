@@ -14,7 +14,7 @@ const InputWithIcon = ({
     register,
     ...props
 }: InputWithIconProps) => (
-    <div className={cn("w-full focus-within:ring-2 focus-within:ring-main flex gap-1 items-center rounded-2xl p-1 border overflow-hidden border-gray-300 focus:outline outline-none", divStyle)}>
+    <div className={cn("w-full focus-within:ring-2 focus-within:ring-main flex gap-1 items-center rounded-lg p-1 border overflow-hidden border-gray-300 focus:outline outline-none", divStyle)}>
         <div className="px-1">
             {icon}
         </div>

@@ -27,12 +27,13 @@ const MobileNavBar:React.FC<MobileNavBarProps> = ({
           <li key={index}>
             <Link to={nav.to}>
               <div
+              title={nav.description}
                 className={`
-                  flex flex-col py-2 px-2 w-16 xs:w-20 sm:w-24 gap-1 justify-center items-center rounded-lg ${getLinkColor(nav)? 'text-light-3 bg-main-light': 'text-gray-700 '} `
+                  flex flex-col py-2 px-2 w-16 overflow-hidden xs:w-20 sm:w-32 gap-1 justify-center items-center rounded-lg ${getLinkColor(nav)? 'text-light-3 bg-main-light': 'text-gray-700 '} `
                 }
               >
                 <nav.icon className={clsx('w-5 h-5 sm:w-6 sm:h-6')}/>
-                <p className='text-[8px] xs:text-sm font-thin sm:font-semibold'>{nav.description}</p>
+                <p className='text-xs xs:text-sm font-thin sm:font-normal truncate w-full text-center'>{nav.description}</p>
               </div>
             </Link>
           </li>

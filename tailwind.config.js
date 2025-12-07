@@ -67,9 +67,6 @@ export default {
 					to: {"--border-angle": "360deg"}
 				}
 			},
-			animation: {
-				border: "border 4s linear infinite"
-			},
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',

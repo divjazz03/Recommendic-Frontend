@@ -262,3 +262,17 @@ export interface PagedResponse<T> extends Response{
 
     }
 }
+
+export interface MedicalHistory {
+  knownAllergies: string;
+  chronicConditions: string;
+  currentMedications: string;
+  pastSurgries: string;
+  familyMedicalHistory: string;
+}
+export interface LifeStyleInformation {
+  smokingStatus: string;
+  alcoholConsumption: string;
+  exerciseFrequency: string;
+  dietaryRestrictions: string;
+}

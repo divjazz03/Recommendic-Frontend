@@ -424,9 +424,9 @@ const Lifestyle = ({
       <div className="text-sm text-gray-700">
         <p className="font-medium text-gray-900 mb-1">Privacy & Security</p>
         <p>
-          Your medical information is encrypted and only accessible by your
-          healthcare providers. You can update this information anytime in your
-          profile settings.
+          Your medical information is <strong>encrypted</strong> and only
+          accessible by your healthcare providers. You can update this
+          information anytime in your profile settings.
         </p>
       </div>
     </section>
