@@ -323,7 +323,7 @@ export const useScheduleDisplay = () => {
 
     const activeSchedules = schedules.filter(s => s.isActive);
     const inactiveSchedules = schedules.filter(s => !s.isActive);
-
+    
     return {
         inactiveSchedules,
         activeSchedules,

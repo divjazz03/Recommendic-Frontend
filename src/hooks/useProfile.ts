@@ -65,6 +65,7 @@ export const usePatientProfile = () => {
         phoneNumber: data.phoneNumber,
         dateOfBirth: data.dateOfBirth,
         gender: data.gender,
+        bloodType: data.bloodType,
         address: {
           city: data?.address?.city,
           country: data?.address?.country,
@@ -77,7 +78,7 @@ export const usePatientProfile = () => {
       if (medicalCategoriesResponse && medicalCategoriesResponse.data) {
         setSelectedCategories([
           ...medicalCategoriesResponse.data.filter((category) =>
-            data.interests.includes(category.name)
+            data.interests?.includes(category.name)
           ),
         ]);
       }
@@ -212,7 +213,7 @@ export interface ConsultantProfileData {
   phone?: string;
   dateOfBirth: string;
   gender: string;
-  address?: string;
+  address?: Address;
   city?: string;
   state?: string;
   zipCode?: string;
@@ -223,7 +224,7 @@ export interface ConsultantProfileData {
   yearsOfExperience?: string;
   education?: ConsultantEducation;
   boardCertification?: string;
-  hospital?: string;
+  location?: string;
   department?: string;
   languages?: string[];
   bio?: string;
@@ -288,9 +289,10 @@ export const useConsultantProfile = () => {
         dateOfBirth: modifyingProfileData?.dateOfBirth,
         experience: modifyingProfileData?.yearsOfExperience,
         languages: modifyingProfileData?.languages,
-        location: modifyingProfileData?.address,
+        location: modifyingProfileData?.location,
         phoneNumber: modifyingProfileData?.phone,
         specialty: modifyingProfileData?.specialty,
+        subSpecialty: modifyingProfileData?.subSpecialty,
         userName: {
           first_name: modifyingProfileData?.firstName,
           last_name: modifyingProfileData?.lastName,
@@ -315,33 +317,32 @@ export const useConsultantProfile = () => {
     if (myProfileResponse) {
       const data = myProfileResponse.data;
       setProfileData({
-        firstName: data.profile.userName.first_name,
-        lastName: data.profile.userName.last_name,
+        firstName: data.profile.userName?.first_name,
+        lastName: data.profile.userName?.last_name,
         email: data.profile.email,
-        phone: data.profile?.phoneNumber,
+        phone: data.profile.phoneNumber,
         dateOfBirth: data.profile.dateOfBirth,
         gender: data.profile.gender,
-        address: "456 Medical Plaza, Suite 200",
+        address: data.profile.address,
         city: data.profile.address?.city,
         state: data.profile.address?.state,
         zipCode: "62701",
         country: data.profile.address?.country,
         specialty: data.profile?.specialty,
-        subSpecialty: "Interventional Cardiology",
-        licenseNumber: "MD-IL-123456",
+        subSpecialty: data.profile.subSpecialties[0],
+        licenseNumber: data.profile.medicalLicenseNumber,
         yearsOfExperience: data.profile?.experience,
         education: {
           degree: data.education?.degree,
           institution: data.education?.institution,
           year: data.education?.year,
         },
-        boardCertification:
-          "American Board of Internal Medicine - Cardiovascular Disease",
-        hospital: data.profile?.location,
-        department: data.profile?.specialty,
-        bio: data.profile?.bio,
-        languages: data.profile?.languages,
-        profileImgUrl: data.profile?.profileImgUrl,
+        boardCertification: data.profile.boardCertification,
+        location: data.profile.location,
+        department: data.profile.specialty,
+        bio: data.profile.bio,
+        languages: data.profile.languages,
+        profileImgUrl: data.profile.profileImgUrl,
       });
     }
   }, [myProfileResponse]);

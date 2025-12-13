@@ -2,6 +2,7 @@
 import { ArrowLeft, BellDot, BellOff, Calendar, CheckCircle, Clock, Download, Eye, Pill, Plus, Share2, Shield, User } from 'lucide-react';
 import React, { useEffect, useState } from 'react'
 import { toast } from 'sonner';
+import { Button } from '../ui/button';
 
 interface Medication {
   id: number;
@@ -502,19 +503,13 @@ const PatientMedication = () => {
 
 
   return (
-    <div className="h-full bg-white overflow-y-auto scroll-smooth from-blue-50 via-white to-green-50 p-4">
+    <div className="h-full bg-white overflow-y-auto scroll-smooth from-blue-50 via-white to-green-50 p-6 md:p-8">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-4">
-            <button
-              onClick={() => window.history.back()}
-              className="p-2 hover:bg-white rounded-xl transition-colors duration-300"
-            >
-              <ArrowLeft className="w-6 h-6 text-gray-600" />
-            </button>
             <div>
-              <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900">My Medications</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">My Medications</h1>
               <p className="text-sm sm:text-base text-gray-600">Track your current medications and prescriptions</p>
             </div>
           </div>
@@ -526,13 +521,12 @@ const PatientMedication = () => {
             >
               {reminderEnabled ? <BellDot className="w-5 h-5" /> : <BellOff className="w-5 h-5" />}
             </button>
-            <button
+            <Button
               onClick={() => setShowAddForm(true)}
-              className="sm:px-2 sm:py-1 w-fit h-fit p-2  bg-main-light text-white rounded-lg hover:bg-main transition-colors duration-300 flex items-center gap-2"
             >
               <Plus className="w-5 h-5" />
               <p className='hidden sm:inline text-xs sm:text-sm'>Add Medication</p>
-            </button>
+            </Button>
           </div>
         </div>
 

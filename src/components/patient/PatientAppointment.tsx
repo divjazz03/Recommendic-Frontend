@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import CustomCalender from '../shared/CustomCalender';
 import { usePatientReschedule } from '@/hooks/useReschedule';
 import ConsultantTimeSlots from '../shared/ConsultantTimeSlots';
+import { DateTime } from 'luxon';
 
 
 
@@ -257,7 +258,7 @@ const PatientAppointmentCard = ({
 
       <div className="flex items-center gap-2 text-gray-700">
         <Clock className="w-4 h-4 text-gray-500" />
-        <span>{appointment.time} ({appointment.duration})</span>
+        <span>{DateTime.fromISO(appointment.date + 'T' + appointment.time,{zone: 'utc'}).setZone('local').toFormat("HH:mm a")} ({appointment.duration})</span>
       </div>
 
       <div className="flex items-center gap-2 text-gray-700">

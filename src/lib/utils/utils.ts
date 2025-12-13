@@ -41,7 +41,7 @@ export const handleDateTimeFormatting = (date: string): string => {
 export const formatDate = (date: Date | string): string => {
     if (typeof date  === 'string') {
         const stringDate = date as string
-        return DateTime.fromISO(stringDate).toLocaleString(DateTime.DATETIME_FULL)
+        return DateTime.fromISO(stringDate, {zone:'utc'}).setZone("local").toLocaleString(DateTime.DATETIME_FULL)
     }else{
         const dateType = date as Date
         return dateType.toLocaleDateString('en-US', {

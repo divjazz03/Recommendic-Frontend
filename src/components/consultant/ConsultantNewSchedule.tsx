@@ -3,6 +3,7 @@ import { Calendar, Clock, Users, Plus, Trash2, Save, ArrowLeft, VideoIcon, Loade
 import { RecurrenceRule, WeekDay } from '@/types';
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogHeader, AlertDialogTitle } from '../ui/alert-dialog';
 import { channelOptions, useCreateSchedule, weekDays } from '@/hooks/useConsultantSchedule';
+import { Button } from '../ui/button';
 
 
 
@@ -252,18 +253,17 @@ const ConsultantNewSchedule = () => {
 
                 {/* Actions */}
                 <div className="flex items-center justify-between mt-8 pt-6 border-t border-gray-200">
-                    <button
+                    <Button
                         onClick={addSchedule}
-                        className="flex items-center gap-2 px-3 py-3 w-50 sm:w-72 text-sm sm:text-base text-main-light bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+                        variant={'outline'}
                     >
                         <Plus className="w-4 h-4" />
                         Add Another Schedule
-                    </button>
+                    </Button>
 
-                    <button
+                    <Button
                         onClick={createSchedules}
                         disabled={isCreating}
-                        className="flex items-center justify-center gap-2 px-3 py-3 w-50 sm:w-72 text-sm sm:text-base text-white bg-main-light hover:bg-main rounded-lg transition-colors font-medium"
                     >
                         {isCreating ? <>
                             <Loader /> Saving
@@ -273,7 +273,7 @@ const ConsultantNewSchedule = () => {
                                 Save Schedules
                             </>
                         }
-                    </button>
+                    </Button>
                 </div>
             </div>
             {createdModalOpen && <NewConsultantCreatedModal />}

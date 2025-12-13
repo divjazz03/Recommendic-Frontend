@@ -74,6 +74,7 @@ interface PatientProfile {
         location: string,
         address: Address,
         interests: string[],
+        bloodType: string
         profileImgUrl?: string
 }
 

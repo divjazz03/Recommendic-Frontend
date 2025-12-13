@@ -1,8 +1,18 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { confirmAppointment, ConsultantProfileUpdateRequest, createNewSchedule, deleteSchedule, getMyProfileDetails, getMySchedules, getScheduleById, sendConsultantOnboardingData, updateConsultantProfileDetails, updateSchedule } from "../api/consultant_api"
+import { confirmAppointment, ConsultantProfileUpdateRequest, createNewSchedule, deleteSchedule, getMyDashboard, getMyProfileDetails, getMySchedules, getScheduleById, sendConsultantOnboardingData, updateConsultantProfileDetails, updateSchedule } from "../api/consultant_api"
 import { ModifyingSchedule } from "@/components/consultant/ConsultantModifySchedule"
 import { NewSchedule } from "@/hooks/useConsultantSchedule"
 import { ConsultantOnboardingData } from "@/components/consultant/ConsultantOnboarding"
+
+
+export const useGetDashboard = () => {
+    return useQuery({
+        queryKey: ['My Dashboard'],
+        queryFn: getMyDashboard,
+        staleTime: 3600 * 1000,
+        retry: 1
+    })
+}
 
 export const useGetCurrentUserSchedules = () => {
     return useQuery({

@@ -569,8 +569,8 @@ const ProfessionalInformation = (
                     </label>
                     <input
                         type="text"
-                        value={profileData?.address}
-                        onChange={(e) => handleInputChange('address', e.target.value)}
+                        value={profileData?.location}
+                        onChange={(e) => handleInputChange('location', e.target.value)}
                         disabled={!isEditing}
                         className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
                     />

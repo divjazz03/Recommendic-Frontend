@@ -2,6 +2,8 @@ import React from 'react';
 import { Calendar, Clock, Edit, Plus, Eye, EyeOff, Settings, LucideProps } from 'lucide-react';
 import Loader from '@/components/shared/Loader';
 import { ChannelOptions, channelOptions, formatRecurrence, formatTime, useScheduleDisplay } from '@/hooks/useConsultantSchedule';
+import { Button } from '../ui/button';
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '../ui/empty';
 
 
 const ConsultantScheduleDisplay = () => {
@@ -23,13 +25,12 @@ const ConsultantScheduleDisplay = () => {
                         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">My Schedules</h1>
                         <p className="text-sm sm:text-base text-gray-600">Manage your consultation availability and channels</p>
                     </div>
-                    <button
+                    <Button
                         onClick={handleCreateNewSchedule}
-                        className="text-sm sm:text-base flex items-center gap-2 px-4 py-2 shad-button_primary transition-colors font-medium"
                     >
-                        <Plus className="w-4 h-4" />
+                        <Plus />
                         New Schedule
-                    </button>
+                    </Button>
                 </div>
 
                 {/*Stats Cards*/}
@@ -252,18 +253,30 @@ const ConsultantScheduleDisplay = () => {
 
                     {/* Empty State */}
                     {schedules.length === 0 && (
-                        <div className="text-center py-12">
-                            <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                            <h3 className="text-lg font-semibold text-gray-900 mb-2">No schedules created yet</h3>
-                            <p className="text-gray-600 mb-6">Create your first schedule to start accepting consultations</p>
-                            <button
-                                onClick={handleCreateNewSchedule}
-                                className="inline-flex items-center gap-2 px-4 py-2 bg-main-light text-white rounded-lg hover:bg-main transition-colors font-medium"
-                            >
-                                <Plus className="w-4 h-4" />
-                                Create Schedule
-                            </button>
-                        </div>
+                        // <div className="text-center py-12">
+                        //     <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                        //     <h3 className="text-lg font-semibold text-gray-900 mb-2">No schedules created yet</h3>
+                        //     <p className="text-gray-600 mb-6">Create your first schedule to start accepting consultations</p>
+                        //     <button
+                        //         onClick={handleCreateNewSchedule}
+                        //         className="inline-flex items-center gap-2 px-4 py-2 bg-main-light text-white rounded-lg hover:bg-main transition-colors font-medium"
+                        //     >
+                        //         <Plus className="w-4 h-4" />
+                        //         Create Schedule
+                        //     </button>
+                        // </div>
+                        <Empty>
+                            <EmptyHeader>
+                                <EmptyMedia><Calendar/></EmptyMedia>
+                                <EmptyTitle>No schedules created yet</EmptyTitle>
+                                <EmptyDescription>Create your first schedule to start accepting consultations</EmptyDescription>
+                                <EmptyContent>
+                                    <Button 
+                                    onClick={handleCreateNewSchedule}
+                                    >Create Schedule</Button>
+                                </EmptyContent>
+                            </EmptyHeader>
+                        </Empty>
                     )}
                 </>}
             </div>

@@ -30,6 +30,7 @@ import SecurityAndPrivacy from "../shared/SecurityAndPrivacy";
 import { Input } from "../ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "../ui/select";
 import { Textarea } from "../ui/textarea";
+import { MultiSelect, MultiSelectContent, MultiSelectGroup, MultiSelectItem, MultiSelectTrigger, MultiSelectValue } from "../ui/multi-select";
 
 const PatientProfile = () => {
   const [activeTab, setActiveTab] = useState("");
@@ -378,7 +379,8 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
                 value={profileData.bloodType}
                 disabled={!isEditing}
               >
-                <SelectTrigger className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 text-gray-500  focus:border-transparent">Select Blood Type</SelectTrigger>
+                <SelectTrigger value={profileData.bloodType} aria-placeholder={'Provide your blood type'} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 text-gray-500  focus:border-transparent">
+                  {profileData.bloodType}</SelectTrigger>
                 <SelectContent>
                     <SelectItem value="A+">A+</SelectItem>
                     <SelectItem value="A-">A-</SelectItem>
@@ -511,12 +513,31 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Specialization Of Interest
             </label>
-            <MedicalCategorySelect
+            <MultiSelect defaultValues={selectedCategories?.map((v) => v.id)} onValuesChange={(e) => handleInterestsChange(e)}>
+              <MultiSelectTrigger disabled={!isEditing} className="w-full h-10">
+                <MultiSelectValue placeholder="Select Medical specializations of interest"/>
+              </MultiSelectTrigger>
+              <MultiSelectContent>
+                <MultiSelectGroup>
+                  {medicalCategories?.map((category) => (
+                    <MultiSelectItem badgeLabel={category.name} value={category.id} key={category.id}>
+                      <div className="flex w-full gap-2">
+                        <p>{category.icon}</p>
+                        <div className="flex flex-col justify-start">
+                          <p className="text-sm sm:text-base font-semibold">{category.name}</p>
+                          <p className="text-xs sm:text-sm font-light">{category.description}</p>
+                        </div>
+                      </div>
+                  </MultiSelectItem>))}
+                </MultiSelectGroup>
+              </MultiSelectContent>
+            </MultiSelect>
+            {/* <MedicalCategorySelect
               categories={medicalCategories ?? []}
               selectedCategories={selectedCategories ?? []}
               disabled={!isEditing}
               handleInterestsChange={handleInterestsChange}
-            />
+            /> */}
           </div>
 
           <section className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex gap-3 mt-6">

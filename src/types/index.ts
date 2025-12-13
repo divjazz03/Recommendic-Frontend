@@ -160,9 +160,9 @@ export interface Response {
     exception?: string
 }
 export interface ConsultantEducation {
-    degree?: string
-    institution?: string
-    year?: string
+    degree: string
+    institution: string
+    year: string
 }
 export interface ConsultantStats {
     patientsHelped: number
@@ -264,15 +264,15 @@ export interface PagedResponse<T> extends Response{
 }
 
 export interface MedicalHistory {
-  knownAllergies: string;
-  chronicConditions: string;
-  currentMedications: string;
-  pastSurgries: string;
-  familyMedicalHistory: string;
+  knownAllergies: string
+  chronicConditions: string
+  currentMedications: string
+  pastSurgries: string
+  familyMedicalHistory: string
 }
 export interface LifeStyleInformation {
-  smokingStatus: string;
-  alcoholConsumption: string;
-  exerciseFrequency: string;
-  dietaryRestrictions: string;
+  smokingStatus: string
+  alcoholConsumption: string
+  exerciseFrequency: string
+  dietaryRestrictions: string
 }

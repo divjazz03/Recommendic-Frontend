@@ -25,6 +25,7 @@ interface ImportMetaEnv {
     readonly VITE_NOTIFICATION_BASE:string;
 
     readonly VITE_APPOINTMENT_BASE:string;
+    readonly VITE_DASHBOARD_BASE:string;
 }
 
 interface ImportMeta {
