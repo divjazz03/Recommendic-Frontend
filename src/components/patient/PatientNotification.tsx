@@ -152,7 +152,7 @@ const PatientNotification = () => {
     <div className="h-full overflow-y-auto">
       <div className="flex flex-col h-full max-w-4xl mx-auto">
         {/* Header */}
-        <div className=" p-6 mb-6 bg-white sticky top-0 z-50 rounded-b-lg">
+        <div className=" p-6 mb-6 bg-white sticky top-0 z-40 rounded-b-lg">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
               <div>

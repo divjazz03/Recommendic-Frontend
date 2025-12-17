@@ -28,8 +28,10 @@ const GlobalSearch = () => {
     return (
         <>
             <Popover open={popoverOpen && !!searchText.trim()} onOpenChange={setPopOverOpen} modal={false}>
-                <PopoverTrigger className='w-full'>
+                <PopoverTrigger className='w-full focus-visible:outline-none ' >
                             <InputWithIcon
+                            divStyle='focus-within:ring-2 focus-within:ring-white'
+                            className='bg-main text-light-5 focus-visible:outline-none'
                             icon={<SearchIcon className='w-5 h-5 text-sm text-light-5 bg-main' />} 
                             onChange={(e) => setSearchText(e.target.value)} />
                 </PopoverTrigger>

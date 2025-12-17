@@ -1,6 +1,6 @@
 import { useUserContext } from "@/context/AuthContext";
 import { useGetDashboard } from "@/lib/actions/consultantQueryAndMutations";
-import { ConsultantProfile } from "@/types";
+import { ConsultantProfile, NotificationContext } from "@/types";
 import {
   Activity,
   AlertCircle,
@@ -30,14 +30,17 @@ import {
 } from "../ui/empty";
 import { Button } from "../ui/button";
 
+type AppointmentChannel = "in_person" | "online";
+type AppointmentHistory = "new" | "follow-up";
+type AppointmentStatus = "upcoming" | "in-progress" | "completed";
 interface Appointment {
   id: string;
   patientName: string;
   patientAge: number;
   time: string;
-  channel: "in-person" | "online";
-  history: "new" | "follow-up";
-  status: "upcoming" | "in-progress" | "completed";
+  channel: AppointmentChannel
+  history: AppointmentHistory
+  status: AppointmentStatus
   reason: string;
 }
 
@@ -74,26 +77,24 @@ const criticalPatients: Patient[] = [
 ];
 
 type Stat = {
-  todayAppointmentsCount: number;
-  appointmentNumberMoreOrLessThanYesterdayCount: number;
-  appointmentNumberGreaterThanYesterday: boolean;
-  completedConsultationsTodayCount: number;
-  consultationsRemainingCount: number;
-  numberOfActivePatients: number;
-  numberOfNewPatientThisWeek: number;
-  pendingTasks: number;
-  highPriorityTasks: number;
+    yesterdayTodayAppointmentCountDifference: number,
+    completedConsultationsTodayCount: number,
+    numberOfActivePatients: number,
+    numberOfNewPatientThisWeek: number,
+    pendingTasks: number,
+    highPriorityTasks: number,
 };
 type Update = {
   title: string;
   time: string;
+  context: NotificationContext
 };
 
 interface DashboardData {
-  stats: Stat;
-  appointments: Appointment[];
-  pendingTasks: Task[];
-  updates: Update[];
+    stats: Stat
+    todayAppointments: Appointment[],
+    recentUpdates: Update[],
+    pendingTasks: Task[]
 }
 
 const getStatusColor = (status: string) => {
@@ -148,23 +149,41 @@ interface Task {
 const ConsultantHome = () => {
   const { profileData } = useUserContext();
   const consultantProfile = profileData as ConsultantProfile;
+  const { data: dashboardResponse } = useGetDashboard();
+
+  console.log(dashboardResponse?.data)
+
+  const todaysAppointments: Appointment[] | undefined = dashboardResponse?.data?.todayAppointments
+  ?.map(data => ({
+    id: data.appointmentId,
+    channel: data.channel.toLowerCase() as AppointmentChannel,
+    patientName: data.consultantFullName,
+    patientAge: 20,
+    time: new Date().toDateString(),
+    status: 'in-progress' as AppointmentStatus,
+    history: 'new' as AppointmentHistory,
+    reason: ''
+  }))
+  const recentUpdates: Update[] | undefined = dashboardResponse?.data?.recentUpdates
+  ?.map(data => ({
+    time: data.timestamp,
+    title: data.timestamp,
+    context: data.context
+  })) 
+  const pendingTasks: Task[] | undefined = []
   const [dashBoard, setSetBoard] = useState<DashboardData>({
-    appointments: [],
-    pendingTasks: [],
+    todayAppointments: todaysAppointments || [],
+    pendingTasks: pendingTasks,
     stats: {
-      todayAppointmentsCount: 0,
-      appointmentNumberGreaterThanYesterday: false,
-      appointmentNumberMoreOrLessThanYesterdayCount: 0,
       completedConsultationsTodayCount: 0,
-      consultationsRemainingCount: 0,
       highPriorityTasks: 0,
       numberOfActivePatients: 0,
       numberOfNewPatientThisWeek: 0,
       pendingTasks: 0,
+      yesterdayTodayAppointmentCountDifference: 0
     },
-    updates: [],
+    recentUpdates: recentUpdates || [],
   });
-  const { data: dashboardResponse } = useGetDashboard();
   return (
     <main className="flex flex-col gap-4 h-full max-w-7xl mx-auto overflow-y-auto px-2">
       <header className="w-full  rounded-t-lg">
@@ -194,17 +213,17 @@ const ConsultantHome = () => {
               <div>
                 <p className="text-sm text-gray-600">Today's Appointments</p>
                 <p className="text-3xl font-bold text-gray-900 mt-1">
-                  {dashBoard.stats.todayAppointmentsCount}
+                  {dashBoard.todayAppointments && dashBoard.todayAppointments.length}
                 </p>
               </div>
               <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                 <Calendar className="w-6 h-6 text-blue-600" />
               </div>
             </div>
-            {dashBoard.stats.appointmentNumberGreaterThanYesterday && (
+            {dashBoard.stats.yesterdayTodayAppointmentCountDifference && (
               <div className="mt-3 flex items-center text-xs text-gray-500">
                 {dashBoard.stats
-                  .appointmentNumberMoreOrLessThanYesterdayCount >= 0 ? (
+                  .yesterdayTodayAppointmentCountDifference>= 0 ? (
                   <TrendingUp className="w-3 h-3 mr-1 text-green-600" />
                 ) : (
                   <TrendingDown className="w-3 h-3 mr-1 text-red-600" />
@@ -212,14 +231,14 @@ const ConsultantHome = () => {
                 <span
                   className={`${
                     dashBoard.stats
-                      .appointmentNumberMoreOrLessThanYesterdayCount >= 0
+                      .yesterdayTodayAppointmentCountDifference >= 0
                       ? "text-green-600"
                       : "text-red-600"
                   }`}
                 >
                   {
                     dashBoard.stats
-                      .appointmentNumberMoreOrLessThanYesterdayCount
+                      .yesterdayTodayAppointmentCountDifference
                   }
                 </span>
                 &nbsp;
@@ -240,9 +259,9 @@ const ConsultantHome = () => {
                 <CheckCircle className="w-6 h-6 text-green-600" />
               </div>
             </div>
-            {dashBoard.stats.consultationsRemainingCount > 0 && (
+            {dashBoard.todayAppointments.length - dashBoard.stats.completedConsultationsTodayCount > 0 && (
               <div className="mt-3 text-xs text-gray-500">
-                {dashBoard.stats.consultationsRemainingCount} remaining today
+                {dashBoard.todayAppointments.length - dashBoard.stats.completedConsultationsTodayCount} remaining today
               </div>
             )}
           </div>
@@ -297,8 +316,8 @@ const ConsultantHome = () => {
                 </h2>
               </header>
 
-              {!dashBoard.appointments ||
-              dashBoard.appointments.length === 0 ? (
+              {!dashBoard.todayAppointments ||
+              dashBoard.todayAppointments .length === 0 ? (
                 <>
                   <Empty>
                     <EmptyHeader>
@@ -317,7 +336,7 @@ const ConsultantHome = () => {
                 </>
               ) : (
                 <div className="space-y-3">
-                  {dashBoard.appointments?.map((apt) => {
+                  {dashBoard.todayAppointments?.map((apt) => {
                     const statusInfo = getAppointmentStatus(apt.status);
                     return (
                       <div
@@ -508,7 +527,7 @@ const ConsultantHome = () => {
                 Recent Updates
               </h2>
 
-              {!dashBoard.updates || dashBoard.updates.length === 0 ? (
+              {!dashBoard.recentUpdates || dashBoard.recentUpdates.length === 0 ? (
                 <>
                     <Empty>
                         <EmptyHeader>

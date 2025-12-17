@@ -46,7 +46,7 @@ const SideBar: React.FC<SideBarProps> = ({
           <ul>
             {Object.entries(navLinks).map(([, nav], index) => (
               <li key={index} >
-                <Link aria-hidden={isHidden} tabIndex={isHidden ? -1 : 0} to={nav.to} >
+                <Link onClick={() => setAsideHidden(true)} aria-hidden={isHidden} tabIndex={isHidden ? -1 : 0} to={nav.to} >
                   <div
                     className={clsx(
                       'flex flex-row gap-2 side-bar-icons side-bar-li',
@@ -67,7 +67,9 @@ const SideBar: React.FC<SideBarProps> = ({
       <div>
         <hr className='pb-2' />
         <div
-          onClick={() => navigate('profile')}
+          onClick={() => { 
+            setAsideHidden(true)
+            navigate('profile')}}
           className='flex flex-row gap-2 h-16 pl-5 items-center cursor-pointer'>
           
           <InitialsOrAvartar

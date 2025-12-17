@@ -140,7 +140,7 @@ async function uploadProfilePic(
   formData: ConsultantOnboardingData
 ): Promise<string> {
   /* UPLOAD THE PROFILE PIC TO CLOUDINARY */
-  try {
+
     const signaturesData = await getUploadSignature(1);
     const signatureData = signaturesData[0];
     if (!signatureData) {
@@ -170,22 +170,14 @@ async function uploadProfilePic(
       return cloudRes.secure_url;
     }
     throw new Error("Not a file");
-  } catch (error) {
-    if (error instanceof AxiosError) {
-      const axiosError = error as AxiosError;
-      toast.error(axiosError.message);
-    } else {
-      toast.error(String(error));
-    }
-    throw error;
-  }
+  
 }
 
 async function uploadResume(
   formData: ConsultantOnboardingData
 ): Promise<string> {
   /* UPLOAD THE PROFILE PIC TO CLOUDINARY */
-  try {
+  
     const signaturesData = await getUploadSignature(1);
     const signatureData = signaturesData[0];
     if (!signatureData) {
@@ -214,15 +206,7 @@ async function uploadResume(
       return cloudRes.secure_url;
     }
     throw new Error("Not a file");
-  } catch (error) {
-    if (error instanceof AxiosError) {
-      const axiosError = error as AxiosError;
-      toast.error(axiosError.message);
-    } else {
-      toast.error(String(error));
-    }
-    throw error;
-  }
+  
 }
 
 async function uploadCredentials(
@@ -232,7 +216,6 @@ async function uploadCredentials(
     throw new Error("No credentials provided");
   }
 
-  try {
     const signaturesData = await getUploadSignature(
       formData.credentials.length
     );
@@ -276,15 +259,7 @@ async function uploadCredentials(
       })
     );
     return urls;
-  } catch (error) {
-    if (error instanceof AxiosError) {
-      const axiosError = error as AxiosError;
-      toast.error(axiosError.message);
-    } else {
-      toast.error(String(error));
-    }
-    throw error;
-  }
+  
 }
 
 const ConsultantOnboarding = () => {
@@ -355,11 +330,17 @@ const ConsultantOnboarding = () => {
       };
 
       const returnValues = await uploadCredentials(formData);
-      onboardingData.credentials.length = 0;
+      if (onboardingData.credentials) onboardingData.credentials.length = 0;
+
       returnValues.forEach((value) => {
         onboardingData.credentials?.push(value);
       });
     } catch (error) {
+      if(error instanceof ApiError) {
+        toast.error(error.message)
+      }else {
+        toast.error(String(error))
+      }
       setIsOnboarding(false);
     }
 

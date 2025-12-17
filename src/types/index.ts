@@ -1,9 +1,10 @@
 import { PatientData } from "@/components/consultant/consultation/ConsultantConsultation"
 import { ConsultantScheduleData, Fee, TimeSlot } from "@/hooks/usePatientSchedules"
-import React, { ReactNode } from "react"
+import { ReactNode } from "react"
 
 export type UserType = 'PATIENT' | 'CONSULTANT' | 'ADMIN'
 export type UserStage = 'ONBOARDING' | 'ACTIVE_USER'
+export type NotificationContext = 'ARTICLE' | 'APPOINTMENT'|'USER'|'CHAT'|'CONSULTATION'|'MEDICINE' | 'LAB'
 export type Gender = 'male' | 'female'
 export type OutletContextTypeOfUser = {
     typeOfUser: string

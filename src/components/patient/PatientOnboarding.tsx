@@ -76,6 +76,7 @@ const PatientOnboarding = () => {
     try {
       await onBoardUser({ userId: userContext.user_id, data: formData });
       toast.success("Take you for helping us serve you better");
+      navigate('/');
     } catch (error) {
       toast.error(error?.message);
     }

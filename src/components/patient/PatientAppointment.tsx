@@ -187,7 +187,7 @@ const PatientAppointment = () => {
             onClose={() => setSelectedAppointment(undefined)}
             statusColor={getStatusColor(selectedAppointment.status)} StatusIcon={getStatusIcon(selectedAppointment.status)}
             date={selectedAppointment.date}
-            daysUntil={selectedAppointment.date} />
+            daysUntil={getDaysUntil(selectedAppointment.date)} />
         )}
 
         {
@@ -346,7 +346,7 @@ const AppointmentModal = ({
               <Calendar className="w-5 h-5 text-main-light mt-1" />
               <div>
                 <p className="text-sm text-gray-600">Date</p>
-                <p className="font-semibold">{date}</p>
+                <p className="font-semibold">{DateTime.fromISO(appointment.date + 'T' + appointment.time,{zone: 'utc'}).setZone('local').toFormat("yyyy-MM-dd")}</p>
                 <p className="text-sm text-main-light">{daysUntil}</p>
               </div>
             </div>
@@ -355,7 +355,7 @@ const AppointmentModal = ({
               <Clock className="w-5 h-5 text-main-light mt-1" />
               <div>
                 <p className="text-sm text-gray-600">Time</p>
-                <p className="font-semibold">{appointment.time}</p>
+                <p className="font-semibold">{DateTime.fromISO(appointment.date + 'T' + appointment.time,{zone: 'utc'}).setZone('local').toFormat("HH:mm a")}</p>
                 <p className="text-sm text-gray-600">Duration: {appointment.duration}</p>
               </div>
             </div>

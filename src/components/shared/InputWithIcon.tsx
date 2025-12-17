@@ -14,11 +14,11 @@ const InputWithIcon = ({
     register,
     ...props
 }: InputWithIconProps) => (
-    <div className={cn("w-full focus-within:ring-2 focus-within:ring-main flex gap-1 items-center rounded-lg p-1 border overflow-hidden border-gray-300 focus:outline outline-none", divStyle)}>
+    <div className={cn("w-full focus-within:ring-2 focus-within:ring-main flex gap-1 items-center rounded-lg p-1 border overflow-hidden border-gray-300 h-10 focus:outline outline-none", divStyle)}>
         <div className="px-1">
             {icon}
         </div>
-        <input className="focus:outline-none focus:ring-0 focus:border-none bg-main text-light-5" {...props} {...register}/>
+        <input {...props} {...register}/>
     </div>
 )
 

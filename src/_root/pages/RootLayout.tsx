@@ -157,7 +157,7 @@ const RootLayout = () => {
 				<div className='lg:flex lg:flex-row w-full h-full'>
 					{/* Main content */}
 					<section className='relative w-full h-full flex-1 flex flex-col'>
-						<aside ref={asideRef} className={`absolute transition-all ease-out duration-300 h-full w-[20em] top-0 z-50 ${asideHidden ? '-left-[25em]' : 'left-0'}`}>
+						<aside ref={asideRef} className={`absolute z-50 transition-all ease-out duration-300 h-full w-[20em] top-0 z-50 ${asideHidden ? '-left-[25em]' : 'left-0'}`}>
 							<SideBar
 								navLinks={navLinkObject}
 								isHidden={asideHidden}
@@ -165,41 +165,16 @@ const RootLayout = () => {
 							/>
 						</aside>
 
-						{/* Mobile Header */}
-						<header className='lg:hidden bg-main w-full'>
-							<div className='flex flex-row gap-4 h-20 items-center w-full justify-between py-4 px-3 overflow-hidden '>
-								<div className='flex flex-row justify-start gap-4 items-center'>
-									<Logo className='w-8 h-8' />
-									{/* <p className='font-berkshire text-main font-semibold text-3xl'>{location.pathname.split('/')[1] || ''}</p> */}
-								</div>
-								<div className='w-44 sm:w-72'>
-									<GlobalSearch />
-								</div>
-								<div className='flex items-center justify-end gap-2'>
-									<Link to={mobileNavLinks.notification.to}>
-										<div className={cn('`relative p-2 hover:bg-main-light text-white rounded-lg',location.pathname === mobileNavLinks.notification.to || location.pathname.startsWith(`${mobileNavLinks.notification.to}/`) ? 'bg-main-light': '' )}>
-											<mobileNavLinks.notification.icon />
-											<div className='absolute top-0 right-0 rounded-full bg-red-500 w-2 h-2'></div>
-										</div>
-									</Link>
-									
-									<InitialsOrAvartar name={profileData?.userName.full_name} avatarUrl={profileData?.profilePicture.picture_url} className='w-6 h-6 border' />
-								</div>
-
-
-
-							</div>
-						</header>
 						{/* Laptop header */}
-						<header className='hidden bg-main lg:flex flex-row items-center gap-20 w-full py-2 px-2 justify-between'>
+						<header className=' bg-main flex flex-row items-center sm:gap-20 w-full py-2 px-2 justify-between'>
 							<div className='flex justify-start gap-3'>
 								<Menu className='w-8 h-8 text-light-5' onClick={() => setAsideHidden(false)} />
 							</div>
-							<div className='w-96'>
+							<div className='w-56 sm:w-96'>
 								<GlobalSearch />
 							</div>
 							<div className='flex items-center justify-end gap-2'>
-								<Link to={mobileNavLinks.notification.to}>
+								<Link onClick={() => setAsideHidden(true)} to={mobileNavLinks.notification.to}>
 									<div className={`relative p-2 hover:bg-main-light text-white rounded-lg ${location.pathname === mobileNavLinks.notification.to || location.pathname.startsWith(`${mobileNavLinks.notification.to}/`) ? 'bg-main-light' : ''}`}>
 										<mobileNavLinks.notification.icon />
 										<div className='absolute top-0 right-0 rounded-full bg-red-500 w-2 h-2'></div>
@@ -214,9 +189,6 @@ const RootLayout = () => {
 						</header>
 						<div className='flex-1 h-full overflow-auto'>
 							<Outlet />
-						</div>
-						<div className='lg:hidden h-20 flex flex-col justify-center shadow-lg'>
-							<MobileNavBar navLinkObject={mobileNavLinks} />
 						</div>
 					</section>
 

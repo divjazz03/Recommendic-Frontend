@@ -2,6 +2,7 @@ import {
   Address,
   ConsultantEducation,
   NewUser,
+  NotificationContext,
   PagedResponse,
   RecurrenceRule,
   Response,
@@ -14,6 +15,7 @@ import { apiClient } from "../axios";
 import { NewSchedule } from "@/hooks/useConsultantSchedule";
 import { DateTime } from "luxon";
 import { ConsultantOnboardingData } from "@/components/consultant/ConsultantOnboarding";
+import { ConsultationChannel } from "@/hooks/usePatientSchedules";
 
 const consultantBasePath = import.meta.env.VITE_CONSULTANT_BASE;
 const scheduleBasePath = import.meta.env.VITE_SCHEDULE_BASE;
@@ -253,34 +255,31 @@ export async function confirmAppointment(appointmentId: string, note: string) {
 
 export interface ConsultantDashboardResponse extends Response {
   data: {
-    todayAppointmentsCount: number;
-    appointmentNumberMoreOrLessThanYesterdayCount: number;
-    appointmentNumberGreaterThanYesterday: boolean;
-    completedConsultationsTodayCount: number;
-    consultationsRemainingCount: number;
-    numberOfActivePatients: number;
-    numberOfNewPatientThisWeek: number;
-    pendingTasks: [];
-    highPriorityTasks: number;
+    yesterdayTodayAppointmentCountDifference: number,
+    completedConsultationsTodayCount: number,
+    numberOfActivePatients: number,
+    numberOfNewPatientThisWeek: number,
+    pendingTasks: number,
+    highPriorityTasks: number,
     todayAppointments: [
       {
-        appointmentId: string;
-        fullName: string;
-        dateTime: string;
-        age: string;
-        channel: string;
-        isFollowUp: boolean;
+        appointmentId: string,
+        consultantFullName: string,
+        specialty: string,
+        dateTime: string,
+        channel: Uppercase<ConsultationChannel>
       }
-    ];
+    ],
     recentUpdates: [
       {
-        timestamp: string;
-        message: string;
+        timestamp: string,
+        message: string,
+        context: NotificationContext
       }
-    ];
+    ]
   };
 }
 
-export async function getMyDashboard() {
+export async function getMyDashboard(): Promise<ConsultantDashboardResponse> {
   return apiClient.get(`${dashboardBasePath}`);
 }

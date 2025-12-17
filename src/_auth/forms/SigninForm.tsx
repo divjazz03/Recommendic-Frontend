@@ -11,12 +11,13 @@ import { useForm } from "react-hook-form";
 import { signInValidation } from "../validations/SignInValidation";
 import { useSignInUserMutation } from "@/lib/actions/generalQueriesAndMutation";
 import { z } from "zod";
-import { Loader, Lock, MailIcon } from "lucide-react";
+import { Lock, MailIcon } from "lucide-react";
 import { toast } from "sonner";
 import InputWithIcon from "@/components/shared/InputWithIcon";
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { ApiError } from "@/lib/axios";
+import Loader from "@/components/shared/Loader";
 
 const SigninForm = () => {
   const navigate = useNavigate();
@@ -54,7 +55,7 @@ const SigninForm = () => {
   return (
     <form
       onSubmit={form.handleSubmit(onSubmit)}
-      className="w-full h-full p-8 flex flex-col justify-center items-center"
+      className="w-full h-full p-8 flex overflow-auto flex-col justify-center items-center"
     >
       <Form {...form}>
         <div className="flex flex-col justify-center gap-5">
@@ -75,7 +76,7 @@ const SigninForm = () => {
                 <FormControl>
                   <InputWithIcon
                     register={form.register("email")}
-                    className="focus:outline-none"
+                    className="focus:outline-none w-full"
                     icon={<MailIcon className="text-gray-400  h-4 w-4" />}
                   />
                 </FormControl>
@@ -93,7 +94,7 @@ const SigninForm = () => {
                   <InputWithIcon
                     register={form.register("password")}
                     type="password"
-                    className="focus:outline-none"
+                    className="focus:outline-none w-full"
                     icon={<Lock className="text-gray-400 h-4 w-4" />}
                   />
                 </FormControl>
