@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { User, Mail, Phone, MapPin, Calendar, Briefcase, GraduationCap, Award, Lock, Bell, Shield, Camera, Save, X, Check, Eye, EyeOff, DoorOpen, ArrowLeft } from 'lucide-react';
 import { ConsultantNotificationSetting, useNotificationSettings } from '@/hooks/useNotificationSettings';
-import { ConsultantProfileData, ModifyingConsultantProfileData, useConsultantProfile } from '@/hooks/useProfile';
+import { ConsultantProfileData, ModifyingConsultantProfileData, ModifyingProfileData, useConsultantProfile } from '@/hooks/useProfile';
 import { useLogout } from '@/lib/actions/generalQueriesAndMutation';
 import MultiSelect from '../ui/MultiSelect';
-import { ConsultantEducation } from '@/types';
+import { Address, ConsultantEducation } from '@/types';
 import SecurityAndPrivacy from '../shared/SecurityAndPrivacy';
 import { useSecuritySetting } from '@/hooks/useSecuritySetting';
 import InitialsOrAvartar from '../shared/InitialsOrAvartar';
@@ -205,6 +205,7 @@ interface ProfileInformationProps {
     handleCancelEdit: () => void
     handleSaveProfile: () => void
     handleInputChange: (field: keyof ModifyingConsultantProfileData, value: string) => void
+    handleAddressChange: (field: keyof Address, value: string) => void
     setActiveTab: (value: React.SetStateAction<string>) => void
 }
 const ProfileInformation: React.FC<ProfileInformationProps> = (
@@ -212,6 +213,7 @@ const ProfileInformation: React.FC<ProfileInformationProps> = (
         handleCancelEdit,
         handleInputChange,
         handleSaveProfile,
+        handleAddressChange,
         handleStartEdit,
         isEditing,
         profileData,
@@ -242,7 +244,7 @@ const ProfileInformation: React.FC<ProfileInformationProps> = (
                                 Dr. {profileData?.firstName} {profileData?.lastName}
                             </h2>
                             <p className="text-gray-600 capitalize text-sm sm:text-base">{profileData?.specialty}</p>
-                            <p className="text-xs sm:text-sm font-thin text-gray-500">{profileData?.hospital}</p>
+                            <p className="text-xs sm:text-sm font-thin text-gray-500">{profileData?.location}</p>
                         </div>
                     </div>
                     {!isEditing ? (
@@ -382,8 +384,8 @@ const ProfileInformation: React.FC<ProfileInformationProps> = (
                         </label>
                         <input
                             type="text"
-                            value={profileData?.city}
-                            onChange={(e) => handleInputChange('city', e.target.value)}
+                            value={profileData.address?.city}
+                            onChange={(e) => handleAddressChange('city', e.target.value)}
                             disabled={!isEditing}
                             className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
                         />
@@ -393,8 +395,8 @@ const ProfileInformation: React.FC<ProfileInformationProps> = (
                         <label className="block text-sm font-medium text-gray-700 mb-2">State</label>
                         <input
                             type="text"
-                            value={profileData?.state}
-                            onChange={(e) => handleInputChange('state', e.target.value)}
+                            value={profileData?.address?.state}
+                            onChange={(e) => handleAddressChange('state', e.target.value)}
                             disabled={!isEditing}
                             className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
                         />
@@ -404,8 +406,8 @@ const ProfileInformation: React.FC<ProfileInformationProps> = (
                         <label className="block text-sm font-medium text-gray-700 mb-2">Zip Code</label>
                         <input
                             type="text"
-                            value={profileData?.zipCode}
-                            onChange={(e) => handleInputChange('zipCode', e.target.value)}
+                            value={profileData.address?.zipCode}
+                            onChange={(e) => handleAddressChange('zipCode', e.target.value)}
                             disabled={!isEditing}
                             className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
                         />
@@ -415,8 +417,8 @@ const ProfileInformation: React.FC<ProfileInformationProps> = (
                         <label className="block text-sm font-medium text-gray-700 mb-2">Country</label>
                         <input
                             type="text"
-                            value={profileData?.country}
-                            onChange={(e) => handleInputChange('country', e.target.value)}
+                            value={profileData.address?.country}
+                            onChange={(e) => handleAddressChange('country', e.target.value)}
                             disabled={!isEditing}
                             className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-main-light focus:border-main-light outline-none disabled:bg-gray-50 disabled:text-gray-500"
                         />

@@ -231,7 +231,7 @@ export interface ConsultantProfileData {
   profileImgUrl?: string;
 }
 
-type ModifyingConsultantProfileData = Partial<ConsultantProfileData>;
+export type ModifyingConsultantProfileData = Partial<ConsultantProfileData>;
 
 export const useConsultantProfile = () => {
   const { data: myProfileResponse } = useGetMyConsultantProfiles();

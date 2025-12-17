@@ -205,6 +205,7 @@ export interface ProfileDetails {
     subSpecialties: string[];
     medicalLicenseNumber: string;
     profileImgUrl?: string;
+    boardCertification?: string
   };
   education: ConsultantEducation;
 }
