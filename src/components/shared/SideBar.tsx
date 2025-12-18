@@ -73,7 +73,7 @@ const SideBar: React.FC<SideBarProps> = ({
           className='flex flex-row gap-2 h-16 pl-5 items-center cursor-pointer'>
           
           <InitialsOrAvartar
-            name={baseProfileData?.userName.full_name} avatarUrl={baseProfileData?.profilePicture.picture_url} />
+            userName={baseProfileData?.userName.full_name} avatarUrl={baseProfileData?.profilePicture.picture_url} />
           <div className='flex flex-col gap-1'>
             <p className='base-bold'>{baseProfileData?.userName.full_name}</p>
             {userContext.userType === 'CONSULTANT' && <p className='tiny-thin'>{consultantProfileData?.specialization}</p>}

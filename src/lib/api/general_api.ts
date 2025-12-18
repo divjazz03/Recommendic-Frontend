@@ -11,7 +11,6 @@ import { ModifyingNotificationSetting, NotificationSetting} from "@/hooks/useNot
 import { apiClient } from "../axios";
 import { TimeSlot } from "@/hooks/usePatientSchedules";
 import { ConsultantAppointmentType, PatientAppointmentType } from "@/hooks/useAppointment";
-import axios from "axios";
 
 const userLoginPath = import.meta.env.VITE_APP_USER_LOGIN;
 const userLogoutPath = import.meta.env.VITE_APP_USER_LOGOUT;

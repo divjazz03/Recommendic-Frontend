@@ -3,12 +3,12 @@ import React from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 
 interface InitialsOrAvartarProps extends React.HtmlHTMLAttributes<HTMLDivElement> {
-    name: string,
+    userName?: string,
     avatarUrl?: string
 }
 
 const InitialsOrAvartar: React.FC<InitialsOrAvartarProps> = ({
-    name,
+    userName,
     avatarUrl,
     className,
     ...props
@@ -24,7 +24,7 @@ const InitialsOrAvartar: React.FC<InitialsOrAvartarProps> = ({
         // </div>
         <Avatar className={className} {...props}>
             <AvatarImage src={avatarUrl} alt='avatar' />
-            <AvatarFallback>{extractInitialsFromName(name)}</AvatarFallback>
+            <AvatarFallback>{extractInitialsFromName(userName)}</AvatarFallback>
         </Avatar>
     )
 }

@@ -157,7 +157,7 @@ const ConsultantProfileNavigation = (
             <div className="flex items-center gap-4">
 
                 <div className="relative">
-                    <InitialsOrAvartar name={`${profileData?.lastName} ${profileData?.firstName}`} avatarUrl={profileData?.profileImgUrl} className='w-16 h-16'/>
+                    <InitialsOrAvartar userName={`${profileData?.lastName} ${profileData?.firstName}`} avatarUrl={profileData?.profileImgUrl} className='w-16 h-16'/>
                 </div>
                 <div>
                     <h2 className="text-2xl font-bold text-gray-900">
@@ -231,7 +231,7 @@ const ProfileInformation: React.FC<ProfileInformationProps> = (
                             <ArrowLeft />
                         </div>
                         <div className="relative">
-                            <InitialsOrAvartar name={`${profileData?.lastName} ${profileData?.firstName}`} avatarUrl={profileData?.profileImgUrl} className='w-16 h-16' />
+                            <InitialsOrAvartar userName={`${profileData?.lastName} ${profileData?.firstName}`} avatarUrl={profileData?.profileImgUrl} className='w-16 h-16' />
                             <button
                                 disabled={!isEditing}
                                 onClick={() => setImageUpdateModalOpen(true)}

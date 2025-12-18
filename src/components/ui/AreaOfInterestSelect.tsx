@@ -55,7 +55,7 @@ export function MultiSelect({categories, handleCategoriesChangeFunction}: MultiS
                         {
                             value?.length ? value.map((val, i) => (
                                 <div key={i} className="px-2 py-1 rounded-xl border bg-slate-200 text-xs font-medium">
-                                    {categories?.find((prop) => prop === val).toLowerCase()}
+                                    {categories?.find((prop) => prop === val)?.toLowerCase()}
                                 </div>
                             )) : "Select categories of interest"
                         }

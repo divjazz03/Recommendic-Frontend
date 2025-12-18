@@ -180,7 +180,7 @@ const RootLayout = () => {
 										<div className='absolute top-0 right-0 rounded-full bg-red-500 w-2 h-2'></div>
 									</div>
 								</Link>
-							    <InitialsOrAvartar name={profileData?.userName.full_name} avatarUrl={profileData?.profilePicture.picture_url} className='w-10 h-10 border' />
+							    <InitialsOrAvartar userName={profileData?.userName.full_name} avatarUrl={profileData?.profilePicture.picture_url} className='w-10 h-10 border' />
 								
 
 							</div>

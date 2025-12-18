@@ -75,7 +75,7 @@ export const useNotificationSettings = () => {
                         break;
                         default: console.log("Default notification type")
                 }
-                setNotificationSettings(notificationSettings => ({
+                setNotificationSettings(notificationSettings => notificationSettings && ({
                         ...notificationSettings,
                         [setting]: !notificationSettings[setting]
                 }));

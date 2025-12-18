@@ -25,7 +25,7 @@ const ProfilePictureModal = ({
   const [uploading, setUploading] = useState(false);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files[0];
+    const file: File | null = event.target.files && event.target.files[0];
     if (file) {
       setSelectedFile(file);
       setPreview(URL.createObjectURL(file));

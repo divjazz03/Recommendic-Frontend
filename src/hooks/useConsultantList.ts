@@ -17,9 +17,6 @@ const useConsultantList = () => {
   const {
     data: recommendedConsultants,
     isPending,
-    isError,
-    error,
-    isPlaceholderData,
   } = useGetRecommendedConsultants(page);
   const totalPages = recommendedConsultants?.data.totalPages;
   const isLast = recommendedConsultants?.data.last

@@ -162,7 +162,7 @@ interface ProfileNavigationProps {
   setActiveTab: (value: React.SetStateAction<string>) => void;
   handleLogout: () => void;
   activeTab: string;
-  profileData: PatientProfileData;
+  profileData: PatientProfileData | undefined;
 }
 const ProfileNavigation = ({
   setActiveTab,
@@ -176,7 +176,7 @@ const ProfileNavigation = ({
         <div className="flex items-center gap-4">
           <div className="relative">
             <InitialsOrAvartar
-              name={`${profileData?.lastName} ${profileData?.firstName}`}
+              userName={`${profileData?.lastName} ${profileData?.firstName}`}
               avatarUrl={profileData?.profileImgUrl}
               className="w-16 h-16"
             />
@@ -268,7 +268,7 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
               </div>
               <div className="relative">
                 <InitialsOrAvartar
-                  name={`${profileData?.lastName} ${profileData?.firstName}`}
+                  userName={`${profileData?.lastName} ${profileData?.firstName}`}
                   avatarUrl={profileData?.profileImgUrl}
                   className="w-16 h-16"
                 />

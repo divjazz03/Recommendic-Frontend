@@ -2,9 +2,7 @@ import { NewUser, SigninUserData } from "@/types";
 import { 
     useQuery,
     useMutation,
-    useQueryClient,
-    UseQueryResult
- } from "@tanstack/react-query";
+    useQueryClient } from "@tanstack/react-query";
 import {
    signinUser,
    getCurrentUser, 
@@ -20,11 +18,10 @@ import {
    getAppointments} from "../api/general_api";
 import { TypeOfUser } from "@/_auth/forms/SignupForm";
 import { createNewPatient, sendPatientOnboardingData } from "../api/patient_api";
-import { createNewConsultant, createNewSchedule, sendConsultantOnboardingData } from "../api/consultant_api";
+import { createNewConsultant, createNewSchedule } from "../api/consultant_api";
 import { ModifyingNotificationSetting } from "@/hooks/useNotificationSettings";
 import { NewSchedule } from "@/hooks/useConsultantSchedule";
 import { PatientOnboardingData } from "@/components/patient/PatientOnboarding";
-import { ConsultantOnboardingData } from "@/components/consultant/ConsultantOnboarding";
 
  type UserCreateMutionProps = {
     typeOfUser: TypeOfUser,

@@ -104,7 +104,7 @@ const ChatThumbnail = ({
         onClick={() => setSelectedChat(chat)}
         className={`flex justify-between w-full h-20 py-3 px-2 rounded-md ${selectedChat?.otherId === chat.otherId ? 'bg-main text-white': 'bg-transparent hover:bg-gray-50'}  cursor-pointer`}>
         <div className='flex gap-2 w-full'>
-            <InitialsOrAvartar name={fullName} avatarUrl={avatarUrl} />
+            <InitialsOrAvartar userName={fullName} avatarUrl={avatarUrl} />
             <div className='flex-1 flex justify-between flex-col w-full'>
                 <div className='flex justify-between items-center'>
                     <h1 className='font-semibold text-xl'>{fullName}</h1>

@@ -61,7 +61,7 @@ const ConsultantThumbnail: React.FC<ConsultantThumbnailProps> = ({
     >
       <div className="flex gap-4">
         {/* Profile Image*/}
-        <InitialsOrAvartar name={name} avatarUrl={avatarUrl} />
+        <InitialsOrAvartar userName={name} avatarUrl={avatarUrl} />
         {/* Main  Content*/}
         <div className="flex-1 space-y-3">
           <div className="flex justify-between items-center">

@@ -1,9 +1,8 @@
-import { ReactNode, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ConsultationChannel } from "./usePatientSchedules";
 import { AlertCircle, CheckCircle, LucideProps, XCircle } from 'lucide-react'
-import { DateTime, DateTimeFormatOptions } from "luxon";
+import { DateTime } from "luxon";
 import { useGetAppointments } from "@/lib/actions/generalQueriesAndMutation";
-import { useConfirmAppointment } from "@/lib/actions/consultantQueryAndMutations";
 
 export type AppointmentStatus = 'confirmed' | 'pending' | 'completed' | 'cancelled' | 'resheduled'
 export type AppointmentPriority = 'low' | 'medium' | 'high'
@@ -487,7 +486,9 @@ export const useConsultantAppointment = () => {
     setRescheduleTime,
     setAppointments,
     confirmedCount,
-    totalCount
+    totalCount,
+    filterStatus,
+    setFilterStatus
   }
 
 

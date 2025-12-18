@@ -1,6 +1,5 @@
 import { useGetConsultantTimeSlots } from "@/lib/actions/generalQueriesAndMutation";
 import React, { useMemo, useState } from "react";
-import { toast } from "./use-toast";
 import { schedulesToTimeSlots } from "./usePatientSchedules";
 import { ActionModalType, ConsultantAppointmentType } from "./useAppointment";
 import { useUserContext } from "@/context/AuthContext";
@@ -20,7 +19,7 @@ export const usePatientReschedule = (consultantId: string) => {
     console.log(error)
   }
 
-  const handleReschedule = (appointmentId: string) => {
+  const handleReschedule = () => {
 
   }
   return {
@@ -41,11 +40,11 @@ export const useConsultantAction = (action: ActionModalType,
   setActionModal:(value: React.SetStateAction<ActionModalType | null>) => void) => {
 
   const [actionReason, setActionReason] = useState('');
-  const [rescheduleDate, setRescheduleDate] = useState<Date>(new Date());
+  const [rescheduleDate, setRescheduleDate] = useState<Date | null>(new Date());
   const [rescheduleTime, setRescheduleTime] = useState('');
   const {userContext} = useUserContext()
-  const { data: timeSlots, isError, error } = useGetConsultantTimeSlots(userContext.user_id !!, rescheduleDate?.toISOString().split('T')[0], action.type === 'reschedule')
-  const [selectedScheduleId, setSelectedScheduleId] = useState<string | undefined>();
+  const { data: timeSlots } = useGetConsultantTimeSlots(userContext.user_id !!, rescheduleDate?.toISOString().split('T')[0], action.type === 'reschedule')
+  const [_, setSelectedScheduleId] = useState<string | undefined>();
   const [notes, setNotes] = useState<string>()
   const timeSlotsMem = useMemo(() => schedulesToTimeSlots(timeSlots? timeSlots.data : []), [timeSlots])
 

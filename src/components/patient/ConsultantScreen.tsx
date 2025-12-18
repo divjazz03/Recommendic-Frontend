@@ -231,7 +231,7 @@ const ConsultantScreen = () => {
             <div className="flex flex-row lg-flex-col items-start gap-6">
               <div className="relative items-start">
                 <InitialsOrAvartar
-                  name={consultant?.name}
+                  userName={consultant?.name}
                   avatarUrl={consultant?.image}
                 />
                 <div

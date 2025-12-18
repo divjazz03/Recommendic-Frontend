@@ -47,7 +47,7 @@ const ChatSection = (
         <header className='h-16 flex justify-between items-center w-full border border-gray-200 py-1 px-2'>
             <div className='flex flex-row items-center gap-3'>
                 <ArrowLeft className='lg:hidden'/>
-                <InitialsOrAvartar avatarUrl={selectedChat.otherImageUrl} name={selectedChat.otherFullName ?? 'Test Fullname'}/>
+                <InitialsOrAvartar avatarUrl={selectedChat.otherImageUrl} userName={selectedChat.otherFullName ?? 'Test Fullname'}/>
                 <div>
                     <p className='font-semibold text-lg'>{selectedChat.otherFullName ?? 'Test Fullname'}</p>
                     <p className='font-thin text-xs'>{status ?? 'last seen 20min ago'}</p>

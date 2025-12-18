@@ -12,7 +12,7 @@ import {
   Video,
 } from "lucide-react";
 import React from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Loader from "../shared/Loader";
 import { DateTime } from "luxon";
 import {
@@ -135,7 +135,7 @@ export const PatientSchedule = () => {
                 <div className="flex justify-between">
                   <span className="text-gray-600">Time:</span>
                   <span className="font-medium">
-                    {DateTime.fromISO(selectedTime).toFormat("HH:MM a ZZZZ")}
+                    {selectedTime && DateTime.fromISO(selectedTime).toFormat("HH:MM a ZZZZ")}
                   </span>
                 </div>
                 <div className="flex justify-between">
@@ -215,7 +215,7 @@ export const PatientSchedule = () => {
           <section className=" bg-white rounded-2xl border shadow-sm p-6 mb-6">
             <div className="flex items-center gap-4">
               <InitialsOrAvartar
-                name={consultantScheduleData?.fullName}
+                userName={consultantScheduleData?.fullName}
                 avatarUrl={consultantScheduleData?.image}
               />
               <div className="flex-1">
@@ -370,9 +370,7 @@ export const PatientSchedule = () => {
                     </div>
 
                     <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                      {React.createElement(
-                        consultationTypes.find((t) => t.id === consultationType)
-                          .icon,
+                      {React.createElement(consultationTypes.find((t) => t.id === consultationType)?.icon || CheckCircle,
                         { className: "w-5 h-5 text-dark-1" }
                       )}
                       <div>
@@ -380,14 +378,14 @@ export const PatientSchedule = () => {
                           {
                             consultationTypes.find(
                               (t) => t.id === consultationType
-                            ).name
+                            )?.name
                           }
                         </div>
                         <div className="font-sm text-gray-600">
                           {
                             consultationTypes.find(
                               (t) => t.id === consultationType
-                            ).duration
+                            )?.duration
                           }
                         </div>
                       </div>

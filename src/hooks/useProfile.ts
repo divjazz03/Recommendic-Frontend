@@ -7,10 +7,14 @@ import {
   useGetMyProfiles,
   useUpdatePatientData,
 } from "@/lib/actions/patientQueryAndMutations";
-import { Address, ConsultantEducation, LifeStyleInformation, MedicalCategory, MedicalHistory } from "@/types";
+import {
+  Address,
+  ConsultantEducation,
+  LifeStyleInformation,
+  MedicalCategory,
+  MedicalHistory,
+} from "@/types";
 import { useEffect, useState } from "react";
-
-
 
 export interface PatientProfileData {
   firstName: string;
@@ -19,7 +23,7 @@ export interface PatientProfileData {
   phoneNumber?: string;
   dateOfBirth: string;
   gender: string;
-  address?: Address;
+  address?: Partial<Address>;
   interests: string[];
   bloodType?: string;
   emergencyContact?: string;
@@ -89,7 +93,7 @@ export const usePatientProfile = () => {
     field: keyof PatientProfileData,
     value: string
   ) => {
-    setProfileData({ ...profileData, [field]: value });
+    setProfileData(prev => prev && ({ ...prev, [field]: value }) );
     if (modifyingProfileData) {
       setModifyingProfileData({ ...modifyingProfileData, [field]: value });
       return;
@@ -98,7 +102,7 @@ export const usePatientProfile = () => {
   };
 
   const handleAddressChange = (field: keyof Address, value: string) => {
-    setProfileData((prev) => ({
+    setProfileData((prev) => prev && ({
       ...prev,
       address: { ...prev.address, [field]: value },
     }));
@@ -119,7 +123,7 @@ export const usePatientProfile = () => {
     field: keyof LifeStyleInformation,
     value: string
   ) => {
-    setProfileData((prev) => ({
+    setProfileData((prev) => (prev && {
       ...prev,
       lifeStyleInfo: { ...prev?.lifeStyleInfo, [field]: value },
     }));
@@ -144,10 +148,12 @@ export const usePatientProfile = () => {
     field: keyof MedicalHistory,
     value: string
   ) => {
-    setProfileData((prev) => ({
-      ...prev,
-      medicalHistory: { ...prev?.medicalHistory, [field]: value },
-    }));
+    setProfileData((prev) => 
+      prev && ({
+          ...prev,
+          medicalHistory: { ...prev?.medicalHistory, [field]: value },
+        })
+    );
 
     if (modifyingProfileData) {
       setModifyingProfileData((prev) => ({
@@ -166,7 +172,7 @@ export const usePatientProfile = () => {
   };
 
   const handleInterestsChange = (interests: string[]) => {
-    setProfileData((prev) => ({ ...prev, interests: [...interests] }));
+    setProfileData((prev) => prev &&  ({ ...prev, interests: [...interests] }));
     setModifyingProfileData((prev) => ({ ...prev, interests: [...interests] }));
   };
 
@@ -202,7 +208,7 @@ export const usePatientProfile = () => {
     profileData,
     medicalCategories,
     handleMedicalHistoryChange,
-    handleLifeStyleChange
+    handleLifeStyleChange,
   };
 };
 
@@ -213,7 +219,7 @@ export interface ConsultantProfileData {
   phone?: string;
   dateOfBirth: string;
   gender: string;
-  address?: Address;
+  address?: Partial<Address>;
   city?: string;
   state?: string;
   zipCode?: string;
@@ -222,7 +228,7 @@ export interface ConsultantProfileData {
   subSpecialty?: string;
   licenseNumber?: string;
   yearsOfExperience?: string;
-  education?: ConsultantEducation;
+  education?: Partial<ConsultantEducation>;
   boardCertification?: string;
   location?: string;
   department?: string;
@@ -247,7 +253,13 @@ export const useConsultantProfile = () => {
     field: keyof ModifyingConsultantProfileData,
     value: unknown
   ) => {
-    setProfileData({ ...profileData, [field]: value });
+    setProfileData((prev) => {
+      if (prev)
+        return {
+          ...prev,
+          [field]: value,
+        };
+    });
     setModifyingProfileData({ ...modifyingProfileData, [field]: value });
   };
 
@@ -255,17 +267,24 @@ export const useConsultantProfile = () => {
     field: keyof ConsultantEducation,
     value: unknown
   ) => {
-    setProfileData({
-      ...profileData,
-      education: { ...profileData?.education, [field]: value },
+    setProfileData((prev) => {
+      if (prev)
+        return {
+          ...prev,
+          education: { ...prev?.education, [field]: value },
+        };
     });
-    setModifyingProfileData({
-      ...modifyingProfileData,
-      education: { ...modifyingProfileData?.education, [field]: value },
+    setModifyingProfileData((prev) => {
+      return {
+        ...prev,
+        education: { ...prev?.education, [field]: value },
+      };
     });
   };
   const handleLanguagesChange = (languages: string[]) => {
-    setProfileData((prev) => ({ ...prev, languages: [...languages] }));
+    setProfileData((prev) => {
+      if (prev) return { ...prev, languages: [...languages] };
+    });
     setModifyingProfileData((prev) => ({ ...prev, languages: [...languages] }));
   };
 

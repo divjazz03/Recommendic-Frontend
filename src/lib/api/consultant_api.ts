@@ -13,7 +13,6 @@ import {
 import { ModifyingSchedule } from "@/components/consultant/ConsultantModifySchedule";
 import { apiClient } from "../axios";
 import { NewSchedule } from "@/hooks/useConsultantSchedule";
-import { DateTime } from "luxon";
 import { ConsultantOnboardingData } from "@/components/consultant/ConsultantOnboarding";
 import { ConsultationChannel } from "@/hooks/usePatientSchedules";
 

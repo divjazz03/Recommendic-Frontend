@@ -10,7 +10,7 @@ interface CustomCalendarProps {
 
 }
 
-const getDaysInMonth = (date: Date): Date[] => {
+const getDaysInMonth = (date: Date): (Date|null)[] => {
 
   const year = date.getFullYear();
   const month = date.getMonth();
@@ -19,7 +19,7 @@ const getDaysInMonth = (date: Date): Date[] => {
   const daysInMonth = lastDay.getDate();
   const startingDayOfWeek = firstDay.getDay();
 
-  const days: Date[] = [];
+  const days: (Date | null)[] = [];
   // Add empty cells for days before the first day of the month
   for (let i = 0; i < startingDayOfWeek; i++) {
     days.push(null);
@@ -31,7 +31,9 @@ const getDaysInMonth = (date: Date): Date[] => {
   return days;
 }
 
-const isDateAvailable = (date: Date): boolean => {
+const isDateAvailable = (date: Date |
+  null
+): boolean => {
   if (!date) return false;
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -40,7 +42,7 @@ const isDateAvailable = (date: Date): boolean => {
 
 const CustomCalender: React.FC<CustomCalendarProps> = (
   {
-    currentMonth = new Date(),
+    currentMonth,
     toPreviousMonth,
     toNextMonth,
     setSelectedDate,
@@ -74,7 +76,7 @@ const CustomCalender: React.FC<CustomCalendarProps> = (
         </div>
 
         <div className='grid grid-cols-7 gap-2 mb-4'>
-          {getDaysInMonth(currentMonth).map((date, index) => (
+          {getDaysInMonth(currentMonth || new Date()).map((date, index) => (
             <button
               key={index}
               onClick={() => date && isDateAvailable(date) && setSelectedDate(date)}

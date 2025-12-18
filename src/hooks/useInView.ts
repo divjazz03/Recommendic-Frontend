@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 const useInView = (targetRef: React.RefObject<Element>, containerRef: React.RefObject<Element>) => {
   const [inView, setInView] = useState(false);

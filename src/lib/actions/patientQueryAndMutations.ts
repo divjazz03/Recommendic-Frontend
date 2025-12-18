@@ -1,7 +1,6 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { AppointmentCreationRequest, createAnAppointment, getConsultantFullProfileDetails, getConsultantSchedules, getMyDashboard, getMyProfileDetails, getRecommendedConsultants, updateProfileData } from "../api/patient_api"
 import { ModifyingProfileData } from "@/hooks/useProfile"
-import { queryClient } from "../queryClient"
 
 
 export const useGetConsultantSchedules = (consultantId: string, date: string) => {

@@ -70,7 +70,7 @@ const FileDropZone = ({
       <p className="text-red-500">{fieldState.error?.message}</p>
       {field.value.length > 0 && (
         <div className="mt-3 space-y-2">
-          {field.value.map((file, index) => (
+          {field.value.map((file: File, index: number) => (
             <div
               key={index}
               className="flex items-center justify-between bg-gray-50 p-3 rounded-lg"

@@ -9,7 +9,6 @@ import {
   PagedResponse,
   Response,
   Review,
-  Schedule,
   SignUpResponse,
   UserName,
 } from "@/types";

@@ -1,5 +1,5 @@
 import { useGetCurrentUser } from '@/lib/actions/generalQueriesAndMutation'
-import { AuthUserContext, ConsultantProfile, PatientProfile, UserContext } from '@/types'
+import { AuthUserContext, ConsultantProfile, PatientProfile } from '@/types'
 import React from 'react'
 import { createContext, useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'

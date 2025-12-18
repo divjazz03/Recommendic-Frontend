@@ -15,7 +15,7 @@ const GlobalSearch = () => {
     const [popoverOpen, setPopOverOpen] = useState(false);
     const { data, isLoading, isError } = useSearchResults();
 
-    const triggerRef = useRef(null);
+    const triggerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (debouncedValue.trim() === '') {
@@ -39,7 +39,7 @@ const GlobalSearch = () => {
                     className='w-screen min-h-full py-1 px-1 flex flex-col' sideOffset={8}
                     onOpenAutoFocus={(e) => e.preventDefault()}
                     onInteractOutside={(e) => {
-                        if (triggerRef.current && triggerRef.current.contains(e.target as Node)) {
+                        if (triggerRef.current && triggerRef.current?.contains(e.target as Node)) {
                             e.preventDefault();
                         } else {
                             setPopOverOpen(false)

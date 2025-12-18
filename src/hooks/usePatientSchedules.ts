@@ -44,7 +44,7 @@ export const usePatientSchedule = (consultantId: string) => {
                 consultantId: consultantId,
                 date: selectedDate.toISOString().split("T")[0],
                 scheduleId: selectedScheduleId,
-                reason: reason
+                reason: reason || ''
             });
         }
     }

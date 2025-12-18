@@ -14,7 +14,7 @@ export const useSecuritySetting = () => {
         loginAlertsEnabled: true
     });
 
-    const handleSettingChange = (setting: keyof typeof securitySettings, value) => {
+    const handleSettingChange = (setting: keyof typeof securitySettings, value: unknown) => {
         setSecuritySettings({
             ...securitySettings,
             [setting]: value

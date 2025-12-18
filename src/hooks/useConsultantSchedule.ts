@@ -1,7 +1,7 @@
 import { ApiError } from "@/lib/axios";
 import { useCreateNewSchedules, useDeleteSchedule, useGetCurrentUserSchedules, useGetScheduleWithUserId, useUpdateSchedule } from "@/lib/actions/consultantQueryAndMutations";
 import { RecurrenceRule, Schedule, WeekDay } from "@/types";
-import { VideoIcon, Users, Video, LucideProps } from "lucide-react";
+import { VideoIcon, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Location, useNavigate } from "react-router-dom";
 import { ModifyingSchedule, ModifyingRecurrenceRule } from "@/components/consultant/ConsultantModifySchedule";
@@ -12,7 +12,7 @@ export interface NewSchedule {
     name: string,
     startTime: string,
     endTime: string,
-    recurrenceRule?: RecurrenceRule,
+    recurrenceRule?: Partial<RecurrenceRule>,
     channels: string[],
     isActive: boolean,
 }
@@ -54,7 +54,7 @@ export const useCreateSchedule = () => {
         channels: [],
         isActive: true
     }]);
-    const { mutateAsync: createNewSchedules, isError, error, isPending: isCreating } = useCreateNewSchedules();
+    const { mutateAsync: createNewSchedules, isPending: isCreating } = useCreateNewSchedules();
 
     const [createdModalOpen, setCreatedModalOpen] = useState(false)
 
@@ -88,7 +88,7 @@ export const useCreateSchedule = () => {
     const updateRecurrenceRule = (id: number, field: keyof RecurrenceRule, value: unknown) => {
         const scheduleLocal = schedules.filter(schedule => schedule.id === id)[0];
         if (scheduleLocal && scheduleLocal.recurrenceRule) {
-            setSchedules(schedules.map(schedule =>
+            setSchedules(prev => prev && prev.map(schedule =>
                 schedule.id === id
                     ? { ...schedule, recurrenceRule: { ...schedule.recurrenceRule, [field]: value } }
                     : schedule
@@ -160,9 +160,9 @@ export const useCreateSchedule = () => {
 
 export const useModifySchedule = (location: Location) => {
     const [scheduleId] = useState<string>(location.state.scheduleId);
-    const { data: scheduleResponse, isPending } = useGetScheduleWithUserId(scheduleId);
-    const { mutateAsync: updateAsyncSchedule, isPending: isUpdating } = useUpdateSchedule()
-    const { mutateAsync: deleteAsyncSchedule, isPending: isDeleting } = useDeleteSchedule();
+    const { data: scheduleResponse } = useGetScheduleWithUserId(scheduleId);
+    const { mutateAsync: updateAsyncSchedule } = useUpdateSchedule()
+    const { mutateAsync: deleteAsyncSchedule } = useDeleteSchedule();
     const [modificationSuccess, setModificationSuccess] = useState<boolean>(false);
     const [schedule, setSchedule] = useState<Schedule>();
     const [modifiedSchedule, setModifiedSchedule] = useState<ModifyingSchedule>();
