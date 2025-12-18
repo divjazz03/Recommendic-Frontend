@@ -79,7 +79,7 @@ export const useCreateSchedule = () => {
         setSchedules(schedules => schedules.filter(schedule => schedule.id !== id));
     };
 
-    const updateSchedule = (id: number, field: keyof Schedule, value: any) => {
+    const updateSchedule = (id: number, field: keyof Schedule, value: unknown) => {
         setSchedules(schedules => schedules.map(schedule =>
             schedule.id === id ? { ...schedule, [field]: value } : schedule
         ));
@@ -114,7 +114,7 @@ export const useCreateSchedule = () => {
                 return schedule;
             }
             if (schedule.recurrenceRule && schedule.recurrenceRule.weekDays) {
-                schedule.recurrenceRule.weekDays = schedule.recurrenceRule.weekDays.includes(day)
+                schedule.recurrenceRule.weekDays = schedule.recurrenceRule.weekDays?.includes(day)
                     ? schedule.recurrenceRule.weekDays.filter(d => d !== day)
                     : [...schedule.recurrenceRule?.weekDays, day];
                 return schedule;
@@ -218,7 +218,7 @@ export const useModifySchedule = (location: Location) => {
         setModifiedSchedule(schedule => {
             if (channel) {
                 const channels = schedule?.channels?.includes(channel)
-                    ? schedule.channels.filter(c => c !== channel)
+                    ? schedule.channels?.filter(c => c !== channel)
                     : schedule?.channels ? [...schedule?.channels, channel] : [channel];
                 return { ...schedule, channels };
             }
@@ -232,7 +232,7 @@ export const useModifySchedule = (location: Location) => {
                 if (day) {
                     if (modifiedSchedule.recurrenceRule) {
                         const weekDays = modifiedSchedule?.recurrenceRule?.weekDays?.includes(day)
-                            ? modifiedSchedule?.recurrenceRule.weekDays.filter(d => d !== day)
+                            ? modifiedSchedule?.recurrenceRule?.weekDays?.filter(d => d !== day)
                             : schedule?.recurrenceRule?.weekDays
                                 ? [...schedule.recurrenceRule?.weekDays, day]
                                 : [day];

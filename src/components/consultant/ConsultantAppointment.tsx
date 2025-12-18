@@ -51,13 +51,11 @@ const ConsultantAppointment = () => {
     setSearchTerm,
     setSelectedAppointment,
     todayCount,
-    appointments,
     getPriorityColor,
     activeTab,
     searchTerm,
     setAppointments,
     confirmedCount,
-    totalCount,
   } = useConsultantAppointment();
   return (
     <main className="h-full mx-auto overflow-y-auto max-w-7xl p-4 md:p-8">
@@ -475,7 +473,7 @@ const ActionModal = ({
                 </h2>
                 <p className="text-dark-2 mb-6">{formatDate(rescheduleDate)}</p>
 
-                {timeSlotsMem && (
+                {timeSlotsMem && setRescheduleTime && (
                   <ConsultantTimeSlots
                     selectedTime={rescheduleTime ?? ""}
                     setSelectedScheduleId={setSelectedScheduleId}

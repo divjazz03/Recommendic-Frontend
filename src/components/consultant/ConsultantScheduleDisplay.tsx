@@ -1,7 +1,6 @@
-import React from 'react';
-import { Calendar, Clock, Edit, Plus, Eye, EyeOff, Settings, LucideProps } from 'lucide-react';
+import { Calendar, Clock, Edit, Plus, Eye, EyeOff, Settings } from 'lucide-react';
 import Loader from '@/components/shared/Loader';
-import { ChannelOptions, channelOptions, formatRecurrence, formatTime, useScheduleDisplay } from '@/hooks/useConsultantSchedule';
+import { ChannelOptions, formatRecurrence, formatTime, useScheduleDisplay } from '@/hooks/useConsultantSchedule';
 import { Button } from '../ui/button';
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '../ui/empty';
 

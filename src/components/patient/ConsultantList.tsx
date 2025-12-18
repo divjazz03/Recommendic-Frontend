@@ -1,8 +1,5 @@
 import React, {
-  HtmlHTMLAttributes,
-  useEffect,
   useLayoutEffect,
-  useMemo,
   useRef,
   useState,
 } from "react";
@@ -36,7 +33,6 @@ const ConsultantList = () => {
     setSelectedSpecialty,
     isPending,
     showFilters,
-    empty,
     isLast,
     page,
     pageNumber,
@@ -187,7 +183,7 @@ const ConsultantList = () => {
                 />
               ))}
             </div>
-            {filteredConsultants?.length > 0 && (
+            {filteredConsultants?.length > 0 && totalPages && (
               <div ref={paginationRef}>
                 <PaginationWrapper
                   currentPage={page}
@@ -202,7 +198,7 @@ const ConsultantList = () => {
                 />
               </div>
             )}
-            {filteredConsultants?.length > 0 && showFloatingPagination && (
+            {filteredConsultants?.length > 0 && showFloatingPagination && totalPages && (
               <PaginationWrapper
                 totalPages={totalPages}
                 currentPage={page}

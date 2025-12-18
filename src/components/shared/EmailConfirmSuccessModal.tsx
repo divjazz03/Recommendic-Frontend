@@ -37,7 +37,7 @@ const EmailConfirmSuccessModal = ({
                 }
             }
         }
-    }, [isOpen,redirectCount])
+    }, [isOpen,redirectCount,redirectUrl])
 
 
     return (

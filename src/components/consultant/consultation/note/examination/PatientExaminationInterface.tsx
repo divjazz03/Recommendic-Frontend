@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Header from './Header';
 import { ArrowLeft, Check, Save } from 'lucide-react';
 import VitalSignsExam from './VitalSignsExam';

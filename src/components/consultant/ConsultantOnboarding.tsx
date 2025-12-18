@@ -7,18 +7,16 @@ import {
   Calendar,
   ChevronLeft,
   ChevronRight,
-  Clock,
   FileText,
   HashIcon,
   Upload,
-  X,
 } from "lucide-react";
 import { toast } from "sonner";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { getUploadSignature } from "@/lib/api/general_api";
 import Loader from "../shared/Loader";
 import { z } from "zod";
-import { useController, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -287,11 +285,7 @@ const ConsultantOnboarding = () => {
     if (step > 1) setStep(step - 1);
   };
 
-  useEffect(() => {
-    if (isFinishedInputtingValues) {
-      handleSubmit();
-    }
-  }, [isFinishedInputtingValues]);
+  
 
   const handleSubmit = async () => {
     setIsOnboarding(true);
@@ -351,7 +345,7 @@ const ConsultantOnboarding = () => {
       return toast.error("No credentials found");
     }
     
-    const response = userContext.user_id && updateOnBoardingInfo({data: onboardingData, userId: userContext.user_id})
+    userContext.user_id && updateOnBoardingInfo({data: onboardingData, userId: userContext.user_id})
     if (isError && error) {
       if (error instanceof ApiError) {
         Array(error.data?.errors).map((error) => toast.error(error.error))
@@ -361,6 +355,12 @@ const ConsultantOnboarding = () => {
     setIsOnboarding(false);
     navigate("/");
   };
+
+  useEffect(() => {
+    if (isFinishedInputtingValues) {
+      handleSubmit();
+    }
+  }, [isFinishedInputtingValues]);
 
   return (
     <main className="flex flex-col justify-center h-full px-2 w-full max-w-3xl ">
@@ -1162,7 +1162,6 @@ const ProfileAndBio = ({
 const Navigation = ({
   handleBack,
   step,
-  handleSubmit,
   isOnboarding,
 }: {
   isOnboarding: boolean;

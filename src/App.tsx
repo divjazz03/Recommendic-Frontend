@@ -12,8 +12,6 @@ import Notification from "./_root/pages/Notification";
 import RootLayout from "./_root/pages/RootLayout";
 import Consultant from "./components/patient/Consultant";
 import ConsultantList from "./components/patient/ConsultantList";
-import Schedule from "@/_root/pages/Schedule";
-import { useUserContext } from "@/context/AuthContext";
 import { PatientSchedule } from "./components/patient/PatientSchedule";
 import ConsultantSchedule from "./components/consultant/ConsultantSchedule";
 import ConsultantNewSchedule from "./components/consultant/ConsultantNewSchedule";
@@ -31,7 +29,6 @@ import ConsultantScreen from "./components/patient/ConsultantScreen";
 import Chat from "./_root/pages/Chat";
 
 const App = () => {
-  const { userContext } = useUserContext();
 
   return (
     <main className="h-screen w-screen">

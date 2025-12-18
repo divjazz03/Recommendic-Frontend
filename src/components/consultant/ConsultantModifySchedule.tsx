@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Calendar, Clock, Video, Users, Trash2, Save, ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
-import { RecurrenceRuleFrequency, Schedule, WeekDay } from '@/types';
+import { RecurrenceRuleFrequency, WeekDay } from '@/types';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useDeleteSchedule, useGetScheduleWithUserId, useUpdateSchedule } from '@/lib/actions/consultantQueryAndMutations';
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { useModifySchedule } from '@/hooks/useConsultantSchedule';
 export interface ModifyingRecurrenceRule {

@@ -26,8 +26,6 @@ const PatientAppointment = () => {
     getDaysUntil,
     getStatusColor,
     getStatusIcon,
-    pastAppointments,
-    upcomingAppointments,
     filteredAppointments,
     confirmedAppointmentCount,
     pendingAppointmentCount,
@@ -315,7 +313,6 @@ const AppointmentModal = ({
   appointment,
   onClose,
   StatusIcon,
-  date,
   daysUntil,
   statusColor,
 }: AppointmentModalProps) => (
@@ -505,7 +502,7 @@ const RescheduleModal = ({
             Cancel
           </button>
           <button
-            onClick={() => handleReschedule(appointment.id)}
+            onClick={() => handleReschedule()}
             className={'flex-1 py-2 rounded-lg font-semibold transition bg-blue-600 text-white hover:bg-blue-700'}
           >
             Confirm Reschedule

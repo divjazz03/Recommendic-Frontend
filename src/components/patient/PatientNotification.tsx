@@ -1,5 +1,4 @@
 import {
-  Activity,
   Bell,
   Calendar,
   CheckCircle,
@@ -8,7 +7,7 @@ import {
   Pill,
   X,
 } from "lucide-react";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Empty,
   EmptyDescription,

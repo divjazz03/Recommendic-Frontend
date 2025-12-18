@@ -78,7 +78,7 @@ const PatientOnboarding = () => {
       toast.success("Take you for helping us serve you better");
       navigate('/');
     } catch (error) {
-      toast.error(error?.message);
+      toast.error(String(error));
     }
     alert(
       "Profile completed successfully! Your doctors will have access to these information"

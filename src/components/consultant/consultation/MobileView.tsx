@@ -1,5 +1,5 @@
 import { MessageCircle, User, FileText, Pill, Clock,Save, Video } from 'lucide-react';
-import React, {useRef, useState } from 'react'
+import {useState } from 'react'
 import { ConsultationInfoProps} from './ConsultantConsultation';
 import NotesView from './note/NotesView';
 import PatientView from './patient/PatientView';
@@ -81,7 +81,7 @@ const MobileView = (
                 />
                 <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                        <h3 className="font-semibold text-gray-900 truncate">{patientData.name}</h3>
+                        <h3 className="font-semibold text-gray-900 truncate">{patientData?.name}</h3>
                         <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full shrink-0">
                             {patientData?.age}y
                         </span>
@@ -160,7 +160,7 @@ const MobileView = (
         switch (currentView) {
             case 'chat': return <div></div>
             case 'patient':
-                return <PatientView
+                return patientData && <PatientView
                     patientData={patientData}
                 />;
             case 'notes':
@@ -171,7 +171,7 @@ const MobileView = (
                     setDiagnosis={setDiagnosis}
                 />;
             case 'prescription':
-                return <PrescriptionView
+                return patientData && <PrescriptionView
                     addPrescription={addPrescription}
                     clinicalNotes={clinicalNotes}
                     diagnosis={diagnosis}

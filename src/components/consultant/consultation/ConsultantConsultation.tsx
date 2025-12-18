@@ -1,5 +1,5 @@
 import { LucideProps } from 'lucide-react';
-import React, { MutableRefObject, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import MobileView from './MobileView';
 import DesktopView from './DesktopView';
 import { useStartConsultation } from '@/lib/actions/generalQueriesAndMutation';
@@ -10,15 +10,15 @@ const ConsultantConsultation = () => {
     const location = useLocation()
     const userType = useUserContext().userContext.userType;
     const appointmentId = location.state?.appointmentId ?? 'dksdlnksdnokisjidbkusdkuj';
-    const [consultationId, setConsultationId] = useState<string>('')    
+    const [, setConsultationId] = useState<string>('')    
     const [clinicalNotes, setClinicalNotes] = useState('Patient reports chest pain for 3 days. Pain described as sharp, intermittent...')
     const [diagnosis, setDiagnosis] = useState('');
     const [prescription, setPrescription] = useState<Prescription[]>([]);
     const [newMedication, setNewMedication] = useState<Medication>({ name: '', dosage: '', frequency: '', duration: '' });
     const [showPrescriptionForm, setShowPrescriptionForm] = useState(false);
     
-    const [videoStatus, setVideoStatus] = useState('connected');
-    const [consultationTime, setConsultationTime] = useState('12:45');
+    const [videoStatus,] = useState('connected');
+    const [consultationTime] = useState('12:45');
     const [patientData, setPatientData] = useState<PatientData | undefined>({
         name: 'John Smith',
         age: 45,

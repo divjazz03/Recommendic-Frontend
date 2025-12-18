@@ -1,6 +1,6 @@
 
-import { ArrowLeft, BellDot, BellOff, Calendar, CheckCircle, Clock, Download, Eye, Pill, Plus, Share2, Shield, User } from 'lucide-react';
-import React, { useEffect, useState } from 'react'
+import { BellDot, BellOff, Calendar, CheckCircle, Clock, Download, Eye, Pill, Plus, Share2, Shield, User } from 'lucide-react';
+import React, { useState } from 'react'
 import { toast } from 'sonner';
 import { Button } from '../ui/button';
 
@@ -248,7 +248,7 @@ const PatientMedication = () => {
         },
       ]
       
-    setUpcomingDoses(prev => ([...prev, ...upcomingDoses]))
+    setUpcomingDoses(prev => prev && upcomingDoses && ([...prev].concat(upcomingDoses)))
     setShowAddForm(false)
     return toast.success(`Medication was added successfully` )
   }
@@ -294,7 +294,10 @@ const PatientMedication = () => {
 
         <div className='flex items-center gap-2 text-sm text-gray-600'>
           <Calendar className='w-4 h-4' />
-          <span>Started: {new Date(medication.startDate).toLocaleDateString()}</span>
+          {medication.startDate &&
+            (<span>Started: {new Date(medication.startDate).toLocaleDateString()}</span>)
+          }
+          
           {medication.endDate && (
             <span>• Ended: {new Date(medication.endDate).toLocaleDateString()}</span>
           )}
@@ -313,13 +316,15 @@ const PatientMedication = () => {
 
         {medication && medication.status === 'ongoing' && (
           <div className='flex items-center justify-between pt-3 border-t border-gray-100'>
-            <div className='flex items-center gap-2'>
-              <div className='text-sm text-gray-600'>Adherence: </div>
-              <div className={`text-sm font-medium ${medication.adherence >= 90 ? 'text-green-600' :
-                medication.adherence >= 70 ? 'text-yellow-600' : 'text-red-600'
-                }`}>{medication.adherence}%
+            {medication.adherence && 
+              <div className='flex items-center gap-2'>
+                <div className='text-sm text-gray-600'>Adherence: </div>
+                <div className={`text-sm font-medium ${medication.adherence >= 90 ? 'text-green-600' :
+                  medication.adherence >= 70 ? 'text-yellow-600' : 'text-red-600'
+                  }`}>{medication.adherence}%
+                </div>
               </div>
-            </div>
+            }
             <div className='text-sm text-gray-600'>
               Next: {medication.nextDose}
             </div>
@@ -331,7 +336,7 @@ const PatientMedication = () => {
 
   const AddMedicationForm = () => {
 
-    const [medication, setMedication] = useState<MedicationFormType>({ medicationName: '', dosage: 0, frequency: 'As needed', purpose: '', timeToTake: 'morning', notes: null });
+    const [medication, setMedication] = useState<MedicationFormType>({ medicationName: '', dosage: 0, frequency: 'As needed', purpose: '', timeToTake: 'morning', notes: undefined });
 
     const handleFormChange = (key: keyof MedicationFormType, value: unknown) => {
       setMedication(prev => ({ ...prev, [key]: value }))

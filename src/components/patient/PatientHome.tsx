@@ -3,23 +3,19 @@ import { useGetMyDashboard } from "@/lib/actions/patientQueryAndMutations";
 import { formatDate } from "@/lib/utils/utils";
 import { NotificationContext } from "@/types";
 import {
-  Activity,
   AlertCircle,
   Calendar,
   Clock,
   FileText,
   HandHelpingIcon,
-  Heart,
   MessageCircle,
   Microscope,
   Pill,
   PillBottle,
-  TrendingUp,
-  User,
   User2,
 } from "lucide-react";
 import { DateTime } from "luxon";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Empty,
   EmptyContent,
@@ -59,69 +55,69 @@ interface DashboardData {
   recentActivity: RecentActivity[];
 }
 
-const upcomingAppointments: AppointmentView[] = [
-  {
-    id: "1",
-    doctorName: "Michael Chen",
-    specialty: "Cardiologist",
-    date: "2025-11-18",
-    time: "10:00 AM",
-    channel: "online",
-  },
-  {
-    id: "2",
-    doctorName: "Emily Rodriguez",
-    specialty: "General Physician",
-    date: "2025-11-22",
-    time: "2:30 PM",
-    channel: "in-person",
-  },
-];
+// const upcomingAppointments: AppointmentView[] = [
+//   {
+//     id: "1",
+//     doctorName: "Michael Chen",
+//     specialty: "Cardiologist",
+//     date: "2025-11-18",
+//     time: "10:00 AM",
+//     channel: "online",
+//   },
+//   {
+//     id: "2",
+//     doctorName: "Emily Rodriguez",
+//     specialty: "General Physician",
+//     date: "2025-11-22",
+//     time: "2:30 PM",
+//     channel: "in-person",
+//   },
+// ];
 
-const medications: Medication[] = [
-  {
-    id: "1",
-    name: "Lisinopril",
-    dosage: "10mg",
-    frequency: "Once daily",
-    nextDose: "8:00 AM",
-  },
-  {
-    id: "2",
-    name: "Metformin",
-    dosage: "500mg",
-    frequency: "Twice daily",
-    nextDose: "1:00 PM",
-  },
-  {
-    id: "3",
-    name: "Atorvastatin",
-    dosage: "20mg",
-    frequency: "Once daily",
-    nextDose: "9:00 PM",
-  },
-];
+// const medications: Medication[] = [
+//   {
+//     id: "1",
+//     name: "Lisinopril",
+//     dosage: "10mg",
+//     frequency: "Once daily",
+//     nextDose: "8:00 AM",
+//   },
+//   {
+//     id: "2",
+//     name: "Metformin",
+//     dosage: "500mg",
+//     frequency: "Twice daily",
+//     nextDose: "1:00 PM",
+//   },
+//   {
+//     id: "3",
+//     name: "Atorvastatin",
+//     dosage: "20mg",
+//     frequency: "Once daily",
+//     nextDose: "9:00 PM",
+//   },
+// ];
 
-const recentActivity: RecentActivity[] = [
-  {
-    id: "1",
-    title: "Lab results uploaded",
-    time: "2 hours ago",
-    context: "LAB",
-  },
-  {
-    id: "2",
-    title: "Prescription refilled",
-    time: "1 day ago",
-    context: "MEDICINE",
-  },
-  {
-    id: "3",
-    title: "Appointment completed",
-    time: "3 days ago",
-    context: "APPOINTMENT",
-  },
-];
+// const recentActivity: RecentActivity[] = [
+//   {
+//     id: "1",
+//     title: "Lab results uploaded",
+//     time: "2 hours ago",
+//     context: "LAB",
+//   },
+//   {
+//     id: "2",
+//     title: "Prescription refilled",
+//     time: "1 day ago",
+//     context: "MEDICINE",
+//   },
+//   {
+//     id: "3",
+//     title: "Appointment completed",
+//     time: "3 days ago",
+//     context: "APPOINTMENT",
+//   },
+// ];
 
 const getActivityIcon = (context: NotificationContext) => {
   switch (context) {
@@ -144,18 +140,18 @@ const getActivityIcon = (context: NotificationContext) => {
   }
 };
 
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case "normal":
-      return "text-green-600 bg-green-50 border-green-200";
-    case "warning":
-      return "text-yellow-600 bg-yellow-50 border-yellow-200";
-    case "critical":
-      return "text-red-600 bg-red-50 border-red-200";
-    default:
-      return "text-gray-600 bg-gray-50 border-gray-200";
-  }
-};
+// const getStatusColor = (status: string) => {
+//   switch (status) {
+//     case "normal":
+//       return "text-green-600 bg-green-50 border-green-200";
+//     case "warning":
+//       return "text-yellow-600 bg-yellow-50 border-yellow-200";
+//     case "critical":
+//       return "text-red-600 bg-red-50 border-red-200";
+//     default:
+//       return "text-gray-600 bg-gray-50 border-gray-200";
+//   }
+// };
 
 const PatientHome = () => {
   const { profileData } = useUserContext();
@@ -192,7 +188,7 @@ const PatientHome = () => {
       time: formatDate(act.dateTime),
       title: act.title,
     }));
-  const [dashBoard, setDashBoard] = useState<DashboardData>({
+  const [dashBoard, _] = useState<DashboardData>({
     appointments: appointments || [],
     medications: medications || [],
     recentActivity: recentActivities || [],

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import {
     AlertDialog,
     AlertDialogContent,
@@ -22,7 +22,7 @@ const SignupSuccessModal: React.FC<SignupSuccessModalProps> = ({
     onRedirect
 }) => {
     const [redirectCount, setRedirectCount] = useState(Math.ceil(redirectDelay/1000));
-
+    const callbackOnredirect = useCallback(() => onRedirect, []);
     useEffect(() => {
         if (isOpen) {
             if(redirectCount > 0){
@@ -30,14 +30,14 @@ const SignupSuccessModal: React.FC<SignupSuccessModalProps> = ({
                 return () => clearTimeout(timeout);
             } else {
                 if (onRedirect) {
-                    onRedirect();
+                    callbackOnredirect();
                 } else {
                     window.location.href = redirectUrl;
                 }
             }
         }
 
-    }, [isOpen,redirectCount])
+    }, [isOpen,redirectCount,callbackOnredirect])
 
 
     return (

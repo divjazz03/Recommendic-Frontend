@@ -13,7 +13,6 @@ import {
   ArrowLeft,
   AlertCircle,
 } from "lucide-react";
-import MedicalCategorySelect from "../ui/MedicalCategorySelect";
 import {
   PatientNotificationSetting,
   useNotificationSettings,
@@ -34,7 +33,7 @@ import { MultiSelect, MultiSelectContent, MultiSelectGroup, MultiSelectItem, Mul
 
 const PatientProfile = () => {
   const [activeTab, setActiveTab] = useState("");
-  const { mutateAsync: logout, isPending: isLogginOut } = useLogout();
+  const { mutateAsync: logout } = useLogout();
   const handleLogout = async () => {
     await logout();
     window.location.pathname = "/sign-in";

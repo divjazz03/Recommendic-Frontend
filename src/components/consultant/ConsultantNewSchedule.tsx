@@ -1,6 +1,6 @@
-import React, { useEffect} from 'react';
-import { Calendar, Clock, Users, Plus, Trash2, Save, ArrowLeft, VideoIcon, Loader, CheckCircle2 } from 'lucide-react';
-import { RecurrenceRule, WeekDay } from '@/types';
+import { useEffect} from 'react';
+import { Calendar, Clock, Plus, Trash2, Save, ArrowLeft, Loader, CheckCircle2 } from 'lucide-react';
+import { WeekDay } from '@/types';
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogHeader, AlertDialogTitle } from '../ui/alert-dialog';
 import { channelOptions, useCreateSchedule, weekDays } from '@/hooks/useConsultantSchedule';
 import { Button } from '../ui/button';
@@ -154,7 +154,7 @@ const ConsultantNewSchedule = () => {
                                                             <button
                                                                 key={day.value}
                                                                 onClick={() => toggleDayOfWeek2(schedule.id, day.value as WeekDay)}
-                                                                className={`px-3 py-1 text-sm sm:text-base rounded-lg transition-colors ${schedule.recurrenceRule?.weekDays.includes(day.value as WeekDay)
+                                                                className={`px-3 py-1 text-sm sm:text-base rounded-lg transition-colors ${schedule.recurrenceRule?.weekDays?.includes(day.value as WeekDay)
                                                                     ? 'bg-main-light text-white'
                                                                     : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
                                                                     }`}

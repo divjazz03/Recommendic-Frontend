@@ -3,7 +3,6 @@ import { useGetDashboard } from "@/lib/actions/consultantQueryAndMutations";
 import { ConsultantProfile, NotificationContext } from "@/types";
 import {
   Activity,
-  AlertCircle,
   Calendar,
   CalendarX,
   CheckCircle,
@@ -44,37 +43,37 @@ interface Appointment {
   reason: string;
 }
 
-interface Patient {
-  id: string;
-  name: string;
-  condition: string;
-  status: "critical" | "stable" | "monitoring";
-  lastVisit: string;
-}
+// interface Patient {
+//   id: string;
+//   name: string;
+//   condition: string;
+//   status: "critical" | "stable" | "monitoring";
+//   lastVisit: string;
+// }
 
-const criticalPatients: Patient[] = [
-  {
-    id: "1",
-    name: "John Davis",
-    condition: "Post-MI, elevated troponin",
-    status: "critical",
-    lastVisit: "2 hours ago",
-  },
-  {
-    id: "2",
-    name: "Patricia Wilson",
-    condition: "Unstable angina",
-    status: "monitoring",
-    lastVisit: "5 hours ago",
-  },
-  {
-    id: "3",
-    name: "Michael Brown",
-    condition: "Arrhythmia, monitoring",
-    status: "stable",
-    lastVisit: "1 day ago",
-  },
-];
+// const criticalPatients: Patient[] = [
+//   {
+//     id: "1",
+//     name: "John Davis",
+//     condition: "Post-MI, elevated troponin",
+//     status: "critical",
+//     lastVisit: "2 hours ago",
+//   },
+//   {
+//     id: "2",
+//     name: "Patricia Wilson",
+//     condition: "Unstable angina",
+//     status: "monitoring",
+//     lastVisit: "5 hours ago",
+//   },
+//   {
+//     id: "3",
+//     name: "Michael Brown",
+//     condition: "Arrhythmia, monitoring",
+//     status: "stable",
+//     lastVisit: "1 day ago",
+//   },
+// ];
 
 type Stat = {
     yesterdayTodayAppointmentCountDifference: number,
@@ -97,18 +96,18 @@ interface DashboardData {
     pendingTasks: Task[]
 }
 
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case "critical":
-      return "bg-red-100 text-red-700 border-red-200";
-    case "monitoring":
-      return "bg-yellow-100 text-yellow-700 border-yellow-200";
-    case "stable":
-      return "bg-green-100 text-green-700 border-green-200";
-    default:
-      return "bg-gray-100 text-gray-700 border-gray-200";
-  }
-};
+// const getStatusColor = (status: string) => {
+//   switch (status) {
+//     case "critical":
+//       return "bg-red-100 text-red-700 border-red-200";
+//     case "monitoring":
+//       return "bg-yellow-100 text-yellow-700 border-yellow-200";
+//     case "stable":
+//       return "bg-green-100 text-green-700 border-green-200";
+//     default:
+//       return "bg-gray-100 text-gray-700 border-gray-200";
+//   }
+// };
 
 const getAppointmentStatus = (status: string) => {
   switch (status) {
@@ -171,7 +170,7 @@ const ConsultantHome = () => {
     context: data.context
   })) 
   const pendingTasks: Task[] | undefined = []
-  const [dashBoard, setSetBoard] = useState<DashboardData>({
+  const [dashBoard, ] = useState<DashboardData>({
     todayAppointments: todaysAppointments || [],
     pendingTasks: pendingTasks,
     stats: {

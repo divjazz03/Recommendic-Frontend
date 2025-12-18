@@ -140,7 +140,7 @@ const PatientLabOrderScreen: React.FC<PatientLabOrderScreenProps> = ({ backToHom
 
     const [activeTab, setActiveTab] = useState('all');
     const [searchQuery, setSearchQuery] = useState('');
-    const [labOrders, setLabOrders] = useState<LabOrder[]>(staticlabOrders);
+    const [labOrders, _ ] = useState<LabOrder[]>(staticlabOrders);
 
 
     const filteredOrders = useMemo(() => labOrders.filter(order => {

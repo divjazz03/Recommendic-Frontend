@@ -39,7 +39,7 @@ export interface NewScheduleRequest {
   name: string;
   startTime: string;
   endTime: string;
-  recurrenceRule?: RecurrenceRule;
+  recurrenceRule?: Partial<RecurrenceRule>;
   channels: string[];
   isActive: boolean;
   zoneOffset: string;
@@ -53,7 +53,7 @@ export async function sendConsultantOnboardingData(
   data: ConsultantOnboardingData,
   userId: string
 ) {
-  let result = await apiClient
+  const result = await apiClient
     .post(`${consultantBasePath}/${userId}/onboard`, data)
     .then((response) => response.data);
   return result;
@@ -62,7 +62,7 @@ export async function sendConsultantOnboardingData(
 export async function deleteConsultant(
   consultantId: string
 ): Promise<Response> {
-  let result = await apiClient
+  const result = await apiClient
     .delete(`${consultantBasePath}/${consultantId}`)
     .then((response) => response.data);
   return result;
@@ -72,8 +72,8 @@ export async function getAllConsultants(params: {
   page?: number;
   size?: number;
   sort?: boolean;
-}): Promise<any> {
-  let result = await apiClient
+}): Promise<unknown> {
+  const result = await apiClient
     .get(`${consultantBasePath}`, { params: params })
     .then((response) => response.data);
 

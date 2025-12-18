@@ -1,7 +1,6 @@
 import { CheckCircle, Clock, ExternalLink, Shield, Square} from 'lucide-react';
-import React, { MutableRefObject, useRef, useState } from 'react'
+import { useState } from 'react'
 import { ConsultationInfoProps} from './ConsultantConsultation';
-import ChatSection from '../../chat/ChatSection';
 import MedicalPanel from './MedicalPanel';
 
 
@@ -18,8 +17,6 @@ const DesktopView = (
         showPrescriptionForm,
         setShowPrescriptionForm,
         addPrescription,
-        videoStatus,
-        consultationTime,
         patientData,
         removePrescription
     }: ConsultationInfoProps
@@ -36,14 +33,14 @@ const DesktopView = (
                 />
                 <div className="flex-1">
                     <div className="flex items-center gap-3">
-                        <h3 className="font-semibold text-gray-900">{patientData.name}</h3>
+                        <h3 className="font-semibold text-gray-900">{patientData?.name}</h3>
                         <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
                             {patientData?.age}y,&nbsp;{patientData?.gender}
                         </span>
                     </div>
-                    <p className="text-sm text-gray-600">Last visit: {patientData.lastVisit} • {patientData.insurance}</p>
+                    <p className="text-sm text-gray-600">Last visit: {patientData?.lastVisit} • {patientData?.insurance}</p>
                     <div className="flex items-center gap-4 mt-1">
-                        <span className="text-xs text-red-600">⚠️ Allergies: {patientData.allergies.join(', ')}</span>
+                        <span className="text-xs text-red-600">⚠️ Allergies: {patientData?.allergies?.join(', ')}</span>
                     </div>
                 </div>
                 <div className="text-right">
@@ -134,11 +131,10 @@ const DesktopView = (
                 {activeTab === '' ? 
                 <div className="flex-1 flex flex-col h-full max-w-[60em] min-w-[60em]">
                     <VideoCallSection />
-                    
                 </div> 
                 : 
                 /* Medical Panel */
-                <MedicalPanel
+                 <MedicalPanel
                     activeTab={activeTab}
                     addPrescription={addPrescription}
                     clinicalNotes={clinicalNotes}

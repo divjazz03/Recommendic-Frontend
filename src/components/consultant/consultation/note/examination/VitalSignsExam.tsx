@@ -1,7 +1,7 @@
 import { usePatientExamStore } from '@/store/PatientExamStore';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CheckCircle, Heart, Thermometer, Users } from 'lucide-react';
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useShallow } from 'zustand/react/shallow';

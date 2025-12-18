@@ -16,7 +16,7 @@ import {
   Users,
   Video,
 } from "lucide-react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useGetConsultantFullProfileDetails } from "@/lib/actions/patientQueryAndMutations";
 import { ConsultantEducation, Review } from "@/types";
 import Loader from "../shared/Loader";
@@ -30,69 +30,6 @@ import {
 } from "../ui/empty";
 import { Button } from "../ui/button";
 
-const exampleConsultant: ConsultantProfile = {
-  id: "id",
-  name: "Dr. Sarah Mitchell",
-  title: "Cardiologist & Internal Medicine Specialist",
-  rating: 4.9,
-  totalReviews: 347,
-  bio: `Dr. Sarah Mitchell is a board-certified cardiologist with over 12 years of experience in treating 
-                      cardiovascular diseases and internal medicine conditions. She specializes in preventive cardiology, 
-                      hypertension management, and heart disease prevention. Dr. Mitchell is known for her patient-centered 
-                      approach and commitment to providing comprehensive care.`,
-  experience: 12,
-  location: "Lagos University Teaching Hospital",
-  image:
-    "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=300&h=300&fit=crop&crop=face",
-  specializations: [
-    "Cardiology",
-    "Internal Medicine",
-    "Preventive Care",
-    "Hypertension Management",
-  ],
-  languages: ["English", "Yoruba", "French"],
-  consultationFee: 20,
-  nextAvailable: "Today, 2:30 PM",
-  educations: [
-    { degree: "MD", institution: "University of Lagos", year: 2012 + "" },
-    {
-      degree: "Fellowship in Cardiology",
-      institution: "Johns Hopkins",
-      year: 2015 + "",
-    },
-  ],
-  stats: {
-    patientsHelped: 2847,
-    successRate: 96,
-    responseTime: "< 30 min",
-    followUpRate: 94,
-  },
-  reviews: [
-    {
-      name: "Adunni O.",
-      rating: 5,
-      comment: "Excellent care and very thorough explanation of my condition.",
-      date: "2 days ago",
-    },
-    {
-      name: "Michael K.",
-      rating: 5,
-      comment: "Dr. Mitchell helped me manage my hypertension effectively.",
-      date: "1 week ago",
-    },
-    {
-      name: "Fatima A.",
-      rating: 4,
-      comment: "Professional and caring. Highly recommend for heart issues.",
-      date: "2 weeks ago",
-    },
-  ],
-  availableSlots: [
-    { dateTime: new Date(), scheduleId: "id" },
-    { dateTime: new Date(), scheduleId: "id" },
-    { dateTime: new Date(), scheduleId: "id" },
-  ],
-};
 interface Slot {
   scheduleId: string;
   dateTime: Date;
@@ -144,11 +81,9 @@ const ConsultantScreen = () => {
     );
   }
   const [activeTab, setActiveTab] = useState("overview");
-  const [isAvailable, setIsAvailable] = useState(false);
   const {
     data,
     isPending: isLoadingConsultant,
-    isError: failedToLoadConsultant,
     error,
   } = useGetConsultantFullProfileDetails(param.consultantId);
   const [consultant, setConsultant] = useState<ConsultantProfile>();
@@ -211,6 +146,7 @@ const ConsultantScreen = () => {
       </section>
     );
   }
+  
 
   return isLoadingConsultant ? (
     <Loader />

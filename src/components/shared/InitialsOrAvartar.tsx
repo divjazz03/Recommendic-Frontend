@@ -24,7 +24,7 @@ const InitialsOrAvartar: React.FC<InitialsOrAvartarProps> = ({
         // </div>
         <Avatar className={className} {...props}>
             <AvatarImage src={avatarUrl} alt='avatar' />
-            <AvatarFallback>{extractInitialsFromName(userName)}</AvatarFallback>
+            <AvatarFallback>{extractInitialsFromName(userName || 'Unknown')}</AvatarFallback>
         </Avatar>
     )
 }

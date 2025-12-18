@@ -45,8 +45,8 @@ export async function getAllPatients(params: {
   page?: number;
   size?: number;
   sort?: boolean;
-}): Promise<any> {
-  let result = await apiClient
+}): Promise<unknown> {
+  const result = await apiClient
     .get(`${patientPath}`, { params: params })
     .then((response) => response.data);
 
@@ -54,7 +54,7 @@ export async function getAllPatients(params: {
 }
 
 export async function deletePatient(patientId: string): Promise<Response> {
-  let result = await apiClient
+  const result = await apiClient
     .delete(`${patientPath}/${patientId}`)
     .then((response) => response.data);
   return result;
@@ -64,7 +64,7 @@ export async function sendPatientOnboardingData(
   data: PatientOnboardingData,
   userId: string
 ): Promise<Response> {
-  let result = await apiClient
+  const result = await apiClient
     .post(`${patientPath}/${userId}/onboard`, data)
     .then((response) => response.data);
   return result;
@@ -73,7 +73,7 @@ export async function sendPatientOnboardingData(
 export async function getRecommendedConsultants(
   pageNumber: number
 ): Promise<PagedResponse<ConsultantTypeMinimal>> {
-  let result = await apiClient
+  const result = await apiClient
     .get(`${patientPath}/recommendations/consultants`, {
       params: {page: pageNumber},
     })
@@ -86,7 +86,7 @@ export async function getConsultantSchedules(
   consultantId: string,
   date: string
 ): Promise<ConsultantSchedulesResponse> {
-  let result = await apiClient
+  const result = await apiClient
     .get(`${schedulesPath}/consultant/${consultantId}?date=${date}`)
     .then((response) => response.data);
   return result;

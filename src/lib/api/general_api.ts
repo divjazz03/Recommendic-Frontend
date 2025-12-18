@@ -27,7 +27,7 @@ const appointmentsPath = import.meta.env.VITE_APPOINTMENT_BASE;
 
 
 export async function signinUser(userData: SigninUserData): Promise<SignInResponse> {
-    let result: Promise<SignInResponse> = apiClient.post(`${userLoginPath}`, userData)
+    const result: Promise<SignInResponse> = apiClient.post(`${userLoginPath}`, userData)
         .then((response) => response.data
         )
     return result;
@@ -51,7 +51,7 @@ export async function getCurrentUser(): Promise<AuthenticatedUserResponse> {
 
 
 export async function getAllSupportedMedicalCategories(): Promise<MedicalCategoriesResponse> {
-    let result: Promise<MedicalCategoriesResponse> = apiClient.get(`${medicalCategoriesPath}`)
+    const result: Promise<MedicalCategoriesResponse> = apiClient.get(`${medicalCategoriesPath}`)
         .then(response => {
             console.log(response.data)
             return response.data
@@ -59,13 +59,13 @@ export async function getAllSupportedMedicalCategories(): Promise<MedicalCategor
     return result;
 }
 export async function resendConfirmationEmail(userEmail: string): Promise<string> {
-    let result = apiClient.post(`${retryEmail}`, { email: userEmail })
+    const result = apiClient.post(`${retryEmail}`, { email: userEmail })
         .then(response => response.data)
     return result;
 }
 
 export async function verifyEmail(token: string): Promise<string> {
-    let result = apiClient.post(`${emailConfirmationPath}?token=${token}`)
+    const result = apiClient.post(`${emailConfirmationPath}?token=${token}`)
         .then(response => response.data)
     return result;
 }
@@ -81,7 +81,7 @@ export async function startNewConsultation(appointmentId: string): Promise<Consu
         .then(response => response.data)
 }
 export async function endConsultation(consultationId: string): Promise<ConsultationResponse> {
-    return apiClient.post(`${consultationPath}/${consultationId}/complete`)
+    return apiClient.post(`${consultationPath}/${consultationId}/compconste`)
         .then(response => response.data)
 }
 

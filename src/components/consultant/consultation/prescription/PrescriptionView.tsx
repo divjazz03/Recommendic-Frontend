@@ -1,4 +1,3 @@
-import React from 'react'
 import { MedicalInfoProps } from '../ConsultantConsultation';
 import { Pill, Plus, X } from 'lucide-react';
 

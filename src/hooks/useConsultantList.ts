@@ -24,8 +24,8 @@ const useConsultantList = () => {
   const empty = recommendedConsultants?.data.empty
 
   useEffect(() => {
-    recommendedConsultants &&
-      setConsultants(recommendedConsultants.data.content);
+    if(recommendedConsultants)
+      setConsultants(recommendedConsultants.data?.content);
   }, [recommendedConsultants]);
 
   const filteredConsultants = useMemo(() => {

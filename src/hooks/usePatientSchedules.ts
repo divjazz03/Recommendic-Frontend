@@ -20,7 +20,8 @@ export const usePatientSchedule = (consultantId: string) => {
     
     useEffect(() => {
         const scheduleData = data?.data
-        scheduleData && setConsultantScheduleData({
+        if (scheduleData) {
+            setConsultantScheduleData({
             fullName: scheduleData.profile?.fullName,
             fee: scheduleData.profile?.fee,
             image: scheduleData.profile?.image,
@@ -29,7 +30,9 @@ export const usePatientSchedule = (consultantId: string) => {
             title: scheduleData.profile?.title,
             timeSlots: callBackSchedulesToTimeSlots(scheduleData.scheduleSlots)
         })
-    }, [data?.data, selectedDate])
+    }
+
+    }, [data?.data, selectedDate, callBackSchedulesToTimeSlots])
 
     const isTimeSlotAvailable = (time: string): boolean => {
         return !consultantScheduleData?.timeSlots.unavailableSlots.map((slot) => slot.dateTime).includes(time) &&

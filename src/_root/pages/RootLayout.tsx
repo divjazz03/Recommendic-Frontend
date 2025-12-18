@@ -1,14 +1,11 @@
-import MobileNavBar from '@/components/shared/MobileNavBar';
 import GlobalSearch from '@/components/shared/GlobalSearch';
 import SideBar, { NavLinksObject } from '@/components/shared/SideBar';
-import Logo from '@/components/svg/Logo';
 import { useUserContext } from '@/context/AuthContext';
-import { Bell, Calendar1Icon, CalendarClock, ChartLine, Home, Menu, PillBottle, User, User2 } from 'lucide-react';
-import React, { MutableRefObject, useEffect, useRef, useState } from 'react'
+import { Bell, Calendar1Icon, CalendarClock, Home, Menu, PillBottle, User, User2 } from 'lucide-react';
+import { MutableRefObject, useEffect, useRef, useState } from 'react'
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import Loader from '@/components/shared/Loader';
 import InitialsOrAvartar from '@/components/shared/InitialsOrAvartar';
-import { cn } from '@/lib/utils/utils';
 
 
 
@@ -157,7 +154,7 @@ const RootLayout = () => {
 				<div className='lg:flex lg:flex-row w-full h-full'>
 					{/* Main content */}
 					<section className='relative w-full h-full flex-1 flex flex-col'>
-						<aside ref={asideRef} className={`absolute z-50 transition-all ease-out duration-300 h-full w-[20em] top-0 z-50 ${asideHidden ? '-left-[25em]' : 'left-0'}`}>
+						<aside ref={asideRef} className={`absolute transition-all ease-out duration-300 h-full w-[20em] top-0 z-50 ${asideHidden ? '-left-[25em]' : 'left-0'}`}>
 							<SideBar
 								navLinks={navLinkObject}
 								isHidden={asideHidden}

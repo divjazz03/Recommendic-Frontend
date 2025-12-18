@@ -46,7 +46,7 @@ export const usePatientProfile = () => {
   const [modifyingProfileData, setModifyingProfileData] =
     useState<ModifyingProfileData>();
 
-  let selectedCategoriesChangable = myProfileResponse?.data.interests ?? [];
+  const selectedCategoriesChangable = myProfileResponse?.data.interests ?? [];
 
   const [selectedCategories, setSelectedCategories] = useState<
     MedicalCategory[]
@@ -56,7 +56,7 @@ export const usePatientProfile = () => {
     ) ?? []
   );
 
-  const { mutateAsync: updatePatientProfileData, isPending: isUpdating } =
+  const { mutateAsync: updatePatientProfileData } =
     useUpdatePatientData();
 
   useEffect(() => {
@@ -87,7 +87,7 @@ export const usePatientProfile = () => {
         ]);
       }
     }
-  }, [myProfileResponse]);
+  }, [myProfileResponse, medicalCategoriesResponse]);
 
   const handleInputChange = (
     field: keyof PatientProfileData,
@@ -332,6 +332,24 @@ export const useConsultantProfile = () => {
     }
   };
 
+  const handleAddressChange = (field: keyof Address, value: string) => {
+    setProfileData((prev) => prev && ({
+      ...prev,
+      address: { ...prev.address, [field]: value },
+    }));
+    if (modifyingProfileData) {
+      setModifyingProfileData((prev) => ({
+        ...prev,
+        address: { ...profileData?.address, [field]: value },
+      }));
+    } else {
+      setModifyingProfileData((prev) => ({
+        ...prev,
+        address: { [field]: value },
+      }));
+    }
+  };
+
   useEffect(() => {
     if (myProfileResponse) {
       const data = myProfileResponse.data;
@@ -376,5 +394,6 @@ export const useConsultantProfile = () => {
     profileData,
     handleEducationChange,
     handleLanguagesChange,
+    handleAddressChange
   };
 };

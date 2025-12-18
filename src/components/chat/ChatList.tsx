@@ -2,9 +2,8 @@ import { MoreVertical } from 'lucide-react'
 import React, { useMemo, useState } from 'react'
 import LocalSearch from '../shared/LocalSearch'
 import InitialsOrAvartar from '../shared/InitialsOrAvartar'
-import { DateTime } from 'luxon'
 import { handleDateTimeFormatting } from '@/lib/utils/utils'
-import { ChatType, Message, useChat } from '@/hooks/useChat'
+import { ChatType, useChat } from '@/hooks/useChat'
 
 
 
@@ -32,7 +31,7 @@ const ChatList: React.FC<ChatListProps> = (
 
             return matchesSearch && matchesFilter
         }) ?? []
-    }, [searchValue])
+    }, [searchValue, chats])
     return (
         <main className='flex flex-col h-full'>
             <section className='border-b'>
