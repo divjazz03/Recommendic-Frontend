@@ -1,7 +1,8 @@
+
 import { useUserContext } from '@/context/AuthContext';
-import React from 'react'
 import { Outlet, Navigate } from 'react-router-dom'
 import { FormWrapper } from './forms/FormWrapper';
+import loginSvgUrl from '/assets/svg/login.svg'
 
 const AuthLayout = () => {
 
@@ -25,7 +26,7 @@ const AuthLayout = () => {
                     </div>
                     {/*Illustration */}
                     <div className='hidden md:w-1/2 md:flex flex-col justify-center items-center'>
-                      <img src='/assets/svg/login.svg' className='w-full' alt='A hanging stethoscope'/>
+                      <img src={loginSvgUrl} className='w-full' alt='A hanging stethoscope'/>
                       <p className=' bottom-32 font-semibold text-2xl text-center text-main'>Expert guidance for every medical need</p>
                       <p className='p-1 rounded-md font-thin text-sm text-center tracking-tight text-gray-600'>From booking to recommendations, we support every part of your care journey</p>
                     </div>

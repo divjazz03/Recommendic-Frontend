@@ -1,4 +1,6 @@
+
 import { HTMLAttributes } from "react"
+import loaderSvg from '/assets/svg/tube-spinner.svg'
 
 interface LoaderProps extends HTMLAttributes<HTMLDivElement> {
   width?: number
@@ -11,7 +13,7 @@ const Loader = ({
 }:LoaderProps) => {
   return (
     <div {...props} className="flex justify-center w-full">
-        <img src="/assets/svg/tube-spinner.svg" alt="loader" width={width} height={height}/>
+        <img src={loaderSvg} alt="loader" width={width} height={height}/>
     </div>
   )
 }
