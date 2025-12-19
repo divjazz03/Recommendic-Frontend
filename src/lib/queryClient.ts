@@ -10,7 +10,11 @@ const handleError = async (error: unknown) => {
         console.log(apiError.status)
         switch (apiError.status) {
             case 401:
+                if (window.location.pathname !== '/sign-in') {
                     toast.error('Session expired. Please log in again')
+                } else {
+                    toast.error(apiError.message);
+                }
                 break
             case 403:
                 toast.error("You don't have permission to perform this action")
@@ -25,7 +29,7 @@ const handleError = async (error: unknown) => {
                 break;
         }
     } else {
-        toast.error(`something happened: ${error}`)
+        toast.error(`somthing happened: ${error}`)
     }
 }
 
