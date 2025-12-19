@@ -22,6 +22,8 @@ const schedulesPath = import.meta.env.VITE_SCHEDULE_BASE;
 const appointmentsPath = import.meta.env.VITE_APPOINTMENT_BASE;
 const dashBoardPath = import.meta.env.VITE_DASHBOARD_BASE;
 
+console.log(patientPath)
+
 export async function createNewPatient(userData: NewUser) {
   let result = Promise.resolve<SignUpResponse | null>(null);
   const patientData = {

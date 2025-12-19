@@ -31,9 +31,14 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const { data, error, isPending: authLoading } = useGetCurrentUser(
         !whiteListedPaths.includes(location.pathname)
     );
+
+    console.log(authLoading)
     useEffect(() => {
         if (error) {
-            navigate('/sign-in');
+            if (!whiteListedPaths.includes(location.pathname)) {
+                navigate('/sign-in', {replace:true});
+            }
+            return
         } else if (data) {
             if (data.user.userStage === 'ONBOARDING') {
                 navigate('/onboarding')

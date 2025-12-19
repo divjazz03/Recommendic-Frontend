@@ -3,7 +3,7 @@ import SideBar, { NavLinksObject } from '@/components/shared/SideBar';
 import { useUserContext } from '@/context/AuthContext';
 import { Bell, Calendar1Icon, CalendarClock, Home, Menu, PillBottle, User, User2 } from 'lucide-react';
 import { MutableRefObject, useEffect, useRef, useState } from 'react'
-import { Link, Outlet, useLocation } from 'react-router-dom';
+import { Link, Navigate, Outlet, useLocation } from 'react-router-dom';
 import Loader from '@/components/shared/Loader';
 import InitialsOrAvartar from '@/components/shared/InitialsOrAvartar';
 
@@ -15,9 +15,7 @@ const RootLayout = () => {
 	const [asideHidden, setAsideHidden] = useState(true);
 	const location = useLocation();
 	const asideRef: MutableRefObject<HTMLDivElement | null> = useRef(null);
-	const { userContext: auth, profileData, isLoading } = useUserContext();
-
-
+	const { userContext: auth, profileData, isLoading, isAuthenticated } = useUserContext();
 
 	const navLinkObject: Record<string, NavLinksObject> = auth.userType === 'CONSULTANT' ? {
 		home: {
@@ -147,9 +145,13 @@ const RootLayout = () => {
 			document.removeEventListener('keydown', handleEsc);
 		}
 	}, [asideHidden])
+	if (isLoading) return (
+		<div className='flex justify-center items-center'>
+			<Loader width={30} height={30}/>
+		</div>
+	)
 	return (
-		isLoading ? <div className='flex justify-center h-full items-center '><Loader height={64} width={64} /></div>
-			:
+		
 			<main className='w-full h-full bg-light-5'>
 				<div className='lg:flex lg:flex-row w-full h-full'>
 					{/* Main content */}

@@ -16,6 +16,7 @@ import { Progress } from '@/components/ui/progress'
 import { Gender } from '@/types'
 import { toast } from 'sonner'
 import { ApiError } from '@/lib/axios'
+import Loader from '@/components/shared/Loader'
 export type TypeOfUser = "Patient" | "Consultant";
 
 type SignUpFormData = {
