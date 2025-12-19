@@ -146,7 +146,7 @@ const RootLayout = () => {
 		}
 	}, [asideHidden])
 	if (isLoading) return (
-		<div className='flex justify-center items-center'>
+		<div className='flex justify-center items-center h-full'>
 			<Loader width={30} height={30}/>
 		</div>
 	)
