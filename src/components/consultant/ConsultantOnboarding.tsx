@@ -904,7 +904,7 @@ const PracticeDetails = ({
             name={"duration"}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Consultation Fee (#)</FormLabel>
+                <FormLabel>Consultation Duration</FormLabel>
                 <FormControl>
                   <Select
                     value={String(field.value)}
