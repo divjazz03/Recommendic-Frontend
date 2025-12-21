@@ -103,7 +103,7 @@ const SignupForm: React.FC = () => {
     const accountForm = useForm<z.infer<typeof accountFormValidation>>({
       resolver: zodResolver(accountFormValidation),
       defaultValues: { typeOfUser: 'Patient' },
-      mode: 'onChange'
+      mode: 'onTouched'
     })
 
     const handleAccountFormSubmit = async (form: z.infer<typeof accountFormValidation>) => {
@@ -238,7 +238,8 @@ const SignupForm: React.FC = () => {
         firstName: '',
         lastName: '',
         gender: 'male'
-      }
+      },
+      mode: 'onTouched'
     })
     const handleUserFormSubmit = (form: z.infer<typeof userFormValidation>) => {
       setFormData(prev => ({

@@ -6,11 +6,6 @@ export const userFormValidation = z.object({
   dateOfBirth: z.string().date(),
   gender: z.enum(['male','female'])
 })
-export const addressFormValidation = z.object({
-  city: z.string(),
-  state: z.string(),
-  country: z.string()
-})
 
 export const accountFormValidation = z.object({
   email: z.string().email("Invalid email, Please try another"),

@@ -12,8 +12,6 @@ import {
   Upload,
 } from "lucide-react";
 import { toast } from "sonner";
-import axios from "axios";
-import { getUploadSignature } from "@/lib/api/general_api";
 import Loader from "../shared/Loader";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -52,16 +50,16 @@ import {
 import FileDropZone from "../shared/FileDropZone";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
-import { useUpdateConsultantOnboardingInfo } from "@/lib/actions/consultantQueryAndMutations";
+import {
+  uploadCredentials,
+  uploadProfilePic,
+  uploadResume,
+  useUpdateConsultantOnboardingInfo,
+} from "@/lib/actions/consultantQueryAndMutations";
 import { useUserContext } from "@/context/AuthContext";
+import { Credential } from "@/types";
 import { ApiError } from "@/lib/axios";
 
-export type DocumentType = "photo" | "certificate" | "resume";
-export type Credential = {
-  name: string;
-  fileUrl: string | File;
-  type: DocumentType;
-};
 export interface ConsultantOnboardingData {
   specialization?: string;
   subSpecialties?: string[];
@@ -134,137 +132,14 @@ const timeSlots = [
 ];
 const STEPS = 4;
 
-async function uploadProfilePic(
-  formData: ConsultantOnboardingData
-): Promise<string> {
-  /* UPLOAD THE PROFILE PIC TO CLOUDINARY */
-
-    const signaturesData = await getUploadSignature(1);
-    const signatureData = signaturesData[0];
-    if (!signatureData) {
-      throw new Error("Invalid signature data");
-    }
-
-    if (formData.profilePictureUrl instanceof File) {
-      const form = new FormData();
-      form.append("file", formData.profilePictureUrl);
-      form.append("api_key", signatureData.apiKey);
-      form.append("public_id", signatureData.publicId);
-      form.append("folder", signatureData.folder);
-      form.append("timestamp", String(signatureData.timeStamp));
-      form.append("signature", signatureData.signature);
-
-      const cloudRes = await axios
-        .post(
-          `https://api.cloudinary.com/v1_1/${signatureData.cloudName}/image/upload`,
-          form,
-          {
-            timeout: 1000 * 10,
-            timeoutErrorMessage: "Took too long to respond",
-          }
-        )
-        .then((response) => response.data);
-
-      return cloudRes.secure_url;
-    }
-    throw new Error("Not a file");
-  
-}
-
-async function uploadResume(
-  formData: ConsultantOnboardingData
-): Promise<string> {
-  /* UPLOAD THE PROFILE PIC TO CLOUDINARY */
-  
-    const signaturesData = await getUploadSignature(1);
-    const signatureData = signaturesData[0];
-    if (!signatureData) {
-      throw new Error("Invalid signature data");
-    }
-    if (formData.resume?.fileUrl instanceof File) {
-      const form = new FormData();
-      form.append("file", formData.resume.fileUrl);
-      form.append("api_key", signatureData.apiKey);
-      form.append("public_id", signatureData.publicId);
-      form.append("folder", signatureData.folder);
-      form.append("timestamp", String(signatureData.timeStamp));
-      form.append("signature", signatureData.signature);
-
-      const cloudRes = await axios
-        .post(
-          `https://api.cloudinary.com/v1_1/${signatureData.cloudName}/image/upload`,
-          form,
-          {
-            timeout: 1000 * 10,
-            timeoutErrorMessage: "Took too long to respond",
-          }
-        )
-        .then((response) => response.data);
-
-      return cloudRes.secure_url;
-    }
-    throw new Error("Not a file");
-  
-}
-
-async function uploadCredentials(
-  formData: ConsultantOnboardingData
-): Promise<Credential[]> {
-  if (!formData.credentials) {
-    throw new Error("No credentials provided");
-  }
-
-    const signaturesData = await getUploadSignature(
-      formData.credentials.length
-    );
-    if (!signaturesData) {
-      throw new Error("No upload signatures returned");
-    }
-
-    const urls: Credential[] = await Promise.all(
-      formData.credentials.map(async (credential, index) => {
-        console.log(credential)
-        const signature = signaturesData[index];
-        if (!signature) {
-          throw new Error("Invalid signature");
-        }
-        if (!(credential.fileUrl instanceof File)) {
-          throw new Error("Invalid file type");
-        }
-
-        const form = new FormData();
-        form.append("file", credential.fileUrl);
-        form.append("api_key", signature.apiKey);
-        form.append("public_id", signature.publicId);
-        form.append("folder", signature.folder);
-        form.append("timestamp", String(signature.timeStamp));
-        form.append("signature", signature.signature);
-
-        const { data } = await axios.post(
-          `https://api.cloudinary.com/v1_1/${signature.cloudName}/image/upload`,
-          form,
-          {
-            timeout: 1000 * 10,
-            timeoutErrorMessage: "Took too long to respond",
-          }
-        );
-
-        return {
-          fileUrl: data.secure_url,
-          name: credential.name,
-          type: "certificate"
-        } as Credential;
-      })
-    );
-    return urls;
-  
-}
-
 const ConsultantOnboarding = () => {
-  const {userContext} = useUserContext()
+  const { userContext } = useUserContext();
   const [step, setStep] = useState(1);
-  const { mutateAsync: updateOnBoardingInfo, isError, error } =
-    useUpdateConsultantOnboardingInfo();
+  const {
+    mutateAsync: updateOnBoardingInfo,
+    isError,
+    error,
+  } = useUpdateConsultantOnboardingInfo();
   const [isOnboarding, setIsOnboarding] = useState(false);
   const [isFinishedInputtingValues, setIsFinishedInputtingValues] =
     useState(false);
@@ -285,11 +160,9 @@ const ConsultantOnboarding = () => {
     if (step > 1) setStep(step - 1);
   };
 
-  
-
   const handleSubmit = async () => {
     setIsOnboarding(true);
-    console.log("Logging the form data", formData)
+    console.log("Logging the form data", formData);
     const onboardingData: ConsultantOnboardingData = {
       availableDays: formData.availableDays,
       bio: formData.bio,
@@ -310,8 +183,6 @@ const ConsultantOnboarding = () => {
       credentials: [],
     };
 
-    
-
     try {
       const profilePicUrl = await uploadProfilePic(formData);
       onboardingData.profilePictureUrl = profilePicUrl;
@@ -330,25 +201,29 @@ const ConsultantOnboarding = () => {
         onboardingData.credentials?.push(value);
       });
     } catch (error) {
-      if(error instanceof ApiError) {
-        toast.error(error.message)
-      }else {
-        toast.error(String(error))
+      if (error instanceof ApiError) {
+        toast.error(error.message);
+      } else {
+        toast.error(String(error));
       }
       setIsOnboarding(false);
     }
 
-    console.log(onboardingData)
+    console.log(onboardingData);
 
     if (!onboardingData.credentials) {
       setIsOnboarding(false);
       return toast.error("No credentials found");
     }
-    
-    userContext.user_id && updateOnBoardingInfo({data: onboardingData, userId: userContext.user_id})
+
+    userContext.user_id &&
+      updateOnBoardingInfo({
+        data: onboardingData,
+        userId: userContext.user_id,
+      });
     if (isError && error) {
       if (error instanceof ApiError) {
-        Array(error.data?.errors).map((error) => toast.error(error.error))
+        Array(error.data?.errors).map((error) => toast.error(error.error));
       }
     }
 
@@ -445,12 +320,15 @@ const ProfessionalInfo = ({
   setFormData: (value: React.SetStateAction<ConsultantOnboardingData>) => void;
 }) => {
   const professionalInfoValidation = z.object({
-    specialization: z.string().trim().min(1, "Required"),
+    specialization: z.string().trim().min(1, "Specialization is required"),
     licenseNumber: z.string().trim().min(7, "Invalid license number"),
     yearsOfExperience: z
       .number()
       .min(5, "You must have at least 5 years experience"),
-    currentWorkplace: z.string(),
+    currentWorkplace: z
+      .string()
+      .min(5, "Too short to represent proper information")
+      .max(50, "Too long "),
     languagesSpoken: z
       .array(z.string())
       .min(1, "Must provide at least one language")
@@ -653,8 +531,8 @@ const Qualifications = ({
     university: z.string(),
     graduationYear: z.coerce
       .number()
-      .min(new Date().getUTCFullYear() - 60, "Invalid year")
-      .max(new Date().getUTCFullYear() - 5, "Invalid year"),
+      .min(new Date().getUTCFullYear() - 60, "Year too far back")
+      .max(new Date().getUTCFullYear() - 5, "Cannot have had enough experience"),
     certifications: z.string(),
     certificate: fileListSchema,
     resume: fileSchema,
@@ -670,7 +548,7 @@ const Qualifications = ({
       resume: undefined,
       university: "",
     },
-    mode: "onChange",
+    mode: "onTouched",
   });
 
   const handleQualificationFormSubmit = (
@@ -840,7 +718,7 @@ const PracticeDetails = ({
       availableDays: [],
       preferredTimeSlots: [],
     },
-    mode: "onChange",
+    mode: "onTouched",
   });
 
   const handleQualificationFormSubmit = (
@@ -1030,7 +908,7 @@ const ProfileAndBio = ({
       bio: "",
       profilePictureUrl: undefined,
     },
-    mode: "onChange",
+    mode: "onTouched",
   });
 
   function handleSelect(e: React.ChangeEvent<HTMLInputElement>) {

@@ -41,7 +41,12 @@ export type Address = {
     country?: string
     zipCode?: string
 }
-
+export type DocumentType = "photo" | "certificate" | "resume";
+export type Credential = {
+  name: string;
+  fileUrl: string | File;
+  type: DocumentType;
+};
 
 export interface SignUpResponseData {
     id: string

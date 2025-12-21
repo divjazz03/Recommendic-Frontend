@@ -3,7 +3,135 @@ import { confirmAppointment, ConsultantProfileUpdateRequest, createNewSchedule, 
 import { ModifyingSchedule } from "@/components/consultant/ConsultantModifySchedule"
 import { NewSchedule } from "@/hooks/useConsultantSchedule"
 import { ConsultantOnboardingData } from "@/components/consultant/ConsultantOnboarding"
+import { ApiError } from "@/lib/axios";
+import axios from "axios";
+import { getUploadSignature } from "@/lib/api/general_api";
+import { Credential } from "@/types"
+export async function uploadProfilePic(
+  formData: ConsultantOnboardingData
+): Promise<string> {
+  /* UPLOAD THE PROFILE PIC TO CLOUDINARY */
 
+    const signaturesData = await getUploadSignature(1);
+    const signatureData = signaturesData[0];
+    if (!signatureData) {
+      throw new Error("Invalid signature data");
+    }
+
+    if (formData.profilePictureUrl instanceof File) {
+      const form = new FormData();
+      form.append("file", formData.profilePictureUrl);
+      form.append("api_key", signatureData.apiKey);
+      form.append("public_id", signatureData.publicId);
+      form.append("folder", signatureData.folder);
+      form.append("timestamp", String(signatureData.timeStamp));
+      form.append("signature", signatureData.signature);
+
+      const cloudRes = await axios
+        .post(
+          `https://api.cloudinary.com/v1_1/${signatureData.cloudName}/image/upload`,
+          form,
+          {
+            timeout: 1000 * 10,
+            timeoutErrorMessage: "Took too long to respond",
+          }
+        )
+        .then((response) => response.data);
+
+      return cloudRes.secure_url;
+    }
+    throw new Error("Not a file");
+  
+}
+
+export async function uploadResume(
+  formData: ConsultantOnboardingData
+): Promise<string> {
+  /* UPLOAD THE PROFILE PIC TO CLOUDINARY */
+  
+    const signaturesData = await getUploadSignature(1);
+    const signatureData = signaturesData[0];
+    if (!signatureData) {
+      throw new Error("Invalid signature data");
+    }
+    if (formData.resume?.fileUrl instanceof File) {
+      const form = new FormData();
+      form.append("file", formData.resume.fileUrl);
+      form.append("api_key", signatureData.apiKey);
+      form.append("public_id", signatureData.publicId);
+      form.append("folder", signatureData.folder);
+      form.append("timestamp", String(signatureData.timeStamp));
+      form.append("signature", signatureData.signature);
+
+      const cloudRes = await axios
+        .post(
+          `https://api.cloudinary.com/v1_1/${signatureData.cloudName}/image/upload`,
+          form,
+          {
+            timeout: 1000 * 10,
+            timeoutErrorMessage: "Took too long to respond",
+          }
+        )
+        .then((response) => response.data);
+
+      return cloudRes.secure_url;
+    }
+    throw new Error("Not a file");
+  
+}
+
+export async function uploadCredentials(
+  formData: ConsultantOnboardingData
+): Promise<Credential[]> {
+  if (!formData.credentials) {
+    throw new Error("No credentials provided");
+  }
+
+    const signaturesData = await getUploadSignature(
+      formData.credentials.length
+    );
+    if (!signaturesData) {
+      throw new Error("No upload signatures returned");
+    }
+
+    const urls: Credential[] = await Promise.all(
+      formData.credentials.map(async (credential, index) => {
+        console.log(credential)
+        const signature = signaturesData[index];
+        if (!signature) {
+          throw new Error("Invalid signature");
+        }
+        if (!(credential.fileUrl instanceof File)) {
+          throw new Error("Invalid file type");
+        }
+
+        const form = new FormData();
+        form.append("file", credential.fileUrl);
+        form.append("api_key", signature.apiKey);
+        form.append("public_id", signature.publicId);
+        form.append("folder", signature.folder);
+        form.append("timestamp", String(signature.timeStamp));
+        form.append("signature", signature.signature);
+
+        const { data } = await axios.post(
+          `https://api.cloudinary.com/v1_1/${signature.cloudName}/image/upload`,
+          form,
+          {
+            timeout: 1000 * 10,
+            timeoutErrorMessage: "Took too long to respond",
+          }
+        );
+
+        return {
+          fileUrl: data.secure_url,
+          name: credential.name,
+          type: "certificate"
+        } as Credential;
+      })
+    );
+    return urls;
+  
+}
 
 export const useGetDashboard = () => {
     return useQuery({

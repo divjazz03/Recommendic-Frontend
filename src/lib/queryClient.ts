@@ -11,7 +11,7 @@ const handleError = async (error: unknown) => {
         switch (apiError.status) {
             case 401:
                 if (window.location.pathname !== '/sign-in') {
-                    toast.error('Session expired. Please log in again')
+                    toast.error('You are logged out, please try signing in')
                 } else {
                     toast.error(apiError.message);
                 }
@@ -29,7 +29,7 @@ const handleError = async (error: unknown) => {
                 break;
         }
     } else {
-        toast.error(`somthing happened: ${error}`)
+        toast.error(`Somthing happened: ${error}`)
     }
 }
 

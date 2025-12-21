@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024;
+export const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; //5MB
 export const fileSchema = z
   .array(z.instanceof(File))
   .length(1, "Provide one resume file")
