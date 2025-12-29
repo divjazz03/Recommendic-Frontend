@@ -357,11 +357,10 @@ const SignupForm: React.FC = () => {
           </div>
 
           <p className='text-sm font-semibold text-center mt-4'>Already have an account? <span className='mx-1 text-gray-500 hover:text-dark-1'><Link to='/sign-in' className='subtle-semibold hover:no-underline underline'>Sign In</Link></span></p>
-          <SignupSuccessModal
-            isOpen={isSuccessfulSignUp}
+          {isSuccessfulSignUp && <SignupSuccessModal
             redirectDelay={3000}
             onRedirect={() => navigate("/confirm-email", { state: { formData } })} />
-
+          }
       </div>
     </>
   )

@@ -40,6 +40,7 @@ const ConsultantList = () => {
     totalPages,
     specialties,
     setShowFilter,
+    totalElements
   } = useConsultantList();
   const scrollRef = useRef<HTMLDivElement>(null);
   const scrollDirection = useScrollDirection(scrollRef.current); 
@@ -57,9 +58,9 @@ const ConsultantList = () => {
   return (
     <div
       ref={thisRef}
-      className="max-w-7xl h-full mx-auto p-4 md:p-8 gap-2 lg:p-6 overflow-y-auto flex flex-col"
+      className="max-w-7xl h-full mx-auto p-2 md:p-8 gap-2 lg:p-6 overflow-y-auto flex flex-col"
     >
-      <header className="px-2 mb-2">
+      <header className="mb-2">
         <h1 className="font-bold text-2xl sm:text-3xl antialiased">
           Find Medical Consultants
         </h1>
@@ -71,7 +72,7 @@ const ConsultantList = () => {
         placeholder="Search by name or specialty"
         setSearchValue={setSearchValue}
       />
-      <section className="px-2">
+      <section>
         <button
           onClick={() => setShowFilter(() => !showFilters)}
           className="flex items-center gap-2 px-4 py-2 mb-4 rounded-sm border border-light-3 hover:bg-light-1 transition-colors"
@@ -151,14 +152,14 @@ const ConsultantList = () => {
         )}
       </section>
 
-      <div className="px-2">
-        <p className="text-dark-2">{filteredConsultants?.length} results</p>
+      <div>
+        <p className="text-gray-600">{totalElements} results</p>
       </div>
 
     
         <section
           ref={scrollRef}
-          className="relative space-y-4 overflow-y-auto h-full p-2 scrollbar-hide flex-1"
+          className="relative space-y-4 overflow-y-auto h-full scrollbar-hide flex-1"
         >
           {isPending ? (
             <Loader />

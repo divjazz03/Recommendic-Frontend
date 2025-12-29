@@ -9,39 +9,35 @@ import {
 import { CheckCircle2 } from 'lucide-react';
 
 interface SignupSuccessModalProps {
-    isOpen: boolean;
     redirectUrl?: string;
     redirectDelay?: number;
     onRedirect?: () => void;
 };
 
 const SignupSuccessModal: React.FC<SignupSuccessModalProps> = ({
-    isOpen,
     redirectUrl = '/sign-in',
-    redirectDelay = 10000,
+    redirectDelay = 3000,
     onRedirect
 }) => {
-    const [redirectCount, setRedirectCount] = useState(Math.ceil(redirectDelay/1000));
     const callbackOnredirect = useCallback(() => onRedirect, []);
-    useEffect(() => {
-        if (isOpen) {
-            if(redirectCount > 0){
-                const timeout = setTimeout(() => setRedirectCount(count => count - 1), 1000);
-                return () => clearTimeout(timeout);
-            } else {
-                if (onRedirect) {
-                    callbackOnredirect();
-                } else {
-                    window.location.href = redirectUrl;
-                }
-            }
-        }
 
-    }, [isOpen,redirectCount,callbackOnredirect])
+    function handleRedirect () {
+        if (onRedirect) {
+            callbackOnredirect()
+        }else{
+            window.location.pathname = redirectUrl
+        }
+    }
+    useEffect(() => {    
+                const timeout = setTimeout(handleRedirect,
+                redirectDelay);
+                return () => clearTimeout(timeout);
+            
+    }, [callbackOnredirect])
 
 
     return (
-        <AlertDialog open={isOpen} >
+        <AlertDialog >
             <AlertDialogContent className='max-w-md'>
                 <AlertDialogHeader>
                     <div className='flex items-center justify-center mb-4'>

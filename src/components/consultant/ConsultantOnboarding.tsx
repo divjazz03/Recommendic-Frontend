@@ -59,6 +59,7 @@ import {
 import { useUserContext } from "@/context/AuthContext";
 import { Credential } from "@/types";
 import { ApiError } from "@/lib/axios";
+import { useGetSupportedMedicalCategories } from "@/lib/actions/generalQueriesAndMutation";
 
 export interface ConsultantOnboardingData {
   specialization?: string;
@@ -86,24 +87,6 @@ export interface ConsultantOnboardingData {
   credentials?: Credential[];
   resume?: Credential;
 }
-
-const specializations = [
-  "Cardiology",
-  "Dermatology",
-  "Endocrinology",
-  "Gastroenterology",
-  "Neurology",
-  "Orthopedics",
-  "Pediatrics",
-  "Psychiatry",
-  "Pulmonology",
-  "Urology",
-  "Gynecology",
-  "Ophthalmology",
-  "ENT (Otolaryngology)",
-  "Oncology",
-  "General Practice",
-];
 
 const languageOptions = [
   "English",
@@ -319,6 +302,8 @@ const ProfessionalInfo = ({
   handleSubmit: () => void;
   setFormData: (value: React.SetStateAction<ConsultantOnboardingData>) => void;
 }) => {
+  const {data:medicalCategoriesResponse} = useGetSupportedMedicalCategories();
+  const specialties = medicalCategoriesResponse?.data
   const professionalInfoValidation = z.object({
     specialization: z.string().trim().min(1, "Specialization is required"),
     licenseNumber: z.string().trim().min(7, "Invalid license number"),
@@ -394,9 +379,9 @@ const ProfessionalInfo = ({
                     <SelectValue placeholder="Select a specialization" />
                   </SelectTrigger>
                   <SelectContent>
-                    {specializations.map((spec) => (
-                      <SelectItem key={spec} value={spec}>
-                        {spec}
+                    {specialties && specialties.map((spec) => (
+                      <SelectItem key={spec.id} value={spec.id}>
+                        {spec.name}
                       </SelectItem>
                     ))}
                   </SelectContent>

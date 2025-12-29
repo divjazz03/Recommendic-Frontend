@@ -147,7 +147,7 @@ const ConsultantNotification = () => {
     <main className="h-full overflow-y-auto">
       <div className="max-w-5xl mx-auto flex flex-col h-full">
         {/* Header */}
-        <header className="flex flex-col gap-6 p-6 bg-white sticky top-0 z-50 rounded-b-lg">
+        <header className="flex flex-col gap-6 p-6 bg-white sticky top-0 z-40 rounded-b-lg">
           <div className="flex items-center justify-between ">
             <div className="flex items-center gap-3">
               <div className="bg-main-light p-3 rounded-xl">

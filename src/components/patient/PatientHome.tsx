@@ -194,9 +194,9 @@ const PatientHome = () => {
     recentActivity: recentActivities || [],
   });
   return (
-    <main className="flex flex-col gap-4 h-full max-w-7xl mx-auto overflow-y-auto bg-white px-2">
+    <main className="flex flex-col gap-4 h-full max-w-7xl mx-auto overflow-y-auto bg-white p-2">
       <header className="w-full bg-white rounded-t-lg">
-        <div className="flex flex-col gap-3 p-3">
+        <div className="flex flex-col gap-3">
           <h1 className="font-semibold text-3xl text-gray-800">
             Welcome back, {profileData?.userName.full_name}
           </h1>
@@ -229,7 +229,7 @@ const PatientHome = () => {
           </div>
         </section>
 
-        <section className="grid grid-cols-1 lg:grid-cols-3 gap-16 p-2 lg:p-0">
+        <section className="grid grid-cols-1 lg:grid-cols-3 gap-16 lg:p-0">
           {/* Left column - Main content */}
           <section className="lg:col-span-2 space-y-10">
             {/** Upcoming Appointments */}

@@ -14,9 +14,9 @@ const SecurityAndPrivacy = (
         setActiveTab
     }: SecurityAndPrivacyProps
 ) => (
-    <div className='bg-white shadow-sm p-6 rounded-lg '>
+    <div className='bg-white shadow-sm p-4 sm:p-6 rounded-lg '>
         <header className='flex gap-2 justify-start items-center pb-4 mb-2 border-b'>
-            <div className='p-2 rounded-sm hover:bg-main/15' onClick={() => setActiveTab("")}>
+            <div className='rounded-sm hover:bg-main/15' onClick={() => setActiveTab("")}>
                 <ArrowLeft />
             </div>
             <h2 className='font-semibold text-lg text-gray-900 '>Security & Privacy</h2>
@@ -25,7 +25,7 @@ const SecurityAndPrivacy = (
             <h3 className='font-medium font-lg text-gray-900 mb-4'>Security Settings</h3>
             <div className='flex flex-col gap-3 mb-6'>
                 <div>
-                    <label className="block text-sm text-gray-900 mb-2">
+                    <label className="block font-medium text-sm text-gray-900 mb-2">
                         Session Timeout
                     </label>
                     <select
@@ -41,7 +41,7 @@ const SecurityAndPrivacy = (
                 </div>
                 <div className="flex items-center justify-between py-3 ">
                     <div>
-                        <p className="text-gray-900 text-sm">Multi-Factor Authentication</p>
+                        <p className="font-medium text-sm text-gray-900">Multi-Factor Authentication</p>
                         <p className="text-xs font-thin text-gray-500">Enable multi factor authentication</p>
                     </div>
                     <button
@@ -54,7 +54,7 @@ const SecurityAndPrivacy = (
                 </div>
                 {/* Active Sessions */}
                 <div className="pb-6">
-                    <h4 className=" text-gray-900 text-sm mb-4">Active Sessions</h4>
+                    <h4 className=" font-medium text-sm text-gray-900 mb-4">Active Sessions</h4>
                     <div className="space-y-3">
                         <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                             <div>

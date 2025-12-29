@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, Mail, Phone, MapPin, Calendar, Briefcase, GraduationCap, Award, Bell, Shield, Camera, Save, Check, DoorOpen, ArrowLeft } from 'lucide-react';
+import { User, Mail, Phone, MapPin, Calendar, Briefcase, GraduationCap, Award, Bell, Shield, Camera, Save, Check, DoorOpen, ArrowLeft, X } from 'lucide-react';
 import { ConsultantNotificationSetting, useNotificationSettings } from '@/hooks/useNotificationSettings';
 import { ConsultantProfileData, ModifyingConsultantProfileData, useConsultantProfile } from '@/hooks/useProfile';
 import { useLogout } from '@/lib/actions/generalQueriesAndMutation';
@@ -9,6 +9,7 @@ import SecurityAndPrivacy from '../shared/SecurityAndPrivacy';
 import { useSecuritySetting } from '@/hooks/useSecuritySetting';
 import InitialsOrAvartar from '../shared/InitialsOrAvartar';
 import ProfilePictureModal from '../shared/ProfilePictureModal';
+import { Button } from '../ui/button';
 
 const ConsultantProfile = () => {
     const [activeTab, setActiveTab] = useState('');
@@ -75,7 +76,7 @@ const ConsultantProfile = () => {
                 </div>
             )}
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div className="max-w-7xl mx-auto sm:px-4 lg:px-8 sm:py-6">
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
 
 
@@ -153,7 +154,7 @@ const ConsultantProfileNavigation = (
         setActiveTab
     }: ConsultantProfileNavigationProps
 ) => (
-    <main className='h-full p-6'>
+    <main className='h-full p-4 sm:p-6'>
         {/* Sidebar Navigation */}
         <div className="flex flex-col gap-6 max-h-7xl mx-auto">
             <div className="flex items-center gap-4">
@@ -165,10 +166,10 @@ const ConsultantProfileNavigation = (
                     <h2 className="text-2xl font-bold text-gray-900">
                         {profileData?.firstName} {profileData?.lastName}
                     </h2>
-                    <p>{profileData?.specialty}</p>
+                    <p className='text-sm text-gray-600'>{profileData?.specialty}</p>
                 </div>
             </div>
-            <div className="rounded-lg shadow-sm p-4">
+            <div className="rounded-lg shadow-sm">
                 <nav className="space-y-1">
                     {[
                         { id: 'profile', label: 'Profile Information', icon: User },
@@ -226,10 +227,10 @@ const ProfileInformation: React.FC<ProfileInformationProps> = (
     return (
         <div className="bg-white rounded-lg shadow-sm">
             {/* Profile Header */}
-            <div className="p-6 border-b">
+            <div className="p-4 sm:p-6 border-b">
                 <div className="flex items-start justify-between">
                     <div className="flex items-center gap-2">
-                        <div className='p-2 rounded-sm hover:bg-main/15' onClick={() => setActiveTab("")}>
+                        <div className='rounded-sm hover:bg-main/15' onClick={() => setActiveTab("")}>
                             <ArrowLeft />
                         </div>
                         <div className="relative">
@@ -246,31 +247,30 @@ const ProfileInformation: React.FC<ProfileInformationProps> = (
                                 Dr. {profileData?.firstName} {profileData?.lastName}
                             </h2>
                             <p className="text-gray-600 capitalize text-sm sm:text-base">{profileData?.specialty}</p>
-                            <p className="text-xs sm:text-sm font-thin text-gray-500">{profileData?.location}</p>
+                            <p className="hidden sm:block text-xs sm:text-sm font-thin text-gray-500">{profileData?.location}</p>
                         </div>
                     </div>
                     {!isEditing ? (
-                        <button
+                        <Button
                             onClick={() => handleStartEdit()}
-                            className="px-2 py-1 sm:px-4 sm:py-2 text-sm bg-main-light text-white rounded-lg hover:bg-main transition-colors"
                         >
                             Edit Profile
-                        </button>
+                        </Button>
                     ) : (
                         <div className="flex gap-2">
-                            <button
+                            <Button
                                 onClick={handleCancelEdit}
-                                className="px-2 py-1 sm:px-4 sm:py-2 border text-sm border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                                variant={'secondary'}
                             >
-                                Cancel
-                            </button>
-                            <button
+                                <X/>
+                                <p className='hidden sm:block'>Cancel</p>
+                            </Button>
+                            <Button
                                 onClick={handleSaveProfile}
-                                className="px-2 py-1 sm:px-4 sm:py-2 bg-main-light text-sm text-white rounded-lg hover:bg-main transition-colors flex items-center gap-2"
                             >
                                 <Save className="w-4 h-4" />
-                                Save Changes
-                            </button>
+                                <p className='hidden sm:block'>Save Changes</p>
+                            </Button>
                         </div>
                     )}
                 </div>
@@ -457,9 +457,9 @@ const ProfessionalInformation = (
         setActiveTab
     }: ProfessionalInformationProps
 ) => (
-    <div className="bg-white rounded-lg shadow-sm p-6">
+    <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
         <header className='flex items-center justify-start gap-2 pb-4 mb-3 border-b'>
-            <div className='p-2 rounded-sm hover:bg-main/15' onClick={() => setActiveTab("")}>
+            <div className='rounded-sm hover:bg-main/15' onClick={() => setActiveTab("")}>
                 <ArrowLeft />
             </div>
             <h3 className="text-lg font-semibold text-gray-900">Professional Information</h3>
@@ -651,9 +651,9 @@ const NotificationPreference = (
         setActiveTab
     }: NotificationPreferenceProps
 ) => (
-    <div className="bg-white rounded-lg shadow-sm p-6">
+    <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
         <header className='flex gap-2 items-center justify-start pb-4 mb-2 border-b'>
-            <div className='p-2 rounded-sm hover:bg-main/15' onClick={() => setActiveTab("")}>
+            <div className='rounded-sm hover:bg-main/15' onClick={() => setActiveTab("")}>
                 <ArrowLeft />
             </div>
             <h3 className="text-lg font-semibold text-gray-900">Notification Preferences</h3>

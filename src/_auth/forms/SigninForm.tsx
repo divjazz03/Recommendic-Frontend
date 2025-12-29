@@ -55,10 +55,10 @@ const SigninForm = () => {
   return (
     <form
       onSubmit={form.handleSubmit(onSubmit)}
-      className="w-full h-full p-8 flex overflow-auto flex-col justify-center items-center"
+      className="w-full h-full px-2 xs:px-4 sm:px-4 flex overflow-auto flex-col justify-center items-center"
     >
       <Form {...form}>
-        <div className="flex flex-col justify-center gap-5">
+        <div className="w-full flex flex-col justify-center items-center gap-5">
           <header className="mb-5">
             <p className="font-bold text-3xl text-balance text-center">
               Welcome Back
@@ -76,7 +76,8 @@ const SigninForm = () => {
                 <FormControl>
                   <InputWithIcon
                     register={form.register("email")}
-                    className="focus:outline-none w-full"
+                    divStyle="w-full sm:max-w-[360px]"
+                    className="focus:outline-none w-full "
                     icon={<MailIcon className="text-gray-400  h-4 w-4" />}
                   />
                 </FormControl>
@@ -93,6 +94,7 @@ const SigninForm = () => {
                 <FormControl>
                   <InputWithIcon
                     register={form.register("password")}
+                    divStyle="w-full sm:max-w-[360px]"
                     type="password"
                     className="focus:outline-none w-full"
                     icon={<Lock className="text-gray-400 h-4 w-4" />}
@@ -102,7 +104,7 @@ const SigninForm = () => {
               </FormItem>
             )}
           ></FormField>
-          <Button type="submit" className="shad-button_primary">
+          <Button type="submit" className="sm:w-56">
             {isSigningIn ? <Loader /> : "Sign In"}
           </Button>
         </div>

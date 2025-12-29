@@ -34,7 +34,7 @@ const PatientAppointment = () => {
   } = usePatientAppointment();
 
   return (
-    <main className='h-full mx-auto overflow-y-auto p-6 md:p-8'>
+    <main className='h-full mx-auto overflow-y-auto p-4 sm:p-6 md:p-8'>
       <div className='max-w-7xl'>
         <header className='mb-8'>
           <h1 className='font-bold text-2xl md:text-3xl lg:text-4xl text-gray-900 mb-2'>MyAppointments</h1>

@@ -258,7 +258,7 @@ const ConsultantNewSchedule = () => {
                         variant={'outline'}
                     >
                         <Plus className="w-4 h-4" />
-                        Add Another Schedule
+                        <p className='hidden sm:block'>Add Another Schedule</p>
                     </Button>
 
                     <Button

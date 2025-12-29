@@ -12,6 +12,7 @@ import {
   DoorOpen,
   ArrowLeft,
   AlertCircle,
+  X,
 } from "lucide-react";
 import {
   PatientNotificationSetting,
@@ -30,6 +31,7 @@ import { Input } from "../ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "../ui/select";
 import { Textarea } from "../ui/textarea";
 import { MultiSelect, MultiSelectContent, MultiSelectGroup, MultiSelectItem, MultiSelectTrigger, MultiSelectValue } from "../ui/multi-select";
+import { Button } from "../ui/button";
 
 const PatientProfile = () => {
   const [activeTab, setActiveTab] = useState("");
@@ -106,7 +108,7 @@ const PatientProfile = () => {
         </div>
       )}
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 sm:py-6">
         <div className="flex flex-col">
           {/* Main Content */}
           <div className="lg:col-span-3">
@@ -170,7 +172,7 @@ const ProfileNavigation = ({
   profileData,
 }: ProfileNavigationProps) => (
   <>
-    <main className="h-full p-6">
+    <main className="h-full p-4 sm:p-6">
       <div className="max-w-7xl mx-auto flex flex-col gap-6 h-full">
         <div className="flex items-center gap-4">
           <div className="relative">
@@ -186,7 +188,7 @@ const ProfileNavigation = ({
             </h2>
           </div>
         </div>
-        <div className="bg-white flex-1 rounded-lg shadow-sm p-4">
+        <div className="bg-white rounded-lg shadow-sm p-2">
           <nav className="space-y-1">
             {[
               { id: "profile", label: "Profile Information", icon: User },
@@ -196,7 +198,7 @@ const ProfileNavigation = ({
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${
+                className={`w-full flex items-center gap-3 px-2 py-3 rounded-lg text-left transition-colors ${
                   activeTab === tab.id
                     ? "bg-blue-50 text-blue-700 font-medium"
                     : "text-gray-700 hover:bg-gray-50"
@@ -208,7 +210,7 @@ const ProfileNavigation = ({
             ))}
             <button
               onClick={handleLogout}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-gray-700 hover:bg-gray-50"
+              className="w-full flex items-center gap-3 px-2 py-3 rounded-lg text-left text-gray-700 hover:bg-gray-50"
             >
               <DoorOpen />
               <span className="text-sm">Logout</span>
@@ -256,11 +258,11 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
     <>
       <div className="bg-white rounded-lg shadow-sm space-y-2">
         {/* Profile Header */}
-        <div className="p-6 border-b">
+        <div className="p-4 sm:p-6 border-b">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 sm:gap-4">
               <div
-                className="p-2 rounded-sm hover:bg-main/15"
+                className="rounded-sm hover:bg-main/15"
                 onClick={() => setActiveTab("")}
               >
                 <ArrowLeft />
@@ -280,33 +282,34 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
                 </button>
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">
+                <h2 className="text-xl font-semibold text-gray-900">
                   {profileData?.firstName} {profileData?.lastName}
                 </h2>
               </div>
             </div>
             {!isEditing ? (
-              <button
+              <Button
                 onClick={handleStartEdit}
-                className="px-2 sm:px-4 py-1 sm:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                
               >
                 Edit Profile
-              </button>
+              </Button>
             ) : (
               <div className="flex gap-2">
-                <button
+                <Button
                   onClick={handleCancelEdit}
-                  className="px-2 py-1 sm:px-4 sm:py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                  variant={'secondary'}
+                  
                 >
-                  Cancel
-                </button>
-                <button
+                  <X className="w-4 h-4"/>
+                  <p className="hidden sm:inline-block">Cancel</p>
+                </Button>
+                <Button
                   onClick={handleSaveProfile}
-                  className="px-2 py-1 sm:px-4 sm:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
                 >
                   <Save className="w-4 h-4" />
-                  Save Changes
-                </button>
+                  <p className="hidden sm:inline-block">Save Changes</p>
+                </Button>
               </div>
             )}
           </div>
@@ -750,10 +753,10 @@ const NotificationPreferences = ({
   handleSaveNotificationSetting,
   setActiveTab,
 }: NotificationPreferencesProps) => (
-  <div className="bg-white rounded-lg shadow-sm p-6">
-    <header className="flex items-center justify-start gap-2 border-b pb-6">
+  <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
+    <header className="flex items-center justify-start gap-2 border-b pb-4">
       <div
-        className="p-2 rounded-sm hover:bg-main/15"
+        className="rounded-sm hover:bg-main/15"
         onClick={() => setActiveTab("")}
       >
         <ArrowLeft />

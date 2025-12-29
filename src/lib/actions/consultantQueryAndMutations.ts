@@ -3,7 +3,6 @@ import { confirmAppointment, ConsultantProfileUpdateRequest, createNewSchedule, 
 import { ModifyingSchedule } from "@/components/consultant/ConsultantModifySchedule"
 import { NewSchedule } from "@/hooks/useConsultantSchedule"
 import { ConsultantOnboardingData } from "@/components/consultant/ConsultantOnboarding"
-import { ApiError } from "@/lib/axios";
 import axios from "axios";
 import { getUploadSignature } from "@/lib/api/general_api";
 import { Credential } from "@/types"
@@ -36,7 +35,8 @@ export async function uploadProfilePic(
             timeoutErrorMessage: "Took too long to respond",
           }
         )
-        .then((response) => response.data);
+        .then((response) => response.data)
+        .catch((error) => {throw new Error(`Trouble uploading profile pic: ${error}`)});
 
       return cloudRes.secure_url;
     }
@@ -72,7 +72,9 @@ export async function uploadResume(
             timeoutErrorMessage: "Took too long to respond",
           }
         )
-        .then((response) => response.data);
+        .then((response) => response.data)
+        .catch((error) => {throw new Error(`Trouble uploading resume: ${error}`);
+        });
 
       return cloudRes.secure_url;
     }
@@ -113,17 +115,19 @@ export async function uploadCredentials(
         form.append("timestamp", String(signature.timeStamp));
         form.append("signature", signature.signature);
 
-        const { data } = await axios.post(
+        const response = await axios.post(
           `https://api.cloudinary.com/v1_1/${signature.cloudName}/image/upload`,
           form,
           {
             timeout: 1000 * 10,
             timeoutErrorMessage: "Took too long to respond",
           }
-        );
+        ).then(response => response.data)
+        .catch(error => {throw new Error(`Trouble uploading credential documents: ${error}`);
+        });
 
         return {
-          fileUrl: data.secure_url,
+          fileUrl: response.secure_url,
           name: credential.name,
           type: "certificate"
         } as Credential;

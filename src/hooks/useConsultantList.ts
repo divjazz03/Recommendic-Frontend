@@ -19,6 +19,7 @@ const useConsultantList = () => {
     isPending,
   } = useGetRecommendedConsultants(page);
   const totalPages = recommendedConsultants?.data.totalPages;
+  const totalElements = recommendedConsultants?.data.totalElements
   const isLast = recommendedConsultants?.data.last
   const pageNumber = recommendedConsultants?.data.pageNumber
   const empty = recommendedConsultants?.data.empty
@@ -77,7 +78,8 @@ const useConsultantList = () => {
     pageNumber,
     empty,
     specialties,
-    setShowFilter
+    setShowFilter,
+    totalElements
   };
 };
 

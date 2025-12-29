@@ -3,7 +3,7 @@ import SideBar, { NavLinksObject } from '@/components/shared/SideBar';
 import { useUserContext } from '@/context/AuthContext';
 import { Bell, Calendar1Icon, CalendarClock, Home, Menu, PillBottle, User, User2 } from 'lucide-react';
 import { MutableRefObject, useEffect, useRef, useState } from 'react'
-import { Link, Navigate, Outlet, useLocation } from 'react-router-dom';
+import { Link, Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import Loader from '@/components/shared/Loader';
 import InitialsOrAvartar from '@/components/shared/InitialsOrAvartar';
 
@@ -14,6 +14,7 @@ import InitialsOrAvartar from '@/components/shared/InitialsOrAvartar';
 const RootLayout = () => {
 	const [asideHidden, setAsideHidden] = useState(true);
 	const location = useLocation();
+	const navigate = useNavigate();
 	const asideRef: MutableRefObject<HTMLDivElement | null> = useRef(null);
 	const { userContext: auth, profileData, isLoading, isAuthenticated } = useUserContext();
 
@@ -179,7 +180,7 @@ const RootLayout = () => {
 										<div className='absolute top-0 right-0 rounded-full bg-red-500 w-2 h-2'></div>
 									</div>
 								</Link>
-							    <InitialsOrAvartar userName={profileData?.userName.full_name} avatarUrl={profileData?.profilePicture.picture_url} className='w-10 h-10 border' />
+							    <InitialsOrAvartar onClick={() => {navigate('profile')}} userName={profileData?.userName.full_name} avatarUrl={profileData?.profilePicture.picture_url} className='w-10 h-10 border' />
 								
 
 							</div>
