@@ -27,6 +27,7 @@ import Profile from "./_root/pages/Profile";
 import { ErrorBoundary } from "./components/shared/ErrorBoundary";
 import ConsultantScreen from "./components/patient/ConsultantScreen";
 import Chat from "./_root/pages/Chat";
+import NewMedication from "./_root/pages/NewMedication";
 
 const App = () => {
 
@@ -63,10 +64,13 @@ const App = () => {
             <Route path="/consultant/schedule/:consultantId" element={<PatientSchedule />}/>
             <Route path="/schedule" element={<ConsultantSchedule/>}>
               <Route index element={<ConsultantScheduleDisplay />} />
-                  <Route path="new" element={<ConsultantNewSchedule />} />
+                  <Route path="new/:patientId" element={<ConsultantNewSchedule />} />
                   <Route path="modify" element={<ConsultantModifySchedule />} />
             </Route>
-            <Route path="/medication" element={<Medication />} />
+            <Route path="/medication">
+                <Route index  element={<Medication/>} />
+                <Route path="new" element={<NewMedication />} />
+            </Route>
             <Route path="/notification" element={<Notification />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/appointment" element={<Appointment />} />

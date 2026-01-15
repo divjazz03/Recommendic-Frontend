@@ -16,10 +16,10 @@ apiClient.interceptors.response.use(
             const {status, data} = error.response;
 
             throw new ApiError(
-                data?.message || 'An error occurred',
+                data?.detail || 'An error occurred',
                 status,
-                data?.code,
-                data?.data
+                data?.title,
+                data?.properties
             )
         } else if (error.request) {
             // Request made but no response

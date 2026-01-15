@@ -202,9 +202,9 @@ const ConsultantNotification = () => {
               <Empty>
                 <EmptyHeader>
                   <EmptyMedia>
-                    <Bell />
+                    <Bell className="text-main-light" size={48}  />
                   </EmptyMedia>
-                  <EmptyTitle>No Notifications</EmptyTitle>
+                  <EmptyTitle className="text-gray-700">No Notifications</EmptyTitle>
                   <EmptyDescription>You're all caught up!</EmptyDescription>
                 </EmptyHeader>
               </Empty>

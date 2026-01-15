@@ -156,11 +156,11 @@ const ConsultantHome = () => {
   ?.map(data => ({
     id: data.appointmentId,
     channel: data.channel.toLowerCase() as AppointmentChannel,
-    patientName: data.consultantFullName,
-    patientAge: 20,
+    patientName: data.fullName,
+    patientAge: Number(data.age),
     time: new Date().toDateString(),
     status: 'in-progress' as AppointmentStatus,
-    history: 'new' as AppointmentHistory,
+    history: data.isFollowUp? 'follow-up' : 'new',
     reason: ''
   }))
   const recentUpdates: Update[] | undefined = dashboardResponse?.data?.recentUpdates
@@ -215,11 +215,11 @@ const ConsultantHome = () => {
                   {dashBoard.todayAppointments && dashBoard.todayAppointments.length}
                 </p>
               </div>
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+              <div className="p-3 bg-blue-100 rounded-lg flex items-center justify-center">
                 <Calendar className="w-6 h-6 text-blue-600" />
               </div>
             </div>
-            {dashBoard.stats.yesterdayTodayAppointmentCountDifference && (
+            {dashBoard.stats.yesterdayTodayAppointmentCountDifference > 0 && (
               <div className="mt-3 flex items-center text-xs text-gray-500">
                 {dashBoard.stats
                   .yesterdayTodayAppointmentCountDifference>= 0 ? (
@@ -254,7 +254,7 @@ const ConsultantHome = () => {
                   {dashBoard.stats.completedConsultationsTodayCount}
                 </p>
               </div>
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+              <div className="p-3 bg-green-100 rounded-lg flex items-center justify-center">
                 <CheckCircle className="w-6 h-6 text-green-600" />
               </div>
             </div>
@@ -273,7 +273,7 @@ const ConsultantHome = () => {
                   {dashBoard.stats.numberOfActivePatients}
                 </p>
               </div>
-              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+              <div className="p-3 bg-purple-100 rounded-lg flex items-center justify-center">
                 <Users className="w-6 h-6 text-purple-600" />
               </div>
             </div>
@@ -292,7 +292,7 @@ const ConsultantHome = () => {
                   {dashBoard.pendingTasks.length}
                 </p>
               </div>
-              <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+              <div className="p-3 bg-orange-100 rounded-lg flex items-center justify-center">
                 <FileText className="w-6 h-6 text-orange-600" />
               </div>
             </div>
@@ -321,9 +321,9 @@ const ConsultantHome = () => {
                   <Empty>
                     <EmptyHeader>
                       <EmptyMedia>
-                        <CalendarX />
+                        <CalendarX className="text-main-light" size={48} />
                       </EmptyMedia>
-                      <EmptyTitle>
+                      <EmptyTitle className="text-gray-700">
                         No Appointments Scheduled for Today
                       </EmptyTitle>
                       <EmptyDescription>
@@ -421,9 +421,9 @@ const ConsultantHome = () => {
                   <Empty>
                     <EmptyHeader>
                       <EmptyMedia>
-                        <ClipboardList />
+                        <ClipboardList className="text-main-light" size={48}  />
                       </EmptyMedia>
-                      <EmptyTitle>No pendingTasks</EmptyTitle>
+                      <EmptyTitle className="text-gray-700">No pendingTasks</EmptyTitle>
                       <EmptyDescription>
                         You have either completed all tasks or haven&apos;t
                         created any.
@@ -531,9 +531,9 @@ const ConsultantHome = () => {
                     <Empty>
                         <EmptyHeader>
                             <EmptyMedia>
-                                <Rss></Rss>
+                                <Rss className="text-main-light" size={48} ></Rss>
                             </EmptyMedia>
-                            <EmptyTitle>No updates </EmptyTitle>
+                            <EmptyTitle className="text-gray-700">No updates </EmptyTitle>
                             <EmptyDescription>You are all caught up. New updates appear here</EmptyDescription>
                         </EmptyHeader>
                     </Empty>

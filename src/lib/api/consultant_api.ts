@@ -20,6 +20,7 @@ const consultantBasePath = import.meta.env.VITE_CONSULTANT_BASE;
 const scheduleBasePath = import.meta.env.VITE_SCHEDULE_BASE;
 const appointmentBasePath = import.meta.env.VITE_APPOINTMENT_BASE;
 const dashboardBasePath = import.meta.env.VITE_DASHBOARD_BASE;
+const medicationBasePath = import.meta.env.VITE_MEDICATION_BASE;
 
 interface ScheduleCreationResponse extends Response {
   data: {
@@ -204,7 +205,7 @@ export interface ProfileDetails {
     subSpecialties: string[];
     medicalLicenseNumber: string;
     profileImgUrl?: string;
-    boardCertification?: string
+    boardCertification?: string;
   };
   education: ConsultantEducation;
 }
@@ -255,31 +256,97 @@ export async function confirmAppointment(appointmentId: string, note: string) {
 
 export interface ConsultantDashboardResponse extends Response {
   data: {
-    yesterdayTodayAppointmentCountDifference: number,
-    completedConsultationsTodayCount: number,
-    numberOfActivePatients: number,
-    numberOfNewPatientThisWeek: number,
-    pendingTasks: number,
-    highPriorityTasks: number,
+    yesterdayTodayAppointmentCountDifference: number;
+    completedConsultationsTodayCount: number;
+    numberOfActivePatients: number;
+    numberOfNewPatientThisWeek: number;
+    pendingTasks: number;
+    highPriorityTasks: number;
     todayAppointments: [
       {
-        appointmentId: string,
-        consultantFullName: string,
-        specialty: string,
-        dateTime: string,
-        channel: Uppercase<ConsultationChannel>
+        appointmentId: string;
+        fullName: string;
+        specialty: string;
+        dateTime: string;
+        age: string;
+        channel: Uppercase<ConsultationChannel>;
+        isFollowUp: boolean;
       }
-    ],
+    ];
     recentUpdates: [
       {
-        timestamp: string,
-        message: string,
-        context: NotificationContext
+        timestamp: string;
+        message: string;
+        context: NotificationContext;
       }
-    ]
+    ];
   };
 }
 
 export async function getMyDashboard(): Promise<ConsultantDashboardResponse> {
   return apiClient.get(`${dashboardBasePath}`);
+}
+
+export interface PatientMedicalDataResponse extends Response {
+  data: {
+    age: string;
+    id: string;
+    consultationId: string;
+    name: string;
+    gender: string;
+    mrn: string;
+  };
+}
+export async function getPatientMedicalData(
+  id: string
+): Promise<PatientMedicalDataResponse> {
+  return apiClient
+    .get(`${medicationBasePath}/patient/${id}`)
+    .then((response) => response.data);
+}
+
+interface MedicationRequest {
+  name: string;
+  dosage: string;
+  medicationFrequency: string;
+  durationValue: number | undefined;
+  durationType: string;
+  instructions: string;
+}
+export interface PrescriptionRequest {
+  consultationId: string;
+  prescribedTo: string;
+  diagnosis: string;
+  medications: MedicationRequest[];
+  notes?: string;
+}
+interface MedicationResponse {
+  id: string
+  name: string
+  dosage: string
+  frequency: string
+  startDate: string
+  endDate: string
+  intructions: string
+}
+interface ConsultantPrescriptionResponse extends Response {
+  data: {
+    id: string
+    patientName: string
+    patientAge: string
+    gender: string
+    prescriberId: string
+    prescriberName: string
+    date: string
+    status: string
+    diagnosis: string
+    medications: MedicationResponse[]
+    notes: string
+  }
+}
+
+export async function createPrescription(request: PrescriptionRequest): Promise<ConsultantPrescriptionResponse> {
+  return apiClient
+    .post(`${medicationBasePath}`, request)
+    .then((response) => response.data);
 }
