@@ -174,15 +174,17 @@ export async function createAnAppointment(
 }
 
 export interface PatientDashboardResponse extends Response {
-  appointmentsToday: [
+  data: {
+   appointmentsToday: [
     {
       appointmentId: string;
       consultantFullName: string;
       specialty: string;
       dateTime: string;
       channel: Uppercase<ConsultationChannel>;
+      status: string;
     }
-  ];
+  ],
   recentActivities: [
     {
       activityId: string;
@@ -190,7 +192,7 @@ export interface PatientDashboardResponse extends Response {
       dateTime: string;
       context: NotificationContext;
     }
-  ];
+  ],
   medications: [
     {
       medicationId: string;
@@ -199,7 +201,8 @@ export interface PatientDashboardResponse extends Response {
       dosageFrequency: string;
       nextDoseDateTime: string;
     }
-  ];
+  ] 
+  };
 }
 export async function getMyDashboard(): Promise<PatientDashboardResponse> {
   return apiClient.get(`${dashBoardPath}`).then((response) => response.data);

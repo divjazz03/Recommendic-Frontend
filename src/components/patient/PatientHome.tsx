@@ -15,7 +15,7 @@ import {
   User2,
 } from "lucide-react";
 import { DateTime } from "luxon";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Empty,
   EmptyContent,
@@ -25,6 +25,7 @@ import {
   EmptyTitle,
 } from "../ui/empty";
 import { Button } from "../ui/button";
+import { useNavigate } from "react-router-dom";
 
 interface AppointmentView {
   id: string;
@@ -33,6 +34,7 @@ interface AppointmentView {
   date: string;
   time: string;
   channel: string;
+  status: string;
 }
 
 interface Medication {
@@ -54,7 +56,6 @@ interface DashboardData {
   medications: Medication[];
   recentActivity: RecentActivity[];
 }
-
 
 const getActivityIcon = (context: NotificationContext) => {
   switch (context) {
@@ -91,45 +92,57 @@ const getActivityIcon = (context: NotificationContext) => {
 // };
 
 const PatientHome = () => {
+  const navigate = useNavigate()
   const { profileData } = useUserContext();
   const { data: dashBoardResp } = useGetMyDashboard();
 
-  const appointments: AppointmentView[] | undefined =
-    dashBoardResp?.appointmentsToday?.map((apt) => ({
-      channel: apt.channel.toLowerCase(),
-      date: DateTime.fromISO(apt.dateTime, { zone: "utc" }).toFormat(
-        "YYYY-LLL-dd"
-      ),
-      time: DateTime.fromISO(apt.dateTime, { zone: "utc" }).toFormat(
-        "HH:mm:ss a"
-      ),
-      doctorName: apt.consultantFullName,
-      id: apt.appointmentId,
-      specialty: apt.specialty,
-    }));
-  const medications: Medication[] | undefined = dashBoardResp?.medications?.map(
-    (med) => ({
-      dosage: med.dosageQuantity,
-      frequency: med.dosageFrequency,
-      id: med.medicationId,
-      name: med.name,
-      nextDose: DateTime.fromISO(med.nextDoseDateTime, {
-        zone: "utc",
-      }).toFormat("hh:mm a"),
-    })
-  );
-  const recentActivities: RecentActivity[] | undefined =
-    dashBoardResp?.recentActivities?.map((act) => ({
-      context: act.context,
-      id: act.activityId,
-      time: formatDate(act.dateTime),
-      title: act.title,
-    }));
-  const [dashBoard, _] = useState<DashboardData>({
-    appointments: appointments || [],
-    medications: medications || [],
-    recentActivity: recentActivities || [],
+  const [dashBoard, setDashboard] = useState<DashboardData>({
+    appointments: [],
+    medications: [],
+    recentActivity: [],
   });
+
+  useEffect(() => {
+    console.log(dashBoardResp)
+    const appointments: AppointmentView[] =
+      dashBoardResp?.data?.appointmentsToday?.map((apt) => ({
+        channel: apt.channel.toLowerCase(),
+        date: DateTime.fromISO(apt.dateTime, { zone: "utc" }).toFormat(
+          "YYYY-LLL-dd"
+        ),
+        time: DateTime.fromISO(apt.dateTime, { zone: "utc" }).toFormat(
+          "HH:mm:ss a"
+        ),
+        doctorName: apt.consultantFullName,
+        id: apt.appointmentId,
+        specialty: apt.specialty,
+        status: 'confirmed'
+      })) || [];
+    const medications: Medication[] | undefined =
+      dashBoardResp?.data?.medications?.map((med) => ({
+        dosage: med.dosageQuantity,
+        frequency: med.dosageFrequency,
+        id: med.medicationId,
+        name: med.name,
+        nextDose: DateTime.fromISO(med.nextDoseDateTime, {
+          zone: "utc",
+        }).toFormat("hh:mm a"),
+      })) || [];
+    const recentActivities: RecentActivity[] | undefined =
+      dashBoardResp?.data?.recentActivities?.map((act) => ({
+        context: act.context,
+        id: act.activityId,
+        time: formatDate(act.dateTime),
+        title: act.title,
+      })) || [];
+
+    setDashboard((prev) => ({
+      ...prev,
+      appointments: appointments,
+      medications: medications,
+      recentActivity: recentActivities,
+    }));
+  }, [dashBoardResp]);
   return (
     <main className="flex flex-col gap-4 h-full max-w-7xl mx-auto overflow-y-auto bg-white p-2">
       <header className="w-full bg-white rounded-t-lg">
@@ -193,6 +206,7 @@ const PatientHome = () => {
                   {dashBoard.appointments.map((apt) => (
                     <div
                       key={apt.id}
+                      onClick={() => navigate("/consultation")}
                       className="p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-md transition"
                     >
                       <div className="flex items-start justify-between">
@@ -285,8 +299,8 @@ const PatientHome = () => {
                   </EmptyHeader>
                   <EmptyContent>
                     <Button className="transition text-sm font-medium">
-                    Manage Medications
-                  </Button>
+                      Manage Medications
+                    </Button>
                   </EmptyContent>
                 </Empty>
               ) : (

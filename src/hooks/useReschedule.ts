@@ -9,9 +9,9 @@ import { useConfirmAppointment } from "@/lib/actions/consultantQueryAndMutations
 
 export const usePatientReschedule = (consultantId: string) => {
   const [rescheduleDate, setRescheduleDate] = useState<Date>(new Date());
-  const [, setSelectedScheduleId] = useState<string | undefined>();
+  const [, setSelectedScheduleId] = useState<string | null>(null);
   const { data: timeSlots, isError, error } = useGetConsultantTimeSlots(consultantId, rescheduleDate?.toISOString().split('T')[0])
-  const [rescheduleTime, setRescheduleTime] = useState<string>();
+  const [rescheduleTime, setRescheduleTime] = useState<string | null>(null);
   const [reason, setReason] = useState("")
   const timeSlotsMem = useMemo(() => schedulesToTimeSlots(timeSlots? timeSlots.data : []), [timeSlots])
 
@@ -41,10 +41,10 @@ export const useConsultantAction = (action: ActionModalType,
 
   const [actionReason, setActionReason] = useState('');
   const [rescheduleDate, setRescheduleDate] = useState<Date | null>(new Date());
-  const [rescheduleTime, setRescheduleTime] = useState('');
+  const [rescheduleTime, setRescheduleTime] = useState<string | null>(null);
   const {userContext} = useUserContext()
   const { data: timeSlots } = useGetConsultantTimeSlots(userContext.user_id || '', rescheduleDate?.toISOString().split('T')[0] || '2013-03-04', action.type === 'reschedule')
-  const [, setSelectedScheduleId] = useState<string | undefined>();
+  const [, setSelectedScheduleId] = useState<string | null>(null);
   const [notes, setNotes] = useState<string>()
   const timeSlotsMem = useMemo(() => schedulesToTimeSlots(timeSlots? timeSlots.data : []), [timeSlots])
 

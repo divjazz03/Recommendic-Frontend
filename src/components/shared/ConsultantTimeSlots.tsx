@@ -4,8 +4,8 @@ import React from 'react'
 
 export interface ConsultantTimeSlotsProps {
     timeSlots: TimeSlots,
-    setSelectedTime: (value: React.SetStateAction<string>) => void
-    setSelectedScheduleId: (value: React.SetStateAction<string | undefined>) => void
+    setSelectedTime: (value: React.SetStateAction<string | null>) => void
+    setSelectedScheduleId: (value: React.SetStateAction<string | null>) => void
     selectedTime: string
 }
 const ConsultantTimeSlots: React.FC<ConsultantTimeSlotsProps> = ({

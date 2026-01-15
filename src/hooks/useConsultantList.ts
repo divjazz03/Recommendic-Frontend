@@ -32,8 +32,8 @@ const useConsultantList = () => {
   const filteredConsultants = useMemo(() => {
     return consultants.filter((consultant) => {
       const matchedSearch =
-        consultant.name.toLowerCase().includes(searchValue.toLowerCase()) ||
-        consultant.specialty.toLowerCase().includes(searchValue.toLowerCase());
+        consultant.name.toLowerCase()?.includes(searchValue.toLowerCase()) ||
+        consultant.specialty.toLowerCase()?.includes(searchValue.toLowerCase());
       const matchesSpecialty =
         selectedSpecialty === "all" ||
         consultant.specialty === selectedSpecialty;
@@ -43,11 +43,11 @@ const useConsultantList = () => {
       const matchesAvailability =
         selectedAvailability === "all" ||
         (selectedAvailability === "today" &&
-          consultant.availability.includes("Today")) ||
+          consultant.availability?.includes("Today")) ||
         (selectedAvailability === "tomorrow" &&
-          consultant.availability.includes("Tomorrow")) ||
+          consultant.availability?.includes("Tomorrow")) ||
         (selectedAvailability === "week" &&
-          consultant.availability.includes("Week"));
+          consultant.availability?.includes("Week"));
       return (
         matchedSearch &&
         matchesAvailability &&

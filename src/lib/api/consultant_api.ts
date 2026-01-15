@@ -251,7 +251,7 @@ export async function confirmAppointment(appointmentId: string, note: string) {
   return apiClient.post(`${appointmentBasePath}/confirm`, {
     appointmentId: appointmentId,
     note: note,
-  });
+  }).then(response => response.data);
 }
 
 export interface ConsultantDashboardResponse extends Response {
@@ -271,6 +271,7 @@ export interface ConsultantDashboardResponse extends Response {
         age: string;
         channel: Uppercase<ConsultationChannel>;
         isFollowUp: boolean;
+        status: string
       }
     ];
     recentUpdates: [
@@ -284,7 +285,7 @@ export interface ConsultantDashboardResponse extends Response {
 }
 
 export async function getMyDashboard(): Promise<ConsultantDashboardResponse> {
-  return apiClient.get(`${dashboardBasePath}`);
+  return apiClient.get(`${dashboardBasePath}`).then(response => response.data);
 }
 
 export interface PatientMedicalDataResponse extends Response {

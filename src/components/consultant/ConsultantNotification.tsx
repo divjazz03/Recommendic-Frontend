@@ -7,6 +7,11 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import {
+  useGetNotifications,
+  useMarkAllNotificationsAsRead,
+  useMarkNotificationsAsRead,
+} from "@/lib/actions/generalQueriesAndMutation";
+import {
   Bell,
   Calendar,
   CheckCircle,
@@ -16,6 +21,7 @@ import {
   X,
 } from "lucide-react";
 import React, { useState } from "react";
+import { toast } from "sonner";
 
 type ConsultantNotificationType = "lab_result" | "appointment" | "prescription";
 
@@ -24,8 +30,6 @@ interface ConsultantNotification {
   type: ConsultantNotificationType;
   title: string;
   message: string;
-  patientName: string;
-  patientId: string;
   time: string;
   isRead: boolean;
 }
@@ -78,8 +82,7 @@ const exampleNotifications: ConsultantNotification[] = [
     type: "lab_result",
     title: "Abnormal Lab Results",
     message: "HbA1c: 9.2% - Elevated glucose levels detected",
-    patientName: "Maria Rodriguez",
-    patientId: "PT-3921",
+    
     time: "15 min ago",
     isRead: false,
   },
@@ -89,8 +92,7 @@ const exampleNotifications: ConsultantNotification[] = [
     type: "appointment",
     title: "Appointment Rescheduled",
     message: "Follow-up moved from Dec 12 to Dec 15 at 2:30 PM",
-    patientName: "Sarah Thompson",
-    patientId: "PT-2103",
+    
     time: "2 hours ago",
     isRead: false,
   },
@@ -99,8 +101,7 @@ const exampleNotifications: ConsultantNotification[] = [
     type: "prescription",
     title: "Prescription Approval Required",
     message: "Request for Warfarin dosage adjustment pending your review",
-    patientName: "Emily Davis",
-    patientId: "PT-1982",
+    
     time: "4 hours ago",
     isRead: true,
   },
@@ -109,8 +110,7 @@ const exampleNotifications: ConsultantNotification[] = [
     type: "lab_result",
     title: "Lab Results Available",
     message: "Complete blood count and metabolic panel ready for review",
-    patientName: "Lisa Anderson",
-    patientId: "PT-3452",
+    
     time: "1 day ago",
     isRead: true,
   },
@@ -119,29 +119,46 @@ const exampleNotifications: ConsultantNotification[] = [
 const ConsultantNotification = () => {
   const [filter, setFilter] = useState<"all" | "unread" | "critical">("all");
 
-  const [notifications, setNotifications] =
-    useState<ConsultantNotification[]>(exampleNotifications);
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useGetNotifications();
+  const { mutateAsync: markNotificationAsRead } = useMarkNotificationsAsRead();
+  const { mutateAsync: markAllNotificationAsRead } =
+    useMarkAllNotificationsAsRead();
 
-  const markAsRead = (id: string) => {
-    setNotifications(
-      notifications.map((n) => (n.id === id ? { ...n, isRead: true } : n))
-    );
+  const markAsRead = async (id: string) => {
+    try {
+      await markNotificationAsRead(id);
+    } catch (error) {
+      toast.error("Couldn't amrk notification as read");
+    }
   };
 
-  const markAllAsRead = () => {
-    setNotifications(notifications.map((n) => ({ ...n, isRead: true })));
+  const markAllAsRead = async () => {
+    try {
+      await markAllNotificationAsRead();
+    } catch (error) {
+      toast.error("Couldn't mark all notifications as read");
+    }
   };
 
-  const deleteNotification = (id: string) => {
-    setNotifications(notifications.filter((n) => n.id !== id));
-  };
+  const deleteNotification = (id: string) => {};
 
-  const filteredNotifications = notifications.filter((n) => {
-    if (filter === "unread") return !n.isRead;
-    return true;
-  });
+  const notifications =
+    data?.pages.flatMap((page) => page.data) ||
+    [];
 
-  const unreadCount = notifications.filter((n) => !n.isRead).length;
+  const filteredNotifications =
+    data?.pages.flatMap((page) =>
+      page.data
+        .filter((n) => {
+          if (filter === "unread") return !n.isRead;
+          return true;
+        })
+    ) || [];
+
+  const unreadCount = data?.pages.flatMap((page) =>
+    page.data.filter((n) => !n.isRead)
+  ).length;
 
   return (
     <main className="h-full overflow-y-auto">
@@ -162,7 +179,7 @@ const ConsultantNotification = () => {
                 </p>
               </div>
             </div>
-            {unreadCount > 0 && (
+            {unreadCount && unreadCount > 0 && (
               <Button onClick={markAllAsRead}>
                 <CheckCircle className="w-4 h-4 hidden sm:inline" />
                 Mark all read
@@ -180,7 +197,7 @@ const ConsultantNotification = () => {
                   : "text-gray-500 hover:text-gray-700"
               }`}
             >
-              All ({notifications.length})
+              All ({notifications && notifications.length})
             </button>
             <button
               onClick={() => setFilter("unread")}
@@ -202,16 +219,45 @@ const ConsultantNotification = () => {
               <Empty>
                 <EmptyHeader>
                   <EmptyMedia>
-                    <Bell className="text-main-light" size={48}  />
+                    <Bell className="text-main-light" size={48} />
                   </EmptyMedia>
-                  <EmptyTitle className="text-gray-700">No Notifications</EmptyTitle>
+                  <EmptyTitle className="text-gray-700">
+                    No Notifications
+                  </EmptyTitle>
                   <EmptyDescription>You're all caught up!</EmptyDescription>
                 </EmptyHeader>
               </Empty>
             </div>
           ) : (
             filteredNotifications.map((notification) => (
-              <div
+            <NotificationCard key={notification.id}
+             deleteNotification={deleteNotification}
+             markAsRead={markAllAsRead}
+             notification={{
+              id: notification.id,
+              isRead: notification.isRead,
+              message: notification.message,
+              time: notification.timeStamp,
+              title: notification.title,
+              type: notification.type as ConsultantNotificationType
+             }}
+             />
+            ))
+          )}
+        </div>
+      </div>
+    </main>
+  );
+};
+interface NotificationCardProps {
+  notification: ConsultantNotification,
+  deleteNotification: (id: string) => void
+  markAsRead: (id: string) => void
+}
+const NotificationCard = (
+  {notification, deleteNotification, markAsRead}: NotificationCardProps
+) => (
+  <div
                 key={notification.id}
                 className={`bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-5 ${
                   !notification.isRead ? "border-l-4 border-indigo-500" : ""
@@ -220,11 +266,13 @@ const ConsultantNotification = () => {
                 <div className="flex gap-4">
                   <div
                     className={`${getIconBgColor(
-                      notification.type,
+                      notification?.type as ConsultantNotificationType,
                       notification.isRead
-                    )} p-3 rounded-xl h-fit ${getIconColor(notification.type)}`}
+                    )} p-3 rounded-xl h-fit ${getIconColor(
+                      notification.type as ConsultantNotificationType
+                    )}`}
                   >
-                    {getIcon(notification.type)}
+                    {getIcon(notification.type as ConsultantNotificationType)}
                   </div>
 
                   <div className="flex-1 min-w-0">
@@ -239,15 +287,6 @@ const ConsultantNotification = () => {
                         >
                           {notification.title}
                         </h3>
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className="text-sm font-medium text-blue-600">
-                            {notification.patientName}
-                          </span>
-                          <span className="text-xs text-gray-400">•</span>
-                          <span className="text-xs text-gray-500">
-                            {notification.patientId}
-                          </span>
-                        </div>
                       </div>
                       <button
                         onClick={() => deleteNotification(notification.id)}
@@ -285,12 +324,5 @@ const ConsultantNotification = () => {
                   </div>
                 </div>
               </div>
-            ))
-          )}
-        </div>
-      </div>
-    </main>
-  );
-};
-
+)
 export default ConsultantNotification;

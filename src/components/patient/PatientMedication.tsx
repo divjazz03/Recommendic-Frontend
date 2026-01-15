@@ -493,7 +493,7 @@ const PatientMedication = () => {
                       consultations
                     </p>
                     <button
-                      onClick={() => setShowAddForm(true)}
+                      onClick={() => navigate("new")}
                       className="px-6 py-3 bg-main-light text-white rounded-xl hover:bg-main transition-colors duration-300"
                     >
                       Add Your First Medication

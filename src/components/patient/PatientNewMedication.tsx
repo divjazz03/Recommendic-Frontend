@@ -19,6 +19,8 @@ import {
   EmptyDescription,
 } from "../ui/empty";
 import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger } from "../ui/select";
 
 interface Medication {
   id: string;
@@ -151,7 +153,7 @@ const PatientNewMedication = () => {
         {/* Diagnosis */}
         <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6">
           <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2 mb-4">
-            <FileText className="text-blue-600" size={24} />
+            <FileText className="text-main-light" size={24} />
             Diagnosis
           </h2>
           <textarea
@@ -172,7 +174,7 @@ const PatientNewMedication = () => {
         <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
-              <Calendar className="text-blue-600" size={24} />
+              <Calendar className="text-main-light" size={24} />
               Medications
             </h2>
             <Button onClick={addMedication}>
@@ -215,7 +217,7 @@ const PatientNewMedication = () => {
                     </Button>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
-                    <input
+                    <Input
                       type="text"
                       placeholder="Medication Name"
                       value={med.name}
@@ -224,7 +226,7 @@ const PatientNewMedication = () => {
                       }
                       className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-main-light focus:border-transparent"
                     />
-                    <input
+                    <Input
                       type="text"
                       placeholder="Dosage (e.g., 500mg)"
                       value={med.dosage}
@@ -233,7 +235,7 @@ const PatientNewMedication = () => {
                       }
                       className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-main-light focus:border-transparent"
                     />
-                    <input
+                    <Input
                       type="text"
                       placeholder="Frequency (e.g., BID)"
                       value={med.frequency}
@@ -242,7 +244,7 @@ const PatientNewMedication = () => {
                       }
                       className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-main-light focus:border-transparent"
                     />
-                    <input
+                    <Input
                       type="number"
                       placeholder="Duration (e.g., 7)"
                       value={med.duration}
@@ -255,19 +257,21 @@ const PatientNewMedication = () => {
                       }
                       className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-main-light focus:border-transparent"
                     />
-                    <select
+                    <Select
                       value={med.durationType}
-                      onChange={(e) =>
-                        updateMedication(med.id, "durationType", e.target.value)
+                      onValueChange={(e) =>
+                        updateMedication(med.id, "durationType", e)
                       }
-                      className="p-2 border border-gray-300 rounded focus:ring-2 focus:ring-main-light focus:border-transparent"
+                      
                     >
-                      <option value={""} disabled selected>
-                        Select type of Duration
-                      </option>
-                      <option value={"day"}>Day</option>
-                      <option value={"week"}>Week</option>
-                    </select>
+                      <SelectTrigger className="p-2 border border-gray-300 text-gray-500 rounded focus:ring-2 focus:ring-main-light focus:border-transparent" >Select Duration Type</SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="day">Day</SelectItem>
+                        <SelectItem value="week">Week</SelectItem>
+                        <SelectItem value="month">Month</SelectItem>
+                        <SelectItem value="year">Year</SelectItem>
+                      </SelectContent>
+                    </Select>
                     <input
                       type="text"
                       placeholder="Instructions"

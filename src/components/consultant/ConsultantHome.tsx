@@ -18,7 +18,7 @@ import {
   Video,
 } from "lucide-react";
 import { DateTime } from "luxon";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Empty,
   EmptyContent,
@@ -28,18 +28,19 @@ import {
   EmptyTitle,
 } from "../ui/empty";
 import { Button } from "../ui/button";
+import { useNavigate } from "react-router-dom";
 
 type AppointmentChannel = "in_person" | "online";
 type AppointmentHistory = "new" | "follow-up";
-type AppointmentStatus = "upcoming" | "in-progress" | "completed";
+type AppointmentStatus = "confirmed" | "in-progress" |  "completed";
 interface Appointment {
   id: string;
   patientName: string;
   patientAge: number;
   time: string;
-  channel: AppointmentChannel
-  history: AppointmentHistory
-  status: AppointmentStatus
+  channel: AppointmentChannel;
+  history: AppointmentHistory;
+  status: AppointmentStatus;
   reason: string;
 }
 
@@ -76,24 +77,24 @@ interface Appointment {
 // ];
 
 type Stat = {
-    yesterdayTodayAppointmentCountDifference: number,
-    completedConsultationsTodayCount: number,
-    numberOfActivePatients: number,
-    numberOfNewPatientThisWeek: number,
-    pendingTasks: number,
-    highPriorityTasks: number,
+  yesterdayTodayAppointmentCountDifference: number;
+  completedConsultationsTodayCount: number;
+  numberOfActivePatients: number;
+  numberOfNewPatientThisWeek: number;
+  pendingTasks: number;
+  highPriorityTasks: number;
 };
 type Update = {
   title: string;
   time: string;
-  context: NotificationContext
+  context: NotificationContext;
 };
 
 interface DashboardData {
-    stats: Stat
-    todayAppointments: Appointment[],
-    recentUpdates: Update[],
-    pendingTasks: Task[]
+  stats: Stat;
+  todayAppointments: Appointment[];
+  recentUpdates: Update[];
+  pendingTasks: Task[];
 }
 
 // const getStatusColor = (status: string) => {
@@ -118,7 +119,7 @@ const getAppointmentStatus = (status: string) => {
       };
     case "in-progress":
       return { icon: <Activity className="w-4 h-4" />, color: "text-blue-600" };
-    case "upcoming":
+    case "confirmed":
       return { icon: <Clock className="w-4 h-4" />, color: "text-gray-400" };
     default:
       return { icon: <Clock className="w-4 h-4" />, color: "text-gray-400" };
@@ -146,43 +147,51 @@ interface Task {
 }
 
 const ConsultantHome = () => {
+  const navigate = useNavigate();
   const { profileData } = useUserContext();
   const consultantProfile = profileData as ConsultantProfile;
   const { data: dashboardResponse } = useGetDashboard();
-
-  console.log(dashboardResponse?.data)
-
-  const todaysAppointments: Appointment[] | undefined = dashboardResponse?.data?.todayAppointments
-  ?.map(data => ({
-    id: data.appointmentId,
-    channel: data.channel.toLowerCase() as AppointmentChannel,
-    patientName: data.fullName,
-    patientAge: Number(data.age),
-    time: new Date().toDateString(),
-    status: 'in-progress' as AppointmentStatus,
-    history: data.isFollowUp? 'follow-up' : 'new',
-    reason: ''
-  }))
-  const recentUpdates: Update[] | undefined = dashboardResponse?.data?.recentUpdates
-  ?.map(data => ({
-    time: data.timestamp,
-    title: data.timestamp,
-    context: data.context
-  })) 
-  const pendingTasks: Task[] | undefined = []
-  const [dashBoard, ] = useState<DashboardData>({
-    todayAppointments: todaysAppointments || [],
-    pendingTasks: pendingTasks,
+  const [dashBoard, setDashboard] = useState<DashboardData>({
+    todayAppointments: [],
+    pendingTasks: [],
     stats: {
       completedConsultationsTodayCount: 0,
       highPriorityTasks: 0,
       numberOfActivePatients: 0,
       numberOfNewPatientThisWeek: 0,
       pendingTasks: 0,
-      yesterdayTodayAppointmentCountDifference: 0
+      yesterdayTodayAppointmentCountDifference: 0,
     },
-    recentUpdates: recentUpdates || [],
+    recentUpdates: [],
   });
+  
+  useEffect(() => {
+    const todaysAppointments: Appointment[] =
+      dashboardResponse?.data?.todayAppointments?.map((data) => ({
+        id: data.appointmentId,
+        channel: data.channel.toLowerCase() as AppointmentChannel,
+        patientName: data.fullName,
+        patientAge: Number(data.age),
+        time: new Date().toDateString(),
+        status: data.status as AppointmentStatus,
+        history: data.isFollowUp ? "follow-up" : "new",
+        reason: "",
+      })) || [];
+    const recentUpdates: Update[] =
+      dashboardResponse?.data?.recentUpdates?.map((data) => ({
+        time: data.timestamp,
+        title: data.timestamp,
+        context: data.context,
+      })) || [];
+
+      setDashboard(prev => ({
+        ...prev,
+        todayAppointments: todaysAppointments,
+        recentUpdates: recentUpdates
+      }))
+      
+  }, [dashboardResponse]);
+
   return (
     <main className="flex flex-col gap-4 h-full max-w-7xl mx-auto overflow-y-auto px-2">
       <header className="w-full  rounded-t-lg">
@@ -212,7 +221,8 @@ const ConsultantHome = () => {
               <div>
                 <p className="text-sm text-gray-600">Today's Appointments</p>
                 <p className="text-3xl font-bold text-gray-900 mt-1">
-                  {dashBoard.todayAppointments && dashBoard.todayAppointments.length}
+                  {dashBoard.todayAppointments &&
+                    dashBoard.todayAppointments.length}
                 </p>
               </div>
               <div className="p-3 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -221,24 +231,21 @@ const ConsultantHome = () => {
             </div>
             {dashBoard.stats.yesterdayTodayAppointmentCountDifference > 0 && (
               <div className="mt-3 flex items-center text-xs text-gray-500">
-                {dashBoard.stats
-                  .yesterdayTodayAppointmentCountDifference>= 0 ? (
+                {dashBoard.stats.yesterdayTodayAppointmentCountDifference >=
+                0 ? (
                   <TrendingUp className="w-3 h-3 mr-1 text-green-600" />
                 ) : (
                   <TrendingDown className="w-3 h-3 mr-1 text-red-600" />
                 )}
                 <span
                   className={`${
-                    dashBoard.stats
-                      .yesterdayTodayAppointmentCountDifference >= 0
+                    dashBoard.stats.yesterdayTodayAppointmentCountDifference >=
+                    0
                       ? "text-green-600"
                       : "text-red-600"
                   }`}
                 >
-                  {
-                    dashBoard.stats
-                      .yesterdayTodayAppointmentCountDifference
-                  }
+                  {dashBoard.stats.yesterdayTodayAppointmentCountDifference}
                 </span>
                 &nbsp;
                 <span>vs yesterday</span>
@@ -258,9 +265,13 @@ const ConsultantHome = () => {
                 <CheckCircle className="w-6 h-6 text-green-600" />
               </div>
             </div>
-            {dashBoard.todayAppointments.length - dashBoard.stats.completedConsultationsTodayCount > 0 && (
+            {dashBoard.todayAppointments.length -
+              dashBoard.stats.completedConsultationsTodayCount >
+              0 && (
               <div className="mt-3 text-xs text-gray-500">
-                {dashBoard.todayAppointments.length - dashBoard.stats.completedConsultationsTodayCount} remaining today
+                {dashBoard.todayAppointments.length -
+                  dashBoard.stats.completedConsultationsTodayCount}{" "}
+                remaining today
               </div>
             )}
           </div>
@@ -316,7 +327,7 @@ const ConsultantHome = () => {
               </header>
 
               {!dashBoard.todayAppointments ||
-              dashBoard.todayAppointments .length === 0 ? (
+              dashBoard.todayAppointments.length === 0 ? (
                 <>
                   <Empty>
                     <EmptyHeader>
@@ -340,6 +351,7 @@ const ConsultantHome = () => {
                     return (
                       <div
                         key={apt.id}
+                        onClick={() => navigate('/consultation')}
                         className={`p-4 border rounded-lg transition hover:shadow-md ${
                           apt.status === "in-progress"
                             ? "border-blue-300 bg-blue-50"
@@ -387,7 +399,7 @@ const ConsultantHome = () => {
                               </span>
                             </div>
                           </div>
-                          {apt.status === "upcoming" && (
+                          {apt.status === "confirmed" && (
                             <button className="px-4 py-2 bg-main-light text-white text-sm rounded-lg hover:bg-main transition">
                               Start
                             </button>
@@ -421,9 +433,11 @@ const ConsultantHome = () => {
                   <Empty>
                     <EmptyHeader>
                       <EmptyMedia>
-                        <ClipboardList className="text-main-light" size={48}  />
+                        <ClipboardList className="text-main-light" size={48} />
                       </EmptyMedia>
-                      <EmptyTitle className="text-gray-700">No pendingTasks</EmptyTitle>
+                      <EmptyTitle className="text-gray-700">
+                        No pendingTasks
+                      </EmptyTitle>
                       <EmptyDescription>
                         You have either completed all tasks or haven&apos;t
                         created any.
@@ -526,17 +540,22 @@ const ConsultantHome = () => {
                 Recent Updates
               </h2>
 
-              {!dashBoard.recentUpdates || dashBoard.recentUpdates.length === 0 ? (
+              {!dashBoard.recentUpdates ||
+              dashBoard.recentUpdates.length === 0 ? (
                 <>
-                    <Empty>
-                        <EmptyHeader>
-                            <EmptyMedia>
-                                <Rss className="text-main-light" size={48} ></Rss>
-                            </EmptyMedia>
-                            <EmptyTitle className="text-gray-700">No updates </EmptyTitle>
-                            <EmptyDescription>You are all caught up. New updates appear here</EmptyDescription>
-                        </EmptyHeader>
-                    </Empty>
+                  <Empty>
+                    <EmptyHeader>
+                      <EmptyMedia>
+                        <Rss className="text-main-light" size={48}></Rss>
+                      </EmptyMedia>
+                      <EmptyTitle className="text-gray-700">
+                        No updates{" "}
+                      </EmptyTitle>
+                      <EmptyDescription>
+                        You are all caught up. New updates appear here
+                      </EmptyDescription>
+                    </EmptyHeader>
+                  </Empty>
                 </>
               ) : (
                 <div className="space-y-3 text-sm">

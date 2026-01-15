@@ -1,4 +1,3 @@
-import { PatientData } from "@/components/consultant/consultation/ConsultantConsultation"
 import { ConsultantScheduleData, Fee, TimeSlot } from "@/hooks/usePatientSchedules"
 import { ReactNode } from "react"
 
@@ -54,6 +53,11 @@ export interface SignUpResponseData {
     first_name: string
     age: string
     address: Address
+}
+
+export interface PatientData {
+    name: string,
+    age: string
 }
 export interface ConsultationResponseData {
     summary?: string
@@ -267,6 +271,10 @@ export interface PagedResponse<T> extends Response{
         empty: boolean
 
     }
+}
+export interface CursorResponse<T> extends Response {
+    data: T[],
+    nextCursor: string | null
 }
 
 export interface MedicalHistory {

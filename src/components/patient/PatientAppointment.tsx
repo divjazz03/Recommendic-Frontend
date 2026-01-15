@@ -1,17 +1,32 @@
-import { PatientAppointmentType, usePatientAppointment } from '@/hooks/useAppointment'
-import { formatDate } from '@/lib/utils/utils';
-import { AlertCircle, Calendar, CheckCircle, Clock, FileText, LucideProps, MapPin, Phone, Plus, Search, User, Video, XCircle } from 'lucide-react';
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom';
-import CustomCalender from '../shared/CustomCalender';
-import { usePatientReschedule } from '@/hooks/useReschedule';
-import ConsultantTimeSlots from '../shared/ConsultantTimeSlots';
-import { DateTime } from 'luxon';
-
-
+import {
+  PatientAppointmentType,
+  usePatientAppointment,
+} from "@/hooks/useAppointment";
+import { formatDate } from "@/lib/utils/utils";
+import {
+  AlertCircle,
+  Calendar,
+  CheckCircle,
+  Clock,
+  FileText,
+  LucideProps,
+  MapPin,
+  Phone,
+  Plus,
+  Search,
+  User,
+  Video,
+  XCircle,
+} from "lucide-react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import CustomCalender from "../shared/CustomCalender";
+import { usePatientReschedule } from "@/hooks/useReschedule";
+import ConsultantTimeSlots from "../shared/ConsultantTimeSlots";
+import { DateTime } from "luxon";
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "../ui/empty";
 
 const PatientAppointment = () => {
-
   const navigate = useNavigate();
 
   const {
@@ -27,18 +42,21 @@ const PatientAppointment = () => {
     getStatusColor,
     getStatusIcon,
     filteredAppointments,
-    confirmedAppointmentCount,
     pendingAppointmentCount,
     upcomingAppointmentCount,
-    appointmentCount
+    appointmentCount,
   } = usePatientAppointment();
 
   return (
-    <main className='h-full mx-auto overflow-y-auto p-4 sm:p-6 md:p-8'>
-      <div className='max-w-7xl'>
-        <header className='mb-8'>
-          <h1 className='font-bold text-2xl md:text-3xl lg:text-4xl text-gray-900 mb-2'>MyAppointments</h1>
-          <p className='text-gray-600'>Manage your medical appointments and consultation</p>
+    <main className="h-full mx-auto overflow-y-auto p-4 sm:p-6 md:p-8">
+      <div className="max-w-7xl">
+        <header className="mb-8">
+          <h1 className="font-bold text-2xl md:text-3xl lg:text-4xl text-gray-900 mb-2">
+            MyAppointments
+          </h1>
+          <p className="text-gray-600">
+            Manage your medical appointments and consultation
+          </p>
         </header>
 
         {/* Stats Cards */}
@@ -47,21 +65,11 @@ const PatientAppointment = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-600 text-sm">Upcoming</p>
-                <p className="text-3xl font-bold text-main-light">{upcomingAppointmentCount}</p>
-              </div>
-              <Calendar className="w-10 h-10 text-main-light" />
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg border-2 border-green-200 p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-600 text-sm">Confirmed</p>
-                <p className="text-3xl font-bold text-green-600">
-                  {confirmedAppointmentCount}
+                <p className="text-3xl font-bold text-main-light">
+                  {upcomingAppointmentCount}
                 </p>
               </div>
-              <CheckCircle className="w-10 h-10 text-green-600" />
+              <Calendar className="w-10 h-10 text-main-light" />
             </div>
           </div>
 
@@ -81,7 +89,9 @@ const PatientAppointment = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-600 text-sm">Total</p>
-                <p className="text-3xl font-bold text-purple-600">{appointmentCount}</p>
+                <p className="text-3xl font-bold text-purple-600">
+                  {appointmentCount}
+                </p>
               </div>
               <FileText className="w-10 h-10 text-purple-600" />
             </div>
@@ -104,58 +114,73 @@ const PatientAppointment = () => {
 
             <div className="flex gap-2">
               <button
-                onClick={() => setFilterStatus('all')}
-                className={`px-4 py-2 rounded-lg font-medium transition ${filterStatus === 'all'
-                  ? 'bg-main-light text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
+                onClick={() => setFilterStatus("all")}
+                className={`px-4 py-2 rounded-lg font-medium transition ${
+                  filterStatus === "all"
+                    ? "bg-main-light text-white"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
               >
                 All
               </button>
               <button
-                onClick={() => setFilterStatus('confirmed')}
-                className={`px-4 py-2 rounded-lg font-medium transition ${filterStatus === 'confirmed'
-                  ? 'bg-green-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
+                onClick={() => setFilterStatus("upcoming")}
+                className={`px-4 py-2 rounded-lg font-medium transition ${
+                  filterStatus === "upcoming"
+                    ? "bg-green-600 text-white"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
               >
-                Confirmed
+                Upcoming
               </button>
               <button
-                onClick={() => setFilterStatus('pending')}
-                className={`px-4 py-2 rounded-lg font-medium transition ${filterStatus === 'pending'
-                  ? 'bg-yellow-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
+                onClick={() => setFilterStatus("missed")}
+                className={`px-4 py-2 rounded-lg font-medium transition ${
+                  filterStatus === "missed"
+                    ? "bg-pink-600 text-white"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                Missed
+              </button>
+
+              <button
+                onClick={() => setFilterStatus("pending")}
+                className={`px-4 py-2 rounded-lg font-medium transition ${
+                  filterStatus === "pending"
+                    ? "bg-yellow-600 text-white"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
               >
                 Pending
               </button>
             </div>
 
             <button
-              onClick={() => navigate('/consultants')}
-              className="bg-main-light text-white px-6 py-2 rounded-lg font-semibold hover:bg-main transition flex items-center gap-2">
+              onClick={() => navigate("/consultants")}
+              className="bg-main-light text-white px-6 py-2 rounded-lg font-semibold hover:bg-main transition flex items-center gap-2"
+            >
               <Plus className="w-5 h-5" />
               New Appointment
             </button>
           </div>
         </section>
 
-        <div className='flex flex-col gap-10'>
+        <div className="flex flex-col gap-10">
           {/* Upcoming Appointments */}
           {filteredAppointments.length > 0 && (
             <div>
               <div className="grid gap-4">
-                {filteredAppointments.map(appointment => (
+                {filteredAppointments.map((appointment) => (
                   <PatientAppointmentCard
                     key={appointment.id}
                     appointment={appointment}
-                    StatusIcon={getStatusIcon(appointment.status)}
                     date={appointment.date}
                     daysUntil={getDaysUntil(appointment.date)}
                     setSelectedAppointment={setSelectedAppointment}
-                    statusColor={getStatusColor(appointment.status)}
                     setRecheduleModalOpen={setRescheduleModalOpen}
+                    statusColor={getStatusColor(appointment.status)}
+                    StatusIcon={getStatusIcon(appointment.status)}
                   />
                 ))}
               </div>
@@ -164,85 +189,119 @@ const PatientAppointment = () => {
 
           {/* No Results */}
           {filteredAppointments?.length === 0 && (
-            <div className="bg-white rounded-lg border-2 border-gray-200 p-12 text-center">
-              <Calendar className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">No appointments found</h3>
-              <p className="text-gray-600">
-            {filterStatus === 'pending' && 'No pending requests'}
-            {filterStatus === 'confirmed' && 'No confirmed appointments'}
-            {filterStatus === 'completed' && 'No completed appointments'}
-            {filterStatus === 'all' && 'Try adjusting your search terms'}
-          </p>
-            </div>
+            //   <div className="bg-white rounded-lg border-2 border-gray-200 p-12 text-center">
+            //     <Calendar className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+            //     <h3 className="text-xl font-semibold text-gray-900 mb-2">No appointments found</h3>
+            //     <p className="text-gray-600">
+            //   {filterStatus === 'pending' && 'No pending requests'}
+            //   {filterStatus === 'confirmed' && 'No confirmed appointments'}
+            //   {filterStatus === 'completed' && 'No completed appointments'}
+            //   {filterStatus === 'all' && 'Try adjusting your search terms'}
+            //   {filterStatus === 'missed' && 'No missed appointments'}
+            // </p>
+            //   </div>
+            <Empty>
+              <EmptyHeader>
+                <EmptyMedia>
+                  <Calendar size={64} className="text-gray-600" />
+                </EmptyMedia>
+                <EmptyTitle className="text-gray-600">No appointments found</EmptyTitle>
+                <EmptyDescription className="">
+                  {filterStatus === "pending" && "No pending requests"}
+                  {filterStatus === "upcoming" && "No upcoming appointments"}
+                  {filterStatus === "completed" && "No completed appointments"}
+                  {filterStatus === "all" && "Try adjusting your search terms"}
+                  {filterStatus === "missed" && "No missed appointments"}
+                </EmptyDescription>
+              </EmptyHeader>
+            </Empty>
           )}
         </div>
-
 
         {/* Appointment Detail Modal */}
         {selectedAppointment && !rescheduleModalOpen && (
           <AppointmentModal
             appointment={selectedAppointment}
             onClose={() => setSelectedAppointment(undefined)}
-            statusColor={getStatusColor(selectedAppointment.status)} StatusIcon={getStatusIcon(selectedAppointment.status)}
+            statusColor={getStatusColor(selectedAppointment.status)}
+            StatusIcon={getStatusIcon(selectedAppointment.status)}
             date={selectedAppointment.date}
-            daysUntil={getDaysUntil(selectedAppointment.date)} />
+            daysUntil={getDaysUntil(selectedAppointment.date)}
+          />
         )}
 
-        {
-          rescheduleModalOpen && selectedAppointment && (
-            <RescheduleModal
-              appointment={selectedAppointment}
-              handleCancel={() => {
-                setRescheduleModalOpen(false)
-                setSelectedAppointment(undefined)
-              }} />
-          )
-        }
+        {rescheduleModalOpen && selectedAppointment && (
+          <RescheduleModal
+            appointment={selectedAppointment}
+            handleCancel={() => {
+              setRescheduleModalOpen(false);
+              setSelectedAppointment(undefined);
+            }}
+          />
+        )}
       </div>
     </main>
+  );
+};
 
-
-  )
-}
-
-export default PatientAppointment
-
-
-
+export default PatientAppointment;
 
 export interface PatientAppointmentCardProps {
-  appointment: PatientAppointmentType,
-  setSelectedAppointment: (value: React.SetStateAction<PatientAppointmentType | undefined>) => void,
-  statusColor: string,
-  StatusIcon: React.ForwardRefExoticComponent<Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>>,
-  date: string,
-  daysUntil: string,
-  setRecheduleModalOpen: (value: React.SetStateAction<boolean>) => void
+  appointment: PatientAppointmentType;
+  setSelectedAppointment: (
+    value: React.SetStateAction<PatientAppointmentType | undefined>
+  ) => void;
+  date: string;
+  daysUntil: string;
+  setRecheduleModalOpen: (value: React.SetStateAction<boolean>) => void;
+  StatusIcon: React.ForwardRefExoticComponent<Omit<LucideProps, "ref">> &
+      React.RefAttributes<SVGSVGElement>;
+  statusColor: string;
 }
 const PatientAppointmentCard = ({
   appointment,
   setSelectedAppointment,
-  statusColor,
-  StatusIcon,
   date,
   daysUntil,
-  setRecheduleModalOpen
+  setRecheduleModalOpen,
+  statusColor,
+  StatusIcon
 }: PatientAppointmentCardProps) => (
-  <main className='bg-white rounded-lg border-2 border-gray-200 p-6 hover:shadow-lg transition-all cursor-pointer'
+  <main
+    className="bg-white rounded-lg border-2 border-gray-200 p-6 hover:shadow-lg transition-all cursor-pointer"
     onClick={() => setSelectedAppointment(appointment)}
   >
     <div className="flex justify-between items-start mb-4">
       <div className="flex-1 flex flex-col ">
         <div className="flex items-center gap-2">
           <User className="w-5 h-5 text-blue-600" />
-          <h3 className="text-xl font-semibold text-gray-900">{appointment.doctorName}</h3>
+          <h3 className="text-xl font-semibold text-gray-900">
+            {appointment.doctorName}
+          </h3>
         </div>
         <p className="text-gray-600 ml-7">{appointment.specialty}</p>
       </div>
-      <div className={`flex items-center gap-1 px-3 py-1 rounded-full border ${statusColor}`}>
-        <StatusIcon className='h-6 w-6' />
-        <span className="text-sm font-medium capitalize">{appointment.status}</span>
-      </div>
+      {appointment.status === "confirmed" &&
+          new Date(`${appointment.date}T${appointment.time}`) < new Date() ? (
+            <div
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg border text-pink-800 bg-pink-100 border-pink-300`}
+            >
+              <XCircle className="h-4 w-4" />
+              <span className="text-xs font-semibold capitalize">
+                {'missed'}
+              </span>
+            </div>
+          ) : (
+            <div
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg border ${statusColor}`}
+            >
+              <StatusIcon className="h-4 w-4" />
+              <span className="text-xs font-semibold capitalize">
+                {appointment.status}
+              </span>
+            </div>
+          )}
+      
     </div>
 
     <div className="space-y-3 ml-7">
@@ -256,11 +315,18 @@ const PatientAppointmentCard = ({
 
       <div className="flex items-center gap-2 text-gray-700">
         <Clock className="w-4 h-4 text-gray-500" />
-        <span>{DateTime.fromISO(appointment.date + 'T' + appointment.time,{zone: 'utc'}).setZone('local').toFormat("HH:mm a")} ({appointment.duration})</span>
+        <span>
+          {DateTime.fromISO(appointment.date + "T" + appointment.time, {
+            zone: "utc",
+          })
+            .setZone("local")
+            .toFormat("HH:mm a")}{" "}
+          ({appointment.duration})
+        </span>
       </div>
 
       <div className="flex items-center gap-2 text-gray-700">
-        {appointment.type === 'online' ? (
+        {appointment.type === "online" ? (
           <Video className="w-4 h-4 text-gray-500" />
         ) : (
           <MapPin className="w-4 h-4 text-gray-500" />
@@ -271,7 +337,7 @@ const PatientAppointmentCard = ({
       <div className="flex items-center gap-2 text-gray-700">
         <FileText className="w-4 h-4 text-gray-500" />
         <span className="font-medium">Reason:</span>
-        <p className=''>{appointment.reason}</p>
+        <p className="">{appointment.reason}</p>
       </div>
 
       {appointment.preparation && (
@@ -284,29 +350,32 @@ const PatientAppointmentCard = ({
       )}
     </div>
 
-    {appointment.status === 'confirmed' && new Date(appointment.date) >= new Date() && (
-      <div className="flex gap-3 pt-4">
-        <button className="flex-1 bg-main-light text-white py-3 rounded-lg font-semibold hover:bg-main transition">
-          Add to Calendar
-        </button>
-        <button className="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-300 transition"
-          onClick={() => setRecheduleModalOpen(true)}
-        >
-          Reschedule
-        </button>
-      </div>
-    )}
-
+    {appointment.status === "confirmed" &&
+      new Date(appointment.date) >= new Date() && (
+        <div className="flex gap-3 pt-4">
+          <button className="flex-1 bg-main-light text-white py-3 rounded-lg font-semibold hover:bg-main transition">
+            Add to Calendar
+          </button>
+          <button
+            className="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-300 transition"
+            onClick={() => setRecheduleModalOpen(true)}
+          >
+            Reschedule
+          </button>
+        </div>
+      )}
   </main>
-)
+);
 
 interface AppointmentModalProps {
-  appointment: PatientAppointmentType,
-  onClose: () => void,
-  statusColor: string,
-  StatusIcon: React.ForwardRefExoticComponent<Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>>,
-  date: string,
-  daysUntil: string
+  appointment: PatientAppointmentType;
+  onClose: () => void;
+  statusColor: string;
+  StatusIcon: React.ForwardRefExoticComponent<
+    Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>
+  >;
+  date: string;
+  daysUntil: string;
 }
 
 const AppointmentModal = ({
@@ -320,22 +389,37 @@ const AppointmentModal = ({
     <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
       <div className="sticky top-0 bg-white border-b p-6 flex justify-between items-start">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">{appointment.doctorName}</h2>
+          <h2 className="text-2xl font-bold text-gray-900">
+            {appointment.doctorName}
+          </h2>
           <p className="text-gray-600">{appointment.specialty}</p>
         </div>
-        <button
-          onClick={onClose}
-          className="text-gray-400 hover:text-gray-600"
-        >
+        <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
           <XCircle className="w-6 h-6" />
         </button>
       </div>
 
       <div className="p-6 space-y-6">
-        <div className={`flex items-center gap-2 px-4 py-2 rounded-lg border ${statusColor}`}>
-          <StatusIcon className='h-6 w-6' />
-          <span className="font-semibold capitalize">{appointment.status}</span>
-        </div>
+        {appointment.status === "confirmed" &&
+          new Date(`${appointment.date}T${appointment.time}`) < new Date() ? (
+            <div
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg border text-pink-800 bg-pink-100 border-pink-300`}
+            >
+              <XCircle className="h-4 w-4" />
+              <span className="text-xs font-semibold capitalize">
+                {'missed'}
+              </span>
+            </div>
+          ) : (
+            <div
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg border ${statusColor}`}
+            >
+              <StatusIcon className="h-4 w-4" />
+              <span className="text-xs font-semibold capitalize">
+                {appointment.status}
+              </span>
+            </div>
+          )}
 
         <div className="grid md:grid-cols-2 gap-4">
           <div className="space-y-3">
@@ -343,7 +427,13 @@ const AppointmentModal = ({
               <Calendar className="w-5 h-5 text-main-light mt-1" />
               <div>
                 <p className="text-sm text-gray-600">Date</p>
-                <p className="font-semibold">{DateTime.fromISO(appointment.date + 'T' + appointment.time,{zone: 'utc'}).setZone('local').toFormat("yyyy-MM-dd")}</p>
+                <p className="font-semibold">
+                  {DateTime.fromISO(appointment.date + "T" + appointment.time, {
+                    zone: "utc",
+                  })
+                    .setZone("local")
+                    .toFormat("yyyy-MM-dd")}
+                </p>
                 <p className="text-sm text-main-light">{daysUntil}</p>
               </div>
             </div>
@@ -352,15 +442,23 @@ const AppointmentModal = ({
               <Clock className="w-5 h-5 text-main-light mt-1" />
               <div>
                 <p className="text-sm text-gray-600">Time</p>
-                <p className="font-semibold">{DateTime.fromISO(appointment.date + 'T' + appointment.time,{zone: 'utc'}).setZone('local').toFormat("HH:mm a")}</p>
-                <p className="text-sm text-gray-600">Duration: {appointment.duration}</p>
+                <p className="font-semibold">
+                  {DateTime.fromISO(appointment.date + "T" + appointment.time, {
+                    zone: "utc",
+                  })
+                    .setZone("local")
+                    .toFormat("HH:mm a")}
+                </p>
+                <p className="text-sm text-gray-600">
+                  Duration: {appointment.duration}
+                </p>
               </div>
             </div>
           </div>
 
           <div className="space-y-3">
             <div className="flex items-start gap-3">
-              {appointment.type === 'online' ? (
+              {appointment.type === "online" ? (
                 <Video className="w-5 h-5 text-main-light mt-1" />
               ) : (
                 <MapPin className="w-5 h-5 text-main-light mt-1" />
@@ -368,7 +466,9 @@ const AppointmentModal = ({
               <div>
                 <p className="text-sm text-gray-600">Location</p>
                 <p className="font-semibold">{appointment.location}</p>
-                <p className="text-sm text-gray-600 capitalize">{appointment.type} visit</p>
+                <p className="text-sm text-gray-600 capitalize">
+                  {appointment.type} visit
+                </p>
               </div>
             </div>
 
@@ -387,14 +487,18 @@ const AppointmentModal = ({
             <FileText className="w-5 h-5 text-main-light mt-1" />
             <div className="flex-1">
               <p className="text-sm text-gray-600">Reason for Visit</p>
-              <p className="font-semibold text-gray-900">{appointment.reason}</p>
+              <p className="font-semibold text-gray-900">
+                {appointment.reason}
+              </p>
             </div>
           </div>
         </div>
 
         {appointment.preparation && (
           <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-            <p className="font-semibold text-amber-900 mb-2">Preparation Required</p>
+            <p className="font-semibold text-amber-900 mb-2">
+              Preparation Required
+            </p>
             <p className="text-amber-900">{appointment.preparation}</p>
           </div>
         )}
@@ -405,25 +509,24 @@ const AppointmentModal = ({
             <p className="text-blue-900">{appointment.notes}</p>
           </div>
         )}
-
-
       </div>
     </div>
   </div>
 );
 
 interface RescheduleModalProps {
-  appointment: PatientAppointmentType
-  handleCancel: () => void
+  appointment: PatientAppointmentType;
+  handleCancel: () => void;
 }
 
 const RescheduleModal = ({
   appointment,
-  handleCancel
+  handleCancel,
 }: RescheduleModalProps) => {
   if (!appointment) return null;
 
-  const { reason,
+  const {
+    reason,
     rescheduleTime,
     setReason,
     setRescheduleDate,
@@ -431,18 +534,21 @@ const RescheduleModal = ({
     rescheduleDate,
     timeSlotsMem,
     setSelectedScheduleId,
-    handleReschedule} = usePatientReschedule(appointment.consultantId)
-
-
+    handleReschedule,
+  } = usePatientReschedule(appointment.consultantId);
 
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
 
   const nextMonth = () => {
-    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1));
+    setCurrentMonth(
+      new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1)
+    );
   };
   const previousMonth = () => {
-    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));
-  }
+    setCurrentMonth(
+      new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1)
+    );
+  };
 
   return (
     <main className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center h-full p-4 z-50">
@@ -452,9 +558,13 @@ const RescheduleModal = ({
         </h3>
 
         <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-          <p className="font-semibold text-gray-900">{appointment.doctorName}</p>
+          <p className="font-semibold text-gray-900">
+            {appointment.doctorName}
+          </p>
           <p className="text-sm text-gray-600">{appointment.reason}</p>
-          <p className="text-sm text-gray-600">{formatDate(appointment.date)} at {appointment.time}</p>
+          <p className="text-sm text-gray-600">
+            {formatDate(appointment.date)} at {appointment.time}
+          </p>
         </div>
         <div className="space-y-4 mb-4">
           <CustomCalender
@@ -467,20 +577,22 @@ const RescheduleModal = ({
         </div>
         {/* Time slots */}
         {rescheduleDate && (
-          <div className='bg-white rounded-2xl shadow-lg p-6 mb-4'>
-            <h2 className='text-xl font-semibold text-dark-3 mb-2'>Available Times</h2>
-            <p className='text-dark-2 mb-6'>{formatDate(rescheduleDate)}</p>
+          <div className="bg-white rounded-2xl shadow-lg p-6 mb-4">
+            <h2 className="text-xl font-semibold text-dark-3 mb-2">
+              Available Times
+            </h2>
+            <p className="text-dark-2 mb-6">{formatDate(rescheduleDate)}</p>
 
-            {timeSlotsMem &&
+            {timeSlotsMem && (
               <ConsultantTimeSlots
-                selectedTime={rescheduleTime ?? ''}
+                selectedTime={rescheduleTime ?? ""}
                 setSelectedScheduleId={setSelectedScheduleId}
                 setSelectedTime={setRescheduleTime}
-                timeSlots={timeSlotsMem} />
-            }
+                timeSlots={timeSlotsMem}
+              />
+            )}
           </div>
         )}
-
 
         <div className="mb-4">
           <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -503,7 +615,9 @@ const RescheduleModal = ({
           </button>
           <button
             onClick={() => handleReschedule()}
-            className={'flex-1 py-2 rounded-lg font-semibold transition bg-blue-600 text-white hover:bg-blue-700'}
+            className={
+              "flex-1 py-2 rounded-lg font-semibold transition bg-blue-600 text-white hover:bg-blue-700"
+            }
           >
             Confirm Reschedule
           </button>

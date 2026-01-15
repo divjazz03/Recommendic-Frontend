@@ -1,16 +1,23 @@
 import {
-    AuthenticatedUserResponse,
-    ConsultationResponse,
-    MedicalCategoriesResponse,
-    PagedResponse,
-    SignInResponse,
-    SigninUserData,
+  AuthenticatedUserResponse,
+  ConsultationResponse,
+  CursorResponse,
+  MedicalCategoriesResponse,
+  PagedResponse,
+  SignInResponse,
+  SigninUserData,
 } from "@/types";
 import { SearchResult } from "@/hooks/useSearchResults";
-import { ModifyingNotificationSetting, NotificationSetting} from "@/hooks/useNotificationSettings";
+import {
+  ModifyingNotificationSetting,
+  NotificationSetting,
+} from "@/hooks/useNotificationSettings";
 import { apiClient } from "../axios";
 import { TimeSlot } from "@/hooks/usePatientSchedules";
-import { ConsultantAppointmentType, PatientAppointmentType } from "@/hooks/useAppointment";
+import {
+  ConsultantAppointmentType,
+  PatientAppointmentType,
+} from "@/hooks/useAppointment";
 
 const userLoginPath = import.meta.env.VITE_APP_USER_LOGIN;
 const userLogoutPath = import.meta.env.VITE_APP_USER_LOGOUT;
@@ -22,114 +29,171 @@ const consultationPath = import.meta.env.VITE_CONSULTATION_BASE;
 const notificationPath = import.meta.env.VITE_NOTIFICATION_BASE;
 const appointmentsPath = import.meta.env.VITE_APPOINTMENT_BASE;
 
-
-
-
-
-export async function signinUser(userData: SigninUserData): Promise<SignInResponse> {
-    const result: Promise<SignInResponse> = apiClient.post(`${userLoginPath}`, userData)
-        .then((response) => response.data
-        )
-    return result;
+export async function signinUser(
+  userData: SigninUserData
+): Promise<SignInResponse> {
+  const result: Promise<SignInResponse> = apiClient
+    .post(`${userLoginPath}`, userData)
+    .then((response) => response.data);
+  return result;
 }
 
 export async function logoutUser() {
-    return apiClient.post(`${userLogoutPath}`)
-    .then((response) => response.data)
+  return apiClient.post(`${userLogoutPath}`).then((response) => response.data);
 }
 
 export async function getCurrentUser(): Promise<AuthenticatedUserResponse> {
-    return apiClient.get(`${userGetPath}`, {
-            withCredentials: true
-        })
-            .then(response => { 
-                console.log(response.data.user)
-                return response.data
-            })
-    
+  return apiClient
+    .get(`${userGetPath}`, {
+      withCredentials: true,
+    })
+    .then((response) => {
+      console.log(response.data.user);
+      return response.data;
+    });
 }
-
 
 export async function getAllSupportedMedicalCategories(): Promise<MedicalCategoriesResponse> {
-    const result: Promise<MedicalCategoriesResponse> = apiClient.get(`${medicalCategoriesPath}`)
-        .then(response => {
-            console.log(response.data)
-            return response.data
-        })
-    return result;
+  const result: Promise<MedicalCategoriesResponse> = apiClient
+    .get(`${medicalCategoriesPath}`)
+    .then((response) => {
+      console.log(response.data);
+      return response.data;
+    });
+  return result;
 }
-export async function resendConfirmationEmail(userEmail: string): Promise<string> {
-    const result = apiClient.post(`${retryEmail}`, { email: userEmail })
-        .then(response => response.data)
-    return result;
+export async function resendConfirmationEmail(
+  userEmail: string
+): Promise<string> {
+  const result = apiClient
+    .post(`${retryEmail}`, { email: userEmail })
+    .then((response) => response.data);
+  return result;
 }
 
 export async function verifyEmail(token: string): Promise<string> {
-    const result = apiClient.post(`${emailConfirmationPath}?token=${token}`)
-        .then(response => response.data)
-    return result;
+  const result = apiClient
+    .post(`${emailConfirmationPath}?token=${token}`)
+    .then((response) => response.data);
+  return result;
 }
 
 export async function doGlobalSearch(query: string): Promise<SearchResult[]> {
-    return apiClient.get(`/search?query=${query}`)
-        .then(response => response.data)
-
+  return apiClient
+    .get(`/search?query=${query}`)
+    .then((response) => response.data);
 }
 
-export async function startNewConsultation(appointmentId: string): Promise<ConsultationResponse> {
-    return apiClient.post(`${consultationPath}/${appointmentId}/start`)
-        .then(response => response.data)
+export async function startNewConsultation(
+  appointmentId: string
+): Promise<ConsultationResponse> {
+  return apiClient
+    .post(`${consultationPath}/${appointmentId}/start`)
+    .then((response) => response.data);
 }
-export async function endConsultation(consultationId: string): Promise<ConsultationResponse> {
-    return apiClient.post(`${consultationPath}/${consultationId}/compconste`)
-        .then(response => response.data)
-}
-
-interface NotificationResponse extends Response {
-        data: NotificationSetting
-}
-
-export async function getMyNotificationSettings(): Promise<NotificationResponse> {
-    return apiClient.get(`${notificationPath}/settings`)
-    .then(response => response.data)
+export async function endConsultation(
+  consultationId: string
+): Promise<ConsultationResponse> {
+  return apiClient
+    .post(`${consultationPath}/${consultationId}/compconste`)
+    .then((response) => response.data);
 }
 
-export async function updateMyNotificationSettings(modifiedNotification: ModifyingNotificationSetting): Promise<NotificationResponse> {
-    return apiClient.patch(`${notificationPath}/settings`, modifiedNotification)
-    .then(response => response.data)
+interface NotificationSettingResponse extends Response {
+  data: NotificationSetting;
+}
+
+export async function getMyNotificationSettings(): Promise<NotificationSettingResponse> {
+  return apiClient
+    .get(`${notificationPath}/settings`)
+    .then((response) => response.data);
+}
+
+export async function updateMyNotificationSettings(
+  modifiedNotification: ModifyingNotificationSetting
+): Promise<NotificationSettingResponse> {
+  return apiClient
+    .patch(`${notificationPath}/settings`, modifiedNotification)
+    .then((response) => response.data);
+}
+
+export async function markNotificationAsRead(id: string) {
+  return apiClient
+    .patch(`${notificationPath}/read`, id)
+    .then((response) => response.data);
+}
+export async function markAllNotificationAsRead() {
+  return apiClient
+    .patch(`${notificationPath}/read/all`)
+    .then((response) => response.data);
+}
+export async function deleteNotification(id: string) {
+  return apiClient
+    .delete(`${notificationPath}/${id}`)
+    .then((response) => response.data);
+}
+
+type Notification = {
+  id: string;
+  type: string;
+  subjectId: string;
+  message: string;
+  isRead: boolean;
+  title: string;
+  timeStamp: string;
+};
+
+
+interface Param {
+  pageParam: string | null;
+}
+
+export async function getAllNotifications(
+  param: Param
+): Promise<CursorResponse<Notification>> {
+  return apiClient
+    .get(`${notificationPath}`, {
+      params: { page: param.pageParam },
+    })
+    .then((response) => response.data);
 }
 
 interface ScheduleSlotResponse extends Response {
-    data: TimeSlot[]
+  data: TimeSlot[];
 }
 
-
-export async function getConsultantTimeSlots(consultantId: string, date: string | undefined): Promise<ScheduleSlotResponse> {
-    if (!date) {
-        return Promise.reject("No date specified")
-    }
-    return apiClient.get(`${appointmentsPath}/timeslots/${consultantId}`, {params: {date: date}}
-    )
-    .then(response => response.data)
+export async function getConsultantTimeSlots(
+  consultantId: string,
+  date: string | undefined
+): Promise<ScheduleSlotResponse> {
+  if (!date) {
+    return Promise.reject("No date specified");
+  }
+  return apiClient
+    .get(`${appointmentsPath}/timeslots/${consultantId}`, {
+      params: { date: date },
+    })
+    .then((response) => response.data);
 }
 
-export async function getAppointments(): Promise<PagedResponse<ConsultantAppointmentType | PatientAppointmentType>> {
-    return apiClient.get(`${appointmentsPath}`)
-    .then(response => response.data)
+export async function getAppointments(): Promise<
+  PagedResponse<ConsultantAppointmentType | PatientAppointmentType>
+> {
+  return apiClient.get(`${appointmentsPath}`).then((response) => response.data);
 }
 
 interface ImageUploadSignature {
-    timeStamp: number,
-    signature: string,
-    apiKey: string,
-    publicId: string,
-    cloudName: string,
-    folder: string
+  timeStamp: number;
+  signature: string;
+  apiKey: string;
+  publicId: string;
+  cloudName: string;
+  folder: string;
 }
-export async function getUploadSignature(count?: number) :Promise<ImageUploadSignature[]> {
-    return apiClient.get(`/cloudinary/signature`,{params:{count: count || 1}})
-    .then(response => response.data)
+export async function getUploadSignature(
+  count?: number
+): Promise<ImageUploadSignature[]> {
+  return apiClient
+    .get(`/cloudinary/signature`, { params: { count: count || 1 } })
+    .then((response) => response.data);
 }
-
-
-

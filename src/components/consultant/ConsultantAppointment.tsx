@@ -47,15 +47,15 @@ const ConsultantAppointment = () => {
     pendingCount,
     selectedAppointment,
     setActionModal,
-    setActiveTab,
     setSearchTerm,
     setSelectedAppointment,
     todayCount,
     getPriorityColor,
-    activeTab,
     searchTerm,
     setAppointments,
-    confirmedCount,
+    upcomingCount,
+    setFilterStatus,
+    filterStatus,
   } = useConsultantAppointment();
   return (
     <main className="h-full mx-auto overflow-y-auto max-w-7xl p-4 md:p-8">
@@ -95,9 +95,9 @@ const ConsultantAppointment = () => {
         <div className="bg-white rounded-lg border-2 border-green-200 p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-600 text-sm">Confirmed</p>
+              <p className="text-gray-600 text-sm">Upcoming</p>
               <p className="text-3xl font-bold text-green-600">
-                {confirmedCount}
+                {upcomingCount}
               </p>
             </div>
             <CheckCircle className="w-10 h-10 text-green-600" />
@@ -120,9 +120,19 @@ const ConsultantAppointment = () => {
         <div className="flex flex-col md:flex-row gap-4 mb-4">
           <div className="flex gap-2 overflow-x-auto scrollbar-hide scrollbar-hide:-webkit-scrollbar">
             <button
-              onClick={() => setActiveTab("pending")}
+              onClick={() => setFilterStatus("all")}
+              className={`px-4 py-2 rounded-lg font-medium transition ${
+                filterStatus === "all"
+                  ? "bg-main-light text-white"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              }`}
+            >
+              All
+            </button>
+            <button
+              onClick={() => setFilterStatus("pending")}
               className={`px-4 py-2 rounded-lg font-medium transition flex items-center gap-2 ${
-                activeTab === "pending"
+                filterStatus === "pending"
                   ? "bg-yellow-600 text-white"
                   : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
@@ -136,20 +146,20 @@ const ConsultantAppointment = () => {
               )}
             </button>
             <button
-              onClick={() => setActiveTab("confirmed")}
+              onClick={() => setFilterStatus("upcoming")}
               className={`px-4 py-2 rounded-lg font-medium transition flex items-center gap-2 ${
-                activeTab === "confirmed"
+                filterStatus === "upcoming"
                   ? "bg-green-600 text-white"
                   : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
               <CheckCircle className="w-4 h-4" />
-              Confirmed
+              Upcoming
             </button>
             <button
-              onClick={() => setActiveTab("completed")}
+              onClick={() => setFilterStatus("completed")}
               className={`px-4 py-2 rounded-lg font-medium transition flex items-center gap-2 ${
-                activeTab === "completed"
+                filterStatus === "completed"
                   ? "bg-blue-600 text-white"
                   : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
@@ -158,14 +168,15 @@ const ConsultantAppointment = () => {
               Completed
             </button>
             <button
-              onClick={() => setActiveTab("all")}
-              className={`px-4 py-2 rounded-lg font-medium transition ${
-                activeTab === "all"
-                  ? "bg-purple-600 text-white"
+              onClick={() => setFilterStatus("missed")}
+              className={`px-4 py-2 rounded-lg font-medium transition flex items-center gap-2 ${
+                filterStatus === "missed"
+                  ? "bg-pink-600 text-white"
                   : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
-              All
+              <XCircle className="w-4 h-4" />
+              Missed
             </button>
           </div>
 
@@ -189,13 +200,13 @@ const ConsultantAppointment = () => {
             <ConsultantAppointmentCard
               key={appointment.id}
               appointment={appointment}
-              StatusIcon={getStatusIcon(appointment.status)}
               daysUntil={getDaysUntil(appointment.date)}
               formatDate={formatDate}
               priorityColor={getPriorityColor(appointment.priority)}
               setActionModal={setActionModal}
               setSelectedAppointment={setSelectedAppointment}
               statusColor={getStatusColor(appointment.status)}
+              StatusIcon={getStatusIcon(appointment.status)}
             />
           ))}
         </div>
@@ -209,11 +220,12 @@ const ConsultantAppointment = () => {
               <EmptyTitle>No Appointments found</EmptyTitle>
               <EmptyDescription>
                 <p className="text-gray-600">
-                  {activeTab === "pending" &&
+                  {filterStatus === "pending" &&
                     "No pending requests at the moment"}
-                  {activeTab === "confirmed" && "No confirmed appointments"}
-                  {activeTab === "completed" && "No completed appointments"}
-                  {activeTab === "all" && "Try adjusting your search terms"}
+                  {filterStatus === "upcoming" && "No upcoming appointments"}
+                  {filterStatus === "completed" && "No completed appointments"}
+                  {filterStatus === "missed" && "No missed appointments"}
+                  {filterStatus === "all" && "Try adjusting your search terms"}
                 </p>
               </EmptyDescription>
             </EmptyHeader>
@@ -250,23 +262,23 @@ interface ConsultantAppointmentCardProps {
   setSelectedAppointment: (
     value: React.SetStateAction<ConsultantAppointmentType | null>
   ) => void;
-  StatusIcon: React.ForwardRefExoticComponent<Omit<LucideProps, "ref">> &
-    React.RefAttributes<SVGSVGElement>;
   daysUntil: string;
   formatDate: (value: string) => string;
   setActionModal: (value: React.SetStateAction<ActionModalType | null>) => void;
-  statusColor: string;
   priorityColor: string;
+  StatusIcon: React.ForwardRefExoticComponent<Omit<LucideProps, "ref">> &
+    React.RefAttributes<SVGSVGElement>;
+  statusColor: string;
 }
 
 const ConsultantAppointmentCard = ({
-  StatusIcon,
   appointment,
   daysUntil,
   setActionModal,
   setSelectedAppointment,
-  statusColor,
   priorityColor,
+  StatusIcon,
+  statusColor
 }: ConsultantAppointmentCardProps) => (
   <main
     className="bg-white rounded-lg border-2 border-gray-200 p-5 hover-shadow-lg transition-all cursor-pointer"
@@ -293,14 +305,26 @@ const ConsultantAppointmentCard = ({
           <AlertCircle className="w-3 h-3" />
           <span className="capitalize">{appointment.priority}</span>
         </div>
-        <div
-          className={`flex items-center gap-1 px-3 py-1 rounded-full border ${statusColor}`}
-        >
-          <StatusIcon className="w-3 h-3" />
-          <span className="text-sm font-medium capitalize">
-            {appointment.status}
-          </span>
-        </div>
+        {appointment.status === "confirmed" &&
+          new Date(`${appointment.date}T${appointment.time}`) < new Date() ? (
+            <div
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg border text-pink-800 bg-pink-100 border-pink-300`}
+            >
+              <XCircle className="h-4 w-4" />
+              <span className="font-semibold text-xs capitalize">
+                {'missed'}
+              </span>
+            </div>
+          ) : (
+            <div
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg border ${statusColor}`}
+            >
+              <StatusIcon className="h-4 w-4" />
+              <span className="font-semibold text-xs capitalize">
+                {appointment.status}
+              </span>
+            </div>
+          )}
       </div>
     </header>
 
@@ -564,10 +588,10 @@ interface AppointmentModalProps {
   onClose: () => void;
   StatusIcon: React.ForwardRefExoticComponent<Omit<LucideProps, "ref">> &
     React.RefAttributes<SVGSVGElement>;
+  statusColor: string;
   daysUntil: string;
   setActionModal: (value: React.SetStateAction<ActionModalType | null>) => void;
   priorityColor: string;
-  statusColor: string;
 }
 
 const AppointmentModal = ({
@@ -605,14 +629,27 @@ const AppointmentModal = ({
               {appointment.priority} Priority
             </span>
           </div>
-          <div
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg border ${statusColor}`}
-          >
-            <StatusIcon className="h-4 w-4" />
-            <span className="font-semibold capitalize">
-              {appointment.status}
-            </span>
-          </div>
+
+          {appointment.status === "confirmed" &&
+          new Date(`${appointment.date}T${appointment.time}`) < new Date() ? (
+            <div
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg border text-pink-800 bg-pink-100 border-pink-300`}
+            >
+              <XCircle className="h-4 w-4" />
+              <span className="font-semibold text-xs capitalize">
+                {'missed'}
+              </span>
+            </div>
+          ) : (
+            <div
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg border ${statusColor}`}
+            >
+              <StatusIcon className="h-4 w-4" />
+              <span className="font-semibold text-xs capitalize">
+                {appointment.status}
+              </span>
+            </div>
+          )}
         </div>
 
         <div className="grid md:grid-cols-2 gap-6">

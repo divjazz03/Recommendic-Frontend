@@ -1,4 +1,4 @@
-import ConsultantConsultation from '@/components/consultant/consultation/ConsultantConsultation';
+import ConsultantConsultation from '@/components/consultant/consultation/ConsultantConsultation'
 import PatientConsultation from '@/components/patient/PatientConsultation';
 import { useUserContext } from '@/context/AuthContext';
 
