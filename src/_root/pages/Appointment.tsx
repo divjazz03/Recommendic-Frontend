@@ -1,21 +1,23 @@
-import ConsultantAppointment from '@/components/consultant/ConsultantAppointment';
-import PatientAppointment from '@/components/patient/PatientAppointment';
-import { useUserContext } from '@/context/AuthContext'
-import React from 'react'
+import ConsultantAppointment from "@/components/consultant/ConsultantAppointment";
+import PatientAppointment from "@/components/patient/PatientAppointment";
+import { useUserContext } from "@/context/AuthContext";
+import React from "react";
 
 const Appointment = () => {
-    const {userContext} = useUserContext();
+  const { userContext } = useUserContext();
 
-    if (!userContext.role) {
-      return null
-    }
+  if (!userContext.userType) {
+    return null;
+  }
   return (
     <>
-    {userContext.role === 'ROLE_PATIENT'
-    ? <PatientAppointment />
-    : <ConsultantAppointment />}
+      {userContext.userType === "PATIENT" ? (
+        <PatientAppointment />
+      ) : (
+        <ConsultantAppointment />
+      )}
     </>
-  )
-}
+  );
+};
 
-export default Appointment
+export default Appointment;

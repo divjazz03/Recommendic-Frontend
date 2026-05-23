@@ -7,14 +7,16 @@ import {
   RecurrenceRule,
   Response,
   Schedule,
+  SecurityPreferences,
   SignUpResponse,
   UserName,
 } from "@/types";
 import { ModifyingSchedule } from "@/components/consultant/ConsultantModifySchedule";
 import { apiClient } from "../axios";
 import { NewSchedule } from "@/hooks/useConsultantSchedule";
-import { ConsultantOnboardingData } from "@/components/consultant/ConsultantOnboarding";
 import { ConsultationChannel } from "@/hooks/usePatientSchedules";
+import { ConsultantOnboardingData } from "@/components/consultant/onboarding/ConsultantOnboarding";
+import { ConsultantNotificationSetting } from "@/hooks/useNotificationSettings";
 
 const consultantBasePath = import.meta.env.VITE_CONSULTANT_BASE;
 const scheduleBasePath = import.meta.env.VITE_SCHEDULE_BASE;
@@ -52,30 +54,49 @@ interface ScheduleResponse extends Response {
 
 export async function sendConsultantOnboardingData(
   data: ConsultantOnboardingData,
-  userId: string
+  stage: string,
+  accessToken: string | null,
 ) {
   const result = await apiClient
-    .post(`${consultantBasePath}/${userId}/onboard`, data)
+    .post(`${consultantBasePath}/onboard`, data, {
+      params: {
+        onboarding_stage: stage,
+      },
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
     .then((response) => response.data);
   return result;
 }
 
 export async function deleteConsultant(
-  consultantId: string
+  consultantId: string,
+  accessToken: string | null,
 ): Promise<Response> {
   const result = await apiClient
-    .delete(`${consultantBasePath}/${consultantId}`)
+    .delete(`${consultantBasePath}/${consultantId}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
     .then((response) => response.data);
   return result;
 }
 
-export async function getAllConsultants(params: {
-  page?: number;
-  size?: number;
-  sort?: boolean;
-}): Promise<unknown> {
+export async function getAllConsultants(
+  params: {
+    page?: number;
+    size?: number;
+    sort?: boolean;
+  },
+  accessToken: string | null,
+): Promise<unknown> {
   const result = await apiClient
-    .get(`${consultantBasePath}`, { params: params })
+    .get(`${consultantBasePath}`, {
+      params: params,
+      headers: { Authorization: `Bearer ${accessToken}` },
+    })
     .then((response) => response.data);
 
   return result;
@@ -106,7 +127,8 @@ export async function createNewConsultant(userData: NewUser) {
 }
 
 export async function createNewSchedule(
-  schedules: NewSchedule[]
+  schedules: NewSchedule[],
+  accessToken: string | null,
 ): Promise<ScheduleCreationResponse> {
   const scheduleRequests: NewScheduleRequest[] = schedules.map((schedule) => {
     const formattedEndTime = formatToUTCTime(schedule.endTime);
@@ -126,6 +148,7 @@ export async function createNewSchedule(
     .post(`${scheduleBasePath}`, scheduleRequests, {
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
       },
     })
     .then((response) => response.data);
@@ -154,38 +177,60 @@ const formatToUTCTime = (time: string) => {
   const minutes = date.getUTCMinutes();
   const seconds = date.getUTCSeconds();
   const formattedTime = `${String(hour).padStart(2, "0")}:${String(
-    minutes
+    minutes,
   ).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
   return formattedTime;
 };
 
-export async function getMySchedules(): Promise<PagedResponse<Schedule>> {
+export async function getMySchedules(
+  accessToken: string | null,
+): Promise<PagedResponse<Schedule>> {
   return apiClient
-    .get(`${scheduleBasePath}/me`)
+    .get(`${scheduleBasePath}/me`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
     .then((response) => response.data);
 }
 
-export async function getScheduleById(id: string): Promise<ScheduleResponse> {
+export async function getScheduleById(
+  id: string,
+  accessToken: string | null,
+): Promise<ScheduleResponse> {
   return apiClient
-    .get(`${scheduleBasePath}/${id}`)
+    .get(`${scheduleBasePath}/${id}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
     .then((response) => response.data);
 }
 
 export async function updateSchedule(
   id: string,
-  schedule: ModifyingSchedule
+  schedule: ModifyingSchedule,
+  accessToken: string | null,
 ): Promise<ScheduleResponse> {
   return apiClient
     .patch(`${scheduleBasePath}/${id}`, schedule, {
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
       },
     })
     .then((response) => response.data);
 }
-export async function deleteSchedule(id: string): Promise<Response> {
+export async function deleteSchedule(
+  id: string,
+  accessToken: string | null,
+): Promise<Response> {
   return apiClient
-    .delete(`${scheduleBasePath}/${id}`)
+    .delete(`${scheduleBasePath}/${id}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
     .then((response) => response.data.data);
 }
 
@@ -208,15 +253,47 @@ export interface ProfileDetails {
     boardCertification?: string;
   };
   education: ConsultantEducation;
+  notificationPreferences: ConsultantNotificationSetting;
+  securityPreferences: SecurityPreferences;
+}
+
+export interface Profile {
+  userName: UserName;
+  profilePicture: {
+    name: string;
+    pictureUrl: string;
+  };
+  onboardingStage: string;
+  specialty?: string;
 }
 
 export interface ProfileDetailsResponse extends Response {
   data: ProfileDetails;
 }
+interface ProfileResponse extends Response {
+  data: Profile;
+}
 
-export async function getMyProfileDetails(): Promise<ProfileDetailsResponse> {
+export async function getMyProfileDetails(
+  accessToken: string | null,
+): Promise<ProfileDetailsResponse> {
   return apiClient
-    .get(`${consultantBasePath}/profiles/details`)
+    .get(`${consultantBasePath}/profiles/details`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+    .then((response) => response.data);
+}
+export async function getMyProfile(
+  accessToken: string | null,
+): Promise<ProfileResponse> {
+  return apiClient
+    .get(`${consultantBasePath}/profiles`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
     .then((response) => response.data);
 }
 export interface ConsultantProfile {
@@ -237,21 +314,42 @@ export interface ConsultantProfile {
 export interface ConsultantProfileUpdateRequest {
   education?: Partial<ConsultantEducation>;
   profile?: Partial<ConsultantProfile>;
+  notificationPreferences?: Partial<ConsultantNotificationSetting>;
+  securityPreferences?: Partial<SecurityPreferences>;
 }
 
 export async function updateConsultantProfileDetails(
-  consultantProfile: ConsultantProfileUpdateRequest
+  consultantProfile: ConsultantProfileUpdateRequest,
+  accessToken: string | null,
 ): Promise<ProfileDetailsResponse> {
   return apiClient
-    .patch(`${consultantBasePath}/profiles`, consultantProfile)
+    .patch(`${consultantBasePath}/profiles`, consultantProfile, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
     .then((response) => response.data);
 }
 
-export async function confirmAppointment(appointmentId: string, note: string) {
-  return apiClient.post(`${appointmentBasePath}/confirm`, {
-    appointmentId: appointmentId,
-    note: note,
-  }).then(response => response.data);
+export async function confirmAppointment(
+  appointmentId: string,
+  note: string,
+  accessToken: string | null,
+) {
+  return apiClient
+    .post(
+      `${appointmentBasePath}/confirm`,
+      {
+        appointmentId: appointmentId,
+        note: note,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      },
+    )
+    .then((response) => response.data);
 }
 
 export interface ConsultantDashboardResponse extends Response {
@@ -271,21 +369,29 @@ export interface ConsultantDashboardResponse extends Response {
         age: string;
         channel: Uppercase<ConsultationChannel>;
         isFollowUp: boolean;
-        status: string
-      }
+        status: string;
+      },
     ];
     recentUpdates: [
       {
         timestamp: string;
         message: string;
         context: NotificationContext;
-      }
+      },
     ];
   };
 }
 
-export async function getMyDashboard(): Promise<ConsultantDashboardResponse> {
-  return apiClient.get(`${dashboardBasePath}`).then(response => response.data);
+export async function getMyDashboard(
+  accessToken: string | null,
+): Promise<ConsultantDashboardResponse> {
+  return apiClient
+    .get(`${dashboardBasePath}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+    .then((response) => response.data);
 }
 
 export interface PatientMedicalDataResponse extends Response {
@@ -299,10 +405,15 @@ export interface PatientMedicalDataResponse extends Response {
   };
 }
 export async function getPatientMedicalData(
-  id: string
+  id: string,
+  accessToken: string | null,
 ): Promise<PatientMedicalDataResponse> {
   return apiClient
-    .get(`${medicationBasePath}/patient/${id}`)
+    .get(`${medicationBasePath}/patient/${id}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
     .then((response) => response.data);
 }
 
@@ -322,32 +433,39 @@ export interface PrescriptionRequest {
   notes?: string;
 }
 interface MedicationResponse {
-  id: string
-  name: string
-  dosage: string
-  frequency: string
-  startDate: string
-  endDate: string
-  intructions: string
+  id: string;
+  name: string;
+  dosage: string;
+  frequency: string;
+  startDate: string;
+  endDate: string;
+  intructions: string;
 }
 interface ConsultantPrescriptionResponse extends Response {
   data: {
-    id: string
-    patientName: string
-    patientAge: string
-    gender: string
-    prescriberId: string
-    prescriberName: string
-    date: string
-    status: string
-    diagnosis: string
-    medications: MedicationResponse[]
-    notes: string
-  }
+    id: string;
+    patientName: string;
+    patientAge: string;
+    gender: string;
+    prescriberId: string;
+    prescriberName: string;
+    date: string;
+    status: string;
+    diagnosis: string;
+    medications: MedicationResponse[];
+    notes: string;
+  };
 }
 
-export async function createPrescription(request: PrescriptionRequest): Promise<ConsultantPrescriptionResponse> {
+export async function createPrescription(
+  request: PrescriptionRequest,
+  accessToken: string | null,
+): Promise<ConsultantPrescriptionResponse> {
   return apiClient
-    .post(`${medicationBasePath}`, request)
+    .post(`${medicationBasePath}`, request, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
     .then((response) => response.data);
 }

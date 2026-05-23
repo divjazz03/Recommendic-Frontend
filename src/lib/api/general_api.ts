@@ -4,6 +4,7 @@ import {
   CursorResponse,
   MedicalCategoriesResponse,
   PagedResponse,
+  Response,
   SignInResponse,
   SigninUserData,
 } from "@/types";
@@ -30,7 +31,7 @@ const notificationPath = import.meta.env.VITE_NOTIFICATION_BASE;
 const appointmentsPath = import.meta.env.VITE_APPOINTMENT_BASE;
 
 export async function signinUser(
-  userData: SigninUserData
+  userData: SigninUserData,
 ): Promise<SignInResponse> {
   const result: Promise<SignInResponse> = apiClient
     .post(`${userLoginPath}`, userData)
@@ -42,13 +43,17 @@ export async function logoutUser() {
   return apiClient.post(`${userLogoutPath}`).then((response) => response.data);
 }
 
-export async function getCurrentUser(): Promise<AuthenticatedUserResponse> {
+export async function getCurrentUser(
+  accessToken?: string,
+): Promise<AuthenticatedUserResponse> {
   return apiClient
     .get(`${userGetPath}`, {
       withCredentials: true,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
     })
     .then((response) => {
-      console.log(response.data.user);
       return response.data;
     });
 }
@@ -63,7 +68,7 @@ export async function getAllSupportedMedicalCategories(): Promise<MedicalCategor
   return result;
 }
 export async function resendConfirmationEmail(
-  userEmail: string
+  userEmail: string,
 ): Promise<string> {
   const result = apiClient
     .post(`${retryEmail}`, { email: userEmail })
@@ -85,14 +90,14 @@ export async function doGlobalSearch(query: string): Promise<SearchResult[]> {
 }
 
 export async function startNewConsultation(
-  appointmentId: string
+  appointmentId: string,
 ): Promise<ConsultationResponse> {
   return apiClient
     .post(`${consultationPath}/${appointmentId}/start`)
     .then((response) => response.data);
 }
 export async function endConsultation(
-  consultationId: string
+  consultationId: string,
 ): Promise<ConsultationResponse> {
   return apiClient
     .post(`${consultationPath}/${consultationId}/compconste`)
@@ -110,7 +115,7 @@ export async function getMyNotificationSettings(): Promise<NotificationSettingRe
 }
 
 export async function updateMyNotificationSettings(
-  modifiedNotification: ModifyingNotificationSetting
+  modifiedNotification: ModifyingNotificationSetting,
 ): Promise<NotificationSettingResponse> {
   return apiClient
     .patch(`${notificationPath}/settings`, modifiedNotification)
@@ -143,13 +148,12 @@ type Notification = {
   timeStamp: string;
 };
 
-
 interface Param {
   pageParam: string | null;
 }
 
 export async function getAllNotifications(
-  param: Param
+  param: Param,
 ): Promise<CursorResponse<Notification>> {
   return apiClient
     .get(`${notificationPath}`, {
@@ -164,7 +168,7 @@ interface ScheduleSlotResponse extends Response {
 
 export async function getConsultantTimeSlots(
   consultantId: string,
-  date: string | undefined
+  date: string | undefined,
 ): Promise<ScheduleSlotResponse> {
   if (!date) {
     return Promise.reject("No date specified");
@@ -176,10 +180,14 @@ export async function getConsultantTimeSlots(
     .then((response) => response.data);
 }
 
-export async function getAppointments(): Promise<
-  PagedResponse<ConsultantAppointmentType | PatientAppointmentType>
-> {
-  return apiClient.get(`${appointmentsPath}`).then((response) => response.data);
+export async function getAppointments(
+  accessToken: string | null,
+): Promise<PagedResponse<ConsultantAppointmentType | PatientAppointmentType>> {
+  return apiClient
+    .get(`${appointmentsPath}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    })
+    .then((response) => response.data);
 }
 
 interface ImageUploadSignature {
@@ -191,9 +199,27 @@ interface ImageUploadSignature {
   folder: string;
 }
 export async function getUploadSignature(
-  count?: number
+  count?: number,
+  accessToken?: string | null,
 ): Promise<ImageUploadSignature[]> {
   return apiClient
-    .get(`/cloudinary/signature`, { params: { count: count || 1 } })
+    .get(`/cloudinary/signature`, {
+      params: { count: count || 1 },
+      headers: { Authorization: `Bearer ${accessToken}` },
+    })
+    .then((response) => response.data);
+}
+
+interface RefreshResponse extends Response {
+  data: {
+    accessToken: string;
+  };
+}
+
+export async function refreshAccessToken(
+  refreshToken: string,
+): Promise<RefreshResponse> {
+  return apiClient
+    .post("/auth/refresh-token", { refreshToken })
     .then((response) => response.data);
 }

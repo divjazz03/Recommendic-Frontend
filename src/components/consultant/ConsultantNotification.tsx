@@ -82,7 +82,7 @@ const exampleNotifications: ConsultantNotification[] = [
     type: "lab_result",
     title: "Abnormal Lab Results",
     message: "HbA1c: 9.2% - Elevated glucose levels detected",
-    
+
     time: "15 min ago",
     isRead: false,
   },
@@ -92,7 +92,7 @@ const exampleNotifications: ConsultantNotification[] = [
     type: "appointment",
     title: "Appointment Rescheduled",
     message: "Follow-up moved from Dec 12 to Dec 15 at 2:30 PM",
-    
+
     time: "2 hours ago",
     isRead: false,
   },
@@ -101,7 +101,7 @@ const exampleNotifications: ConsultantNotification[] = [
     type: "prescription",
     title: "Prescription Approval Required",
     message: "Request for Warfarin dosage adjustment pending your review",
-    
+
     time: "4 hours ago",
     isRead: true,
   },
@@ -110,7 +110,7 @@ const exampleNotifications: ConsultantNotification[] = [
     type: "lab_result",
     title: "Lab Results Available",
     message: "Complete blood count and metabolic panel ready for review",
-    
+
     time: "1 day ago",
     isRead: true,
   },
@@ -143,17 +143,14 @@ const ConsultantNotification = () => {
 
   const deleteNotification = (id: string) => {};
 
-  const notifications =
-    data?.pages.flatMap((page) => page.data) ||
-    [];
+  const notifications = data?.pages.flatMap((page) => page.data) || [];
 
   const filteredNotifications =
     data?.pages.flatMap((page) =>
-      page.data
-        .filter((n) => {
-          if (filter === "unread") return !n.isRead;
-          return true;
-        })
+      page.data.filter((n) => {
+        if (filter === "unread") return !n.isRead;
+        return true;
+      })
     ) || [];
 
   const unreadCount = data?.pages.flatMap((page) =>
@@ -229,20 +226,33 @@ const ConsultantNotification = () => {
               </Empty>
             </div>
           ) : (
-            filteredNotifications.map((notification) => (
-            <NotificationCard key={notification.id}
-             deleteNotification={deleteNotification}
-             markAsRead={markAllAsRead}
-             notification={{
-              id: notification.id,
-              isRead: notification.isRead,
-              message: notification.message,
-              time: notification.timeStamp,
-              title: notification.title,
-              type: notification.type as ConsultantNotificationType
-             }}
-             />
-            ))
+            <>
+              {filteredNotifications.map((notification) => (
+                <NotificationCard
+                  key={notification.id}
+                  deleteNotification={deleteNotification}
+                  markAsRead={markAllAsRead}
+                  notification={{
+                    id: notification.id,
+                    isRead: notification.isRead,
+                    message: notification.message,
+                    time: notification.timeStamp,
+                    title: notification.title,
+                    type: notification.type as ConsultantNotificationType,
+                  }}
+                />
+              ))}
+              <div>
+                <Button disabled={!hasNextPage || isFetchingNextPage}>
+                  {" "}
+                  {isFetchingNextPage
+                    ? "Loading more ..."
+                    : hasNextPage
+                    ? "Load More"
+                    : "Nothing more to load"}{" "}
+                </Button>
+              </div>
+            </>
           )}
         </div>
       </div>
@@ -250,79 +260,79 @@ const ConsultantNotification = () => {
   );
 };
 interface NotificationCardProps {
-  notification: ConsultantNotification,
-  deleteNotification: (id: string) => void
-  markAsRead: (id: string) => void
+  notification: ConsultantNotification;
+  deleteNotification: (id: string) => void;
+  markAsRead: (id: string) => void;
 }
-const NotificationCard = (
-  {notification, deleteNotification, markAsRead}: NotificationCardProps
-) => (
+const NotificationCard = ({
+  notification,
+  deleteNotification,
+  markAsRead,
+}: NotificationCardProps) => (
   <div
-                key={notification.id}
-                className={`bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-5 ${
-                  !notification.isRead ? "border-l-4 border-indigo-500" : ""
-                }`}
+    key={notification.id}
+    className={`bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-5 ${
+      !notification.isRead ? "border-l-4 border-indigo-500" : ""
+    }`}
+  >
+    <div className="flex gap-4">
+      <div
+        className={`${getIconBgColor(
+          notification?.type as ConsultantNotificationType,
+          notification.isRead
+        )} p-3 rounded-xl h-fit ${getIconColor(
+          notification.type as ConsultantNotificationType
+        )}`}
+      >
+        {getIcon(notification.type as ConsultantNotificationType)}
+      </div>
+
+      <div className="flex-1 min-w-0">
+        <div className="flex items-start justify-between gap-3 mb-1">
+          <div className="flex-1">
+            <h3
+              className={`font-semibold ${
+                notification.isRead ? "text-gray-700" : "text-gray-900"
+              }`}
+            >
+              {notification.title}
+            </h3>
+          </div>
+          <button
+            onClick={() => deleteNotification(notification.id)}
+            className="text-gray-400 hover:text-red-500 transition-colors p-1"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+
+        <p
+          className={`text-sm mb-3 mt-2 ${
+            notification.isRead ? "text-gray-500" : "text-gray-700"
+          }`}
+        >
+          {notification.message}
+        </p>
+
+        <div className="flex items-center gap-4 flex-wrap">
+          <div className="flex items-center gap-1 text-xs text-gray-500">
+            <Clock className="w-3 h-3" />
+            {notification.time}
+          </div>
+
+          <div className="flex gap-2 ml-auto">
+            {!notification.isRead && (
+              <button
+                onClick={() => markAsRead(notification.id)}
+                className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded hover:bg-gray-200 transition-colors"
               >
-                <div className="flex gap-4">
-                  <div
-                    className={`${getIconBgColor(
-                      notification?.type as ConsultantNotificationType,
-                      notification.isRead
-                    )} p-3 rounded-xl h-fit ${getIconColor(
-                      notification.type as ConsultantNotificationType
-                    )}`}
-                  >
-                    {getIcon(notification.type as ConsultantNotificationType)}
-                  </div>
-
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-3 mb-1">
-                      <div className="flex-1">
-                        <h3
-                          className={`font-semibold ${
-                            notification.isRead
-                              ? "text-gray-700"
-                              : "text-gray-900"
-                          }`}
-                        >
-                          {notification.title}
-                        </h3>
-                      </div>
-                      <button
-                        onClick={() => deleteNotification(notification.id)}
-                        className="text-gray-400 hover:text-red-500 transition-colors p-1"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
-
-                    <p
-                      className={`text-sm mb-3 mt-2 ${
-                        notification.isRead ? "text-gray-500" : "text-gray-700"
-                      }`}
-                    >
-                      {notification.message}
-                    </p>
-
-                    <div className="flex items-center gap-4 flex-wrap">
-                      <div className="flex items-center gap-1 text-xs text-gray-500">
-                        <Clock className="w-3 h-3" />
-                        {notification.time}
-                      </div>
-
-                      <div className="flex gap-2 ml-auto">
-                        {!notification.isRead && (
-                          <button
-                            onClick={() => markAsRead(notification.id)}
-                            className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded hover:bg-gray-200 transition-colors"
-                          >
-                            Mark read
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-)
+                Mark read
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
 export default ConsultantNotification;

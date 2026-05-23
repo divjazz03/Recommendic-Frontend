@@ -32,7 +32,7 @@ import { createNewConsultant, createNewSchedule } from "../api/consultant_api";
 import { ModifyingNotificationSetting } from "@/hooks/useNotificationSettings";
 import { NewSchedule } from "@/hooks/useConsultantSchedule";
 import { PatientOnboardingData } from "@/components/patient/PatientOnboarding";
-import { queryClient } from "../queryClient";
+import { ZodNullable } from "zod";
 
 type UserCreateMutionProps = {
   typeOfUser: TypeOfUser;
@@ -56,27 +56,27 @@ export const useMarkNotificationsAsRead = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => markNotificationAsRead(id),
-   //  onSuccess: () =>
-   //    queryClient.invalidateQueries({ queryKey: "Notifications" }),
+    //  onSuccess: () =>
+    //    queryClient.invalidateQueries({ queryKey: "Notifications" }),
   });
 };
 export const useMarkAllNotificationsAsRead = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: markAllNotificationAsRead,
-   //  onSuccess: () =>
-   //    queryClient.invalidateQueries({ queryKey: "Notifications" }),
+    //  onSuccess: () =>
+    //    queryClient.invalidateQueries({ queryKey: "Notifications" }),
   });
 };
 
 export const useDeleteNotification = () => {
-   const queryClient = useQueryClient();
-   return useMutation({
-      mutationFn: (id: string) =>  deleteNotification(id),
-      // onSuccess: () => 
-      //    queryClient.invalidateQueries({queryKey: "Notifications"})
-   })
-}
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => deleteNotification(id),
+    // onSuccess: () =>
+    //    queryClient.invalidateQueries({queryKey: "Notifications"})
+  });
+};
 export const useCreateUserMutation = () => {
   return useMutation({
     mutationFn: (mutationFnProp: UserCreateMutionProps) => {
@@ -90,10 +90,20 @@ export const useCreateUserMutation = () => {
   });
 };
 
-export const useGetCurrentUser = (enabled: boolean) => {
+export const useGetCurrentUser = (
+  enabled: boolean,
+  accessToken?: string | null,
+) => {
+  if (!accessToken) {
+    return {
+      error: new Error("No access token"),
+      isPending: false,
+      data: null,
+    };
+  }
   return useQuery({
     queryKey: ["getCurrentUser"],
-    queryFn: getCurrentUser,
+    queryFn: () => getCurrentUser(accessToken),
     enabled: enabled,
     retry: 1,
   });
@@ -138,9 +148,10 @@ export const useVerifyTokenMutation = () => {
   });
 };
 
-export const useCreateSchedule = () => {
+export const useCreateSchedule = (accessToken: string | null) => {
   return useMutation({
-    mutationFn: (schedule: NewSchedule[]) => createNewSchedule(schedule),
+    mutationFn: (schedule: NewSchedule[]) =>
+      createNewSchedule(schedule, accessToken),
   });
 };
 
@@ -177,7 +188,7 @@ export const useUpdateNotificationSettings = () => {
 export const useGetConsultantTimeSlots = (
   consultantId: string,
   date: string,
-  enabled: boolean = true
+  enabled: boolean = true,
 ) => {
   return useQuery({
     queryKey: ["Consultant timeSlots", consultantId, date],
@@ -188,10 +199,10 @@ export const useGetConsultantTimeSlots = (
   });
 };
 
-export const useGetAppointments = () => {
+export const useGetAppointments = (accessToken: string | null) => {
   return useQuery({
     queryKey: ["Appointments"],
-    queryFn: getAppointments,
+    queryFn: () => getAppointments(accessToken),
     staleTime: 1000 * 3600,
   });
 };

@@ -18,11 +18,15 @@ import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { ApiError } from "@/lib/axios";
 import Loader from "@/components/shared/Loader";
+import { useUserContext } from "@/context/AuthContext";
+import { useTokenStore } from "@/store/TokenStore";
 
 const SigninForm = () => {
   const navigate = useNavigate();
   const { isPending: isSigningIn, mutateAsync: signInUser } =
     useSignInUserMutation();
+  const { startRefreshUtility } = useUserContext();
+  const { setAccessToken } = useTokenStore();
 
   const form = useForm<z.infer<typeof signInValidation>>({
     resolver: zodResolver(signInValidation),
@@ -39,6 +43,11 @@ const SigninForm = () => {
         email: formData.email,
         password: formData.password,
       });
+      if (data.refreshToken && data.accessToken) {
+        setAccessToken(data.accessToken);
+        startRefreshUtility(data.refreshToken);
+      }
+
       if (data && data.userStage === "ONBOARDING") {
         navigate("/onboarding");
       } else {

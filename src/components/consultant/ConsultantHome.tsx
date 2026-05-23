@@ -1,5 +1,8 @@
 import { useUserContext } from "@/context/AuthContext";
-import { useGetDashboard } from "@/lib/actions/consultantQueryAndMutations";
+import {
+  useGetDashboard,
+  useGetMyConsultantProfiles,
+} from "@/lib/actions/consultantQueryAndMutations";
 import { ConsultantProfile, NotificationContext } from "@/types";
 import {
   Activity,
@@ -29,10 +32,12 @@ import {
 } from "../ui/empty";
 import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
+import { getConsultantFullProfileDetails } from "@/lib/api/patient_api";
+import { useTokenStore } from "@/store/TokenStore";
 
 type AppointmentChannel = "in_person" | "online";
 type AppointmentHistory = "new" | "follow-up";
-type AppointmentStatus = "confirmed" | "in-progress" |  "completed";
+type AppointmentStatus = "confirmed" | "in-progress" | "completed";
 interface Appointment {
   id: string;
   patientName: string;
@@ -148,9 +153,11 @@ interface Task {
 
 const ConsultantHome = () => {
   const navigate = useNavigate();
-  const { profileData } = useUserContext();
-  const consultantProfile = profileData as ConsultantProfile;
-  const { data: dashboardResponse } = useGetDashboard();
+  const { accessToken } = useTokenStore();
+  console.log("Access Token in ConsultantHome:", accessToken);
+  const { data: profileData } = useGetMyConsultantProfiles(accessToken, true);
+  const consultantProfile = profileData?.data.profile;
+  const { data: dashboardResponse } = useGetDashboard(accessToken);
   const [dashBoard, setDashboard] = useState<DashboardData>({
     todayAppointments: [],
     pendingTasks: [],
@@ -164,7 +171,7 @@ const ConsultantHome = () => {
     },
     recentUpdates: [],
   });
-  
+
   useEffect(() => {
     const todaysAppointments: Appointment[] =
       dashboardResponse?.data?.todayAppointments?.map((data) => ({
@@ -184,12 +191,11 @@ const ConsultantHome = () => {
         context: data.context,
       })) || [];
 
-      setDashboard(prev => ({
-        ...prev,
-        todayAppointments: todaysAppointments,
-        recentUpdates: recentUpdates
-      }))
-      
+    setDashboard((prev) => ({
+      ...prev,
+      todayAppointments: todaysAppointments,
+      recentUpdates: recentUpdates,
+    }));
   }, [dashboardResponse]);
 
   return (
@@ -208,7 +214,7 @@ const ConsultantHome = () => {
               minute: "2-digit",
               hour12: true,
             })}{" "}
-            • {consultantProfile.specialization} Department
+            • {consultantProfile?.specialty} Department
           </p>
         </div>
       </header>
@@ -351,7 +357,7 @@ const ConsultantHome = () => {
                     return (
                       <div
                         key={apt.id}
-                        onClick={() => navigate('/consultation')}
+                        onClick={() => navigate("/consultation")}
                         className={`p-4 border rounded-lg transition hover:shadow-md ${
                           apt.status === "in-progress"
                             ? "border-blue-300 bg-blue-50"
@@ -456,7 +462,7 @@ const ConsultantHome = () => {
                     <div
                       key={task.id}
                       className={`p-4 border rounded-lg flex items-start gap-3 ${getPriorityColor(
-                        task.priority
+                        task.priority,
                       )}`}
                     >
                       <input

@@ -13,8 +13,14 @@ import {
   LifeStyleInformation,
   MedicalCategory,
   MedicalHistory,
+  SecurityPreferences,
 } from "@/types";
 import { useEffect, useState } from "react";
+import {
+  ConsultantNotificationSetting,
+  useNotificationSettings,
+} from "./useNotificationSettings";
+import { useSecuritySetting } from "./useSecuritySetting";
 
 export interface PatientProfileData {
   firstName: string;
@@ -52,12 +58,11 @@ export const usePatientProfile = () => {
     MedicalCategory[]
   >(
     medicalCategoriesResponse?.data.filter((category) =>
-      selectedCategoriesChangable.includes(category.name)
-    ) ?? []
+      selectedCategoriesChangable.includes(category.name),
+    ) ?? [],
   );
 
-  const { mutateAsync: updatePatientProfileData } =
-    useUpdatePatientData();
+  const { mutateAsync: updatePatientProfileData } = useUpdatePatientData();
 
   useEffect(() => {
     if (myProfileResponse) {
@@ -82,7 +87,7 @@ export const usePatientProfile = () => {
       if (medicalCategoriesResponse && medicalCategoriesResponse.data) {
         setSelectedCategories([
           ...medicalCategoriesResponse.data.filter((category) =>
-            data.interests?.includes(category.name)
+            data.interests?.includes(category.name),
           ),
         ]);
       }
@@ -91,9 +96,9 @@ export const usePatientProfile = () => {
 
   const handleInputChange = (
     field: keyof PatientProfileData,
-    value: string
+    value: string,
   ) => {
-    setProfileData(prev => prev && ({ ...prev, [field]: value }) );
+    setProfileData((prev) => prev && { ...prev, [field]: value });
     if (modifyingProfileData) {
       setModifyingProfileData({ ...modifyingProfileData, [field]: value });
       return;
@@ -102,10 +107,13 @@ export const usePatientProfile = () => {
   };
 
   const handleAddressChange = (field: keyof Address, value: string) => {
-    setProfileData((prev) => prev && ({
-      ...prev,
-      address: { ...prev.address, [field]: value },
-    }));
+    setProfileData(
+      (prev) =>
+        prev && {
+          ...prev,
+          address: { ...prev.address, [field]: value },
+        },
+    );
     if (modifyingProfileData) {
       setModifyingProfileData((prev) => ({
         ...prev,
@@ -121,12 +129,15 @@ export const usePatientProfile = () => {
 
   const handleLifeStyleChange = (
     field: keyof LifeStyleInformation,
-    value: string
+    value: string,
   ) => {
-    setProfileData((prev) => (prev && {
-      ...prev,
-      lifeStyleInfo: { ...prev?.lifeStyleInfo, [field]: value },
-    }));
+    setProfileData(
+      (prev) =>
+        prev && {
+          ...prev,
+          lifeStyleInfo: { ...prev?.lifeStyleInfo, [field]: value },
+        },
+    );
 
     if (modifyingProfileData) {
       setModifyingProfileData((prev) => ({
@@ -146,13 +157,14 @@ export const usePatientProfile = () => {
 
   const handleMedicalHistoryChange = (
     field: keyof MedicalHistory,
-    value: string
+    value: string,
   ) => {
-    setProfileData((prev) => 
-      prev && ({
+    setProfileData(
+      (prev) =>
+        prev && {
           ...prev,
           medicalHistory: { ...prev?.medicalHistory, [field]: value },
-        })
+        },
     );
 
     if (modifyingProfileData) {
@@ -172,7 +184,7 @@ export const usePatientProfile = () => {
   };
 
   const handleInterestsChange = (interests: string[]) => {
-    setProfileData((prev) => prev &&  ({ ...prev, interests: [...interests] }));
+    setProfileData((prev) => prev && { ...prev, interests: [...interests] });
     setModifyingProfileData((prev) => ({ ...prev, interests: [...interests] }));
   };
 
@@ -229,6 +241,8 @@ export interface ConsultantProfileData {
   licenseNumber?: string;
   yearsOfExperience?: string;
   education?: Partial<ConsultantEducation>;
+  notificationPreferences?: Partial<ConsultantNotificationSetting>;
+  securityPreferences?: Partial<SecurityPreferences>;
   boardCertification?: string;
   location?: string;
   department?: string;
@@ -239,10 +253,27 @@ export interface ConsultantProfileData {
 
 export type ModifyingConsultantProfileData = Partial<ConsultantProfileData>;
 
-export const useConsultantProfile = () => {
-  const { data: myProfileResponse } = useGetMyConsultantProfiles();
+export const useConsultantProfile = (accessToken: string | null) => {
+  const { data: myProfileResponse } = useGetMyConsultantProfiles(
+    accessToken,
+    true,
+  );
+  const {
+    handleNotificationChange,
+    notificationSettings,
+    notificationSettingsHasBeenModified,
+  } = useNotificationSettings(
+    "CONSULTANT",
+    accessToken,
+    myProfileResponse?.data?.notificationPreferences,
+  );
+
+  const { handleSettingChange, securitySettings } = useSecuritySetting(
+    myProfileResponse?.data.securityPreferences,
+  );
+
   const { mutateAsync: updateConsultantProfileDetails } =
-    useUpdateConsultantProfile();
+    useUpdateConsultantProfile(accessToken);
   const [isEditing, setIsEditing] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [modifyingProfileData, setModifyingProfileData] =
@@ -251,7 +282,7 @@ export const useConsultantProfile = () => {
 
   const handleInputChange = (
     field: keyof ModifyingConsultantProfileData,
-    value: unknown
+    value: unknown,
   ) => {
     setProfileData((prev) => {
       if (prev)
@@ -265,7 +296,7 @@ export const useConsultantProfile = () => {
 
   const handleEducationChange = (
     field: keyof ConsultantEducation,
-    value: unknown
+    value: unknown,
   ) => {
     setProfileData((prev) => {
       if (prev)
@@ -292,13 +323,13 @@ export const useConsultantProfile = () => {
     console.log("Saving profile:", profileData);
     setIsEditing(false);
     await updateConsultantProfileDetails({
-      education: {
+      education: modifyingProfileData?.education && {
         degree: modifyingProfileData?.education?.degree,
         institution: modifyingProfileData?.education?.institution,
         year: modifyingProfileData?.education?.year,
       },
       profile: {
-        address: {
+        address: modifyingProfileData?.address && {
           city: modifyingProfileData?.city,
           country: modifyingProfileData?.country,
           state: modifyingProfileData?.state,
@@ -333,10 +364,13 @@ export const useConsultantProfile = () => {
   };
 
   const handleAddressChange = (field: keyof Address, value: string) => {
-    setProfileData((prev) => prev && ({
-      ...prev,
-      address: { ...prev.address, [field]: value },
-    }));
+    setProfileData(
+      (prev) =>
+        prev && {
+          ...prev,
+          address: { ...prev.address, [field]: value },
+        },
+    );
     if (modifyingProfileData) {
       setModifyingProfileData((prev) => ({
         ...prev,
@@ -352,34 +386,36 @@ export const useConsultantProfile = () => {
 
   useEffect(() => {
     if (myProfileResponse) {
-      const data = myProfileResponse.data;
+      const data = myProfileResponse?.data;
       setProfileData({
-        firstName: data.profile.userName?.first_name,
-        lastName: data.profile.userName?.last_name,
-        email: data.profile.email,
-        phone: data.profile.phoneNumber,
-        dateOfBirth: data.profile.dateOfBirth,
-        gender: data.profile.gender,
-        address: data.profile.address,
-        city: data.profile.address?.city,
-        state: data.profile.address?.state,
+        firstName: data?.profile?.userName?.first_name,
+        lastName: data?.profile?.userName?.last_name,
+        email: data?.profile?.email,
+        phone: data?.profile?.phoneNumber,
+        dateOfBirth: data?.profile?.dateOfBirth,
+        gender: data?.profile?.gender,
+        address: data?.profile?.address,
+        city: data?.profile?.address?.city,
+        state: data?.profile?.address?.state,
         zipCode: "62701",
-        country: data.profile.address?.country,
-        specialty: data.profile?.specialty,
-        subSpecialty: data.profile.subSpecialties[0],
-        licenseNumber: data.profile.medicalLicenseNumber,
-        yearsOfExperience: data.profile?.experience,
+        country: data?.profile?.address?.country,
+        specialty: data?.profile?.specialty,
+        subSpecialty: data?.profile?.subSpecialties?.[0],
+        licenseNumber: data?.profile?.medicalLicenseNumber,
+        yearsOfExperience: data?.profile?.experience,
         education: {
-          degree: data.education?.degree,
-          institution: data.education?.institution,
-          year: data.education?.year,
+          degree: data?.education?.degree,
+          institution: data?.education?.institution,
+          year: data?.education?.year,
         },
-        boardCertification: data.profile.boardCertification,
-        location: data.profile.location,
-        department: data.profile.specialty,
-        bio: data.profile.bio,
-        languages: data.profile.languages,
-        profileImgUrl: data.profile.profileImgUrl,
+        boardCertification: data?.profile?.boardCertification,
+        location: data?.profile?.location,
+        department: data?.profile?.specialty,
+        bio: data?.profile?.bio,
+        languages: data?.profile?.languages,
+        profileImgUrl: data?.profile?.profileImgUrl,
+        notificationPreferences: data?.notificationPreferences,
+        securityPreferences: data?.securityPreferences,
       });
     }
   }, [myProfileResponse]);
@@ -394,6 +430,11 @@ export const useConsultantProfile = () => {
     profileData,
     handleEducationChange,
     handleLanguagesChange,
-    handleAddressChange
+    handleAddressChange,
+    handleNotificationChange,
+    notificationSettings,
+    notificationSettingsHasBeenModified,
+    handleSettingChange,
+    securitySettings,
   };
 };

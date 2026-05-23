@@ -4,6 +4,7 @@ import { AlertCircle, CheckCircle, LucideProps, XCircle } from "lucide-react";
 import { DateTime } from "luxon";
 import { useGetAppointments } from "@/lib/actions/generalQueriesAndMutation";
 import { string } from "zod";
+import { useTokenStore } from "@/store/TokenStore";
 
 export type AppointmentStatus =
   | "confirmed"
@@ -52,7 +53,7 @@ const getStatusColor = (status: AppointmentStatus) => {
 };
 
 const getStatusIcon = (
-  status: AppointmentStatus
+  status: AppointmentStatus,
 ): React.ForwardRefExoticComponent<
   Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>
 > => {
@@ -64,7 +65,7 @@ const getStatusIcon = (
     case "completed":
       return CheckCircle;
     case "cancelled":
-      return XCircle
+      return XCircle;
     default:
       return AlertCircle;
   }
@@ -197,9 +198,10 @@ const getDaysUntil = (dateStr: string) => {
 };
 
 export const usePatientAppointment = () => {
-  const { data: appointmentsResponse } = useGetAppointments();
+  const { accessToken } = useTokenStore();
+  const { data: appointmentsResponse } = useGetAppointments(accessToken);
   const [appointments, setAppointments] = useState<PatientAppointmentType[]>(
-    samplePatientAppointments
+    samplePatientAppointments,
   );
   const [filterStatus, setFilterStatus] = useState<AppointmentFilter>("all");
   const [searchTerm, setSearchTerm] = useState("");
@@ -240,7 +242,7 @@ export const usePatientAppointment = () => {
     (apt) =>
       new Date(`${apt.date}T${apt.time}`) >= new Date() &&
       apt.status !== "cancelled" &&
-      apt.status !== "completed"
+      apt.status !== "completed",
   );
 
   console.log(upcomingAppointments);
@@ -249,10 +251,10 @@ export const usePatientAppointment = () => {
     (apt) =>
       new Date(`${apt.date}T${apt.time}`) >= new Date() &&
       apt.status !== "cancelled" &&
-      apt.status !== "completed"
+      apt.status !== "completed",
   ).length;
   const pendingAppointmentCount = appointments?.filter(
-    (apt) => apt.status === "pending"
+    (apt) => apt.status === "pending",
   ).length;
 
   const pastAppointments = filteredAppointments?.filter((apt) => {
@@ -475,13 +477,12 @@ export interface ActionModalType {
 }
 
 export const useConsultantAppointment = () => {
-  const { data: appointmentsResponse } = useGetAppointments();
+  const { accessToken } = useTokenStore();
+  const { data: appointmentsResponse } = useGetAppointments(accessToken);
   const [appointments, setAppointments] = useState<ConsultantAppointmentType[]>(
-    sampleConsultantAppointments
+    sampleConsultantAppointments,
   );
-  const [filterStatus, setFilterStatus] = useState<AppointmentFilter>(
-    "all"
-  );
+  const [filterStatus, setFilterStatus] = useState<AppointmentFilter>("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedAppointment, setSelectedAppointment] =
     useState<ConsultantAppointmentType | null>(null);
@@ -497,14 +498,16 @@ export const useConsultantAppointment = () => {
   }, [appointmentsResponse]);
 
   const filteredAppointments =
-    appointments?.filter((apt) => {
-      const matchesSearch =
-        apt.patientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        apt.reason.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        apt.symptoms.toLowerCase().includes(searchTerm.toLowerCase());
+    appointments
+      ?.filter((apt) => {
+        const matchesSearch =
+          apt.patientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          apt.reason.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          apt.symptoms.toLowerCase().includes(searchTerm.toLowerCase());
 
-      return matchesSearch;
-    }).filter((apt) => {
+        return matchesSearch;
+      })
+      .filter((apt) => {
         switch (filterStatus) {
           case "all":
             return true;
@@ -525,15 +528,17 @@ export const useConsultantAppointment = () => {
       }) || [];
   const totalCount = appointments?.length;
   const pendingCount = appointments?.filter(
-    (apt) => apt.status === 'pending'
+    (apt) => apt.status === "pending",
   ).length;
   const upcomingCount = appointments?.filter(
-    (apt) => apt.status === 'confirmed' && new Date(`${apt.date}T${apt.time}`) >= new Date()
+    (apt) =>
+      apt.status === "confirmed" &&
+      new Date(`${apt.date}T${apt.time}`) >= new Date(),
   ).length;
   const todayCount = appointments?.filter(
     (a) =>
       a.date === new Date().toISOString().split("T")[0] &&
-      (a.status === "confirmed" || a.status === "pending")
+      (a.status === "confirmed" || a.status === "pending"),
   ).length;
 
   return {
@@ -561,6 +566,6 @@ export const useConsultantAppointment = () => {
     totalCount,
     filterStatus,
     setFilterStatus,
-    upcomingCount
+    upcomingCount,
   };
 };
