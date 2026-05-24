@@ -4,8 +4,8 @@ import { createJSONStorage, persist } from "zustand/middleware";
 type TokenContext = {
   accessToken: string | null;
   refreshToken: string | null;
-  setAccessToken: (accessToken: string) => void;
-  setRefreshToken: (refreshToken: string) => void;
+  setAccessToken: (accessToken: string | null) => void;
+  setRefreshToken: (refreshToken: string | null) => void;
 };
 
 export const useTokenStore = create<TokenContext>()(

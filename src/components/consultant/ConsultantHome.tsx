@@ -154,7 +154,6 @@ interface Task {
 const ConsultantHome = () => {
   const navigate = useNavigate();
   const { accessToken } = useTokenStore();
-  console.log("Access Token in ConsultantHome:", accessToken);
   const { data: profileData } = useGetMyConsultantProfiles(accessToken, true);
   const consultantProfile = profileData?.data.profile;
   const { data: dashboardResponse } = useGetDashboard(accessToken);

@@ -26,6 +26,8 @@ import {
 } from "../ui/empty";
 import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
+import { useTokenStore } from "@/store/TokenStore";
+import { usePatientProfile } from "@/hooks/useProfile";
 
 interface AppointmentView {
   id: string;
@@ -92,9 +94,10 @@ const getActivityIcon = (context: NotificationContext) => {
 // };
 
 const PatientHome = () => {
-  const navigate = useNavigate()
-  const { profileData } = useUserContext();
-  const { data: dashBoardResp } = useGetMyDashboard();
+  const navigate = useNavigate();
+  const { accessToken } = useTokenStore();
+  const { profileData } = usePatientProfile(accessToken);
+  const { data: dashBoardResp } = useGetMyDashboard(accessToken);
 
   const [dashBoard, setDashboard] = useState<DashboardData>({
     appointments: [],
@@ -103,20 +106,20 @@ const PatientHome = () => {
   });
 
   useEffect(() => {
-    console.log(dashBoardResp)
+    console.log(dashBoardResp);
     const appointments: AppointmentView[] =
       dashBoardResp?.data?.appointmentsToday?.map((apt) => ({
         channel: apt.channel.toLowerCase(),
         date: DateTime.fromISO(apt.dateTime, { zone: "utc" }).toFormat(
-          "YYYY-LLL-dd"
+          "YYYY-LLL-dd",
         ),
         time: DateTime.fromISO(apt.dateTime, { zone: "utc" }).toFormat(
-          "HH:mm:ss a"
+          "HH:mm:ss a",
         ),
         doctorName: apt.consultantFullName,
         id: apt.appointmentId,
         specialty: apt.specialty,
-        status: 'confirmed'
+        status: "confirmed",
       })) || [];
     const medications: Medication[] | undefined =
       dashBoardResp?.data?.medications?.map((med) => ({
@@ -148,7 +151,7 @@ const PatientHome = () => {
       <header className="w-full bg-white rounded-t-lg">
         <div className="flex flex-col gap-3">
           <h1 className="font-semibold text-3xl text-gray-800">
-            Welcome back, {profileData?.userName.full_name}
+            Welcome back, {profileData?.firstName} {profileData?.lastName}
           </h1>
           <p className="text-sm text-gray-500">
             {DateTime.now().toLocaleString({

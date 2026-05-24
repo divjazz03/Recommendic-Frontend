@@ -39,10 +39,6 @@ export async function signinUser(
   return result;
 }
 
-export async function logoutUser() {
-  return apiClient.post(`${userLogoutPath}`).then((response) => response.data);
-}
-
 export async function getCurrentUser(
   accessToken?: string,
 ): Promise<AuthenticatedUserResponse> {
@@ -91,16 +87,22 @@ export async function doGlobalSearch(query: string): Promise<SearchResult[]> {
 
 export async function startNewConsultation(
   appointmentId: string,
+  accessToken: string | null,
 ): Promise<ConsultationResponse> {
   return apiClient
-    .post(`${consultationPath}/${appointmentId}/start`)
+    .post(`${consultationPath}/${appointmentId}/start`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    })
     .then((response) => response.data);
 }
 export async function endConsultation(
   consultationId: string,
+  accessToken: string | null,
 ): Promise<ConsultationResponse> {
   return apiClient
-    .post(`${consultationPath}/${consultationId}/compconste`)
+    .post(`${consultationPath}/${consultationId}/complete`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    })
     .then((response) => response.data);
 }
 
@@ -108,33 +110,31 @@ interface NotificationSettingResponse extends Response {
   data: NotificationSetting;
 }
 
-export async function getMyNotificationSettings(): Promise<NotificationSettingResponse> {
+export async function markNotificationAsRead(
+  id: string,
+  accessToken: string | null,
+) {
   return apiClient
-    .get(`${notificationPath}/settings`)
+    .patch(`${notificationPath}/read`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    })
     .then((response) => response.data);
 }
-
-export async function updateMyNotificationSettings(
-  modifiedNotification: ModifyingNotificationSetting,
-): Promise<NotificationSettingResponse> {
+export async function markAllNotificationAsRead(accessToken: string | null) {
   return apiClient
-    .patch(`${notificationPath}/settings`, modifiedNotification)
+    .patch(`${notificationPath}/read/all`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    })
     .then((response) => response.data);
 }
-
-export async function markNotificationAsRead(id: string) {
+export async function deleteNotification(
+  id: string,
+  accessToken: string | null,
+) {
   return apiClient
-    .patch(`${notificationPath}/read`, id)
-    .then((response) => response.data);
-}
-export async function markAllNotificationAsRead() {
-  return apiClient
-    .patch(`${notificationPath}/read/all`)
-    .then((response) => response.data);
-}
-export async function deleteNotification(id: string) {
-  return apiClient
-    .delete(`${notificationPath}/${id}`)
+    .delete(`${notificationPath}/${id}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    })
     .then((response) => response.data);
 }
 
@@ -154,10 +154,12 @@ interface Param {
 
 export async function getAllNotifications(
   param: Param,
+  accessToken: string | null,
 ): Promise<CursorResponse<Notification>> {
   return apiClient
     .get(`${notificationPath}`, {
       params: { page: param.pageParam },
+      headers: { Authorization: `Bearer ${accessToken}` },
     })
     .then((response) => response.data);
 }
@@ -169,6 +171,7 @@ interface ScheduleSlotResponse extends Response {
 export async function getConsultantTimeSlots(
   consultantId: string,
   date: string | undefined,
+  accessToken: string | null,
 ): Promise<ScheduleSlotResponse> {
   if (!date) {
     return Promise.reject("No date specified");
@@ -176,6 +179,7 @@ export async function getConsultantTimeSlots(
   return apiClient
     .get(`${appointmentsPath}/timeslots/${consultantId}`, {
       params: { date: date },
+      headers: { Authorization: `Bearer ${accessToken}` },
     })
     .then((response) => response.data);
 }

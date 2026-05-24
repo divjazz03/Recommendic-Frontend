@@ -13,9 +13,6 @@ import {
   getAllSupportedMedicalCategories,
   startNewConsultation,
   endConsultation,
-  getMyNotificationSettings,
-  updateMyNotificationSettings,
-  logoutUser,
   getConsultantTimeSlots,
   getAppointments,
   getAllNotifications,
@@ -29,10 +26,9 @@ import {
   sendPatientOnboardingData,
 } from "../api/patient_api";
 import { createNewConsultant, createNewSchedule } from "../api/consultant_api";
-import { ModifyingNotificationSetting } from "@/hooks/useNotificationSettings";
 import { NewSchedule } from "@/hooks/useConsultantSchedule";
 import { PatientOnboardingData } from "@/components/patient/PatientOnboarding";
-import { ZodNullable } from "zod";
+import { useTokenStore } from "@/store/TokenStore";
 
 type UserCreateMutionProps = {
   typeOfUser: TypeOfUser;
@@ -43,36 +39,36 @@ type PatientOnboardingMutionProps = {
   userId: string;
 };
 
-export const useGetNotifications = () => {
+export const useGetNotifications = (accessToken: string | null) => {
   return useInfiniteQuery({
     queryKey: ["Notifications"],
-    queryFn: getAllNotifications,
+    queryFn: () => getAllNotifications({ pageParam: null }, accessToken),
     initialPageParam: null,
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
   });
 };
 
-export const useMarkNotificationsAsRead = () => {
+export const useMarkNotificationsAsRead = (accessToken: string | null) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => markNotificationAsRead(id),
+    mutationFn: (id: string) => markNotificationAsRead(id, accessToken),
     //  onSuccess: () =>
     //    queryClient.invalidateQueries({ queryKey: "Notifications" }),
   });
 };
-export const useMarkAllNotificationsAsRead = () => {
+export const useMarkAllNotificationsAsRead = (accessToken: string | null) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: markAllNotificationAsRead,
+    mutationFn: () => markAllNotificationAsRead(accessToken),
     //  onSuccess: () =>
     //    queryClient.invalidateQueries({ queryKey: "Notifications" }),
   });
 };
 
-export const useDeleteNotification = () => {
+export const useDeleteNotification = (accessToken: string | null) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => deleteNotification(id),
+    mutationFn: (id: string) => deleteNotification(id, accessToken),
     // onSuccess: () =>
     //    queryClient.invalidateQueries({queryKey: "Notifications"})
   });
@@ -125,9 +121,14 @@ export const useSignInUserMutation = () => {
 };
 
 export const useLogout = () => {
-  return useMutation({
-    mutationFn: () => logoutUser(),
-  });
+  const { setAccessToken, setRefreshToken } = useTokenStore();
+
+  return {
+    logout: () => {
+      setAccessToken(null);
+      setRefreshToken(null);
+    },
+  };
 };
 
 export const useResendEmailMutation = () => {
@@ -135,10 +136,10 @@ export const useResendEmailMutation = () => {
     mutationFn: (email: string) => resendConfirmationEmail(email),
   });
 };
-export const useUpdatePatientOnboardingInfo = () => {
+export const useUpdatePatientOnboardingInfo = (accessToken: string | null) => {
   return useMutation({
     mutationFn: (props: PatientOnboardingMutionProps) =>
-      sendPatientOnboardingData(props.data, props.userId),
+      sendPatientOnboardingData(props.data, props.userId, accessToken),
   });
 };
 
@@ -155,33 +156,16 @@ export const useCreateSchedule = (accessToken: string | null) => {
   });
 };
 
-export const useStartConsultation = () => {
+export const useStartConsultation = (accessToken: string | null) => {
   return useMutation({
-    mutationFn: (appointmentId: string) => startNewConsultation(appointmentId),
+    mutationFn: (appointmentId: string) =>
+      startNewConsultation(appointmentId, accessToken),
   });
 };
-export const useEndConsultation = () => {
+export const useEndConsultation = (accessToken: string | null) => {
   return useMutation({
-    mutationFn: (consultationId: string) => endConsultation(consultationId),
-  });
-};
-
-export const useGetNotificationSettings = () => {
-  return useQuery({
-    queryKey: ["getNotificationSettings"],
-    queryFn: getMyNotificationSettings,
-    staleTime: 1000 * 3600,
-  });
-};
-
-export const useUpdateNotificationSettings = () => {
-  const client = useQueryClient();
-  return useMutation({
-    mutationFn: (modifyingNotification: ModifyingNotificationSetting) =>
-      updateMyNotificationSettings(modifyingNotification),
-    onSuccess: () => {
-      client.invalidateQueries({ queryKey: ["getNotificationSettings"] });
-    },
+    mutationFn: (consultationId: string) =>
+      endConsultation(consultationId, accessToken),
   });
 };
 
@@ -189,10 +173,11 @@ export const useGetConsultantTimeSlots = (
   consultantId: string,
   date: string,
   enabled: boolean = true,
+  accessToken: string | null,
 ) => {
   return useQuery({
     queryKey: ["Consultant timeSlots", consultantId, date],
-    queryFn: () => getConsultantTimeSlots(consultantId, date),
+    queryFn: () => getConsultantTimeSlots(consultantId, date, accessToken),
     staleTime: 1000 * 3600,
     enabled: enabled,
     retry: 1,

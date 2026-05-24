@@ -24,7 +24,13 @@ import CustomCalender from "../shared/CustomCalender";
 import { usePatientReschedule } from "@/hooks/useReschedule";
 import ConsultantTimeSlots from "../shared/ConsultantTimeSlots";
 import { DateTime } from "luxon";
-import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "../ui/empty";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "../ui/empty";
 
 const PatientAppointment = () => {
   const navigate = useNavigate();
@@ -66,7 +72,7 @@ const PatientAppointment = () => {
               <div>
                 <p className="text-gray-600 text-sm">Upcoming</p>
                 <p className="text-3xl font-bold text-main-light">
-                  {upcomingAppointmentCount}
+                  {upcomingAppointmentCount ?? 0}
                 </p>
               </div>
               <Calendar className="w-10 h-10 text-main-light" />
@@ -78,7 +84,7 @@ const PatientAppointment = () => {
               <div>
                 <p className="text-gray-600 text-sm">Pending</p>
                 <p className="text-3xl font-bold text-yellow-600">
-                  {pendingAppointmentCount}
+                  {pendingAppointmentCount ?? 0}
                 </p>
               </div>
               <AlertCircle className="w-10 h-10 text-yellow-600" />
@@ -90,7 +96,7 @@ const PatientAppointment = () => {
               <div>
                 <p className="text-gray-600 text-sm">Total</p>
                 <p className="text-3xl font-bold text-purple-600">
-                  {appointmentCount}
+                  {appointmentCount ?? 0}
                 </p>
               </div>
               <FileText className="w-10 h-10 text-purple-600" />
@@ -205,7 +211,9 @@ const PatientAppointment = () => {
                 <EmptyMedia>
                   <Calendar size={64} className="text-gray-600" />
                 </EmptyMedia>
-                <EmptyTitle className="text-gray-600">No appointments found</EmptyTitle>
+                <EmptyTitle className="text-gray-600">
+                  No appointments found
+                </EmptyTitle>
                 <EmptyDescription className="">
                   {filterStatus === "pending" && "No pending requests"}
                   {filterStatus === "upcoming" && "No upcoming appointments"}
@@ -249,13 +257,13 @@ export default PatientAppointment;
 export interface PatientAppointmentCardProps {
   appointment: PatientAppointmentType;
   setSelectedAppointment: (
-    value: React.SetStateAction<PatientAppointmentType | undefined>
+    value: React.SetStateAction<PatientAppointmentType | undefined>,
   ) => void;
   date: string;
   daysUntil: string;
   setRecheduleModalOpen: (value: React.SetStateAction<boolean>) => void;
   StatusIcon: React.ForwardRefExoticComponent<Omit<LucideProps, "ref">> &
-      React.RefAttributes<SVGSVGElement>;
+    React.RefAttributes<SVGSVGElement>;
   statusColor: string;
 }
 const PatientAppointmentCard = ({
@@ -265,7 +273,7 @@ const PatientAppointmentCard = ({
   daysUntil,
   setRecheduleModalOpen,
   statusColor,
-  StatusIcon
+  StatusIcon,
 }: PatientAppointmentCardProps) => (
   <main
     className="bg-white rounded-lg border-2 border-gray-200 p-6 hover:shadow-lg transition-all cursor-pointer"
@@ -282,26 +290,23 @@ const PatientAppointmentCard = ({
         <p className="text-gray-600 ml-7">{appointment.specialty}</p>
       </div>
       {appointment.status === "confirmed" &&
-          new Date(`${appointment.date}T${appointment.time}`) < new Date() ? (
-            <div
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg border text-pink-800 bg-pink-100 border-pink-300`}
-            >
-              <XCircle className="h-4 w-4" />
-              <span className="text-xs font-semibold capitalize">
-                {'missed'}
-              </span>
-            </div>
-          ) : (
-            <div
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg border ${statusColor}`}
-            >
-              <StatusIcon className="h-4 w-4" />
-              <span className="text-xs font-semibold capitalize">
-                {appointment.status}
-              </span>
-            </div>
-          )}
-      
+      new Date(`${appointment.date}T${appointment.time}`) < new Date() ? (
+        <div
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg border text-pink-800 bg-pink-100 border-pink-300`}
+        >
+          <XCircle className="h-4 w-4" />
+          <span className="text-xs font-semibold capitalize">{"missed"}</span>
+        </div>
+      ) : (
+        <div
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg border ${statusColor}`}
+        >
+          <StatusIcon className="h-4 w-4" />
+          <span className="text-xs font-semibold capitalize">
+            {appointment.status}
+          </span>
+        </div>
+      )}
     </div>
 
     <div className="space-y-3 ml-7">
@@ -401,25 +406,23 @@ const AppointmentModal = ({
 
       <div className="p-6 space-y-6">
         {appointment.status === "confirmed" &&
-          new Date(`${appointment.date}T${appointment.time}`) < new Date() ? (
-            <div
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg border text-pink-800 bg-pink-100 border-pink-300`}
-            >
-              <XCircle className="h-4 w-4" />
-              <span className="text-xs font-semibold capitalize">
-                {'missed'}
-              </span>
-            </div>
-          ) : (
-            <div
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg border ${statusColor}`}
-            >
-              <StatusIcon className="h-4 w-4" />
-              <span className="text-xs font-semibold capitalize">
-                {appointment.status}
-              </span>
-            </div>
-          )}
+        new Date(`${appointment.date}T${appointment.time}`) < new Date() ? (
+          <div
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg border text-pink-800 bg-pink-100 border-pink-300`}
+          >
+            <XCircle className="h-4 w-4" />
+            <span className="text-xs font-semibold capitalize">{"missed"}</span>
+          </div>
+        ) : (
+          <div
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg border ${statusColor}`}
+          >
+            <StatusIcon className="h-4 w-4" />
+            <span className="text-xs font-semibold capitalize">
+              {appointment.status}
+            </span>
+          </div>
+        )}
 
         <div className="grid md:grid-cols-2 gap-4">
           <div className="space-y-3">
@@ -541,12 +544,12 @@ const RescheduleModal = ({
 
   const nextMonth = () => {
     setCurrentMonth(
-      new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1)
+      new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1),
     );
   };
   const previousMonth = () => {
     setCurrentMonth(
-      new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1)
+      new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1),
     );
   };
 

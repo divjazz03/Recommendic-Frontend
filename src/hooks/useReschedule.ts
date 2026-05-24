@@ -4,24 +4,31 @@ import { schedulesToTimeSlots } from "./usePatientSchedules";
 import { ActionModalType, ConsultantAppointmentType } from "./useAppointment";
 import { useUserContext } from "@/context/AuthContext";
 import { useConfirmAppointment } from "@/lib/actions/consultantQueryAndMutations";
-
-
+import { useTokenStore } from "@/store/TokenStore";
 
 export const usePatientReschedule = (consultantId: string) => {
   const [rescheduleDate, setRescheduleDate] = useState<Date>(new Date());
   const [, setSelectedScheduleId] = useState<string | null>(null);
-  const { data: timeSlots, isError, error } = useGetConsultantTimeSlots(consultantId, rescheduleDate?.toISOString().split('T')[0])
+  const {
+    data: timeSlots,
+    isError,
+    error,
+  } = useGetConsultantTimeSlots(
+    consultantId,
+    rescheduleDate?.toISOString().split("T")[0],
+  );
   const [rescheduleTime, setRescheduleTime] = useState<string | null>(null);
-  const [reason, setReason] = useState("")
-  const timeSlotsMem = useMemo(() => schedulesToTimeSlots(timeSlots? timeSlots.data : []), [timeSlots])
+  const [reason, setReason] = useState("");
+  const timeSlotsMem = useMemo(
+    () => schedulesToTimeSlots(timeSlots ? timeSlots.data : []),
+    [timeSlots],
+  );
 
   if (isError) {
-    console.log(error)
+    console.log(error);
   }
 
-  const handleReschedule = () => {
-
-  }
+  const handleReschedule = () => {};
   return {
     rescheduleDate,
     rescheduleTime,
@@ -31,84 +38,103 @@ export const usePatientReschedule = (consultantId: string) => {
     setRescheduleTime,
     timeSlotsMem,
     setSelectedScheduleId,
-    handleReschedule
-  }
-}
+    handleReschedule,
+  };
+};
 
-export const useConsultantAction = (action: ActionModalType,
-  setAppointments:(value: React.SetStateAction<ConsultantAppointmentType[]>) => void,
-  setActionModal:(value: React.SetStateAction<ActionModalType | null>) => void) => {
-
-  const [actionReason, setActionReason] = useState('');
+export const useConsultantAction = (
+  action: ActionModalType,
+  setAppointments: (
+    value: React.SetStateAction<ConsultantAppointmentType[]>,
+  ) => void,
+  setActionModal: (value: React.SetStateAction<ActionModalType | null>) => void,
+) => {
+  const { accessToken } = useTokenStore();
+  const [actionReason, setActionReason] = useState("");
   const [rescheduleDate, setRescheduleDate] = useState<Date | null>(new Date());
   const [rescheduleTime, setRescheduleTime] = useState<string | null>(null);
-  const {userContext} = useUserContext()
-  const { data: timeSlots } = useGetConsultantTimeSlots(userContext.user_id || '', rescheduleDate?.toISOString().split('T')[0] || '2013-03-04', action.type === 'reschedule')
+  const { userContext } = useUserContext();
+  const { data: timeSlots } = useGetConsultantTimeSlots(
+    userContext.user_id || "",
+    rescheduleDate?.toISOString().split("T")[0] || "2013-03-04",
+    action.type === "reschedule",
+    accessToken || "",
+  );
   const [, setSelectedScheduleId] = useState<string | null>(null);
-  const [notes, setNotes] = useState<string>()
-  const timeSlotsMem = useMemo(() => schedulesToTimeSlots(timeSlots? timeSlots.data : []), [timeSlots])
+  const [notes, setNotes] = useState<string>();
+  const timeSlotsMem = useMemo(
+    () => schedulesToTimeSlots(timeSlots ? timeSlots.data : []),
+    [timeSlots],
+  );
 
-  const {mutateAsync: confirmAppointment} = useConfirmAppointment()
+  const { mutateAsync: confirmAppointment } =
+    useConfirmAppointment(accessToken);
 
   const handleDecline = (appointmentId: string) => {
     if (!actionReason.trim()) {
-      alert('Please provide a reason for declining');
+      alert("Please provide a reason for declining");
       return;
     }
-    setAppointments(appointments => appointments.map(apt =>
-      apt.id === appointmentId
-        ? { ...apt, status: 'cancelled', cancellationReason: actionReason }
-        : apt
-    ));
+    setAppointments((appointments) =>
+      appointments.map((apt) =>
+        apt.id === appointmentId
+          ? { ...apt, status: "cancelled", cancellationReason: actionReason }
+          : apt,
+      ),
+    );
     setActionModal(null);
-    setActionReason('');
+    setActionReason("");
   };
 
   const handleCancel = () => {
     setActionModal(null);
-    setActionReason('');
+    setActionReason("");
     setRescheduleDate(null);
-    setRescheduleTime('');
-  }
+    setRescheduleTime("");
+  };
 
   const handleReschedule = (appointmentId: string) => {
     if (!rescheduleDate || !rescheduleTime) {
-      alert('Please select a new date and time');
+      alert("Please select a new date and time");
       return;
     }
-    setAppointments(appointments => appointments.map(apt =>
-      apt.id === appointmentId
-        ? {
-          ...apt,
-          date: rescheduleDate.toUTCString(),
-          time: rescheduleTime,
-          status: 'resheduled',
-          rescheduleReason: actionReason
-        }
-        : apt
-    ));
+    setAppointments((appointments) =>
+      appointments.map((apt) =>
+        apt.id === appointmentId
+          ? {
+              ...apt,
+              date: rescheduleDate.toUTCString(),
+              time: rescheduleTime,
+              status: "resheduled",
+              rescheduleReason: actionReason,
+            }
+          : apt,
+      ),
+    );
     setActionModal(null);
-    setActionReason('');
+    setActionReason("");
     setRescheduleDate(null);
-    setRescheduleTime('');
+    setRescheduleTime("");
   };
 
   const handleApprove = async (appointmentId: string) => {
-    await confirmAppointment({appointmentId: appointmentId, note: notes})
-    setAppointments(appointments => appointments.map(apt => 
-      apt.id === appointmentId ?
-       {
-      ...apt,
-      status: 'confirmed',
-      notes: notes
-      
-    }: apt));
+    await confirmAppointment({ appointmentId: appointmentId, note: notes });
+    setAppointments((appointments) =>
+      appointments.map((apt) =>
+        apt.id === appointmentId
+          ? {
+              ...apt,
+              status: "confirmed",
+              notes: notes,
+            }
+          : apt,
+      ),
+    );
     setActionModal(null);
-    setActionReason('');
+    setActionReason("");
     setRescheduleDate(null);
-    setRescheduleTime('');
-  }
-  
+    setRescheduleTime("");
+  };
 
   return {
     handleCancel,
@@ -124,6 +150,6 @@ export const useConsultantAction = (action: ActionModalType,
     actionReason,
     setActionReason,
     timeSlotsMem,
-    setSelectedScheduleId
-  }
-}
+    setSelectedScheduleId,
+  };
+};

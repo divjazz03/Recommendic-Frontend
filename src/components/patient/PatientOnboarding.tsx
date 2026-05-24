@@ -16,6 +16,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useUserContext } from "@/context/AuthContext";
 import { toast } from "sonner";
+import { useTokenStore } from "@/store/TokenStore";
 
 export interface PatientOnboardingData {
   dateOfBirth?: string;
@@ -50,13 +51,18 @@ const PatientOnboarding = () => {
   const [formData, setFormData] = useState<PatientOnboardingData>({
     specializations: [],
   });
+  const { accessToken } = useTokenStore();
   const navigate = useNavigate();
   const { userContext } = useUserContext();
-  const { mutateAsync: onBoardUser } = useUpdatePatientOnboardingInfo();
+  const { mutateAsync: onBoardUser } =
+    useUpdatePatientOnboardingInfo(accessToken);
+  if (userContext.userStage === "ACTIVE_USER") {
+    navigate("/");
+  }
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >
+    >,
   ) => {
     setFormData({
       ...formData,
@@ -76,12 +82,12 @@ const PatientOnboarding = () => {
     try {
       await onBoardUser({ userId: userContext.user_id, data: formData });
       toast.success("Take you for helping us serve you better");
-      navigate('/');
+      navigate("/");
     } catch (error) {
       toast.error(String(error));
     }
-    alert(
-      "Profile completed successfully! Your doctors will have access to these information"
+    toast.success(
+      "Profile completed successfully! Your doctors will have access to these information",
     );
   };
 
@@ -150,7 +156,7 @@ const PersonalDetails = ({
 }: {
   formData: PatientOnboardingData;
   handleChange: (
-    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => void;
 }) => (
   <>
@@ -252,7 +258,7 @@ const MedicalHistory = ({
 }: {
   formData: PatientOnboardingData;
   handleChange: (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => void;
 }) => (
   <main className="flex h-full flex-col">
@@ -340,7 +346,7 @@ const Lifestyle = ({
 }: {
   formData: PatientOnboardingData;
   handleChange: (
-    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => void;
 }) => (
   <main className="space-y-5">

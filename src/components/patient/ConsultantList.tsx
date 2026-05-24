@@ -1,8 +1,4 @@
-import React, {
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 import LocalSearch from "../shared/LocalSearch";
 import { ChevronDown, Filter, Stethoscope } from "lucide-react";
 import { Label } from "../ui/label";
@@ -40,20 +36,22 @@ const ConsultantList = () => {
     totalPages,
     specialties,
     setShowFilter,
-    totalElements
+    totalElements,
   } = useConsultantList();
+
   const scrollRef = useRef<HTMLDivElement>(null);
-  const scrollDirection = useScrollDirection(scrollRef.current); 
+  const scrollDirection = useScrollDirection(scrollRef.current);
   const paginationRef = useRef<HTMLDivElement>(null);
   const { inView } = useInView(paginationRef, scrollRef);
-  const showFloatingPagination = scrollDirection === "up"  &&
-   inView === false &&
-   scrollRef.current &&
-   scrollRef.current.scrollTop > 20
+  const showFloatingPagination =
+    scrollDirection === "up" &&
+    inView === false &&
+    scrollRef.current &&
+    scrollRef.current.scrollTop > 20;
   const [ready, setReady] = useState(false);
   useLayoutEffect(() => {
     setReady(true);
-  }, [])
+  }, []);
   if (!ready) return null;
   return (
     <div
@@ -156,16 +154,15 @@ const ConsultantList = () => {
         <p className="text-gray-600">{totalElements} results</p>
       </div>
 
-    
-        <section
-          ref={scrollRef}
-          className="relative space-y-4 overflow-y-auto h-full scrollbar-hide flex-1"
-        >
-          {isPending ? (
-            <Loader />
-          ): (
-            <>
-              <div className="flex flex-col gap-6">
+      <section
+        ref={scrollRef}
+        className="relative space-y-4 overflow-y-auto h-full scrollbar-hide flex-1"
+      >
+        {isPending ? (
+          <Loader />
+        ) : (
+          <>
+            <div className="flex flex-col gap-6">
               {filteredConsultants?.map((consultant) => (
                 <ConsultantThumbnail
                   experience={consultant.experience}
@@ -195,28 +192,34 @@ const ConsultantList = () => {
                     setPage((prev) => Math.min(prev + 1, totalPages - 1))
                   }
                   handlePage={(pageNumber) => setPage(pageNumber - 1)}
-                  handlePrevious={() => setPage((prev) => Math.max(prev - 1, 0))}
+                  handlePrevious={() =>
+                    setPage((prev) => Math.max(prev - 1, 0))
+                  }
                 />
               </div>
             )}
-            {filteredConsultants?.length > 0 && showFloatingPagination && totalPages && (
-              <PaginationWrapper
-                totalPages={totalPages}
-                currentPage={page}
-                isFirstPage={pageNumber === 0}
-                isLastPage={isLast || false}
-                handleNext={() =>
-                  setPage((prev) => Math.min(prev + 1, totalPages - 1))
-                }
-                handlePage={(pageNumber) => setPage(pageNumber)}
-                handlePrevious={() => setPage((prev) => Math.max(prev - 1, 0))}
-                className={`w-fit fixed bottom-6 left-1/2 transform -translate-x-1/2 z-[50]${
-                  showFloatingPagination
-                    ? "opacity-100 animate-in slide-in-from-bottom-4 fade-in"
-                    : "opacity-0 pointer-events-none translate-y-4 "
-                }`}
-              />
-            )}
+            {filteredConsultants?.length > 0 &&
+              showFloatingPagination &&
+              totalPages && (
+                <PaginationWrapper
+                  totalPages={totalPages}
+                  currentPage={page}
+                  isFirstPage={pageNumber === 0}
+                  isLastPage={isLast || false}
+                  handleNext={() =>
+                    setPage((prev) => Math.min(prev + 1, totalPages - 1))
+                  }
+                  handlePage={(pageNumber) => setPage(pageNumber)}
+                  handlePrevious={() =>
+                    setPage((prev) => Math.max(prev - 1, 0))
+                  }
+                  className={`w-fit fixed bottom-6 left-1/2 transform -translate-x-1/2 z-[50]${
+                    showFloatingPagination
+                      ? "opacity-100 animate-in slide-in-from-bottom-4 fade-in"
+                      : "opacity-0 pointer-events-none translate-y-4 "
+                  }`}
+                />
+              )}
             {filteredConsultants?.length === 0 && (
               <div className="text-center py-12 text-gray-400">
                 <Stethoscope className="w-12 h-12 mx-auto mb-4 text-gray-500" />
@@ -224,13 +227,11 @@ const ConsultantList = () => {
                 <p className="text-sm">Try adjusting your search or filters.</p>
               </div>
             )}
-            </>
-          )}
-          
-        </section>
+          </>
+        )}
+      </section>
     </div>
   );
 };
 
 export default ConsultantList;
-

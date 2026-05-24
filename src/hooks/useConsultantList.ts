@@ -1,12 +1,13 @@
 import { useGetSupportedMedicalCategories } from "@/lib/actions/generalQueriesAndMutation";
 import { useGetRecommendedConsultants } from "@/lib/actions/patientQueryAndMutations";
+import { useTokenStore } from "@/store/TokenStore";
 import { ConsultantTypeMinimal } from "@/types";
 import { useEffect, useMemo, useState } from "react";
 
 const useConsultantList = () => {
-
-  const {data:medicalCategoriesResponse} = useGetSupportedMedicalCategories();
-  const specialties = medicalCategoriesResponse?.data || []
+  const { data: medicalCategoriesResponse } =
+    useGetSupportedMedicalCategories();
+  const specialties = medicalCategoriesResponse?.data || [];
   const [showFilters, setShowFilter] = useState(false);
   const [selectedAvailability, setSelectedAvailability] = useState("all");
   const [selectedRating, setSelectedRating] = useState("all");
@@ -14,19 +15,18 @@ const useConsultantList = () => {
   const [searchValue, setSearchValue] = useState("");
   const [consultants, setConsultants] = useState<ConsultantTypeMinimal[]>([]);
   const [page, setPage] = useState(0);
-  const {
-    data: recommendedConsultants,
-    isPending,
-  } = useGetRecommendedConsultants(page);
+  const { accessToken } = useTokenStore();
+  const { data: recommendedConsultants, isPending } =
+    useGetRecommendedConsultants(page, accessToken);
   const totalPages = recommendedConsultants?.data.totalPages;
-  const totalElements = recommendedConsultants?.data.totalElements
-  const isLast = recommendedConsultants?.data.last
-  const pageNumber = recommendedConsultants?.data.pageNumber
-  const empty = recommendedConsultants?.data.empty
+  const totalElements = recommendedConsultants?.data.totalElements;
+  const isLast = recommendedConsultants?.data.last;
+  const pageNumber = recommendedConsultants?.data.pageNumber;
+  const empty = recommendedConsultants?.data.empty;
 
   useEffect(() => {
-    if(recommendedConsultants)
-      setConsultants(recommendedConsultants.data?.content);
+    if (recommendedConsultants)
+      setConsultants(recommendedConsultants.data?.content ?? []);
   }, [recommendedConsultants]);
 
   const filteredConsultants = useMemo(() => {
@@ -64,7 +64,7 @@ const useConsultantList = () => {
   ]);
 
   return {
-    filteredConsultants,
+    filteredConsultants: filteredConsultants ?? [],
     showFilters,
     setSearchValue,
     setSelectedAvailability,
@@ -79,7 +79,7 @@ const useConsultantList = () => {
     empty,
     specialties,
     setShowFilter,
-    totalElements
+    totalElements: totalElements ?? 0,
   };
 };
 

@@ -41,11 +41,11 @@ export interface PatientProfileData {
 
 export type ModifyingProfileData = Partial<PatientProfileData>;
 
-export const usePatientProfile = () => {
+export const usePatientProfile = (accessToken: string | null) => {
   const [profileData, setProfileData] = useState<PatientProfileData>();
   const { data: medicalCategoriesResponse } =
     useGetSupportedMedicalCategories();
-  const { data: myProfileResponse } = useGetMyProfiles();
+  const { data: myProfileResponse } = useGetMyProfiles(accessToken);
   const [isEditing, setIsEditing] = useState(false);
 
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
@@ -62,7 +62,8 @@ export const usePatientProfile = () => {
     ) ?? [],
   );
 
-  const { mutateAsync: updatePatientProfileData } = useUpdatePatientData();
+  const { mutateAsync: updatePatientProfileData } =
+    useUpdatePatientData(accessToken);
 
   useEffect(() => {
     if (myProfileResponse) {

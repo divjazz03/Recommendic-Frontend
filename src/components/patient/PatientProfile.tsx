@@ -23,30 +23,43 @@ import { useSecuritySetting } from "@/hooks/useSecuritySetting";
 import { useLogout } from "@/lib/actions/generalQueriesAndMutation";
 import InitialsOrAvartar from "../shared/InitialsOrAvartar";
 
-import { Address, LifeStyleInformation, MedicalCategory, MedicalHistory } from "@/types";
+import {
+  Address,
+  LifeStyleInformation,
+  MedicalCategory,
+  MedicalHistory,
+} from "@/types";
 
 import ProfilePictureModal from "../shared/ProfilePictureModal";
 import SecurityAndPrivacy from "../shared/SecurityAndPrivacy";
 import { Input } from "../ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "../ui/select";
 import { Textarea } from "../ui/textarea";
-import { MultiSelect, MultiSelectContent, MultiSelectGroup, MultiSelectItem, MultiSelectTrigger, MultiSelectValue } from "../ui/multi-select";
+import {
+  MultiSelect,
+  MultiSelectContent,
+  MultiSelectGroup,
+  MultiSelectItem,
+  MultiSelectTrigger,
+  MultiSelectValue,
+} from "../ui/multi-select";
 import { Button } from "../ui/button";
+import { useTokenStore } from "@/store/TokenStore";
 
 const PatientProfile = () => {
   const [activeTab, setActiveTab] = useState("");
-  const { mutateAsync: logout } = useLogout();
+  const { logout } = useLogout();
   const handleLogout = async () => {
     await logout();
     window.location.pathname = "/sign-in";
   };
+  const { accessToken } = useTokenStore();
 
   const {
     handleNotificationChange,
-    handleSaveNotificationSetting,
     notificationSettingsHasBeenModified,
     notificationSettings,
-  } = useNotificationSettings();
+  } = useNotificationSettings("PATIENT", accessToken);
 
   const patientNotificationSettings =
     notificationSettings as PatientNotificationSetting;
@@ -64,8 +77,8 @@ const PatientProfile = () => {
     profileData,
     medicalCategories,
     handleLifeStyleChange,
-    handleMedicalHistoryChange
-  } = usePatientProfile();
+    handleMedicalHistoryChange,
+  } = usePatientProfile(accessToken);
 
   const { handleSettingChange, securitySettings } = useSecuritySetting();
 
@@ -134,7 +147,7 @@ const PatientProfile = () => {
             {activeTab === "notifications" && (
               <NotificationPreferences
                 handleNotificationChange={handleNotificationChange}
-                handleSaveNotificationSetting={handleSaveNotificationSetting}
+                handleSaveNotificationSetting={handleSaveProfile}
                 notificationSettingsHasBeenModified={
                   notificationSettingsHasBeenModified
                 }
@@ -148,6 +161,8 @@ const PatientProfile = () => {
                 handleSettingChange={handleSettingChange}
                 securitySettings={securitySettings}
                 setActiveTab={setActiveTab}
+                handleSaveProfile={handleSaveProfile}
+                isEditing={isEditing}
               />
             )}
           </div>
@@ -230,9 +245,15 @@ interface ProfileInformationProps {
   handleSaveProfile: () => void;
   handleInputChange: (field: keyof PatientProfileData, value: string) => void;
   handleAddressChange: (field: keyof Address, value: string) => void;
-  handleInterestsChange: (values: string[]) => void
-  handleLifeStyleChange:(field: keyof LifeStyleInformation, value: string) => void
-  handleMedicalHistoryChange:(field: keyof MedicalHistory, value: string) => void
+  handleInterestsChange: (values: string[]) => void;
+  handleLifeStyleChange: (
+    field: keyof LifeStyleInformation,
+    value: string,
+  ) => void;
+  handleMedicalHistoryChange: (
+    field: keyof MedicalHistory,
+    value: string,
+  ) => void;
   medicalCategories: MedicalCategory[] | undefined;
   selectedCategories: MedicalCategory[] | undefined;
   setActiveTab: (value: React.SetStateAction<string>) => void;
@@ -251,7 +272,7 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
   handleInterestsChange,
   setActiveTab,
   handleLifeStyleChange,
-  handleMedicalHistoryChange
+  handleMedicalHistoryChange,
 }) => {
   const [imageUpdateModalOpen, setImageUpdateModalOpen] = useState(false);
   return (
@@ -288,25 +309,14 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
               </div>
             </div>
             {!isEditing ? (
-              <Button
-                onClick={handleStartEdit}
-                
-              >
-                Edit Profile
-              </Button>
+              <Button onClick={handleStartEdit}>Edit Profile</Button>
             ) : (
               <div className="flex gap-2">
-                <Button
-                  onClick={handleCancelEdit}
-                  variant={'secondary'}
-                  
-                >
-                  <X className="w-4 h-4"/>
+                <Button onClick={handleCancelEdit} variant={"secondary"}>
+                  <X className="w-4 h-4" />
                   <p className="hidden sm:inline-block">Cancel</p>
                 </Button>
-                <Button
-                  onClick={handleSaveProfile}
-                >
+                <Button onClick={handleSaveProfile}>
                   <Save className="w-4 h-4" />
                   <p className="hidden sm:inline-block">Save Changes</p>
                 </Button>
@@ -381,17 +391,22 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
                 value={profileData.bloodType}
                 disabled={!isEditing}
               >
-                <SelectTrigger value={profileData.bloodType} aria-placeholder={'Provide your blood type'} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 text-gray-500  focus:border-transparent">
-                  {profileData.bloodType}</SelectTrigger>
+                <SelectTrigger
+                  value={profileData.bloodType}
+                  aria-placeholder={"Provide your blood type"}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 text-gray-500  focus:border-transparent"
+                >
+                  {profileData.bloodType}
+                </SelectTrigger>
                 <SelectContent>
-                    <SelectItem value="A+">A+</SelectItem>
-                    <SelectItem value="A-">A-</SelectItem>
-                    <SelectItem value="B+">B+</SelectItem>
-                    <SelectItem value="B-">B-</SelectItem>
-                    <SelectItem value="AB+">AB+</SelectItem>
-                    <SelectItem value="AB-">AB-</SelectItem>
-                    <SelectItem value="O+">O+</SelectItem>
-                    <SelectItem value="O-">O-</SelectItem>
+                  <SelectItem value="A+">A+</SelectItem>
+                  <SelectItem value="A-">A-</SelectItem>
+                  <SelectItem value="B+">B+</SelectItem>
+                  <SelectItem value="B-">B-</SelectItem>
+                  <SelectItem value="AB+">AB+</SelectItem>
+                  <SelectItem value="AB-">AB-</SelectItem>
+                  <SelectItem value="O+">O+</SelectItem>
+                  <SelectItem value="O-">O-</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -427,34 +442,36 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
             </div>
           </div>
 
-        <h3 className="text-lg font-semibold text-gray-900 mt-8 mb-4">Emergency Contact Info</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mt-8 mb-4">
+            Emergency Contact Info
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Emergency Contact Name
-          </label>
-          <input
-            type="text"
-            name="emergencyContact"
-            value={profileData.emergencyContact}
-            placeholder="Full name"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2  focus:border-transparent"
-          />
-        </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Emergency Contact Name
+              </label>
+              <input
+                type="text"
+                name="emergencyContact"
+                value={profileData.emergencyContact}
+                placeholder="Full name"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2  focus:border-transparent"
+              />
+            </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Emergency Contact Phone
-          </label>
-          <input
-            type="tel"
-            name="emergencyPhone"
-            value={profileData.emergencyPhone}
-            placeholder="+234 800 000 0000"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2  focus:border-transparent"
-          />
-        </div>
-      </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Emergency Contact Phone
+              </label>
+              <input
+                type="tel"
+                name="emergencyPhone"
+                value={profileData.emergencyPhone}
+                placeholder="+234 800 000 0000"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2  focus:border-transparent"
+              />
+            </div>
+          </div>
 
           <h3 className="text-lg font-semibold text-gray-900 mt-8 mb-4">
             Address
@@ -515,22 +532,34 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Specialization Of Interest
             </label>
-            <MultiSelect defaultValues={selectedCategories?.map((v) => v.id)} onValuesChange={(e) => handleInterestsChange(e)}>
+            <MultiSelect
+              defaultValues={selectedCategories?.map((v) => v.id)}
+              onValuesChange={(e) => handleInterestsChange(e)}
+            >
               <MultiSelectTrigger disabled={!isEditing} className="w-full h-10">
-                <MultiSelectValue placeholder="Select Medical specializations of interest"/>
+                <MultiSelectValue placeholder="Select Medical specializations of interest" />
               </MultiSelectTrigger>
               <MultiSelectContent>
                 <MultiSelectGroup>
                   {medicalCategories?.map((category) => (
-                    <MultiSelectItem badgeLabel={category.name} value={category.id} key={category.id}>
+                    <MultiSelectItem
+                      badgeLabel={category.name}
+                      value={category.id}
+                      key={category.id}
+                    >
                       <div className="flex w-full gap-2">
                         <p>{category.icon}</p>
                         <div className="flex flex-col justify-start">
-                          <p className="text-sm sm:text-base font-semibold">{category.name}</p>
-                          <p className="text-xs sm:text-sm font-light">{category.description}</p>
+                          <p className="text-sm sm:text-base font-semibold">
+                            {category.name}
+                          </p>
+                          <p className="text-xs sm:text-sm font-light">
+                            {category.description}
+                          </p>
                         </div>
                       </div>
-                  </MultiSelectItem>))}
+                    </MultiSelectItem>
+                  ))}
                 </MultiSelectGroup>
               </MultiSelectContent>
             </MultiSelect>
@@ -572,7 +601,9 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
               </label>
               <Textarea
                 value={profileData.medicalHistory?.knownAllergies}
-                onChange={(e) => handleMedicalHistoryChange('knownAllergies', e.target.value)}
+                onChange={(e) =>
+                  handleMedicalHistoryChange("knownAllergies", e.target.value)
+                }
                 placeholder="e.g., Penicillin, Peanuts, Latex (or 'None')"
                 rows={3}
                 disabled={!isEditing}
@@ -587,7 +618,12 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
               </label>
               <Textarea
                 value={profileData.medicalHistory?.chronicConditions}
-                onChange={(e) => handleMedicalHistoryChange('chronicConditions', e.target.value)}
+                onChange={(e) =>
+                  handleMedicalHistoryChange(
+                    "chronicConditions",
+                    e.target.value,
+                  )
+                }
                 placeholder="e.g., Diabetes, Hypertension, Asthma (or 'None')"
                 rows={3}
                 disabled={!isEditing}
@@ -601,7 +637,12 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
                 Current Medications
               </label>
               <Textarea
-                onChange={(e) => handleMedicalHistoryChange('currentMedications', e.target.value)}
+                onChange={(e) =>
+                  handleMedicalHistoryChange(
+                    "currentMedications",
+                    e.target.value,
+                  )
+                }
                 value={profileData.medicalHistory?.currentMedications}
                 placeholder="List all medications you're currently taking (or 'None')"
                 rows={3}
@@ -616,7 +657,9 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
                 Past Surgeries
               </label>
               <Textarea
-                onChange={(e) => handleMedicalHistoryChange('pastSurgries', e.target.value)}
+                onChange={(e) =>
+                  handleMedicalHistoryChange("pastSurgries", e.target.value)
+                }
                 value={profileData.medicalHistory?.pastSurgries}
                 placeholder="List any previous surgeries and approximate dates (or 'None')"
                 rows={3}
@@ -632,7 +675,12 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
               </label>
               <Textarea
                 value={profileData.medicalHistory?.familyMedicalHistory}
-                onChange={(e) => handleMedicalHistoryChange('familyMedicalHistory', e.target.value)}
+                onChange={(e) =>
+                  handleMedicalHistoryChange(
+                    "familyMedicalHistory",
+                    e.target.value,
+                  )
+                }
                 placeholder="Notable conditions in immediate family (e.g., Heart disease, Cancer)"
                 rows={3}
                 disabled={!isEditing}
@@ -651,7 +699,9 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
               <Select
                 name="smokingStatus"
                 value={profileData.lifeStyleInfo?.smokingStatus}
-                onValueChange={(e) => {handleLifeStyleChange('smokingStatus', e)}}
+                onValueChange={(e) => {
+                  handleLifeStyleChange("smokingStatus", e);
+                }}
                 disabled={!isEditing}
               >
                 <SelectTrigger className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2  focus:border-transparent">
@@ -672,7 +722,9 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
               <Select
                 name="alcoholConsumption"
                 value={profileData.lifeStyleInfo?.alcoholConsumption}
-                onValueChange={(e) => {handleLifeStyleChange('alcoholConsumption', e)}}
+                onValueChange={(e) => {
+                  handleLifeStyleChange("alcoholConsumption", e);
+                }}
                 disabled={!isEditing}
               >
                 <SelectTrigger className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent">
@@ -694,7 +746,9 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
               <Select
                 name="exerciseFrequency"
                 value={profileData.lifeStyleInfo?.exerciseFrequency}
-                onValueChange={(e) => {handleLifeStyleChange('exerciseFrequency', e)}}
+                onValueChange={(e) => {
+                  handleLifeStyleChange("exerciseFrequency", e);
+                }}
                 disabled={!isEditing}
               >
                 <SelectTrigger className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent">
@@ -718,7 +772,9 @@ const ProfileInformation: React.FC<ProfileInformationProps> = ({
                 type="text"
                 name="dietaryRestrictions"
                 value={profileData.lifeStyleInfo?.dietaryRestrictions}
-                onChange={(e) => handleLifeStyleChange('dietaryRestrictions', e.target.value)}
+                onChange={(e) =>
+                  handleLifeStyleChange("dietaryRestrictions", e.target.value)
+                }
                 placeholder="e.g., Vegetarian, Gluten-free"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent"
               />
@@ -815,7 +871,7 @@ const NotificationPreferences = ({
             <button
               onClick={() =>
                 handleNotificationChange(
-                  setting.key as keyof PatientNotificationSetting
+                  setting.key as keyof PatientNotificationSetting,
                 )
               }
               className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${

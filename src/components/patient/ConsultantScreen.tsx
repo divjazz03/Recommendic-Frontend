@@ -29,6 +29,7 @@ import {
   EmptyTitle,
 } from "../ui/empty";
 import { Button } from "../ui/button";
+import { useTokenStore } from "@/store/TokenStore";
 
 interface Slot {
   scheduleId: string;
@@ -81,11 +82,12 @@ const ConsultantScreen = () => {
     );
   }
   const [activeTab, setActiveTab] = useState("overview");
+  const { accessToken } = useTokenStore();
   const {
     data,
     isPending: isLoadingConsultant,
     error,
-  } = useGetConsultantFullProfileDetails(param.consultantId);
+  } = useGetConsultantFullProfileDetails(param.consultantId, accessToken);
   const [consultant, setConsultant] = useState<ConsultantProfile>();
 
   const thisRef: React.MutableRefObject<HTMLDivElement | null> = useRef(null);
@@ -146,7 +148,6 @@ const ConsultantScreen = () => {
       </section>
     );
   }
-  
 
   return isLoadingConsultant ? (
     <Loader />
@@ -423,7 +424,7 @@ const ConsultantScreen = () => {
                         <span className="font-medium">
                           Next available:{" "}
                           {DateTime.fromISO(
-                            consultant?.nextAvailable
+                            consultant?.nextAvailable,
                           ).toLocaleString(DateTime.TIME_SIMPLE)}
                         </span>
                       </div>
