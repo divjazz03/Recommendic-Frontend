@@ -43,7 +43,7 @@ export const useGetMyProfiles = (
     queryKey: ["getMyProfile"],
     queryFn: () => getMyProfileDetails(accessToken),
     staleTime: 1000 * 3600,
-    enabled,
+    enabled: () => enabled && accessToken !== null,
   });
 };
 

@@ -1,14 +1,11 @@
 import { useGetCurrentUser } from "@/lib/actions/generalQueriesAndMutation";
 import { refreshAccessToken } from "@/lib/api/general_api";
-import {
-  getItemInLocalStorage,
-  setItemInLocalStorage,
-} from "@/lib/utils/localStorageUtil";
+import { getItemInLocalStorage } from "@/lib/utils/localStorageUtil";
 import { useTokenStore } from "@/store/TokenStore";
 import { AuthUserContext } from "@/types";
-import React from "react";
+import React, { useRef } from "react";
 import { createContext, useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export interface AuthContextState {
   userContext: AuthUserContext;
@@ -29,7 +26,9 @@ const AuthContext = createContext<AuthContextState>(INITIAL_STATE);
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [userContext, setUserInContext] = useState<AuthUserContext>({});
   const { accessToken, setAccessToken, setRefreshToken } = useTokenStore();
+  const location = useLocation();
   const navigate = useNavigate();
+  const refreshIntervalRef = useRef<number | null>(null);
   const whiteListedPaths = [
     "/sign-in",
     "/sign-up",
@@ -37,6 +36,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     "/confirm-email",
     "/email-confirmation",
     "/landing",
+    "/test",
   ];
 
   const {
@@ -55,7 +55,10 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
       return;
     } else if (data) {
-      if (data.data.userStage === "ONBOARDING") {
+      if (
+        data.data.userStage === "ONBOARDING" &&
+        !location.pathname.includes("/onboarding")
+      ) {
         navigate("/onboarding");
       }
       setUserInContext(() => {
@@ -69,19 +72,28 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         } as AuthUserContext;
       });
     }
-  }, [data, error]);
+  }, [data, error, location.pathname, navigate]);
   function startRefreshUtility(refreshToken: string) {
     setRefreshToken(refreshToken);
-    setInterval(
+    if (refreshIntervalRef.current) {
+      clearInterval(refreshIntervalRef.current);
+    }
+    refreshIntervalRef.current = window.setInterval(
       async () => {
-        const retrievedToken = getItemInLocalStorage("refresh-token");
-        if (retrievedToken) {
-          const response = await refreshAccessToken(retrievedToken);
-          setAccessToken(response.data.accessToken);
+        try {
+          const response = await refreshAccessToken(refreshToken);
+          if (response.code === 200) {
+            const { accessToken: newAccessToken } = response.data;
+            setAccessToken(newAccessToken);
+          } else {
+            console.error("Failed to refresh token:", response.message);
+          }
+        } catch (error) {
+          console.error("Error refreshing token:", error);
         }
       },
-      60 * 60 * 1000,
-    );
+      15 * 60 * 1000,
+    ); // Refresh every 15 minutes
   }
 
   const value: AuthContextState = {

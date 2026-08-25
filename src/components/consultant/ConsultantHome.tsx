@@ -1,9 +1,8 @@
-import { useUserContext } from "@/context/AuthContext";
 import {
   useGetDashboard,
   useGetMyConsultantProfiles,
 } from "@/lib/actions/consultantQueryAndMutations";
-import { ConsultantProfile, NotificationContext } from "@/types";
+import { ConsultationStartData, NotificationContext } from "@/types";
 import {
   Activity,
   Calendar,
@@ -32,8 +31,8 @@ import {
 } from "../ui/empty";
 import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
-import { getConsultantFullProfileDetails } from "@/lib/api/patient_api";
 import { useTokenStore } from "@/store/TokenStore";
+import { useStartConsultation } from "@/lib/actions/generalQueriesAndMutation";
 
 type AppointmentChannel = "in_person" | "online";
 type AppointmentHistory = "new" | "follow-up";
@@ -47,6 +46,8 @@ interface Appointment {
   history: AppointmentHistory;
   status: AppointmentStatus;
   reason: string;
+  consultationStarted: boolean;
+  consultationEnded: boolean;
 }
 
 // interface Patient {
@@ -157,6 +158,7 @@ const ConsultantHome = () => {
   const { data: profileData } = useGetMyConsultantProfiles(accessToken, true);
   const consultantProfile = profileData?.data.profile;
   const { data: dashboardResponse } = useGetDashboard(accessToken);
+  const { mutateAsync: startConsultation } = useStartConsultation(accessToken);
   const [dashBoard, setDashboard] = useState<DashboardData>({
     todayAppointments: [],
     pendingTasks: [],
@@ -178,11 +180,17 @@ const ConsultantHome = () => {
         channel: data.channel.toLowerCase() as AppointmentChannel,
         patientName: data.fullName,
         patientAge: Number(data.age),
-        time: new Date().toDateString(),
-        status: data.status as AppointmentStatus,
+        time: DateTime.fromISO(data.dateTime, { zone: "utc" }).toFormat(
+          "hh:mm a",
+        ),
+        status: data.status.toLowerCase() as AppointmentStatus,
         history: data.isFollowUp ? "follow-up" : "new",
         reason: "",
+        consultationStarted: data.isStarted,
+        consultationEnded: data.isEnded,
       })) || [];
+
+    console.log(todaysAppointments);
     const recentUpdates: Update[] =
       dashboardResponse?.data?.recentUpdates?.map((data) => ({
         time: data.timestamp,
@@ -196,6 +204,31 @@ const ConsultantHome = () => {
       recentUpdates: recentUpdates,
     }));
   }, [dashboardResponse]);
+
+  const handleStart = async (appointmentId: string) => {
+    const res = await startConsultation(appointmentId);
+    navigate(`/consultation/${res.data.callId}`, {
+      state: {
+        callId: res.data.callId,
+        token: res.data.token,
+        apiKey: res.data.apiKey,
+        user: res.data.user,
+      } as ConsultationStartData,
+    });
+  };
+
+  if (!accessToken) {
+    return (
+      <Empty>
+        <EmptyHeader>
+          <EmptyTitle>You are not logged in</EmptyTitle>
+          <EmptyDescription>
+            Please log in to view your dashboard.
+          </EmptyDescription>
+        </EmptyHeader>
+      </Empty>
+    );
+  }
 
   return (
     <main className="flex flex-col gap-4 h-full max-w-7xl mx-auto overflow-y-auto px-2">
@@ -356,7 +389,7 @@ const ConsultantHome = () => {
                     return (
                       <div
                         key={apt.id}
-                        onClick={() => navigate("/consultation")}
+                        onClick={() => handleStart(apt.id)}
                         className={`p-4 border rounded-lg transition hover:shadow-md ${
                           apt.status === "in-progress"
                             ? "border-blue-300 bg-blue-50"
@@ -404,19 +437,29 @@ const ConsultantHome = () => {
                               </span>
                             </div>
                           </div>
-                          {apt.status === "confirmed" && (
-                            <button className="px-4 py-2 bg-main-light text-white text-sm rounded-lg hover:bg-main transition">
-                              Start
-                            </button>
-                          )}
+                          {apt.status === "completed" &&
+                            apt.consultationEnded && (
+                              <button className="px-4 py-2 bg-gray-100 text-gray-600 text-sm rounded-lg hover:bg-gray-200 transition">
+                                View Notes
+                              </button>
+                            )}
+                          {apt.status === "confirmed" &&
+                            !apt.consultationStarted &&
+                            !apt.consultationEnded && (
+                              <button className="px-4 py-2 bg-main-light text-white text-sm rounded-lg hover:bg-main transition">
+                                Start
+                              </button>
+                            )}
+                          {apt.status === "confirmed" &&
+                            apt.consultationStarted &&
+                            !apt.consultationEnded && (
+                              <button className="px-4 py-2 bg-main-light text-white text-sm rounded-lg hover:bg-main transition">
+                                Rejoin
+                              </button>
+                            )}
                           {apt.status === "in-progress" && (
                             <button className="px-4 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition">
                               Complete
-                            </button>
-                          )}
-                          {apt.status === "completed" && (
-                            <button className="px-4 py-2 bg-gray-100 text-gray-600 text-sm rounded-lg hover:bg-gray-200 transition">
-                              View Notes
                             </button>
                           )}
                         </div>
@@ -564,33 +607,35 @@ const ConsultantHome = () => {
                 </>
               ) : (
                 <div className="space-y-3 text-sm">
-                  {/* <div className="flex items-start gap-2">
+                  <div className="flex items-start gap-2">
                     <div className="w-2 h-2 bg-blue-500 rounded-full mt-1.5"></div>
                     <div>
-                        <p className="text-gray-900">
+                      <p className="text-gray-900">
                         New lab results available for 3 patients
-                        </p>
-                        <p className="text-xs text-gray-500 mt-1">10 minutes ago</p>
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        10 minutes ago
+                      </p>
                     </div>
-                    </div>
-                    <div className="flex items-start gap-2">
+                  </div>
+                  <div className="flex items-start gap-2">
                     <div className="w-2 h-2 bg-green-500 rounded-full mt-1.5"></div>
                     <div>
-                        <p className="text-gray-900">
+                      <p className="text-gray-900">
                         Prescription approved: Sarah Johnson
-                        </p>
-                        <p className="text-xs text-gray-500 mt-1">1 hour ago</p>
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">1 hour ago</p>
                     </div>
-                    </div>
-                    <div className="flex items-start gap-2">
+                  </div>
+                  <div className="flex items-start gap-2">
                     <div className="w-2 h-2 bg-orange-500 rounded-full mt-1.5"></div>
                     <div>
-                        <p className="text-gray-900">
+                      <p className="text-gray-900">
                         Schedule change requested by patient
-                        </p>
-                        <p className="text-xs text-gray-500 mt-1">2 hours ago</p>
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">2 hours ago</p>
                     </div>
-                    </div> */}
+                  </div>
                 </div>
               )}
             </section>

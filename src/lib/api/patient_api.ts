@@ -217,6 +217,8 @@ export interface PatientDashboardResponse extends Response {
         dateTime: string;
         channel: Uppercase<ConsultationChannel>;
         status: string;
+        isStarted: boolean;
+        isEnded: boolean;
       },
     ];
     recentActivities: [

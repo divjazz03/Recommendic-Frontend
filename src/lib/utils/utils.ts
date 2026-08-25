@@ -39,18 +39,51 @@ export const handleDateTimeFormatting = (date: string): string => {
 };
 
 export const formatDate = (date: Date | string): string => {
+  console.log(date);
   if (typeof date === "string") {
     const stringDate = date as string;
     return DateTime.fromISO(stringDate, { zone: "utc" })
       .setZone("local")
-      .toLocaleString(DateTime.DATETIME_FULL);
+      .toLocaleString(DateTime.DATE_FULL);
   } else {
     const dateType = date as Date;
-    return dateType.toLocaleDateString("en-US", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
+    return DateTime.fromJSDate(dateType, { zone: "utc" })
+      .setZone("local")
+      .toLocaleString(DateTime.DATE_FULL);
   }
+};
+
+export const parseTimeLeft = (date: string | Date): string => {
+  console.log(date);
+  const now = DateTime.local();
+  const targetDate =
+    typeof date === "string"
+      ? DateTime.fromISO(date)
+      : DateTime.fromJSDate(date);
+
+  if (!targetDate.isValid) {
+    return "";
+  }
+
+  const diff = targetDate
+    .diff(now, ["hours", "minutes", "seconds"])
+    .shiftTo("hours", "minutes", "seconds");
+
+  if (diff.as("seconds") <= 0) {
+    return "0s";
+  }
+
+  const hours = Math.floor(diff.hours);
+  const minutes = Math.floor(diff.minutes);
+  const seconds = Math.floor(diff.seconds);
+
+  if (hours >= 1) {
+    return `${hours}h`;
+  }
+
+  if (minutes >= 1) {
+    return `${minutes}m`;
+  }
+
+  return `${seconds}s`;
 };

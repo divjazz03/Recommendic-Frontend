@@ -54,75 +54,79 @@ const ConsultantScheduleDisplay = () => {
 
         {/*Stats Cards*/}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 bg-green-100 rounded-lg">
-                <Calendar className="w-5 h-5 text-green-600" />
-              </div>
+          <div className="flex justify-between bg-white p-6 rounded-xl shadow-sm border border-light-4">
+            <div>
               <h3 className="text-base sm:text-lg font-semibold text-gray-900">
                 Active Schedules
               </h3>
+
+              {isUserSchedulesLoading ? (
+                <Loader />
+              ) : (
+                <>
+                  <p className="text-2xl sm:text-3xl font-bold text-gray-900">
+                    {activeSchedules?.length}&nbsp;
+                    <span className="text-xs sm:text-sm font-light tracking-tighter text-gray-600">
+                      Currently available
+                    </span>
+                  </p>
+                </>
+              )}
             </div>
-            {isUserSchedulesLoading ? (
-              <Loader />
-            ) : (
-              <>
-                <p className="text-2xl sm:text-3xl font-bold text-gray-900">
-                  {activeSchedules?.length}
-                </p>
-                <p className="text-sm sm:text-base text-gray-600">
-                  Currently available
-                </p>
-              </>
-            )}
+
+            <Calendar className="w-10 h-10 p-2 text-green-600 bg-green-100 rounded-sm" />
           </div>
 
-          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <Clock className="w-5 h-5 text-blue-600" />
-              </div>
+          <div className="flex justify-between bg-white p-6 rounded-xl shadow-sm border border-light-4">
+            <div>
               <h3 className="text-sm sm:text-base font-semibold text-gray-900">
                 Upcoming Sessions
               </h3>
+
+              {isUserSchedulesLoading ? (
+                <Loader />
+              ) : (
+                <>
+                  <p className="text-2xl sm:text-3xl font-bold text-gray-900">
+                    {schedules?.reduce(
+                      (total, schedule) =>
+                        total + (schedule?.upcomingSessions || 0),
+                      0,
+                    )}
+                    &nbsp;
+                    <span className="text-xs sm:text-sm font-light tracking-tighter text-gray-600">
+                      Scheduled consultations
+                    </span>
+                  </p>
+                </>
+              )}
             </div>
-            {isUserSchedulesLoading ? (
-              <Loader />
-            ) : (
-              <>
-                <p className="text-2xl sm:text-3xl font-bold text-gray-900">
-                  {schedules?.reduce(
-                    (total, schedule) =>
-                      total + (schedule?.upcomingSessions || 0),
-                    0,
-                  )}
-                </p>
-                <p className="text-sm sm:text-base text-gray-600">
-                  Scheduled consultations
-                </p>
-              </>
-            )}
+
+            <Clock className="w-10 h-10 text-blue-600 p-2 bg-blue-100 rounded-sm" />
           </div>
 
-          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 bg-purple-100 rounded-lg">
-                <Settings className="w-5 h-5 text-purple-600" />
-              </div>
+          <div className="flex justify-between bg-white p-6 rounded-xl shadow-sm border border-light-4">
+            <div>
               <h3 className="text-sm sm:text-base font-semibold text-gray-900">
                 Total Schedules
               </h3>
+
+              {isUserSchedulesLoading ? (
+                <Loader />
+              ) : (
+                <>
+                  <p className="text-2xl sm:text-3xl font-bold text-gray-900">
+                    {schedules?.length}
+                    &nbsp;
+                    <span className="text-xs sm:text-sm font-light tracking-tighter text-gray-600">
+                      Created schedules
+                    </span>
+                  </p>
+                </>
+              )}
             </div>
-            {isUserSchedulesLoading ? (
-              <Loader />
-            ) : (
-              <>
-                <p className="text-2xl sm:text-3xl font-bold text-gray-900">
-                  {schedules?.length}
-                </p>
-                <p className="text-sm text-gray-600">Created schedules</p>
-              </>
-            )}
+
+            <Settings className="w-10 h-10 text-purple-600 p-2 bg-purple-100 rounded-sm" />
           </div>
         </div>
 

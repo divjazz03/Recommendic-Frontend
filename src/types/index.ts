@@ -65,16 +65,71 @@ export interface SignUpResponseData {
 export interface PatientData {
   name: string;
   age: string;
+  gender: string;
+  profileUrl: string;
+  allergies: string[];
+  conditions: string[];
+  lastVisit: string;
+  insurance: string;
+  id: string;
+}
+export interface ConsultantData {
+  name: string;
+  gender: string;
+  title: string;
+  specialty: string;
+  experience: number;
+  rating: number;
+  location: string;
+  image: string;
+  id: string;
 }
 export interface ConsultationResponseData {
   summary?: string;
   startTime: string;
   patientName: string;
+  patientId: string;
+  consultantId: string;
   consultantName: string;
   consultationId: string;
-  status: string;
-  channel: string;
+  status: Lowercase<string>;
+  reason: string;
+  channel: Lowercase<string>;
   patientData?: PatientData;
+  consultantData?: ConsultantData;
+}
+
+export interface ConsultationResponseDataMinimal {
+  summary?: string;
+  startTime: string;
+  date: string;
+  consultationId: string;
+  status: Lowercase<string>;
+  reason: string;
+  channel: Lowercase<string>;
+  patientData?: Pick<
+    PatientData,
+    "name" | "age" | "gender" | "profileUrl" | "id"
+  >;
+  consultantData?: ConsultantData;
+}
+export interface ConsultationStartData {
+  callId: string;
+  apiKey: string;
+  token: string;
+  user: {
+    id: string;
+    name: string;
+  };
+}
+export interface ConsultationJoinData {
+  callId: string;
+  apiKey: string;
+  token: string;
+  user: {
+    id: string;
+    name: string;
+  };
 }
 
 export interface UserName {
@@ -86,8 +141,8 @@ export interface UserName {
 export interface SignUpResponse extends Response {
   data: SignUpResponseData;
 }
-export interface ConsultationResponse extends Response {
-  data: ConsultationResponseData;
+export interface ConsultationResponse<T> extends Response {
+  data: T;
 }
 export interface Role {
   id: number;
@@ -320,3 +375,56 @@ export interface SecurityPreferences {
   loginAlertsEnabled: boolean;
   sessionTimeoutMin: number;
 }
+
+// Consultation Types
+export type ConsultationNoteCategory =
+  | "observation"
+  | "diagnosis"
+  | "prescription"
+  | "follow-up";
+
+export interface ConsultationNote {
+  id: string;
+  timestamp: string;
+  content: string;
+  category: ConsultationNoteCategory;
+}
+
+export interface PrescriptionItem {
+  id: string;
+  medicineName: string;
+  dosage: string;
+  frequency: string;
+  duration: string;
+  notes: string;
+}
+
+export interface ConsultationSession {
+  id: string;
+  patientId: string;
+  consultantId: string;
+  patientName: string;
+  consultantName: string;
+  patientAge: number;
+  patientGender: Gender;
+  chiefComplaint: string;
+  scheduledTime: string;
+  startTime?: string;
+  endTime?: string;
+  duration: number;
+  patientHistory: string[];
+  notes: ConsultationNote[];
+  prescriptions: PrescriptionItem[];
+  status: "scheduled" | "ongoing" | "completed" | "cancelled";
+  recordingUrl?: string;
+  summary?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ConsultationSessionResponse extends Response {
+  data: ConsultationSession;
+}
+
+export type ConsultationSessionsPagedResponse =
+  PagedResponse<ConsultationSession>;

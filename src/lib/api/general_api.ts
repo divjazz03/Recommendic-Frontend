@@ -1,6 +1,9 @@
 import {
   AuthenticatedUserResponse,
   ConsultationResponse,
+  ConsultationResponseData,
+  ConsultationResponseDataMinimal,
+  ConsultationStartData,
   CursorResponse,
   MedicalCategoriesResponse,
   PagedResponse,
@@ -9,10 +12,6 @@ import {
   SigninUserData,
 } from "@/types";
 import { SearchResult } from "@/hooks/useSearchResults";
-import {
-  ModifyingNotificationSetting,
-  NotificationSetting,
-} from "@/hooks/useNotificationSettings";
 import { apiClient } from "../axios";
 import { TimeSlot } from "@/hooks/usePatientSchedules";
 import {
@@ -88,26 +87,63 @@ export async function doGlobalSearch(query: string): Promise<SearchResult[]> {
 export async function startNewConsultation(
   appointmentId: string,
   accessToken: string | null,
-): Promise<ConsultationResponse> {
+): Promise<ConsultationResponse<ConsultationStartData>> {
   return apiClient
-    .post(`${consultationPath}/${appointmentId}/start`, {
+    .post(`${consultationPath}/appointments/${appointmentId}/start`, null, {
       headers: { Authorization: `Bearer ${accessToken}` },
     })
     .then((response) => response.data);
 }
-export async function endConsultation(
+export async function joinConsultation(
   consultationId: string,
   accessToken: string | null,
-): Promise<ConsultationResponse> {
+): Promise<ConsultationResponse<ConsultationStartData>> {
   return apiClient
-    .post(`${consultationPath}/${consultationId}/complete`, {
+    .post(`${consultationPath}/${consultationId}/join`, null, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    })
+    .then((response) => response.data);
+}
+export async function getConsultationById(
+  accessToken: string | null,
+  consultationId?: string,
+): Promise<ConsultationResponse<ConsultationResponseData>> {
+  return apiClient
+    .get(`${consultationPath}/${consultationId}`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     })
     .then((response) => response.data);
 }
 
-interface NotificationSettingResponse extends Response {
-  data: NotificationSetting;
+export async function getPagedConsultation(
+  accessToken: string | null,
+): Promise<PagedResponse<ConsultationResponseDataMinimal>> {
+  const response = await apiClient
+    .get(`${consultationPath}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    })
+    .then((response) => response.data);
+  return response;
+}
+
+export interface ConsultationEndRequestData {
+  consultationId: string;
+  summary: string;
+  shouldReschedule: boolean;
+  date: string;
+  reason?: string;
+  patientStatus?: string;
+}
+
+export async function endConsultation(
+  endData: ConsultationEndRequestData,
+  accessToken: string | null,
+): Promise<ConsultationResponse<ConsultationResponseData>> {
+  return apiClient
+    .post(`${consultationPath}/complete`, endData, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    })
+    .then((response) => response.data);
 }
 
 export async function markNotificationAsRead(
@@ -219,11 +255,26 @@ interface RefreshResponse extends Response {
     accessToken: string;
   };
 }
+interface StreamTokenResponse extends Response {
+  data: {
+    token: string;
+  };
+}
 
 export async function refreshAccessToken(
   refreshToken: string,
 ): Promise<RefreshResponse> {
   return apiClient
     .post("/auth/refresh-token", { refreshToken })
+    .then((response) => response.data);
+}
+
+export async function getStreamToken(
+  accessToken: string | null,
+): Promise<StreamTokenResponse> {
+  return apiClient
+    .get(`/video/token`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    })
     .then((response) => response.data);
 }

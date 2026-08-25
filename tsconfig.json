@@ -2,8 +2,7 @@
   "compilerOptions": {
     "module": "ESNext",
     "target": "ESNext",
-    "lib": ["DOM","ESNext"],
-    "baseUrl": ".",
+    "lib": ["DOM", "ESNext"],
     "esModuleInterop": true,
     "skipLibCheck": true,
     "paths": {
@@ -21,11 +20,8 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
 
-    
-    "allowSyntheticDefaultImports": true,
+    "allowSyntheticDefaultImports": true
   },
-  "references": [
-    { "path": "./tsconfig.node.json" }
-  ],
-  "include": ["src"],
+  "references": [{ "path": "./tsconfig.node.json" }],
+  "include": ["src"]
 }

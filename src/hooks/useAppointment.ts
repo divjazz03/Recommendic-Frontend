@@ -527,6 +527,7 @@ export const useConsultantAppointment = () => {
         }
       }) || [];
   const totalCount = appointments?.length;
+  console.log(appointments);
   const pendingCount = appointments?.filter(
     (apt) => apt.status === "pending",
   ).length;

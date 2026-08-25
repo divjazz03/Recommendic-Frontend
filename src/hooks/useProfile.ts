@@ -203,7 +203,9 @@ export const usePatientProfile = (accessToken: string | null) => {
     setIsEditing(false);
   };
   const handleStartEdit = () => {
-    !isEditing && setIsEditing(true);
+    if (!isEditing) {
+      setIsEditing(true);
+    }
   };
 
   const medicalCategories = medicalCategoriesResponse?.data;

@@ -1,17 +1,16 @@
-import ConsultantNotification from '@/components/consultant/ConsultantNotification';
-import PatientNotification from '@/components/patient/PatientNotification'
-import { useUserContext } from '@/context/AuthContext'
+import ConsultantNotification from "@/components/consultant/notification/ConsultantNotification";
+import PatientNotification from "@/components/patient/PatientNotification";
+import { useUserContext } from "@/context/AuthContext";
 
 const Notification = () => {
-  const {userContext} = useUserContext();
-  if(!userContext.userType) return;
+  const { userContext } = useUserContext();
+  if (!userContext.userType) return;
 
-  if(userContext.userType === 'PATIENT') {
-    return <PatientNotification />
+  if (userContext.userType === "PATIENT") {
+    return <PatientNotification />;
   } else {
-    return <ConsultantNotification />
+    return <ConsultantNotification />;
   }
+};
 
-}
-
-export default Notification
+export default Notification;

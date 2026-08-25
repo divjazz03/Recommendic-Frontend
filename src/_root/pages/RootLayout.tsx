@@ -5,6 +5,7 @@ import {
   Bell,
   Calendar1Icon,
   CalendarClock,
+  HeartPulseIcon,
   Home,
   Menu,
   PillBottle,
@@ -29,51 +30,61 @@ const RootLayout = () => {
   const navigate = useNavigate();
   const asideRef: MutableRefObject<HTMLDivElement | null> = useRef(null);
   const { userContext: auth, isLoading } = useUserContext();
-  const { profile } = useHomeProfile(auth.userType ?? "PATIENT");
+  const { profile } = useHomeProfile(auth.userType);
   const navLinkObject: Record<string, NavLinksObject> =
     auth.userType === "CONSULTANT"
       ? {
           home: {
             to: "/",
             icon: Home,
-            description: "Home",
+            description: "Dashboard",
           },
           appointment: {
             to: "/appointment",
             icon: CalendarClock,
-            description: "Appointment",
+            description: "Appointments",
           },
           schedule: {
             to: "/schedule",
             icon: Calendar1Icon,
-            description: "Schedule",
+            description: "Schedules",
+          },
+          consultation: {
+            to: "/consultation",
+            icon: HeartPulseIcon,
+            description: "Consultations",
           },
           medicine: {
             to: "/medication",
             icon: PillBottle,
-            description: "Prescription",
+            description: "Prescriptions",
           },
         }
       : {
           home: {
             to: "/",
             icon: Home,
-            description: "Home",
+            description: "Dashboard",
           },
           appointment: {
             to: "/appointment",
             icon: CalendarClock,
-            description: "Appointment",
+            description: "Appointments",
           },
           consultant: {
             to: "/consultants",
             icon: User2,
-            description: "Consultant",
+            description: "Consultants",
+          },
+          consultation: {
+            to: "/consultation",
+            icon: HeartPulseIcon,
+            description: "Consultations",
           },
           medication: {
             to: "/medication",
             icon: PillBottle,
-            description: "Medication",
+            description: "Medications",
           },
         };
 
@@ -83,22 +94,27 @@ const RootLayout = () => {
           home: {
             to: "/",
             icon: Home,
-            description: "Home",
+            description: "Dashboard",
           },
           appointment: {
             to: "/appointment",
             icon: CalendarClock,
-            description: "Appointment",
+            description: "Appointments",
           },
           schedule: {
             to: "/schedule",
             icon: Calendar1Icon,
-            description: "Schedule",
+            description: "Schedules",
           },
           medicine: {
             to: "/medication",
             icon: PillBottle,
-            description: "Prescription",
+            description: "Prescriptions",
+          },
+          consultation: {
+            to: "/consultation",
+            icon: HeartPulseIcon,
+            description: "Consultations",
           },
           me: {
             to: "/profile",
@@ -108,14 +124,14 @@ const RootLayout = () => {
           notification: {
             to: "/notification",
             icon: Bell,
-            description: "Notification",
+            description: "Notifications",
           },
         }
       : {
           home: {
             to: "/",
             icon: Home,
-            description: "Home",
+            description: "Dashboard",
           },
           consultant: {
             to: "/consultants",
@@ -125,23 +141,28 @@ const RootLayout = () => {
           appointment: {
             to: "/appointment",
             icon: CalendarClock,
-            description: "Appointment",
+            description: "Appointments",
           },
           medicine: {
             to: "/medication",
             icon: PillBottle,
-            description: "Medication",
+            description: "Medications",
           },
           me: {
             to: "/profile",
             icon: User,
             description: "Me",
           },
+          consultation: {
+            to: "/consultation",
+            icon: HeartPulseIcon,
+            description: "Consultations",
+          },
 
           notification: {
             to: "/notification",
             icon: Bell,
-            description: "Notification",
+            description: "Notifications",
           },
         };
 
@@ -167,12 +188,14 @@ const RootLayout = () => {
       document.removeEventListener("keydown", handleEsc);
     };
   }, [asideHidden]);
+
   if (isLoading)
     return (
       <div className="flex justify-center items-center h-full">
         <Loader width={30} height={30} />
       </div>
     );
+
   return (
     <main className="w-full h-full bg-light-5">
       <div className="lg:flex lg:flex-row w-full h-full">

@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { LucideProps, X } from "lucide-react";
+import { LucideProps } from "lucide-react";
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import InitialsOrAvartar from "./InitialsOrAvartar";
@@ -26,23 +26,22 @@ const SideBar: React.FC<SideBarProps> = ({
 }) => {
   const location = useLocation();
   const { userContext } = useUserContext();
-  const { profile } = useHomeProfile(userContext.userType ?? "PATIENT");
+  const { profile } = useHomeProfile(userContext.userType);
   const navigate = useNavigate();
   return (
     <nav
       className={clsx(
-        "border bg-white overflow-auto flex flex-col pr-3",
+        "border bg-light-2 overflow-auto flex flex-col pr-3",
         "justify-between h-full",
       )}
     >
-      <div className="flex flex-col gap-6">
-        <header className="py-4 items-center pl-4 gap-3">
-          <div className="flex justify-between gap-3">
+      <div className="flex flex-col">
+        <header className="py-4 items-center pl-4 gap-2">
+          <div className="flex justify-start gap-1">
             <Logo className="w-8 h-8" />
-            <p className="font-berkshire text-main font-bold text-3xl">
+            <p className="flex-1 font-berkshire text-main font-bold text-3xl">
               Recommendic
             </p>
-            <X className="w-8 h-8" onClick={() => setAsideHidden(true)} />
           </div>
         </header>
         <div className="flex flex-col py-4 justify-between">

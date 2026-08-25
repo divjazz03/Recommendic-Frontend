@@ -1,6 +1,5 @@
-import { useUserContext } from "@/context/AuthContext";
 import { useGetMyDashboard } from "@/lib/actions/patientQueryAndMutations";
-import { formatDate } from "@/lib/utils/utils";
+import { formatDate, parseTimeLeft } from "@/lib/utils/utils";
 import { NotificationContext } from "@/types";
 import {
   AlertCircle,
@@ -28,6 +27,8 @@ import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
 import { useTokenStore } from "@/store/TokenStore";
 import { usePatientProfile } from "@/hooks/useProfile";
+import { useJoinConsultation } from "@/lib/actions/generalQueriesAndMutation";
+import { toast } from "sonner";
 
 interface AppointmentView {
   id: string;
@@ -37,6 +38,9 @@ interface AppointmentView {
   time: string;
   channel: string;
   status: string;
+  isStarted: boolean;
+  isEnded: boolean;
+  dateTime: string;
 }
 
 interface Medication {
@@ -98,6 +102,8 @@ const PatientHome = () => {
   const { accessToken } = useTokenStore();
   const { profileData } = usePatientProfile(accessToken);
   const { data: dashBoardResp } = useGetMyDashboard(accessToken);
+  const { mutateAsync: joinConsultation, error } =
+    useJoinConsultation(accessToken);
 
   const [dashBoard, setDashboard] = useState<DashboardData>({
     appointments: [],
@@ -106,12 +112,16 @@ const PatientHome = () => {
   });
 
   useEffect(() => {
+    if (error) {
+      toast.error("Error joining consultation: " + error.message);
+      return;
+    }
     console.log(dashBoardResp);
     const appointments: AppointmentView[] =
       dashBoardResp?.data?.appointmentsToday?.map((apt) => ({
         channel: apt.channel.toLowerCase(),
         date: DateTime.fromISO(apt.dateTime, { zone: "utc" }).toFormat(
-          "YYYY-LLL-dd",
+          "yyyy-LLL-dd",
         ),
         time: DateTime.fromISO(apt.dateTime, { zone: "utc" }).toFormat(
           "HH:mm:ss a",
@@ -120,6 +130,9 @@ const PatientHome = () => {
         id: apt.appointmentId,
         specialty: apt.specialty,
         status: "confirmed",
+        isStarted: apt.isStarted,
+        isEnded: apt.isEnded,
+        dateTime: apt.dateTime,
       })) || [];
     const medications: Medication[] | undefined =
       dashBoardResp?.data?.medications?.map((med) => ({
@@ -145,7 +158,45 @@ const PatientHome = () => {
       medications: medications,
       recentActivity: recentActivities,
     }));
-  }, [dashBoardResp]);
+  }, [dashBoardResp, error]);
+
+  if (!accessToken) {
+    setTimeout(() => navigate("/sign-in"), 2000);
+    return (
+      <Empty>
+        <EmptyHeader>
+          <EmptyTitle>You are not logged in</EmptyTitle>
+          <EmptyDescription>
+            Please log in to view your dashboard.
+          </EmptyDescription>
+        </EmptyHeader>
+      </Empty>
+    );
+  }
+
+  const handleJoinConsultation = async (appointmentId: string) => {
+    const appointment = dashBoard.appointments.find(
+      (appt) => appt.id === appointmentId,
+    );
+    if (!appointment?.isStarted) {
+      toast.warning("Consultation has not yet started");
+      return;
+    }
+    if (appointment?.isEnded) {
+      toast.warning("Consultation has already ended");
+      return;
+    }
+    const res = await joinConsultation(appointmentId);
+    if (res.code === 200 && res.data) {
+      navigate(`/consultation/${res.data.callId}`, {
+        state: {
+          ...res.data,
+        },
+      });
+    } else {
+      toast.error("Failed to join consultation: " + res.message);
+    }
+  };
   return (
     <main className="flex flex-col gap-4 h-full max-w-7xl mx-auto overflow-y-auto bg-white p-2">
       <header className="w-full bg-white rounded-t-lg">
@@ -209,7 +260,7 @@ const PatientHome = () => {
                   {dashBoard.appointments.map((apt) => (
                     <div
                       key={apt.id}
-                      onClick={() => navigate("/consultation")}
+                      onClick={() => handleJoinConsultation(apt.id)}
                       className="p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-md transition"
                     >
                       <div className="flex items-start justify-between">
@@ -231,9 +282,23 @@ const PatientHome = () => {
                             </span>
                           </div>
                         </div>
-                        <span className="px-3 py-1 bg-purple-100 text-purple-700 text-xs font-medium rounded-full">
-                          {apt.channel}
-                        </span>
+                        <div className="flex flex-col justify-center items-end border gap-4">
+                          <span className="px-3 py-1 w-fit bg-purple-100 text-purple-700 text-xs font-medium rounded-full">
+                            {apt.channel}
+                          </span>
+
+                          {apt.isStarted && !apt.isEnded ? (
+                            <Button>Join</Button>
+                          ) : apt.isEnded ? (
+                            <span className="px-3 py-1 w-fit bg-green-700/10 text-green-700 text-xs font-medium rounded-full">
+                              Completed
+                            </span>
+                          ) : (
+                            <span className="px-3 py-1 w-fit bg-main/10 text-main text-xs font-medium rounded-full">
+                              {parseTimeLeft(apt.dateTime)} left
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
                   ))}

@@ -370,6 +370,8 @@ export interface ConsultantDashboardResponse extends Response {
         channel: Uppercase<ConsultationChannel>;
         isFollowUp: boolean;
         status: string;
+        isStarted: boolean;
+        isEnded: boolean;
       },
     ];
     recentUpdates: [

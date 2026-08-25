@@ -70,7 +70,7 @@ const ConsultantAppointment = () => {
 
       {/* Stats Cards */}
       <section className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        <div className="bg-white rounded-lg border-2 border-yellow-200 p-4">
+        <div className="bg-white rounded-lg border-2 border-light-4 p-4">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-600 text-sm">Pending Requests</p>
@@ -78,21 +78,21 @@ const ConsultantAppointment = () => {
                 {pendingCount}
               </p>
             </div>
-            <Bell className="w-10 h-10 text-yellow-600" />
+            <Bell className="w-10 h-10 text-yellow-600 p-2 bg-yellow-100 rounded-sm" />
           </div>
         </div>
 
-        <div className="bg-white rounded-lg border-2 border-blue-200 p-4">
+        <div className="bg-white rounded-lg border-2 border-light-4 p-4">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-600 text-sm">Today's Schedule</p>
               <p className="text-3xl font-bold text-blue-600">{todayCount}</p>
             </div>
-            <Calendar className="w-10 h-10 text-blue-600" />
+            <Calendar className="w-10 h-10 text-blue-600 p-2 bg-blue-100 rounded-sm" />
           </div>
         </div>
 
-        <div className="bg-white rounded-lg border-2 border-green-200 p-4">
+        <div className="bg-white rounded-lg border-2 border-light-4 p-4">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-600 text-sm">Upcoming</p>
@@ -100,17 +100,17 @@ const ConsultantAppointment = () => {
                 {upcomingCount}
               </p>
             </div>
-            <CheckCircle className="w-10 h-10 text-green-600" />
+            <CheckCircle className="w-10 h-10 text-green-600 p-2 bg-green-100 rounded-sm" />
           </div>
         </div>
 
-        <div className="bg-white rounded-lg border-2 border-purple-200 p-4">
+        <div className="bg-white rounded-lg border-2 border-light-4 p-4">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-gray-600 text-sm">Total Patients</p>
               <p className="text-3xl font-bold text-purple-600">{todayCount}</p>
             </div>
-            <Users className="w-10 h-10 text-purple-600" />
+            <Users className="w-10 h-10 text-purple-600 p-2 bg-purple-100 rounded-sm" />
           </div>
         </div>
       </section>
@@ -245,12 +245,13 @@ const ConsultantAppointment = () => {
           statusColor={getStatusColor(selectedAppointment.status)}
         />
       )}
-
-      <ActionModal
-        actionModal={actionModal}
-        setActionModal={setActionModal}
-        setAppointments={setAppointments}
-      />
+      {actionModal && (
+        <ActionModal
+          actionModal={actionModal}
+          setActionModal={setActionModal}
+          setAppointments={setAppointments}
+        />
+      )}
     </main>
   );
 };
@@ -260,7 +261,7 @@ export default ConsultantAppointment;
 interface ConsultantAppointmentCardProps {
   appointment: ConsultantAppointmentType;
   setSelectedAppointment: (
-    value: React.SetStateAction<ConsultantAppointmentType | null>
+    value: React.SetStateAction<ConsultantAppointmentType | null>,
   ) => void;
   daysUntil: string;
   formatDate: (value: string) => string;
@@ -278,7 +279,7 @@ const ConsultantAppointmentCard = ({
   setSelectedAppointment,
   priorityColor,
   StatusIcon,
-  statusColor
+  statusColor,
 }: ConsultantAppointmentCardProps) => (
   <main
     className="bg-white rounded-lg border-2 border-gray-200 p-5 hover-shadow-lg transition-all cursor-pointer"
@@ -306,25 +307,23 @@ const ConsultantAppointmentCard = ({
           <span className="capitalize">{appointment.priority}</span>
         </div>
         {appointment.status === "confirmed" &&
-          new Date(`${appointment.date}T${appointment.time}`) < new Date() ? (
-            <div
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg border text-pink-800 bg-pink-100 border-pink-300`}
-            >
-              <XCircle className="h-4 w-4" />
-              <span className="font-semibold text-xs capitalize">
-                {'missed'}
-              </span>
-            </div>
-          ) : (
-            <div
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg border ${statusColor}`}
-            >
-              <StatusIcon className="h-4 w-4" />
-              <span className="font-semibold text-xs capitalize">
-                {appointment.status}
-              </span>
-            </div>
-          )}
+        new Date(`${appointment.date}T${appointment.time}`) < new Date() ? (
+          <div
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg border text-pink-800 bg-pink-100 border-pink-300`}
+          >
+            <XCircle className="h-4 w-4" />
+            <span className="font-semibold text-xs capitalize">{"missed"}</span>
+          </div>
+        ) : (
+          <div
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg border ${statusColor}`}
+          >
+            <StatusIcon className="h-4 w-4" />
+            <span className="font-semibold text-xs capitalize">
+              {appointment.status}
+            </span>
+          </div>
+        )}
       </div>
     </header>
 
@@ -332,12 +331,8 @@ const ConsultantAppointmentCard = ({
       <div className="space-y-2">
         <div className="flex items-center gap-2 text-gray-700">
           <Calendar className="w-4 h-4 text-gray-500" />
-          <span className="text-sm sm:text-base">
-            {DateTime.fromISO(appointment.date + "T" + appointment.time, {
-              zone: "utc",
-            })
-              .setZone("local")
-              .toFormat("HH:mm a")}
+          <span className="text-base sm:text-base">
+            {formatDate(`${appointment.date}T${appointment.time}`)}
           </span>
           <span className="px-2 py-0.5 bg-blue-50 text-blue-700 text-xs rounded-full font-semibold">
             {daysUntil}
@@ -413,10 +408,10 @@ const ConsultantAppointmentCard = ({
 );
 
 interface ActionModalProps {
-  actionModal: ActionModalType | null;
+  actionModal: ActionModalType;
   setActionModal: (value: React.SetStateAction<ActionModalType | null>) => void;
   setAppointments: (
-    value: React.SetStateAction<ConsultantAppointmentType[]>
+    value: React.SetStateAction<ConsultantAppointmentType[]>,
   ) => void;
 }
 
@@ -425,7 +420,6 @@ const ActionModal = ({
   setActionModal,
   setAppointments,
 }: ActionModalProps) => {
-  if (!actionModal) return null;
   const { type, appointment } = actionModal;
   const {
     handleCancel,
@@ -448,12 +442,12 @@ const ActionModal = ({
 
   const nextMonth = () => {
     setCurrentMonth(
-      new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1)
+      new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1),
     );
   };
   const previousMonth = () => {
     setCurrentMonth(
-      new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1)
+      new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1),
     );
   };
 
@@ -464,8 +458,8 @@ const ActionModal = ({
           {type === "decline"
             ? "Decline Appointment"
             : type === "reschedule"
-            ? "Reschedule Appointment"
-            : "Approve Appointment"}
+              ? "Reschedule Appointment"
+              : "Approve Appointment"}
         </h3>
 
         <div className="mb-4 p-3 bg-gray-50 rounded-lg">
@@ -555,15 +549,15 @@ const ActionModal = ({
               type === "decline"
                 ? handleDecline(appointment.id)
                 : type === "reschedule"
-                ? handleReschedule(appointment.id)
-                : handleApprove(appointment.id)
+                  ? handleReschedule(appointment.id)
+                  : handleApprove(appointment.id)
             }
             disabled={
               type === "approve"
                 ? false
                 : type === "decline"
-                ? !actionReason.trim()
-                : false
+                  ? !actionReason.trim()
+                  : false
             }
             className={`flex-1 py-2 rounded-lg font-semibold transition disabled:bg-gray-500 ${
               type === "decline"
@@ -574,8 +568,8 @@ const ActionModal = ({
             {type === "decline"
               ? "Confirm Decline"
               : type === "reschedule"
-              ? "Confirm Reschedule"
-              : "Approve"}
+                ? "Confirm Reschedule"
+                : "Approve"}
           </button>
         </div>
       </div>
@@ -637,7 +631,7 @@ const AppointmentModal = ({
             >
               <XCircle className="h-4 w-4" />
               <span className="font-semibold text-xs capitalize">
-                {'missed'}
+                {"missed"}
               </span>
             </div>
           ) : (
@@ -677,7 +671,7 @@ const AppointmentModal = ({
                     <p className="">
                       {DateTime.fromISO(
                         appointment.date + "T" + appointment.time,
-                        { zone: "utc" }
+                        { zone: "utc" },
                       )
                         .setZone("local")
                         .toFormat("HH:mm a")}

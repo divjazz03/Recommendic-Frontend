@@ -27,6 +27,7 @@ interface ImportMetaEnv {
   readonly VITE_APPOINTMENT_BASE: string;
   readonly VITE_DASHBOARD_BASE: string;
   readonly VITE_MEDICATION_BASE: string;
+  readonly VITE_STREAM_IO_API_KEY: string;
 }
 
 interface ImportMeta {

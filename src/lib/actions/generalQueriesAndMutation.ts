@@ -19,6 +19,11 @@ import {
   markNotificationAsRead,
   markAllNotificationAsRead,
   deleteNotification,
+  getConsultationById,
+  joinConsultation,
+  getStreamToken,
+  ConsultationEndRequestData,
+  getPagedConsultation,
 } from "../api/general_api";
 import { TypeOfUser } from "@/_auth/forms/SignupForm";
 import {
@@ -52,16 +57,16 @@ export const useMarkNotificationsAsRead = (accessToken: string | null) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => markNotificationAsRead(id, accessToken),
-    //  onSuccess: () =>
-    //    queryClient.invalidateQueries({ queryKey: "Notifications" }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: "Notifications" }),
   });
 };
 export const useMarkAllNotificationsAsRead = (accessToken: string | null) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: () => markAllNotificationAsRead(accessToken),
-    //  onSuccess: () =>
-    //    queryClient.invalidateQueries({ queryKey: "Notifications" }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: "Notifications" }),
   });
 };
 
@@ -69,8 +74,8 @@ export const useDeleteNotification = (accessToken: string | null) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => deleteNotification(id, accessToken),
-    // onSuccess: () =>
-    //    queryClient.invalidateQueries({queryKey: "Notifications"})
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: "Notifications" }),
   });
 };
 export const useCreateUserMutation = () => {
@@ -90,16 +95,9 @@ export const useGetCurrentUser = (
   enabled: boolean,
   accessToken?: string | null,
 ) => {
-  if (!accessToken) {
-    return {
-      error: new Error("No access token"),
-      isPending: false,
-      data: null,
-    };
-  }
   return useQuery({
     queryKey: ["getCurrentUser"],
-    queryFn: () => getCurrentUser(accessToken),
+    queryFn: () => getCurrentUser(accessToken || undefined),
     enabled: enabled,
     retry: 1,
   });
@@ -156,16 +154,33 @@ export const useCreateSchedule = (accessToken: string | null) => {
   });
 };
 
+export const useGetConsultationById = (
+  accessToken: string | null,
+  consultationId?: string,
+) => {
+  return useQuery({
+    queryKey: ["Consultation", consultationId],
+    queryFn: () => getConsultationById(accessToken, consultationId),
+    enabled: !!(accessToken || consultationId),
+  });
+};
+
 export const useStartConsultation = (accessToken: string | null) => {
   return useMutation({
     mutationFn: (appointmentId: string) =>
       startNewConsultation(appointmentId, accessToken),
   });
 };
-export const useEndConsultation = (accessToken: string | null) => {
+export const useJoinConsultation = (accessToken: string | null) => {
   return useMutation({
     mutationFn: (consultationId: string) =>
-      endConsultation(consultationId, accessToken),
+      joinConsultation(consultationId, accessToken),
+  });
+};
+export const useEndConsultation = (accessToken: string | null) => {
+  return useMutation({
+    mutationFn: (data: ConsultationEndRequestData) =>
+      endConsultation(data, accessToken),
   });
 };
 
@@ -189,5 +204,18 @@ export const useGetAppointments = (accessToken: string | null) => {
     queryKey: ["Appointments"],
     queryFn: () => getAppointments(accessToken),
     staleTime: 1000 * 3600,
+  });
+};
+export const useGetConsultations = (accessToken: string | null) => {
+  return useQuery({
+    queryKey: ["Consultations"],
+    queryFn: () => getPagedConsultation(accessToken),
+    staleTime: 1000 * 3600,
+  });
+};
+export const useGetStreamToken = (accessToken: string | null) => {
+  return useQuery({
+    queryKey: ["StreamToken"],
+    queryFn: () => getStreamToken(accessToken),
   });
 };

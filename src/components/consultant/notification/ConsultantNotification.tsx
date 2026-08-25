@@ -11,6 +11,7 @@ import {
   useMarkAllNotificationsAsRead,
   useMarkNotificationsAsRead,
 } from "@/lib/actions/generalQueriesAndMutation";
+import { useTokenStore } from "@/store/TokenStore";
 import {
   Bell,
   Calendar,
@@ -118,18 +119,19 @@ const exampleNotifications: ConsultantNotification[] = [
 
 const ConsultantNotification = () => {
   const [filter, setFilter] = useState<"all" | "unread" | "critical">("all");
-
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useGetNotifications();
-  const { mutateAsync: markNotificationAsRead } = useMarkNotificationsAsRead();
+  const { accessToken } = useTokenStore();
+  const { data, hasNextPage, isFetchingNextPage } =
+    useGetNotifications(accessToken);
+  const { mutateAsync: markNotificationAsRead } =
+    useMarkNotificationsAsRead(accessToken);
   const { mutateAsync: markAllNotificationAsRead } =
-    useMarkAllNotificationsAsRead();
+    useMarkAllNotificationsAsRead(accessToken);
 
   const markAsRead = async (id: string) => {
     try {
       await markNotificationAsRead(id);
     } catch (error) {
-      toast.error("Couldn't amrk notification as read");
+      toast.error("Couldn't mark notification as read: " + error.message);
     }
   };
 
@@ -137,7 +139,15 @@ const ConsultantNotification = () => {
     try {
       await markAllNotificationAsRead();
     } catch (error) {
-      toast.error("Couldn't mark all notifications as read");
+      if (error instanceof Error) {
+        toast.error(
+          "Couldn't mark all notifications as read: " + error.message,
+        );
+      } else {
+        toast.error(
+          "Couldn't mark all notifications as read: An unknown error occurred",
+        );
+      }
     }
   };
 
@@ -150,11 +160,11 @@ const ConsultantNotification = () => {
       page.data.filter((n) => {
         if (filter === "unread") return !n.isRead;
         return true;
-      })
+      }),
     ) || [];
 
   const unreadCount = data?.pages.flatMap((page) =>
-    page.data.filter((n) => !n.isRead)
+    page.data.filter((n) => !n.isRead),
   ).length;
 
   return (
@@ -248,8 +258,8 @@ const ConsultantNotification = () => {
                   {isFetchingNextPage
                     ? "Loading more ..."
                     : hasNextPage
-                    ? "Load More"
-                    : "Nothing more to load"}{" "}
+                      ? "Load More"
+                      : "Nothing more to load"}{" "}
                 </Button>
               </div>
             </>
@@ -279,9 +289,9 @@ const NotificationCard = ({
       <div
         className={`${getIconBgColor(
           notification?.type as ConsultantNotificationType,
-          notification.isRead
+          notification.isRead,
         )} p-3 rounded-xl h-fit ${getIconColor(
-          notification.type as ConsultantNotificationType
+          notification.type as ConsultantNotificationType,
         )}`}
       >
         {getIcon(notification.type as ConsultantNotificationType)}

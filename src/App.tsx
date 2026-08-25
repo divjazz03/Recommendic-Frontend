@@ -22,20 +22,27 @@ import Onboarding from "@/_root/pages/Onboarding";
 import Medication from "@/_root/pages/Medication";
 import Settings from "@/_root/pages/Settings";
 import Appointment from "./_root/pages/Appointment";
-import Consultation from "./_root/pages/Consultation";
+import Consultation from "./_root/pages/consultation/Consultation";
 import Profile from "./_root/pages/Profile";
 import { ErrorBoundary } from "./components/shared/ErrorBoundary";
 import ConsultantScreen from "./components/patient/ConsultantScreen";
 import Chat from "./_root/pages/Chat";
 import NewMedication from "./_root/pages/NewMedication";
+import ConsultationPage from "./examples/ConsultationPageExample";
+import NotificationInitializer from "./NotificationInitializer";
+import ConsultationOverview from "./_root/pages/consultation/ConsultationOverview";
 
 const App = () => {
-
   return (
     <main className="h-screen w-screen">
       <ErrorBoundary>
+        <NotificationInitializer />
         <Routes>
           {/* Public Routes*/}
+          <Route path="/test">
+            <Route index element={<h1>Test Page</h1>} />
+            <Route path="consultation" element={<ConsultationPage />} />
+          </Route>
           <Route path="/landing" element={<Landing />} />
           <Route path="/welcome" element={<Welcome />} />
           <Route element={<AuthLayout />}>
@@ -61,20 +68,26 @@ const App = () => {
                 element={<ConsultantScreen />}
               />
             </Route>
-            <Route path="/consultant/schedule/:consultantId" element={<PatientSchedule />}/>
-            <Route path="/schedule" element={<ConsultantSchedule/>}>
+            <Route
+              path="/consultant/schedule/:consultantId"
+              element={<PatientSchedule />}
+            />
+            <Route path="/schedule" element={<ConsultantSchedule />}>
               <Route index element={<ConsultantScheduleDisplay />} />
-                  <Route path="new" element={<ConsultantNewSchedule />} />
-                  <Route path="modify" element={<ConsultantModifySchedule />} />
+              <Route path="new" element={<ConsultantNewSchedule />} />
+              <Route path="modify" element={<ConsultantModifySchedule />} />
             </Route>
             <Route path="/medication">
-                <Route index  element={<Medication/>} />
-                <Route path="new/:patientId" element={<NewMedication />} />
+              <Route index element={<Medication />} />
+              <Route path="new/:patientId" element={<NewMedication />} />
             </Route>
             <Route path="/notification" element={<Notification />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/appointment" element={<Appointment />} />
-            <Route path="/consultation" element={<Consultation />} />
+            <Route path="/consultation">
+              <Route index element={<ConsultationOverview />} />
+              <Route path=":id" element={<Consultation />} />
+            </Route>
           </Route>
         </Routes>
       </ErrorBoundary>

@@ -1,11 +1,11 @@
 import { useGetConsultantProfile } from "@/lib/actions/consultantQueryAndMutations";
 import { useTokenStore } from "@/store/TokenStore";
 import { UserType } from "@/types";
-import { usePatientProfile } from "./useProfile";
 import { useGetMyProfiles } from "@/lib/actions/patientQueryAndMutations";
 
-const useHomeProfile = (userType: UserType) => {
+const useHomeProfile = (userType?: UserType) => {
   const { accessToken } = useTokenStore();
+  console.log("User Type in useHomeProfile:", userType);
   const { data: profileData } = useGetConsultantProfile(
     accessToken,
     userType === "CONSULTANT",
